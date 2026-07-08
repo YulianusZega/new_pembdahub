@@ -1,0 +1,422 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class LmsCourse extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    public $timestamps = true;
+
+    protected $table = 'lms_courses';
+
+    protected $fillable = [
+        'school_id',
+        'teacher_id',
+        'subject_id',
+        'classroom_id',
+        'semester_id',
+        'code',
+        'course_name',
+        'description',
+        'cover_image',
+        'status',
+        'is_published',
+        'is_active',
+        'color',
+        'meeting_active',
+        'meeting_started_at',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'is_published' => 'boolean',
+        'meeting_active' => 'boolean',
+        'meeting_started_at' => 'datetime',
+    ];
+
+    protected const STATUSES = [
+        'draft' => 'Draft',
+        'active' => 'Aktif',
+        'archived' => 'Diarsipkan',
+    ];
+
+    /**
+     * Get shorthand course code
+     */
+    public function getShortCode(): string
+    {
+        return substr($this->code, 0, 8); // Codes are usually LMS-XXXXXXXX, 8 is good
+    }
+
+    /**
+     * Accessor: $course->name returns course_name for backward compatibility
+     */
+    public function getNameAttribute()
+    {
+        return $this->course_name;
+    }
+
+    /**
+     * Mutator: $course->name = 'x' sets course_name
+     */
+    public function setNameAttribute($value)
+    {
+        $this->attributes['course_name'] = $value;
+    }
+
+    /**
+     * Get status label - uses status column if available, otherwise derives from is_published
+     */
+    public function getStatusLabel()
+    {
+        if (!empty($this->attributes['status'])) {
+            return self::STATUSES[$this->attributes['status']] ?? $this->attributes['status'];
+        }
+        return $this->is_published ? 'Aktif' : 'Draft';
+    }
+
+    /**
+     * Get computed status value
+     */
+    public function getComputedStatusAttribute()
+    {
+        return $this->attributes['status'] ?? ($this->is_published ? 'active' : 'draft');
+    }
+
+    /**
+     * Relationship: Course belongs to School
+     */
+    public function school()
+    {
+        return $this->belongsTo(School::class);
+    }
+
+    /**
+     * Relationship: Course belongs to Teacher
+     */
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
+    }
+
+    /**
+     * Relationship: Course belongs to Subject
+     */
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+    /**
+     * Relationship: Course belongs to Semester
+     */
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
+
+    /**
+     * Relationship: Course belongs to Classroom (direct assignment in real DB)
+     */
+    public function classroom()
+    {
+        return $this->belongsTo(Classroom::class);
+    }
+
+    /**
+     * Relationship: Course has many LMS classes
+     */
+    public function lmsClasses()
+    {
+        return $this->hasMany(LmsClass::class, 'course_id');
+    }
+
+    /**
+     * Relationship: Course has many modules
+     */
+    public function modules()
+    {
+        return $this->hasMany(LmsModule::class, 'course_id');
+    }
+
+    /**
+     * Relationship: Course has many materials (direct link via course_id)
+     */
+    public function materials()
+    {
+        return $this->hasMany(LmsMaterial::class, 'course_id');
+    }
+
+    /**
+     * Relationship: Course has many assignments
+     */
+    public function assignments()
+    {
+        return $this->hasMany(LmsAssignment::class, 'course_id');
+    }
+
+    /**
+     * Relationship: Course has many quizzes
+     */
+    public function quizzes()
+    {
+        return $this->hasMany(LmsQuiz::class, 'course_id');
+    }
+
+    public function games()
+    {
+        return $this->hasMany(LmsGame::class, 'course_id');
+    }
+
+    /**
+     * Relationship: Course has many announcements
+     */
+    public function announcements()
+    {
+        return $this->hasMany(LmsAnnouncement::class, 'course_id');
+    }
+
+    /**
+     * Relationship: Course has many discussions
+     */
+    public function discussions()
+    {
+        return $this->hasMany(LmsDiscussion::class, 'course_id');
+    }
+
+    /**
+     * Relationship: Course has many submissions through assignments
+     */
+    public function submissions()
+    {
+        return $this->hasManyThrough(LmsSubmission::class, LmsAssignment::class, 'course_id', 'assignment_id');
+    }
+
+    /**
+     * Relationship: Course has many enrollments through lmsClasses
+     */
+    public function enrollments()
+    {
+        return $this->hasManyThrough(LmsEnrollment::class, LmsClass::class, 'course_id', 'lms_class_id');
+    }
+
+    /**
+     * Get total enrolled students across all LMS classes
+     */
+    public function getEnrolledStudentsCountAttribute()
+    {
+        return LmsEnrollment::whereIn('lms_class_id', $this->lmsClasses()->pluck('id'))
+            ->whereIn('status', ['enrolled', 'in_progress'])
+            ->count();
+    }
+
+    /**
+     * Scope: Get active courses
+     */
+    public function scopeActive($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('is_published', true)
+              ->orWhere('status', 'active');
+        });
+    }
+
+    /**
+     * Scope: Get courses by teacher
+     */
+    public function scopeByTeacher($query, $teacherId)
+    {
+        return $query->where('teacher_id', $teacherId);
+    }
+
+    /**
+     * Get scientist configuration for classroom based on name
+     */
+    public function getScientistConfig(): ?array
+    {
+        if (!$this->classroom) return null;
+        
+        $avatar = $this->classroom->getAvatarConfig();
+        if ($avatar && !empty($avatar['icon'])) {
+            return $avatar;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get Course Schedule from Master Schedules
+     */
+    public function getCourseSchedule()
+    {
+        return \App\Models\Schedule::where('subject_id', $this->subject_id)
+            ->where('classroom_id', $this->classroom_id)
+            ->where('teacher_id', $this->teacher_id)
+            ->with(['timeSlot'])
+            ->get();
+    }
+
+    /**
+     * Get Consolidated Course Schedule (grouped ranges)
+     */
+    public function getConsolidatedSchedule()
+    {
+        $schedules = $this->getCourseSchedule();
+        if ($schedules->isEmpty()) return collect();
+
+        $dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        $alphabet = [
+            'monday' => 'Senin', 
+            'tuesday' => 'Selasa', 
+            'wednesday' => 'Rabu', 
+            'thursday' => 'Kamis', 
+            'friday' => 'Jumat', 
+            'saturday' => 'Sabtu', 
+            'sunday' => 'Minggu'
+        ];
+
+        $grouped = $schedules->groupBy('day_of_week')
+            ->sortBy(fn($group, $day) => array_search($day, $dayOrder));
+
+        $consolidated = [];
+
+        foreach ($grouped as $day => $daySchedules) {
+            $sorted = $daySchedules->sortBy('timeSlot.slot_order');
+            $dayLabel = $alphabet[$day] ?? ucfirst($day);
+
+            $currentRange = null;
+
+            foreach ($sorted as $sch) {
+                if (!$sch->timeSlot) continue;
+                
+                $start = substr($sch->timeSlot->start_time, 0, 5);
+                $end = substr($sch->timeSlot->end_time, 0, 5);
+
+                if ($currentRange === null) {
+                    $currentRange = ['start' => $start, 'end' => $end];
+                } else {
+                    // If end of previous slot matches start of current slot, extend range
+                    if ($currentRange['end'] === $start) {
+                        $currentRange['end'] = $end;
+                    } else {
+                        // Close current range and start new one
+                        $consolidated[] = "$dayLabel: {$currentRange['start']} - {$currentRange['end']}";
+                        $currentRange = ['start' => $start, 'end' => $end];
+                    }
+                }
+            }
+
+            if ($currentRange) {
+                $consolidated[] = "$dayLabel: {$currentRange['start']} - {$currentRange['end']}";
+            }
+        }
+
+        return collect($consolidated);
+    }
+
+    /**
+     * Get tailwind classes for a given color
+     */
+    public static function getColorClasses(?string $color): array
+    {
+        $map = [
+            'indigo' => [
+                'bg' => 'bg-indigo-600',
+                'bg-light' => 'bg-indigo-50',
+                'bg-soft' => 'bg-indigo-100',
+                'text' => 'text-indigo-700',
+                'text-dark' => 'text-indigo-900',
+                'border' => 'border-indigo-200',
+                'gradient' => 'from-indigo-500 to-indigo-700'
+            ],
+            'emerald' => [
+                'bg' => 'bg-emerald-600',
+                'bg-light' => 'bg-emerald-50',
+                'bg-soft' => 'bg-emerald-100',
+                'text' => 'text-emerald-700',
+                'text-dark' => 'text-emerald-900',
+                'border' => 'border-emerald-200',
+                'gradient' => 'from-emerald-500 to-teal-600'
+            ],
+            'rose' => [
+                'bg' => 'bg-rose-600',
+                'bg-light' => 'bg-rose-50',
+                'bg-soft' => 'bg-rose-100',
+                'text' => 'text-rose-700',
+                'text-dark' => 'text-rose-900',
+                'border' => 'border-rose-200',
+                'gradient' => 'from-rose-500 to-pink-600'
+            ],
+            'amber' => [
+                'bg' => 'bg-amber-500',
+                'bg-light' => 'bg-amber-50',
+                'bg-soft' => 'bg-amber-100',
+                'text' => 'text-amber-700',
+                'text-dark' => 'text-amber-900',
+                'border' => 'border-amber-200',
+                'gradient' => 'from-amber-400 to-orange-500'
+            ],
+            'cyan' => [
+                'bg' => 'bg-cyan-600',
+                'bg-light' => 'bg-cyan-50',
+                'bg-soft' => 'bg-cyan-100',
+                'text' => 'text-cyan-700',
+                'text-dark' => 'text-cyan-900',
+                'border' => 'border-cyan-200',
+                'gradient' => 'from-cyan-500 to-blue-600'
+            ],
+            'violet' => [
+                'bg' => 'bg-violet-600',
+                'bg-light' => 'bg-violet-50',
+                'bg-soft' => 'bg-violet-100',
+                'text' => 'text-violet-700',
+                'text-dark' => 'text-violet-900',
+                'border' => 'border-violet-200',
+                'gradient' => 'from-violet-500 to-purple-600'
+            ],
+            'teal' => [
+                'bg' => 'bg-teal-600',
+                'bg-light' => 'bg-teal-50',
+                'bg-soft' => 'bg-teal-100',
+                'text' => 'text-teal-700',
+                'text-dark' => 'text-teal-900',
+                'border' => 'border-teal-200',
+                'gradient' => 'from-teal-400 to-emerald-600'
+            ],
+            'blue' => [
+                'bg' => 'bg-blue-600',
+                'bg-light' => 'bg-blue-50',
+                'bg-soft' => 'bg-blue-100',
+                'text' => 'text-blue-700',
+                'text-dark' => 'text-blue-900',
+                'border' => 'border-blue-200',
+                'gradient' => 'from-blue-500 to-indigo-600'
+            ],
+            'orange' => [
+                'bg' => 'bg-orange-500',
+                'bg-light' => 'bg-orange-50',
+                'bg-soft' => 'bg-orange-100',
+                'text' => 'text-orange-700',
+                'text-dark' => 'text-orange-900',
+                'border' => 'border-orange-200',
+                'gradient' => 'from-orange-400 to-red-500'
+            ],
+            'fuchsia' => [
+                'bg' => 'bg-fuchsia-600',
+                'bg-light' => 'bg-fuchsia-50',
+                'bg-soft' => 'bg-fuchsia-100',
+                'text' => 'text-fuchsia-700',
+                'text-dark' => 'text-fuchsia-900',
+                'border' => 'border-fuchsia-200',
+                'gradient' => 'from-fuchsia-500 to-pink-600'
+            ],
+        ];
+
+        return $map[$color] ?? $map['blue'];
+    }
+}

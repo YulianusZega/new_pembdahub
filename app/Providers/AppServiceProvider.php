@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Password;
+use App\Events\ModelActivityLogged;
+use App\Listeners\LogModelActivity;
+use App\Models\Employee;
+use App\Observers\EmployeeObserver;
+use App\Repositories\StudentRepository;
+use App\Repositories\GradeRepository;
+use App\Repositories\AttendanceRepository;
+use App\Services\StudentService;
+use App\Services\GradeService;
+use App\Contracts\WhatsAppServiceInterface;
+use App\Services\WhatsAppService;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        // Register Repository bindings
+        $this->app->singleton(StudentRepository::class, function ($app) {
+            return new StudentRepository();
+        });
+
+        $this->app->singleton(GradeRepository::class, function ($app) {
+            return new GradeRepository();
+        });
+
+        $this->app->singleton(AttendanceRepository::class, function ($app) {
+            return new AttendanceRepository();
+        });
+
+        // Register Service bindings
+        $this->app->singleton(StudentService::class, function ($app) {
+            return new StudentService($app->make(StudentRepository::class));
+        });
+
+        $this->app->singleton(GradeService::class, function ($app) {
+            return new GradeService($app->make(GradeRepository::class));
+        });
+
+        // Register WhatsApp service interface binding
+        $this->app->singleton(WhatsAppServiceInterface::class, WhatsAppService::class);
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        // Fix CORS: Force URL and Asset to use the current requested host (www or non-www)
+        if (request()->hasHeader('X-Forwarded-Proto') && request()->header('X-Forwarded-Proto') == 'https') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+        \Illuminate\Support\Facades\URL::forceRootUrl(request()->root());
+        config(['app.asset_url' => request()->root()]);
+        // Define default password rules application-wide
+        Password::defaults(function () {
+            return Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers();
+        });
+
+        // Configure rate limiters
+        $this->configureRateLimiting();
+
+        // Register event listeners
+        Event::listen(
+            ModelActivityLogged::class,
+            LogModelActivity::class,
+        );
+
+        // Register Observers
+        Employee::observe(EmployeeObserver::class);
+    }
+
+    /**
+     * Configure the rate limiters for the application.
+     */
+    protected function configureRateLimiting(): void
+    {
+        // Web rate limiter: 1000 requests per minute per IP
+        RateLimiter::for('web', function (Request $request) {
+            return Limit::perMinute(1000)
+                ->by($request->ip())
+                ->response(function () {
+                    return response()->view('errors.429', [], 429);
+                });
+        });
+
+        // API rate limiter: 60 requests per minute per user or IP
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by(
+                $request->user()?->id ?: $request->ip()
+            );
+        });
+
+        // Stricter limit for sensitive operations (login already has custom rate limit)
+        RateLimiter::for('sensitive', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip());
+        });
+    }
+}

@@ -1,0 +1,135 @@
+name: Run PHPUnit Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, xml, bcmath, sqlite3
+      - name: Get Composer Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+      - name: Install composer deps
+        run: composer install --no-progress --no-suggest --prefer-dist
+      - name: Prepare database
+        run: |
+          touch database/database.sqlite
+          php artisan key:generate
+          php artisan migrate --no-interaction --force
+          php artisan db:seed --class=DatabaseSeeder --no-interaction
+      - name: Run tests
+        run: vendor/bin/phpunit --testdox --coverage-text --colors=never
+
+  accessibility:
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, xml, bcmath, sqlite3
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Install deps
+        run: |
+          npm ci
+          composer install --no-progress --no-suggest --prefer-dist
+      - name: Prepare DB and Seed
+        run: |
+          touch database/database.sqlite
+          php artisan key:generate
+          php artisan migrate --no-interaction --force
+          php artisan db:seed --class=DatabaseSeeder --no-interaction
+      - name: Serve application
+        run: php artisan serve --port=8001 &
+      - name: Wait for server
+        run: |
+          for i in {1..10}; do
+            curl -sSf http://127.0.0.1:8001/a11y/admin-dashboard && break || sleep 1
+          done
+      - name: Run accessibility check (pa11y)
+        run: npx pa11y http://127.0.0.1:8001/a11y/admin-dashboard --timeout 30000
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: accessibility
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, xml, bcmath, sqlite3
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Install deps
+        run: |
+          npm install
+          composer install --no-progress --no-suggest --prefer-dist
+      - name: Prepare DB and Seed
+        run: |
+          touch database/database.sqlite
+          php artisan key:generate
+          php artisan migrate --no-interaction --force
+          php artisan db:seed --class=DatabaseSeeder --no-interaction
+      - name: Serve application
+        run: php artisan serve --port=8001 &
+      - name: Wait for server
+        run: |
+          for i in {1..10}; do
+            curl -sSf http://127.0.0.1:8001 && break || sleep 1
+          done
+      - name: Run Cypress tests
+        run: npx cypress run --headless --spec "cypress/integration/admin_subjects.spec.js" --browser chrome
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: accessibility
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, xml, bcmath, sqlite3
+      - name: Install deps
+        run: |
+          npm ci
+          composer install --no-progress --no-suggest --prefer-dist
+      - name: Prepare DB and Seed
+        run: |
+          touch database/database.sqlite
+          php artisan key:generate
+          php artisan migrate --no-interaction --force
+          php artisan db:seed --class=DatabaseSeeder --no-interaction
+      - name: Serve application
+        run: php artisan serve --port=8002 &
+      - name: Wait for server
+        run: |
+          for i in {1..10}; do
+            curl -sSf http://127.0.0.1:8002 || sleep 1
+          done
+      - name: Run Cypress tests
+        run: npx cypress run --headless

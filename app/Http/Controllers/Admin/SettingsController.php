@@ -1,0 +1,252 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use Illuminate\Http\Request;
+
+class SettingsController extends Controller
+{
+    private function authorizeAccess()
+    {
+        // Hanya SuperAdmin yang bisa akses settings sistem
+        if (!auth()->user() || !auth()->user()->isSuperAdmin()) {
+            abort(403, 'Hanya SuperAdmin yang dapat mengakses Pengaturan Sistem.');
+        }
+    }
+
+    /**
+     * Display late fee settings page
+     */
+    public function lateFees()
+    {
+        $this->authorizeAccess();
+        // Get current late fee settings
+        $settings = [
+            'enabled' => Setting::getValue('late_fee_enabled', false),
+            'grace_period' => Setting::getValue('late_fee_grace_period', 3),
+            'amount' => Setting::getValue('late_fee_amount', 0),
+            'type' => Setting::getValue('late_fee_type', 'fixed'),
+        ];
+
+        return view('admin.settings.late-fees', compact('settings'));
+    }
+
+    /**
+     * Update late fee settings
+     */
+    public function updateLateFees(Request $request)
+    {
+        $this->authorizeAccess();
+        $validated = $request->validate([
+            'late_fee_enabled' => 'boolean',
+            'late_fee_grace_period' => 'required|integer|min:0|max:30',
+            'late_fee_amount' => 'required|numeric|min:0',
+            'late_fee_type' => 'required|in:fixed,percentage',
+        ]);
+
+        // Update each setting
+        Setting::setValue('late_fee_enabled', $request->boolean('late_fee_enabled'), 'boolean', 'late_fees');
+        Setting::setValue('late_fee_grace_period', $validated['late_fee_grace_period'], 'integer', 'late_fees');
+        Setting::setValue('late_fee_amount', $validated['late_fee_amount'], 'integer', 'late_fees');
+        Setting::setValue('late_fee_type', $validated['late_fee_type'], 'string', 'late_fees');
+
+        return redirect()
+            ->route('admin.settings.late-fees')
+            ->with('success', 'Pengaturan biaya administrasi berhasil disimpan!');
+    }
+
+    /**
+     * Display general system settings
+     */
+    public function index()
+    {
+        $this->authorizeAccess();
+        
+        // Get all settings grouped by category
+        $settings = Setting::all()->groupBy('group');
+
+        return view('admin.settings.index', compact('settings'));
+    }
+
+    /**
+     * Preview late fee calculation
+     */
+    public function previewLateFee(Request $request)
+    {
+        $this->authorizeAccess();
+        $validated = $request->validate([
+            'bill_amount' => 'required|numeric|min:0',
+            'paid_amount' => 'nullable|numeric|min:0',
+            'days_overdue' => 'required|integer|min:0',
+            'grace_period' => 'required|integer|min:0',
+            'fee_amount' => 'required|numeric|min:0',
+            'fee_type' => 'required|in:fixed,percentage',
+        ]);
+
+        $billAmount = $validated['bill_amount'];
+        $paidAmount = $validated['paid_amount'] ?? 0;
+        $daysOverdue = $validated['days_overdue'];
+        $gracePeriod = $validated['grace_period'];
+        $feeAmount = $validated['fee_amount'];
+        $feeType = $validated['fee_type'];
+
+        // Calculate late fee
+        $lateFee = 0;
+        if ($daysOverdue > $gracePeriod) {
+            $outstanding = $billAmount - $paidAmount;
+            
+            if ($feeType === 'percentage') {
+                $lateFee = ($outstanding * $feeAmount) / 100;
+            } else {
+                $lateFee = $feeAmount;
+            }
+        }
+
+        $totalWithLateFee = $outstanding + $lateFee;
+
+        return response()->json([
+            'bill_amount' => $billAmount,
+            'paid_amount' => $paidAmount,
+            'outstanding' => $outstanding,
+            'days_overdue' => $daysOverdue,
+            'grace_period' => $gracePeriod,
+            'late_fee' => $lateFee,
+            'total_with_late_fee' => $totalWithLateFee,
+            'applicable' => $daysOverdue > $gracePeriod,
+        ]);
+    }
+
+    /**
+     * Display report card predicate settings page
+     */
+    public function reportCards()
+    {
+        $this->authorizeAccess();
+        $settings = Setting::getValue('raport_grade_conversion', []);
+        $showReportCard = Setting::getValue('show_report_card', false);
+        
+        return view('admin.settings.report-cards', compact('settings', 'showReportCard'));
+    }
+
+    /**
+     * Update report card predicate settings
+     */
+    public function updateReportCards(Request $request)
+    {
+        $this->authorizeAccess();
+        
+        $validated = $request->validate([
+            'grade' => 'required|array',
+            'grade.*.mode' => 'required|in:kkm_interval,static',
+            'grade.*.static_a' => 'required|numeric|min:0|max:100',
+            'grade.*.static_b' => 'required|numeric|min:0|max:100',
+            'grade.*.static_c' => 'required|numeric|min:0|max:100',
+            'show_report_card' => 'nullable|boolean',
+        ]);
+
+        Setting::setValue('raport_grade_conversion', $validated['grade'], 'json', 'raport');
+        Setting::setValue('show_report_card', $request->boolean('show_report_card'), 'boolean', 'raport');
+
+        return redirect()
+            ->route('admin.settings.report-cards')
+            ->with('success', 'Pengaturan rapor berhasil disimpan!');
+    }
+
+    /**
+     * Display feature authorization settings page
+     */
+    public function features()
+    {
+        $this->authorizeFeatureAccess();
+
+        $settings = [
+            // Siswa & Orang Tua
+            'show_report_card' => Setting::getValue('show_report_card', true),
+            'siswa_view_attendance_recap' => Setting::getValue('siswa_view_attendance_recap', true),
+            'siswa_view_reputation_leaderboard' => Setting::getValue('siswa_view_reputation_leaderboard', true),
+            'siswa_access_cbt' => Setting::getValue('siswa_access_cbt', true),
+            'siswa_access_lms' => Setting::getValue('siswa_access_lms', true),
+
+            // Guru
+            'guru_can_edit_grades' => Setting::getValue('guru_can_edit_grades', false),
+            'guru_view_reputation_leaderboard' => Setting::getValue('guru_view_reputation_leaderboard', true),
+            'guru_can_see_payroll_details' => Setting::getValue('guru_can_see_payroll_details', true),
+            'guru_access_cbt' => Setting::getValue('guru_access_cbt', true),
+            'guru_access_lms' => Setting::getValue('guru_access_lms', true),
+
+            // Pegawai
+            'pegawai_can_request_leave' => Setting::getValue('pegawai_can_request_leave', true),
+            'pegawai_can_see_payroll_details' => Setting::getValue('pegawai_can_see_payroll_details', true),
+            'pegawai_view_attendance_recap' => Setting::getValue('pegawai_view_attendance_recap', true),
+
+            // WhatsApp Otomatis
+            'wa_send_psb_registration' => Setting::getValue('wa_send_psb_registration', true),
+            'wa_send_psb_payment' => Setting::getValue('wa_send_psb_payment', true),
+            'wa_send_psb_test_schedule' => Setting::getValue('wa_send_psb_test_schedule', true),
+            'wa_send_psb_acceptance' => Setting::getValue('wa_send_psb_acceptance', true),
+            'wa_send_payment_reminder' => Setting::getValue('wa_send_payment_reminder', true),
+            'wa_send_lms_notification' => Setting::getValue('wa_send_lms_notification', true),
+            'wa_send_counseling_record' => Setting::getValue('wa_send_counseling_record', true),
+            'wa_send_reputation_award' => Setting::getValue('wa_send_reputation_award', true),
+            'wa_send_payment_receipt' => Setting::getValue('wa_send_payment_receipt', true),
+            'wa_send_teaching_reminder' => Setting::getValue('wa_send_teaching_reminder', true),
+            'wa_send_grade_published' => Setting::getValue('wa_send_grade_published', true),
+            'wa_send_attendance_alert' => Setting::getValue('wa_send_attendance_alert', true),
+        ];
+
+        return view('admin.settings.features', compact('settings'));
+    }
+
+    /**
+     * Update feature authorization settings
+     */
+    public function updateFeatures(Request $request)
+    {
+        $this->authorizeFeatureAccess();
+
+        $featureKeys = [
+            'show_report_card',
+            'siswa_view_attendance_recap',
+            'siswa_view_reputation_leaderboard',
+            'siswa_access_cbt',
+            'siswa_access_lms',
+            'guru_can_edit_grades',
+            'guru_view_reputation_leaderboard',
+            'guru_can_see_payroll_details',
+            'guru_access_cbt',
+            'guru_access_lms',
+            'pegawai_can_request_leave',
+            'pegawai_can_see_payroll_details',
+            'pegawai_view_attendance_recap',
+            'wa_send_psb_registration',
+            'wa_send_psb_payment',
+            'wa_send_psb_test_schedule',
+            'wa_send_psb_acceptance',
+            'wa_send_payment_reminder',
+            'wa_send_lms_notification',
+            'wa_send_counseling_record',
+            'wa_send_reputation_award',
+            'wa_send_payment_receipt',
+            'wa_send_teaching_reminder',
+            'wa_send_grade_published',
+            'wa_send_attendance_alert',
+        ];
+
+        foreach ($featureKeys as $key) {
+            Setting::setValue($key, $request->boolean($key), 'boolean', 'features');
+        }
+
+        return redirect()
+            ->route('admin.settings.features')
+            ->with('success', 'Otorisasi fitur berhasil diperbarui!');
+    }
+
+    private function authorizeFeatureAccess()
+    {
+        if (!auth()->user() || (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdminSekolah())) {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengelola Otorisasi Fitur.');
+        }
+    }
+}

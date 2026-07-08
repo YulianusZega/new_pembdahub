@@ -1,0 +1,118 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\Student;
+use App\Models\User;
+use Illuminate\Auth\Access\Response;
+
+class StudentPolicy
+{
+    /**
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(User $user): bool
+    {
+        // SuperAdmin, Admin Sekolah, Guru, dan Kepala Sekolah dapat melihat daftar siswa
+        return in_array($user->role, ['superadmin', 'admin_sekolah', 'kepala_sekolah', 'guru']);
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, Student $student): bool
+    {
+        // SuperAdmin, Admin Sekolah, Kepala Sekolah, Guru dapat melihat detail siswa
+        if (in_array($user->role, ['superadmin', 'admin_sekolah', 'kepala_sekolah', 'guru'])) {
+            return true;
+        }
+
+        // Siswa hanya bisa melihat data dirinya sendiri
+        if ($user->role === 'siswa') {
+            return $student->user_id === $user->id;
+        }
+
+        // Orang tua bisa melihat data anaknya
+        if ($user->role === 'orang_tua') {
+            return $student->parents()->where('user_id', $user->id)->exists();
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        // SuperAdmin dan Admin Sekolah bisa menambah siswa
+        return in_array($user->role, ['superadmin', 'admin_sekolah']);
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, Student $student): bool
+    {
+        // SuperAdmin dan Admin Sekolah bisa update semua siswa
+        if (in_array($user->role, ['superadmin', 'admin_sekolah'])) {
+            return true;
+        }
+
+        // Siswa bisa update data dirinya sendiri (terbatas)
+        if ($user->role === 'siswa') {
+            return $student->user_id === $user->id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, Student $student): bool
+    {
+        if ($user->role === 'superadmin') {
+            return true;
+        }
+
+        // Admin Sekolah bisa menghapus siswa dari sekolahnya sendiri
+        if ($user->role === 'admin_sekolah') {
+            return $user->school_id === $student->school_id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, Student $student): bool
+    {
+        return $user->role === 'superadmin';
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, Student $student): bool
+    {
+        return $user->role === 'superadmin';
+    }
+
+    /**
+     * Determine whether the user can import students.
+     */
+    public function import(User $user): bool
+    {
+        return in_array($user->role, ['superadmin', 'admin_sekolah']);
+    }
+
+    /**
+     * Determine whether the user can export students.
+     */
+    public function export(User $user): bool
+    {
+        return in_array($user->role, ['superadmin', 'admin_sekolah', 'kepala_sekolah', 'guru']);
+    }
+}

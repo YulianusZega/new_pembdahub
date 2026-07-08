@@ -1,0 +1,158 @@
+@extends('layouts.admin')
+@section('title', 'Hasil Ujian - ' . $exam->exam_title)
+@section('content')
+<div class="space-y-8">
+    {{-- Hero Header --}}
+    <div class="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-green-600 to-teal-700 rounded-2xl p-8 text-white">
+        <div class="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -mb-12 -ml-12 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+        <div class="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div class="flex items-center gap-5">
+                <a href="{{ route('admin.cbt.show', $exam) }}" class="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center hover:bg-white/25 transition border border-gray-200">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">Hasil Ujian</h1>
+                    <p class="text-emerald-50 mt-1 text-base">{{ $exam->exam_title }} — {{ $exam->subject->subject_name ?? $exam->subject->name ?? '-' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Stats Cards --}}
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
+        <div class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-5 text-center hover:shadow-lg hover:border-blue-200 transition-all duration-300">
+            <div class="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <i class="fas fa-users text-blue-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-gray-900">{{ $statistics['completed_count'] ?? 0 }}</div>
+            <div class="text-base text-gray-700 mt-1">Peserta Selesai</div>
+        </div>
+        <div class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-5 text-center hover:shadow-lg hover:border-indigo-200 transition-all duration-300">
+            <div class="w-11 h-11 rounded-xl bg-indigo-100 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <i class="fas fa-calculator text-indigo-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-blue-600">{{ number_format($statistics['average_score'] ?? 0, 1) }}</div>
+            <div class="text-base text-gray-700 mt-1">Rata-rata</div>
+        </div>
+        <div class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-5 text-center hover:shadow-lg hover:border-emerald-200 transition-all duration-300">
+            <div class="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <i class="fas fa-arrow-up text-emerald-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-emerald-600">{{ number_format($statistics['highest_score'] ?? 0, 1) }}</div>
+            <div class="text-base text-gray-700 mt-1">Tertinggi</div>
+        </div>
+        <div class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-5 text-center hover:shadow-lg hover:border-green-200 transition-all duration-300">
+            <div class="w-11 h-11 rounded-xl bg-green-100 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <i class="fas fa-trophy text-green-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-green-600">{{ $statistics['passed_count'] ?? 0 }}</div>
+            <div class="text-base text-gray-700 mt-1">Lulus (≥{{ $exam->passing_score }})</div>
+        </div>
+        <div class="group bg-white rounded-2xl shadow-sm border border-gray-200 p-5 text-center hover:shadow-lg hover:border-red-200 transition-all duration-300">
+            <div class="w-11 h-11 rounded-xl bg-red-100 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <i class="fas fa-times-circle text-red-600"></i>
+            </div>
+            <div class="text-3xl font-bold text-red-600">{{ $statistics['failed_count'] ?? 0 }}</div>
+            <div class="text-base text-gray-700 mt-1">Tidak Lulus</div>
+        </div>
+    </div>
+
+    {{-- Pass Rate Bar --}}
+    @php $passRate = $statistics['pass_rate'] ?? 0; @endphp
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-5">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-base font-bold text-gray-700">Tingkat Kelulusan</span>
+            <span class="text-base font-bold {{ $passRate >= 70 ? 'text-emerald-600' : ($passRate >= 50 ? 'text-amber-600' : 'text-red-600') }}">{{ number_format($passRate, 1) }}%</span>
+        </div>
+        <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+            <div class="h-3 rounded-full transition-all duration-1000 {{ $passRate >= 70 ? 'bg-gradient-to-r from-emerald-400 to-green-500' : ($passRate >= 50 ? 'bg-gradient-to-r from-amber-400 to-orange-500' : 'bg-gradient-to-r from-red-400 to-rose-500') }}" style="width: {{ min(100, $passRate) }}%"></div>
+        </div>
+    </div>
+
+    {{-- Results Table --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-base">
+                <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr class="bg-gradient-to-r from-gray-50 to-gray-100/80 border-b border-gray-200">
+                        <th class="px-5 py-4 text-center text-base font-bold text-gray-700 uppercase tracking-wider w-16">Rank</th>
+                        <th class="px-5 py-4 text-left text-base font-bold text-gray-700 uppercase tracking-wider">Siswa</th>
+                        <th class="px-5 py-4 text-left text-base font-bold text-gray-700 uppercase tracking-wider">Kelas</th>
+                        <th class="px-5 py-4 text-center text-base font-bold text-gray-700 uppercase tracking-wider">Benar</th>
+                        <th class="px-5 py-4 text-center text-base font-bold text-gray-700 uppercase tracking-wider">Salah</th>
+                        <th class="px-5 py-4 text-center text-base font-bold text-gray-700 uppercase tracking-wider">Skor</th>
+                        <th class="px-5 py-4 text-center text-base font-bold text-gray-700 uppercase tracking-wider">Predikat</th>
+                        <th class="px-5 py-4 text-center text-base font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @forelse($results as $result)
+                    <tr class="hover:bg-gray-50/50 transition-colors duration-150 {{ $result->final_score < $exam->passing_score ? 'bg-red-50/30' : '' }}">
+                        <td class="px-5 py-4 text-center">
+                            @if(($result->rank ?? 99) <= 3)
+                            <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl font-bold text-white text-base shadow-sm {{ $result->rank == 1 ? 'bg-gradient-to-br from-yellow-400 to-amber-500' : ($result->rank == 2 ? 'bg-gradient-to-br from-gray-300 to-gray-400' : 'bg-gradient-to-br from-amber-600 to-amber-700') }}">
+                                {{ $result->rank }}
+                            </span>
+                            @else
+                            <span class="text-gray-700 font-semibold">{{ $result->rank ?? '-' }}</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-user text-violet-500 text-base"></i>
+                                </div>
+                                <span class="font-semibold text-gray-900">{{ $result->student->full_name ?? '-' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 text-gray-800">{{ $result->student->classroom?->class_name ?? '-' }}</td>
+                        <td class="px-5 py-4 text-center"><span class="font-bold text-emerald-600">{{ $result->correct_answers }}</span></td>
+                        <td class="px-5 py-4 text-center"><span class="font-bold text-red-500">{{ $result->wrong_answers }}</span></td>
+                        <td class="px-5 py-4 text-center">
+                            <span class="text-lg font-bold {{ $result->final_score >= $exam->passing_score ? 'text-emerald-600' : 'text-red-600' }}">
+                                {{ number_format($result->final_score, 1) }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-4 text-center">
+                            @php $predColor = match($result->predicate) {
+                                'A' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                'B' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                'C' => 'bg-amber-100 text-amber-800 border-amber-200',
+                                default => 'bg-red-50 text-red-700 border-red-200',
+                            }; @endphp
+                            <span class="inline-flex items-center justify-center px-3 py-1 rounded-lg text-base font-bold border {{ $predColor }}">
+                                {{ $result->predicate }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-4 text-center">
+                            @if($result->is_passed)
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 text-base font-bold rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                <i class="fas fa-check text-base"></i>LULUS
+                            </span>
+                            @else
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 text-base font-bold rounded-lg bg-red-50 text-red-700 border border-red-200">
+                                <i class="fas fa-times text-base"></i>TIDAK LULUS
+                            </span>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="px-6 py-16 text-center">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mb-4"><i class="fas fa-chart-bar text-2xl text-emerald-300"></i></div>
+                                <p class="text-gray-700 font-medium">Belum ada hasil ujian</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        @if($results->hasPages())
+        <div class="px-6 py-4 border-t border-gray-200 bg-gray-50/50">{{ $results->links() }}</div>
+        @endif
+    </div>
+</div>
+@endsection

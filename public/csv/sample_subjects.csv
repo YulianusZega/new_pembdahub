@@ -1,0 +1,2 @@
+school_id,major_id,subject_code,subject_name,description,kkm,is_active
+1,1,MATH,Matematika,Bahasan dasar matematika,75,1

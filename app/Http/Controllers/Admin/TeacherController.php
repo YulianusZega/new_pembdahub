@@ -1,0 +1,340 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreTeacherRequest;
+use App\Http\Requests\Admin\UpdateTeacherRequest;
+use App\Models\Teacher;
+use App\Models\School;
+use App\Models\User;
+use App\Models\Subject;
+use App\Models\AcademicYear;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+
+class TeacherController extends Controller
+{
+    public function index(Request $request)
+    {
+        $user = auth()->user();
+        $activeYear = AcademicYear::where('is_active', true)->first();
+        $query = Teacher::with(['school', 'user', 'employee.activePositions' => function ($q) use ($activeYear) {
+                if ($activeYear) {
+                    $q->wherePivot('academic_year_id', $activeYear->id);
+                }
+            }, 'competentSubjects', 'subjects'])
+            ->select('teachers.*')
+            ->addSelect(['min_position_level' => function ($q) use ($activeYear) {
+                $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
+                    ->from('employee_positions')
+                    ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
+                    ->whereColumn('employee_positions.employee_id', 'teachers.employee_id')
+                    ->when($activeYear, fn($qy) => $qy->where('employee_positions.academic_year_id', $activeYear->id))
+                    ->whereNull('employee_positions.end_date');
+            }])
+            ->orderBy('min_position_level', 'asc')
+            ->orderBy('full_name', 'asc');
+
+        // Auto-filter by school_id for non-superadmin
+        if (!$user->isSuperAdmin()) {
+            $query->where('school_id', $user->school_id);
+        }
+
+        // Filter by school (only for superadmin)
+        if ($request->filled('school_id') && $user->isSuperAdmin()) {
+            $query->where('school_id', $request->school_id);
+        }
+
+        // Filter by status
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->is_active);
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('teacher_code', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $teachers = $query->paginate(15)->withQueryString();
+        
+        // Schools dropdown: superadmin sees all, admin sekolah sees only their school
+        $schools = $user->isSuperAdmin() 
+            ? School::where('is_active', 1)->schoolsOnly()->get()
+            : School::where('id', $user->school_id)->get();
+
+        return view('admin.teachers.index', compact('teachers', 'schools'));
+    }
+
+    public function create()
+    {
+        $schools = School::where('is_active', 1)->schoolsOnly()->get();
+        $subjects = Subject::where('is_active', 1)->get();
+        
+        return view('admin.teachers.create', compact('schools', 'subjects'));
+    }
+
+    public function store(StoreTeacherRequest $request)
+    {
+        $validated = $request->validated();
+
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('teachers', 'public');
+            $validated['photo'] = $photoPath;
+        }
+
+        try {
+            return DB::transaction(function () use ($request, $validated) {
+                // Create user account if requested
+                $userId = null;
+                if ($request->create_account && $request->email) {
+                    $user = User::create([
+                        'name' => $validated['full_name'],
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'role' => 'guru',
+                        'school_id' => $validated['school_id'],
+                        'is_active' => $validated['is_active'] ?? 1,
+                    ]);
+                    $userId = $user->id;
+                }
+
+                // Create Employee first
+                $employee = \App\Models\Employee::create([
+                    'school_id' => $validated['school_id'],
+                    'user_id' => $userId,
+                    'employee_code' => $validated['teacher_code'],
+                    'full_name' => $validated['full_name'],
+                    'gender' => $validated['gender'],
+                    'birth_place' => $validated['birth_place'] ?? null,
+                    'birth_date' => $validated['birth_date'] ?? null,
+                    'religion' => $validated['religion'] ?? null,
+                    'address' => $validated['address'] ?? null,
+                    'phone' => $validated['phone'] ?? null,
+                    'email' => $validated['email_employee'] ?? null,
+                    'photo' => $validated['photo'] ?? null,
+                    'employee_type' => 'guru',
+                    'employment_status' => $validated['employment_status'],
+                    'marital_status' => $validated['marital_status'],
+                    'children_count' => $validated['children_count'] ?? 0,
+                    'tmt_date' => $validated['tmt_date'],
+                    'basic_salary' => $validated['basic_salary'] ?? 0,
+                    'is_active' => $request->has('is_active') ? 1 : 0,
+                ]);
+
+                // Create Teacher
+                Teacher::create([
+                    'employee_id' => $employee->id,
+                    'user_id' => $userId,
+                    'school_id' => $validated['school_id'],
+                    'teacher_code' => $validated['teacher_code'],
+                    'full_name' => $validated['full_name'],
+                    'gender' => $validated['gender'],
+                    'education_level' => $validated['education_level'] ?? null,
+                    'major' => $validated['major'] ?? null,
+                    'birth_place' => $validated['birth_place'] ?? null,
+                    'birth_date' => $validated['birth_date'] ?? null,
+                    'religion' => $validated['religion'] ?? null,
+                    'address' => $validated['address'] ?? null,
+                    'phone' => $validated['phone'] ?? null,
+                    'photo' => $validated['photo'] ?? null,
+                    'position' => null,
+                    'is_active' => $request->has('is_active') ? 1 : 0,
+                ]);
+
+                return redirect()->route('admin.teachers.index')
+                    ->with('success', 'Data guru berhasil ditambahkan.');
+            });
+        } catch (\Exception $e) {
+            // Clean up uploaded photo on failure
+            if (isset($validated['photo'])) {
+                Storage::disk('public')->delete($validated['photo']);
+            }
+            Log::error('Gagal menambahkan guru: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Gagal menambahkan guru. Silakan coba lagi.');
+        }
+    }
+
+    public function show(Teacher $teacher, Request $request)
+    {
+        $activeYear = AcademicYear::where('is_active', true)->first();
+        $teacher->load(['school', 'user', 'employee.activePositions' => function ($q) use ($activeYear) {
+            if ($activeYear) {
+                $q->wherePivot('academic_year_id', $activeYear->id);
+            }
+        }, 'subjects', 'schedules.classroom', 'schedules.subject', 'competentSubjects']);
+        $returnUrl = $request->query('return_url');
+        
+        return view('admin.teachers.show', compact('teacher', 'returnUrl'));
+    }
+
+    public function edit(Teacher $teacher, Request $request)
+    {
+        $schools = School::where('is_active', 1)->schoolsOnly()->get();
+        $subjects = Subject::where('is_active', 1)->get();
+        
+        // Load employee relationship
+        $teacher->load('employee');
+        $returnUrl = $request->query('return_url');
+        
+        return view('admin.teachers.edit', compact('teacher', 'schools', 'subjects', 'returnUrl'));
+    }
+
+    public function update(UpdateTeacherRequest $request, Teacher $teacher)
+    {
+        $validated = $request->validated();
+
+        // Handle photo removal
+        if ($request->remove_photo && $teacher->photo) {
+            Storage::disk('public')->delete($teacher->photo);
+            $validated['photo'] = null;
+        }
+
+        // Handle photo upload
+        if ($request->hasFile('photo')) {
+            if ($teacher->photo) {
+                Storage::disk('public')->delete($teacher->photo);
+            }
+            $photoPath = $request->file('photo')->store('teachers', 'public');
+            $validated['photo'] = $photoPath;
+        }
+
+        $isActive = $request->has('is_active') ? 1 : 0;
+
+        try {
+            return DB::transaction(function () use ($validated, $teacher, $isActive, $request) {
+                // Update Employee
+                $teacher->employee->update([
+                    'school_id' => $validated['school_id'],
+                    'employee_code' => $validated['teacher_code'],
+                    'full_name' => $validated['full_name'],
+                    'gender' => $validated['gender'],
+                    'birth_place' => $validated['birth_place'] ?? null,
+                    'birth_date' => $validated['birth_date'] ?? null,
+                    'religion' => $validated['religion'] ?? null,
+                    'address' => $validated['address'] ?? null,
+                    'phone' => $validated['phone'] ?? null,
+                    'email' => $validated['email_employee'] ?? null,
+                    'photo' => $validated['photo'] ?? $teacher->photo,
+                    'employment_status' => $validated['employment_status'],
+                    'marital_status' => $validated['marital_status'],
+                    'children_count' => $validated['children_count'] ?? 0,
+                    'tmt_date' => $validated['tmt_date'],
+                    'basic_salary' => $validated['basic_salary'] ?? 0,
+                    'is_active' => $isActive,
+                ]);
+
+                // Update Teacher
+                $teacher->update([
+                    'school_id' => $validated['school_id'],
+                    'teacher_code' => $validated['teacher_code'],
+                    'full_name' => $validated['full_name'],
+                    'gender' => $validated['gender'],
+                    'education_level' => $validated['education_level'] ?? null,
+                    'major' => $validated['major'] ?? null,
+                    'birth_place' => $validated['birth_place'] ?? null,
+                    'birth_date' => $validated['birth_date'] ?? null,
+                    'religion' => $validated['religion'] ?? null,
+                    'address' => $validated['address'] ?? null,
+                    'phone' => $validated['phone'] ?? null,
+                    'photo' => $validated['photo'] ?? $teacher->photo,
+                    'is_active' => $isActive,
+                ]);
+
+                // Update user if exists
+                if ($teacher->user) {
+                    $teacher->user->update([
+                        'name' => $validated['full_name'],
+                        'is_active' => $isActive,
+                    ]);
+                }
+
+                if ($request->filled('return_url')) {
+                    return redirect($request->return_url)
+                        ->with('success', 'Data guru berhasil diperbarui.');
+                }
+
+                return redirect()->route('admin.teachers.index')
+                    ->with('success', 'Data guru berhasil diperbarui.');
+            });
+        } catch (\Exception $e) {
+            Log::error('Gagal memperbarui guru: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Gagal memperbarui guru. Silakan coba lagi.');
+        }
+    }
+
+    public function destroy(Teacher $teacher)
+    {
+        try {
+            return DB::transaction(function () use ($teacher) {
+                // Delete photo
+                if ($teacher->photo) {
+                    Storage::disk('public')->delete($teacher->photo);
+                }
+
+                // Delete associated employee & employee positions
+                if ($teacher->employee_id) {
+                    $employee = \App\Models\Employee::find($teacher->employee_id);
+                    if ($employee) {
+                        $employee->employeePositions()->delete();
+                        $employee->delete();
+                    }
+                }
+
+                // Delete associated user account
+                if ($teacher->user_id) {
+                    User::find($teacher->user_id)?->delete();
+                }
+
+                $teacher->delete();
+
+                return redirect()->route('admin.teachers.index')
+                    ->with('success', 'Data guru berhasil dihapus.');
+            });
+        } catch (\Exception $e) {
+            Log::error('Gagal menghapus guru: ' . $e->getMessage());
+            return back()->with('error', 'Gagal menghapus guru. Silakan coba lagi.');
+        }
+    }
+
+    public function updateRfid(Request $request, Teacher $teacher)
+    {
+        $user = auth()->user();
+        if (!$user->isSuperAdmin() && $user->school_id !== $teacher->school_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $employee = $teacher->employee;
+        if (!$employee) {
+            return redirect()->back()->with('error', 'Pegawai tidak ditemukan untuk guru ini.');
+        }
+
+        $request->validate([
+            'rfid_uid' => [
+                'required',
+                'string',
+                'max:50',
+                'unique:employees,rfid_uid,' . $employee->id,
+                'unique:students,rfid_uid',
+            ]
+        ], [
+            'rfid_uid.unique' => 'Kartu RFID ini sudah terdaftar untuk pengguna lain.'
+        ]);
+
+        $employee->update([
+            'rfid_uid' => strtoupper(trim($request->rfid_uid))
+        ]);
+
+        return redirect()->back()->with('success', "RFID UID berhasil didaftarkan untuk guru {$teacher->full_name}.");
+    }
+}
+

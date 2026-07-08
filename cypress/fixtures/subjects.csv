@@ -1,0 +1,3 @@
+school_id,major_id,subject_code,subject_name,description,kkm,is_active
+1,,MATH,Matematika,Basic math,75,1
+1,,PHYS,Fisika Dasar,Basic physics,75,1

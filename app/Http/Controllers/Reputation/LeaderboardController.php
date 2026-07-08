@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Controllers\Reputation;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Reputation;
+use App\Models\Badge;
+
+class LeaderboardController extends Controller
+{
+    /**
+     * Show global leaderboard (Hall of Fame)
+     */
+    public function index()
+    {
+        $user = auth()->user();
+        if ($user) {
+            if (($user->isSiswa() || $user->isOrangTua()) && !\App\Models\Setting::getValue('siswa_view_reputation_leaderboard', true)) {
+                abort(403, 'Akses Papan Peringkat (Hall of Fame) telah dinonaktifkan oleh administrator.');
+            }
+            if ($user->isGuru() && !\App\Models\Setting::getValue('guru_view_reputation_leaderboard', true)) {
+                abort(403, 'Akses Papan Peringkat (Hall of Fame) telah dinonaktifkan oleh administrator.');
+            }
+        }
+
+        $topStudents = Reputation::with(['user.student.classroom', 'user.badges'])
+            ->whereHas('user', function($q) {
+                $q->where('role', 'siswa');
+            })
+            ->orderBy('total_points', 'desc')
+            ->take(7)
+            ->get();
+
+        $topTeachers = Reputation::with(['user.teacher', 'user.badges'])
+            ->whereHas('user', function($q) {
+                $q->where('role', 'guru');
+            })
+            ->orderBy('total_points', 'desc')
+            ->take(5)
+            ->get();
+
+        $userRanking = null;
+        if (auth()->check()) {
+            $userRanking = Reputation::where('total_points', '>', auth()->user()->reputation?->total_points ?? 0)
+                ->count() + 1;
+        }
+
+        return view('reputation.leaderboard', compact('topStudents', 'topTeachers', 'userRanking'));
+    }
+}

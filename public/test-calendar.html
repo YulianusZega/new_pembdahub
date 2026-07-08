@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,multiMonthSemester,multiMonthYear,listMonth'
+                },
+                validRange: {
+                    start: '2026-07-13',
+                    end: '2027-07-01'
+                },
+                views: {
+                    multiMonthSemester: {
+                        type: 'multiMonthYear',
+                        duration: { months: 6 },
+                        buttonText: 'semester'
+                    },
+                    multiMonthYear: {
+                        buttonText: 'year'
+                    }
+                }
+            });
+            calendar.render();
+        });
+    </script>
+</head>
+<body>
+    <div id='calendar'></div>
+</body>
+</html>

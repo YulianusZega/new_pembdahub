@@ -1,0 +1,24 @@
+# Temporary MySQL configuration to reduce disk usage
+# Add these lines to your my.ini or my.cnf file
+
+[mysqld]
+# Reduce temporary table size
+tmp_table_size = 16M
+max_heap_table_size = 16M
+
+# Reduce sort buffer size
+sort_buffer_size = 256K
+read_buffer_size = 128K
+read_rnd_buffer_size = 256K
+
+# Reduce join buffer size
+join_buffer_size = 128K
+
+# Set temporary directory to a drive with more space (if possible)
+# tmpdir = D:/temp
+
+# Reduce query cache size
+query_cache_size = 0
+query_cache_type = 0
+
+# Note: Restart MySQL service after making these changes

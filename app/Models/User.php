@@ -1,0 +1,376 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use App\Traits\LogsActivity;
+
+class User extends Authenticatable
+{
+    use HasFactory, Notifiable, LogsActivity;
+
+    protected $fillable = [
+        'name',
+        'username',
+        'email',
+        'password',
+        'role',
+        'school_id',
+        'is_active',
+        'last_login',
+        'must_change_password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'last_login' => 'datetime',
+        'must_change_password' => 'boolean',
+    ];
+
+    /**
+     * Relationship: User belongs to School
+     */
+    public function school()
+    {
+        return $this->belongsTo(School::class);
+    }
+
+    /**
+     * Relationship: User dapat menjadi Guru
+     */
+    public function teacher()
+    {
+        return $this->hasOne(Teacher::class);
+    }
+
+    /**
+     * Relationship: User dapat menjadi Siswa
+     */
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
+    /**
+     * Relationship: User dapat menjadi Orang Tua
+     */
+    public function parents()
+    {
+        return $this->hasMany(ParentModel::class);
+    }
+
+    /**
+     * Relationship: Activity logs
+     */
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    /**
+     * Relationship: Login history
+     */
+    public function loginHistory()
+    {
+        return $this->hasMany(LoginHistory::class);
+    }
+
+    /**
+     * Relationship: Messages sent
+     */
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    /**
+     * Relationship: Messages received
+     */
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'recipient_id');
+    }
+
+    /**
+     * Relationship: Notifications
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
+     * Relationship: Reputation standing
+     */
+    public function reputation()
+    {
+        return $this->hasOne(Reputation::class);
+    }
+
+    /**
+     * Relationship: Reputation point logs
+     */
+    public function reputationLogs()
+    {
+        return $this->hasMany(ReputationLog::class);
+    }
+
+    /**
+     * Relationship: Earned badges
+     */
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'user_badges')
+                    ->withPivot('earned_at');
+    }
+
+    /**
+     * Check if user has specific role
+     */
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
+
+    /**
+     * Check if user has any of the specified roles
+     */
+    public function hasAnyRole(array $roles): bool
+    {
+        if (in_array($this->role, $roles)) {
+            return true;
+        }
+        
+        // Cek jabatan dinamis
+        if (in_array('kepala_sekolah', $roles) && $this->isKepalaSekolah()) {
+            return true;
+        }
+        
+        if (in_array('bendahara', $roles) && $this->isBendahara()) {
+            return true;
+        }
+
+        if (in_array('panitia_cbt', $roles) && $this->isPanitiaCbt()) {
+            return true;
+        }
+
+        if (in_array('panitia_pkl', $roles) && $this->isPanitiaPkl()) {
+            return true;
+        }
+
+        if (in_array('panitia_ta', $roles) && $this->isPanitiaProyek()) {
+            return true;
+        }
+
+        if ((in_array('pks', $roles) || in_array('piket', $roles)) && $this->isPksOrPiket()) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Check if user is SuperAdmin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('superadmin');
+    }
+
+    /**
+     * Check if user is Admin Sekolah
+     */
+    public function isAdminSekolah(): bool
+    {
+        return $this->hasRole('admin_sekolah');
+    }
+
+    /**
+     * Check if user is Kepala Sekolah
+     * Bisa dari role eksplisit 'kepala_sekolah' atau dari penunjukan struktural di tabel schools
+     */
+    public function isKepalaSekolah(): bool
+    {
+        if ($this->hasRole('kepala_sekolah')) {
+            return true;
+        }
+
+        if ($this->teacher) {
+            return School::where('principal_id', $this->teacher->id)
+                         ->where('type', '!=', 'YAYASAN')
+                         ->exists();
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user is Guru
+     */
+    public function isGuru(): bool
+    {
+        return $this->hasRole('guru');
+    }
+
+    /**
+     * Check if user is Siswa
+     */
+    public function isSiswa(): bool
+    {
+        return $this->hasRole('siswa');
+    }
+
+    /**
+     * Check if user is Orang Tua
+     */
+    public function isOrangTua(): bool
+    {
+        return $this->hasRole('orang_tua');
+    }
+
+    /**
+     * Check if user is Ketua Yayasan (Foundation Chairman)
+     */
+    public function isKetuaYayasan(): bool
+    {
+        return $this->hasRole('ketua_yayasan');
+    }
+
+    /**
+     * Check if user is Bendahara (Treasurer)
+     */
+    public function isBendahara(): bool
+    {
+        return $this->hasRole('bendahara');
+    }
+
+    /**
+     * Check if user is a homeroom teacher (wali kelas)
+     */
+    public function isHomeroomTeacher(): bool
+    {
+        if (!$this->isGuru() || !$this->teacher) {
+            return false;
+        }
+        
+        return Classroom::where('homeroom_teacher_id', $this->teacher->id)->exists();
+    }
+
+    /**
+     * Helper untuk mengecek apakah guru memiliki tugas tambahan / kepanitiaan tertentu
+     */
+    public function hasSpecialDuty(array $keywords): bool
+    {
+        if (!$this->employee) {
+            return false;
+        }
+        
+        return $this->employee->activePositions()->where(function ($query) use ($keywords) {
+            foreach ($keywords as $keyword) {
+                $query->orWhere('positions.position_code', 'like', "%{$keyword}%")
+                      ->orWhere('positions.position_name', 'like', "%{$keyword}%");
+            }
+        })->exists();
+    }
+
+    public function isPanitiaCbt(): bool
+    {
+        return $this->hasRole('panitia_cbt') || $this->hasSpecialDuty(['CBT']);
+    }
+
+    public function isPanitiaPkl(): bool
+    {
+        return $this->hasRole('panitia_pkl') || $this->hasSpecialDuty(['PKL', 'HUBIN']);
+    }
+
+    public function isPanitiaProyek(): bool
+    {
+        return $this->hasRole('panitia_ta') || $this->hasSpecialDuty(['PROYEK', 'TA', 'TUGAS AKHIR', 'TUGAS-AKHIR']);
+    }
+
+    public function isPksOrPiket(): bool
+    {
+        return $this->hasRole('pks') || $this->hasRole('piket') || $this->hasSpecialDuty(['PKS', 'PIKET', 'DISIPLIN', 'BK']);
+    }
+
+    /**
+     * Get classrooms where user is homeroom teacher
+     * Returns a Collection of Classroom models
+     */
+    public function homeroomClassrooms()
+    {
+        if (!$this->isGuru() || !$this->teacher) {
+            return collect([]);
+        }
+        
+        return Classroom::where('homeroom_teacher_id', $this->teacher->id)
+            ->where('is_active', true)
+            ->get();
+    }
+
+    /**
+     * Check if user is active
+     */
+    public function isActive(): bool
+    {
+        return $this->is_active === true;
+    }
+
+    /**
+     * Update last login timestamp
+     */
+    public function updateLastLogin(): void
+    {
+        $this->update(['last_login' => now()]);
+    }
+
+    /**
+     * Get layout name based on user role
+     */
+    public function getLayoutAttribute(): string
+    {
+        $role = session('active_role', $this->role);
+        
+        return match ($role) {
+            'superadmin', 'admin_sekolah', 'kepala_sekolah' => 'layouts.admin',
+            'guru' => 'layouts.guru',
+            'siswa' => 'layouts.siswa',
+            'orang_tua' => 'layouts.orangtua',
+            'bendahara' => 'layouts.treasurer',
+            'ketua_yayasan' => 'layouts.yayasan',
+            default => 'layouts.app',
+        };
+    }
+
+    /**
+     * Relationship: User has one Employee profile
+     */
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+
+    /**
+     * Accessor: Get URL for user profile photo.
+     */
+    public function getPhotoUrlAttribute(): string
+    {
+        if ($this->student) {
+            return $this->student->photo_url;
+        }
+        if ($this->teacher) {
+            return $this->teacher->photo_url;
+        }
+        if ($this->employee) {
+            return $this->employee->photo_url;
+        }
+        return asset('images/default-student.jpg');
+    }
+}

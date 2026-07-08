@@ -1,0 +1,68 @@
+# Aturan Pengembangan PembdaHUB
+
+## Alur Kerja Git & Deployment
+Setiap kali selesai melakukan pengerjaan fitur, perbaikan bug, atau perubahan kode di lokal:
+1. Pastikan semua perubahan sudah stabil dan diverifikasi.
+2. Lakukan stage (`git add .`), commit, dan **push perubahan ke GitHub** (branch `main`).
+3. Beritahukan pengguna bahwa perubahan sudah berada di GitHub dan siap untuk dideploy oleh pengguna ke hosting.
+
+## Infrastruktur Server Production (Hostinger)
+
+### Struktur Path di Server
+- **Base Path (Laravel root):** `/home/u474310197/domains/perguruanpembda.com/public_html/pembdahub`
+- **Public Path (web root):** `/home/u474310197/domains/perguruanpembda.com/public_html`
+- **APP_URL:** `https://perguruanpembda.com`
+- **APP_ENV:** `production`
+
+### Pemetaan URL → Folder
+- URL `perguruanpembda.com/...` → diarahkan oleh `public_html/.htaccess` ke folder `pembdahub/public/`
+- **Semua route Laravel diakses TANPA prefix `/pembdahub/`**, contoh: `perguruanpembda.com/admin/dashboard`
+- File standalone PHP di `public/` bisa diakses langsung, contoh: `perguruanpembda.com/clear-cache.php`
+- ⚠️ URL `perguruanpembda.com/pembdahub/admin/...` adalah **SALAH** dan akan menghasilkan 404!
+- Penjelasan teknis: Apache merewrite `perguruanpembda.com/admin/...` → `pembdahub/public/admin/...` → `index.php` → Laravel menerima REQUEST_URI `/admin/...` → route cocok
+
+### Keterbatasan Server
+- **TIDAK ADA akses SSH** — semua operasi server harus dilakukan via:
+  - File Manager di hPanel Hostinger
+  - File PHP standalone di folder `public/` yang bisa diakses via browser
+  - Git deploy via hPanel
+- **Tidak bisa menjalankan `php artisan` langsung** — harus via script PHP standalone atau route khusus
+
+## Checklist Wajib Saat Menambah Fitur Baru
+
+### Jika fitur memerlukan perubahan DATABASE (migrasi/seeder):
+1. Buat migration dan seeder seperti biasa
+2. Pastikan ada **route `/run-migrations`** di `routes/web.php` yang bisa menjalankan `artisan migrate --force` dan seeder terkait
+3. Setelah push & deploy, **INGATKAN pengguna** untuk menjalankan migrasi via browser:
+   `https://perguruanpembda.com/run-migrations?secret=pembda99`
+4. Jika route migration juga 404 (karena cache), gunakan file standalone `public/clear-cache.php`
+
+### Jika terjadi error 404 setelah deploy:
+1. **Cek apakah route cache aktif** — jika ya, hapus file `bootstrap/cache/routes-v7.php` via File Manager atau `clear-cache.php`
+2. **Cek apakah tabel database ada** — 404 bisa terjadi karena tabel belum dimigrasi
+3. Gunakan script standalone `public/clear-cache.php?secret=pembda99` untuk diagnostik lengkap (cache, routes, tabel, path)
+4. File standalone PHP di `public/` TIDAK terpengaruh route cache karena langsung dihandle web server
+
+### Tool Darurat yang Tersedia di `public/`:
+- `clear-cache.php` — Hapus cache + diagnostik + jalankan migrasi (akses: `perguruanpembda.com/clear-cache.php?secret=pembda99`)
+- `run_cache_clear.php` — Clear cache saja (akses: `perguruanpembda.com/run_cache_clear.php?token=pembda2026clear`)
+- `check_deploy.php` — Cek status deployment (akses: `perguruanpembda.com/check_deploy.php?token=pembda2026check`)
+
+## ⛔ Larangan Keamanan Data (KRITIS)
+
+### DILARANG Menghapus Tahun Pelajaran (Academic Years)
+- **JANGAN PERNAH** menghapus, drop, atau truncate data di tabel `academic_years` (Tahun Pelajaran/TP)
+- **JANGAN PERNAH** membuat kode/script/migration yang menghapus record TP, termasuk TP yang terlihat "duplikat" atau "kosong"
+- Penghapusan TP akan **menghancurkan seluruh data relasi** (kelas, jadwal, teaching assignments, nilai, absensi, dll) karena cascade foreign key
+- Jika ada masalah dengan data TP (duplikat, salah, dll), **TANYAKAN dulu ke pengguna** sebelum melakukan apapun
+- **Latar belakang:** Pada Juli 2026, penghapusan TP 2026/2027 menyebabkan kehilangan data masif dan harus restore dari backup
+
+### Prinsip Umum Keamanan Data
+- Selalu gunakan `firstOrCreate` / `updateOrCreate` daripada delete-then-insert
+- Jangan buat migration yang men-drop tabel yang sudah berisi data production
+- Jika perlu menghapus data, selalu konfirmasi ke pengguna terlebih dahulu
+- Untuk operasi berbahaya, tambahkan flag `?dry_run=1` agar bisa preview dulu tanpa eksekusi
+
+## Bahasa & Komunikasi
+- Komunikasi dengan pengguna menggunakan **Bahasa Indonesia**
+- Komentar kode boleh dalam Bahasa Indonesia atau Inggris

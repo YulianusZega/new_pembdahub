@@ -1,0 +1,468 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Employee;
+use App\Models\Position;
+use App\Models\School;
+use App\Models\AcademicYear;
+use App\Models\Classroom;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+class PositionAssignmentController extends Controller
+{
+    public function index(Request $request)
+    {
+        $user = auth()->user();
+        
+        // Get academic years for filter
+        $academicYears = AcademicYear::orderBy('start_date', 'desc')->get();
+        $currentYear = AcademicYear::where('is_active', 1)->first();
+        
+        // Default to current academic year
+        $selectedYearId = $request->filled('academic_year_id') 
+            ? $request->academic_year_id 
+            : ($currentYear ? $currentYear->id : null);
+        
+        // Semester is fixed to full_year for position assignments
+        $semester = 'full_year';
+        
+        // Base query - only teachers (employee_type = 'guru')
+        $query = Employee::with(['school', 'employeePositions' => function ($q) use ($selectedYearId) {
+            $q->where('academic_year_id', $selectedYearId);
+            $q->whereNull('end_date'); // Only show active positions
+            $q->with('position');
+        }])
+        ->where('employee_type', 'guru');
+        
+        // Auto-filter by school for non-superadmin
+        if (!$user->isSuperAdmin()) {
+            $query->where('school_id', $user->school_id);
+        }
+        
+        // Filter by school (for superadmin)
+        if ($request->filled('school_id') && $user->isSuperAdmin()) {
+            $query->where('school_id', $request->school_id);
+        }
+        
+        // Search by name or code
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('employee_code', 'like', "%{$search}%");
+            });
+        }
+        
+        $employees = $query->where('is_active', 1)->paginate(15)->withQueryString();
+        
+        // Schools dropdown
+        $schools = $user->isSuperAdmin() 
+            ? School::where('is_active', 1)->schoolsOnly()->get()
+            : School::where('id', $user->school_id)->get();
+        
+        return view('admin.assignments.positions.index', compact(
+            'employees', 
+            'schools', 
+            'academicYears', 
+            'selectedYearId',
+            'semester'
+        ));
+    }
+    
+    public function create(Request $request)
+    {
+        $user = auth()->user();
+        
+        // Get academic years
+        $academicYears = AcademicYear::orderBy('start_date', 'desc')->get();
+        $currentYear = AcademicYear::where('is_active', 1)->first();
+        
+        // Get employee_id from query string or session
+        $employeeId = $request->employee_id;
+        
+        $selectedEmployee = null;
+        if ($employeeId) {
+            $selectedEmployee = Employee::find($employeeId);
+            // Non-superadmin cannot assign positions for employees from other schools
+            if ($selectedEmployee && !$user->isSuperAdmin() && $selectedEmployee->school_id !== $user->school_id) {
+                $selectedEmployee = null;
+            }
+        }
+        
+        // Get teachers based on user role
+        if ($user->isSuperAdmin()) {
+            $teachers = Employee::where('employee_type', 'guru')
+                ->where('is_active', 1)
+                ->with('school')
+                ->orderBy('full_name')
+                ->get();
+        } else {
+            $teachers = Employee::where('employee_type', 'guru')
+                ->where('school_id', $user->school_id)
+                ->where('is_active', 1)
+                ->orderBy('full_name')
+                ->get();
+        }
+        
+        // Get positions grouped by category
+        $positionsQuery = Position::where('is_active', 1);
+
+        if (!$user->isSuperAdmin()) {
+            // Admin Sekolah strictly hanya bisa melihat jabatan unit sekolahnya
+            $positionsQuery->where('school_id', $user->school_id);
+        } else {
+            // Superadmin difilter berdasarkan sekolah karyawan yang dipilih (jika ada)
+            if ($selectedEmployee && $selectedEmployee->school_id) {
+                $positionsQuery->where(function($q) use ($selectedEmployee) {
+                    $q->where('school_id', $selectedEmployee->school_id)
+                      ->orWhereNull('school_id'); // Include global positions
+                });
+            }
+        }
+
+        $positionsQuery->orderBy('position_category')
+            ->orderBy('position_name');
+        
+        $positions = $positionsQuery->get()->groupBy('position_category');
+        
+        // If employee selected, get their current positions for the academic year
+        $currentPositions = [];
+        if ($selectedEmployee && $currentYear) {
+            $currentPositions = $selectedEmployee->employeePositions()
+                ->where('academic_year_id', $currentYear->id)
+                ->pluck('position_id')
+                ->toArray();
+        }
+        
+        // Get classrooms for wali kelas assignment
+        $classrooms = [];
+        if ($selectedEmployee) {
+            $classroomsQuery = Classroom::where('school_id', $selectedEmployee->school_id)
+                ->where('is_active', 1);
+            if ($currentYear) {
+                $classroomsQuery->where('academic_year_id', $currentYear->id);
+            }
+            $classrooms = $classroomsQuery->orderBy('grade_level')
+                ->orderBy('class_name')
+                ->get();
+        }
+        
+        return view('admin.assignments.positions.create', compact(
+            'teachers',
+            'positions',
+            'academicYears',
+            'currentYear',
+            'selectedEmployee',
+            'currentPositions',
+            'classrooms'
+        ));
+    }
+    
+    public function store(Request $request)
+    {
+        $user = auth()->user();
+        
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'positions' => 'required|array|min:1',
+            'positions.*' => 'exists:positions,id',
+            'primary_position_id' => 'required|in:' . implode(',', $request->positions ?? []),
+            'position_start_date' => 'required|date',
+            'sk_number' => 'nullable|string|max:100',
+            'sk_date' => 'nullable|date',
+            'classroom_id' => 'nullable|exists:classrooms,id', // For wali kelas
+        ]);
+        
+        // Check authorization
+        $employee = Employee::findOrFail($validated['employee_id']);
+        if (!$user->isSuperAdmin() && $employee->school_id !== $user->school_id) {
+            abort(403, 'Unauthorized');
+        }
+        
+        DB::beginTransaction();
+        try {
+            $semester = 'full_year';
+
+            // Close existing positions for this academic year
+            $employee->employeePositions()
+                ->where('academic_year_id', $validated['academic_year_id'])
+                ->whereNull('end_date')
+                ->update(['end_date' => now()]);
+            
+            // Attach new positions
+            $positionData = [];
+            foreach ($validated['positions'] as $positionId) {
+                $position = Position::find($positionId);
+                $isWaliKelas = $position && (
+                    stripos($position->position_code, 'WAKEL') !== false || 
+                    stripos($position->position_code, 'WALIKELAS') !== false
+                );
+                
+                $positionData[$positionId] = [
+                    'academic_year_id' => $validated['academic_year_id'],
+                    'semester' => $semester,
+                    'start_date' => $validated['position_start_date'],
+                    'end_date' => null,
+                    'sk_number' => $validated['sk_number'],
+                    'sk_date' => $validated['sk_date'],
+                    'is_primary' => ($positionId == $validated['primary_position_id']),
+                    'classroom_id' => ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            
+            $employee->positions()->attach($positionData);
+            
+            // Check if wali kelas position is assigned
+            $waliKelasPosition = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
+            if ($waliKelasPosition && in_array($waliKelasPosition->id, $validated['positions'])) {
+                // Update classroom's homeroom_teacher_id if classroom is selected
+                if ($request->filled('classroom_id')) {
+                    $classroom = Classroom::find($validated['classroom_id']);
+                    if ($classroom && $classroom->school_id == $employee->school_id) {
+                        $classroom->update(['homeroom_teacher_id' => $employee->teacher->id ?? null]);
+                    }
+                }
+            }
+            
+            DB::commit();
+            
+            return redirect()
+                ->route('admin.assignments.positions.index', [
+                    'academic_year_id' => $validated['academic_year_id'],
+                ])
+                ->with('success', 'Penugasan jabatan berhasil disimpan.');
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Gagal menyimpan penugasan jabatan: ' . $e->getMessage());
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal menyimpan penugasan. Silakan coba lagi.');
+        }
+    }
+    
+    public function edit($employeeId)
+    {
+        $user = auth()->user();
+        $employee = Employee::with(['school', 'teacher'])->findOrFail($employeeId);
+        
+        // Check authorization
+        if (!$user->isSuperAdmin() && $employee->school_id !== $user->school_id) {
+            abort(403, 'Unauthorized');
+        }
+        
+        // Get academic years
+        $academicYears = AcademicYear::orderBy('start_date', 'desc')->get();
+        $currentYear = AcademicYear::where('is_active', 1)->first();
+        
+        // Get positions grouped by category - filtered by school context
+        $positionsQuery = Position::where('is_active', 1);
+
+        if (!$user->isSuperAdmin()) {
+            // Admin Sekolah strictly hanya bisa melihat jabatan unit sekolahnya
+            $positionsQuery->where('school_id', $user->school_id);
+        } else {
+            // Superadmin difilter berdasarkan sekolah karyawan
+            $positionsQuery->where(function($q) use ($employee) {
+                if ($employee->school_id) {
+                    $q->where('school_id', $employee->school_id)
+                      ->orWhereNull('school_id'); // Include global positions
+                } else {
+                    $q->whereNull('school_id'); // Only global if no school
+                }
+            });
+        }
+
+        $positions = $positionsQuery->orderBy('position_category')
+            ->orderBy('position_name')
+            ->get()
+            ->groupBy('position_category');
+        
+        // Get current positions for current academic year
+        $currentPositions = [];
+        $currentAssignment = null;
+        if ($currentYear) {
+            $assignments = $employee->employeePositions()
+                ->where('academic_year_id', $currentYear->id)
+                ->whereNull('end_date') // Only show active positions
+                ->with('position')
+                ->get();
+            
+            if ($assignments->isNotEmpty()) {
+                $currentAssignment = $assignments->first();
+                $currentPositions = $assignments->pluck('position_id')->toArray();
+            }
+        }
+        
+        // Get classrooms for wali kelas
+        $classroomsQuery = Classroom::where('school_id', $employee->school_id)
+            ->where('is_active', 1);
+        if ($currentYear) {
+            $classroomsQuery->where('academic_year_id', $currentYear->id);
+        }
+        $classrooms = $classroomsQuery->orderBy('grade_level')
+            ->orderBy('class_name')
+            ->get();
+        
+        // Get current classroom if wali kelas
+        $currentClassroom = null;
+        if ($employee->teacher) {
+            $currentClassroom = Classroom::where('homeroom_teacher_id', $employee->teacher->id)->first();
+        }
+        
+        return view('admin.assignments.positions.edit', compact(
+            'employee',
+            'positions',
+            'academicYears',
+            'currentYear',
+            'currentPositions',
+            'currentAssignment',
+            'classrooms',
+            'currentClassroom'
+        ));
+    }
+    
+    public function update(Request $request, $employeeId)
+    {
+        $user = auth()->user();
+        
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:employees,id',
+            'academic_year_id' => 'required|exists:academic_years,id',
+            'positions' => 'required|array|min:1',
+            'positions.*' => 'exists:positions,id',
+            'primary_position_id' => 'required|in:' . implode(',', $request->positions ?? []),
+            'position_start_date' => 'required|date',
+            'sk_number' => 'nullable|string|max:100',
+            'sk_date' => 'nullable|date',
+            'classroom_id' => 'nullable|exists:classrooms,id',
+        ]);
+        
+        // Check authorization
+        $employee = Employee::findOrFail($validated['employee_id']);
+        if (!$user->isSuperAdmin() && $employee->school_id !== $user->school_id) {
+            abort(403, 'Unauthorized');
+        }
+        
+        DB::beginTransaction();
+        try {
+            $semester = 'full_year';
+
+            // Close existing positions for this academic year
+            $employee->employeePositions()
+                ->where('academic_year_id', $validated['academic_year_id'])
+                ->whereNull('end_date')
+                ->update(['end_date' => now()]);
+            
+            // Attach new positions
+            $positionData = [];
+            foreach ($validated['positions'] as $positionId) {
+                $position = Position::find($positionId);
+                $isWaliKelas = $position && (
+                    stripos($position->position_code, 'WAKEL') !== false || 
+                    stripos($position->position_code, 'WALIKELAS') !== false
+                );
+                
+                $positionData[$positionId] = [
+                    'academic_year_id' => $validated['academic_year_id'],
+                    'semester' => $semester,
+                    'start_date' => $validated['position_start_date'],
+                    'end_date' => null,
+                    'sk_number' => $validated['sk_number'],
+                    'sk_date' => $validated['sk_date'],
+                    'is_primary' => ($positionId == $validated['primary_position_id']),
+                    'classroom_id' => ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+            
+            $employee->positions()->attach($positionData);
+            
+            // Check if wali kelas position is assigned
+            $waliKelasPosition = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
+            if ($waliKelasPosition && in_array($waliKelasPosition->id, $validated['positions'])) {
+                // Update classroom's homeroom_teacher_id if classroom is selected
+                if ($request->filled('classroom_id')) {
+                    $classroom = Classroom::find($validated['classroom_id']);
+                    if ($classroom && $classroom->school_id == $employee->school_id) {
+                        $classroom->update(['homeroom_teacher_id' => $employee->teacher->id ?? null]);
+                    }
+                }
+            }
+            
+            DB::commit();
+            
+            return redirect()
+                ->route('admin.assignments.positions.index', [
+                    'academic_year_id' => $validated['academic_year_id'],
+                ])
+                ->with('success', 'Penugasan jabatan berhasil diperbarui.');
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Gagal memperbarui penugasan jabatan: ' . $e->getMessage());
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui penugasan. Silakan coba lagi.');
+        }
+    }
+    
+    public function destroy($employeeId, Request $request)
+    {
+        $user = auth()->user();
+        $employee = Employee::findOrFail($employeeId);
+        
+        // Check authorization
+        if (!$user->isSuperAdmin() && $employee->school_id !== $user->school_id) {
+            abort(403, 'Unauthorized');
+        }
+        
+        $validated = $request->validate([
+            'academic_year_id' => 'required|exists:academic_years,id',
+        ]);
+        
+        // Close all positions for this academic year
+        $employee->employeePositions()
+            ->where('academic_year_id', $validated['academic_year_id'])
+            ->whereNull('end_date')
+            ->update(['end_date' => now()]);
+        
+        return back()->with('success', 'Semua penugasan jabatan berhasil dihapus.');
+    }
+    
+    public function destroySinglePosition($employeeId, $positionId, Request $request)
+    {
+        $user = auth()->user();
+        $employee = Employee::findOrFail($employeeId);
+        
+        // Check authorization
+        if (!$user->isSuperAdmin() && $employee->school_id !== $user->school_id) {
+            abort(403, 'Unauthorized');
+        }
+        
+        $validated = $request->validate([
+            'academic_year_id' => 'required|exists:academic_years,id',
+        ]);
+        
+        // Close specific position for this academic year
+        $deleted = $employee->employeePositions()
+            ->where('position_id', $positionId)
+            ->where('academic_year_id', $validated['academic_year_id'])
+            ->whereNull('end_date')
+            ->update(['end_date' => now()]);
+        
+        if ($deleted) {
+            return back()->with('success', 'Jabatan berhasil dihapus.');
+        }
+        
+        return back()->with('error', 'Jabatan tidak ditemukan atau sudah dihapus.');
+    }
+}

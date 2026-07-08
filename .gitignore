@@ -1,0 +1,64 @@
+*.log
+.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+# /public/build  ← SENGAJA DIAKTIFKAN agar folder build ikut ke GitHub/Hosting
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+Homestead.json
+Homestead.yaml
+Thumbs.db
+
+# Mencegah Hostinger auto-run composer saat Deploy
+composer.lock
+
+# Project-specific ignores
+*.sql
+*.docx
+*.xlsx
+temp_*.html
+test_results*.txt
+Daftar Akun*
+
+# Development/debug scripts (root level)
+/check_*.php
+/debug_*.php
+/find_*.php
+/list_*.php
+/extract_*.php
+/compare.php
+/dump_*.php
+/full_*.php
+/get_*.php
+/map_*.php
+/migrasi_*.php
+/normalize_*.php
+/restore_*.php
+
+# Data & backup files
+/curr_teachers.txt
+/schemas.txt
+/tables.txt
+/strs.json
+/roster_data.json
+/vendor.zip
+
+# Development folders
+/development_backup/
+/roster_unzipped/
+/tmp/
+/examples/

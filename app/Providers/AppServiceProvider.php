@@ -58,6 +58,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Auto-create storage symlink if missing (useful for Hostinger Auto-Deploy)
+        if (!file_exists(public_path('storage'))) {
+            try { app('files')->link(storage_path('app/public'), public_path('storage')); } catch (\Exception $e) {}
+        }
+
         // Fix CORS: Force URL and Asset to use the current requested host (www or non-www)
         if (request()->hasHeader('X-Forwarded-Proto') && request()->header('X-Forwarded-Proto') == 'https') {
             \Illuminate\Support\Facades\URL::forceScheme('https');

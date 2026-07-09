@@ -34,6 +34,15 @@ try {
         DB::statement("UPDATE {$table} SET semester_id = 7 WHERE semester_id = 1");
     }
 
+    // 2.5 Perbaiki nilai kuis yang membengkak karena bug sebelumnya
+    $wrongGrades = DB::table('grades')->where('lms_source_type', 'quiz_attempt')->get();
+    foreach ($wrongGrades as $grade) {
+        $attempt = DB::table('lms_quiz_attempts')->where('id', $grade->lms_source_id)->first();
+        if ($attempt) {
+            DB::table('grades')->where('id', $grade->id)->update(['score' => $attempt->score]);
+        }
+    }
+
     // 3. Bersihkan Cache agar sistem mengenali semester yang baru
     Artisan::call('cache:clear');
 

@@ -100,11 +100,7 @@ class ClassroomController extends Controller
             $selectedYearId = AcademicYear::where('is_active', true)->first()?->id;
         }
 
-        // Store to session
-        if ($request->has('academic_year_id') && !$request->filled('academic_year_id')) {
-            // User selected "Semua"
-            $selectedYearId = null;
-        }
+
         session(['classroom_filter_academic_year_id' => $selectedYearId]);
 
         if ($selectedYearId) {

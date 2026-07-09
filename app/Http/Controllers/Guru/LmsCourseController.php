@@ -131,7 +131,7 @@ class LmsCourseController extends Controller
             ->orderBy('class_name')
             ->get();
 
-        $semesters = Semester::orderByDesc('start_date')->limit(4)->get();
+        $semesters = Semester::with('academicYear')->orderByDesc('start_date')->limit(4)->get();
 
         return view('guru.lms.create', compact('teacher', 'subjects', 'classrooms', 'semesters', 'activeSemester'));
     }

@@ -44,7 +44,7 @@
                     <option value="">-- Pilih Semester --</option>
                     @foreach($semesters as $semester)
                         <option value="{{ $semester->id }}" {{ (old('semester_id') == $semester->id || ($activeSemester && $activeSemester->id == $semester->id)) ? 'selected' : '' }}>
-                            {{ $semester->semester_name }}
+                            {{ $semester->semester_name }} {{ $semester->academicYear ? '('.$semester->academicYear->year.')' : '' }}
                         </option>
                     @endforeach
                 </select>

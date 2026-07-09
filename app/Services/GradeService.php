@@ -317,10 +317,8 @@ class GradeService
             return null;
         }
 
-        // Normalize score to 0-100 scale
-        $normalizedScore = $quiz->total_score > 0
-            ? round(($attempt->score / $quiz->total_score) * 100, 2)
-            : $attempt->score;
+        // attempt->score is already saved as a percentage (0-100) in LmsController
+        $normalizedScore = $attempt->score;
 
         // Get teacher from course
         $teacherId = $course->teacher_id;

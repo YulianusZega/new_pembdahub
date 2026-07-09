@@ -330,8 +330,8 @@ class DashboardController extends Controller
         $student->load('school');
         $activeSemester = Semester::where('is_active', true)->first();
         $semesters = Semester::select('id', 'semester_name', 'semester_number', 'academic_year_id')
-            ->orderByDesc('id')
-            ->limit(12)
+            ->when($activeSemester, fn($q) => $q->where('academic_year_id', $activeSemester->academic_year_id))
+            ->orderBy('semester_number')
             ->get();
 
         $selectedSemesterId = $request->get('semester_id', $activeSemester?->id);

@@ -3,435 +3,371 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RTL Kebijakan Transformasi SMK Pembda Nias</title>
+    <title>Turning Vision Into Action — SMKS Pembda Nias</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --navy: #0a1628;
-            --accent-gold: #f0a500;
-            --accent-gold-light: #ffc845;
-            --accent-blue: #2196F3;
-            --accent-cyan: #00bcd4;
-            --accent-emerald: #10b981;
-            --accent-red: #ef4444;
-            --accent-orange: #f97316;
-            --text-white: #ffffff;
-            --text-light: #c8d6e5;
-            --text-muted: #8395a7;
+            --gold: #f0a500;
+            --gold-l: #ffc845;
+            --blue: #2196F3;
+            --cyan: #00bcd4;
+            --emer: #10b981;
+            --red: #ef4444;
+            --orange: #f97316;
+            --white: #ffffff;
+            --light: #c8d6e5;
+            --muted: #8395a7;
             --glass: rgba(255,255,255,0.05);
-            --glass-border: rgba(255,255,255,0.08);
+            --gb: rgba(255,255,255,0.08);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; background: var(--navy); color: var(--text-white); overflow: hidden; height: 100vh; width: 100vw; }
+        body { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; background: var(--navy); color: var(--white); overflow: hidden; height: 100vh; width: 100vw; }
 
-        .presentation { width: 100vw; height: 100vh; position: relative; }
-        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 55px 80px; opacity: 0; visibility: hidden; transform: translateX(60px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
-        .slide.active { opacity: 1; visibility: visible; transform: translateX(0); }
-        .slide.exit-left { opacity: 0; transform: translateX(-60px); }
-        .slide::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; }
-        .slide > * { position: relative; z-index: 1; }
+        .pres { width: 100vw; height: 100vh; position: relative; }
+        .s { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 50px 70px 65px; opacity: 0; visibility: hidden; transform: translateX(60px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; }
+        .s.act { opacity: 1; visibility: visible; transform: translateX(0); }
+        .s.exl { opacity: 0; transform: translateX(-60px); }
+        .s::before { content: ''; position: absolute; inset: 0; z-index: 0; }
+        .s > * { position: relative; z-index: 1; }
 
-        .bg-1::before { background: radial-gradient(ellipse at 20% 50%, rgba(240,165,0,0.12) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(33,150,243,0.08) 0%, transparent 50%), var(--navy); }
-        .bg-2::before { background: radial-gradient(ellipse at 70% 30%, rgba(16,185,129,0.1) 0%, transparent 55%), radial-gradient(ellipse at 20% 80%, rgba(240,165,0,0.08) 0%, transparent 50%), var(--navy); }
-        .bg-3::before { background: radial-gradient(ellipse at 50% 50%, rgba(33,150,243,0.1) 0%, transparent 55%), radial-gradient(ellipse at 10% 90%, rgba(0,188,212,0.08) 0%, transparent 50%), var(--navy); }
-        .bg-4::before { background: radial-gradient(ellipse at 30% 40%, rgba(239,68,68,0.08) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, rgba(249,115,22,0.08) 0%, transparent 50%), var(--navy); }
-        .bg-5::before { background: radial-gradient(ellipse at 60% 30%, rgba(240,165,0,0.15) 0%, transparent 50%), radial-gradient(ellipse at 20% 70%, rgba(16,185,129,0.08) 0%, transparent 50%), var(--navy); }
+        .bg1::before { background: radial-gradient(ellipse at 20% 50%, rgba(240,165,0,0.12) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(33,150,243,0.08) 0%, transparent 50%), var(--navy); }
+        .bg2::before { background: radial-gradient(ellipse at 70% 30%, rgba(16,185,129,0.1) 0%, transparent 55%), radial-gradient(ellipse at 20% 80%, rgba(240,165,0,0.08) 0%, transparent 50%), var(--navy); }
+        .bg3::before { background: radial-gradient(ellipse at 50% 50%, rgba(33,150,243,0.1) 0%, transparent 55%), radial-gradient(ellipse at 10% 90%, rgba(0,188,212,0.08) 0%, transparent 50%), var(--navy); }
+        .bg4::before { background: radial-gradient(ellipse at 30% 40%, rgba(239,68,68,0.08) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, rgba(249,115,22,0.08) 0%, transparent 50%), var(--navy); }
+        .bg5::before { background: radial-gradient(ellipse at 60% 30%, rgba(240,165,0,0.15) 0%, transparent 50%), radial-gradient(ellipse at 20% 70%, rgba(16,185,129,0.08) 0%, transparent 50%), var(--navy); }
+        .bg6::before { background: radial-gradient(ellipse at 40% 60%, rgba(0,188,212,0.1) 0%, transparent 55%), radial-gradient(ellipse at 85% 25%, rgba(240,165,0,0.08) 0%, transparent 50%), var(--navy); }
 
-        .slide-tag { position: absolute; top: 28px; left: 40px; background: rgba(240,165,0,0.15); border: 1px solid rgba(240,165,0,0.3); color: var(--accent-gold); font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; padding: 5px 14px; border-radius: 20px; text-transform: uppercase; }
-        .org-tag { position: absolute; top: 28px; right: 40px; font-size: 0.68rem; font-weight: 600; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
-        .content { width: 100%; max-width: 1100px; display: flex; flex-direction: column; align-items: center; }
+        .stag { position: absolute; top: 24px; left: 36px; background: rgba(240,165,0,0.15); border: 1px solid rgba(240,165,0,0.3); color: var(--gold); font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; }
+        .otag { position: absolute; top: 24px; right: 36px; font-size: 0.62rem; font-weight: 600; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+        .ct { width: 100%; max-width: 1120px; display: flex; flex-direction: column; align-items: center; }
 
-        h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; max-width: 900px; text-align: center; }
-        h2 { font-size: 1.85rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
-        h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
-        .gold { color: var(--accent-gold); }
-        .blue { color: var(--accent-blue); }
-        .emerald { color: var(--accent-emerald); }
-        .red { color: var(--accent-red); }
-        .cyan { color: var(--accent-cyan); }
+        h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.5px; max-width: 900px; text-align: center; }
+        h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; }
+        .gd { color: var(--gold); } .bl { color: var(--blue); } .em { color: var(--emer); } .rd { color: var(--red); } .cn { color: var(--cyan); }
 
-        .sub { font-size: 1.05rem; color: var(--text-light); max-width: 750px; text-align: center; line-height: 1.6; margin-top: 14px; font-weight: 400; }
-        .label { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; padding: 5px 16px; border-radius: 30px; margin-bottom: 14px; }
-        .lb-gold { background: rgba(240,165,0,0.15); color: var(--accent-gold); border: 1px solid rgba(240,165,0,0.25); }
-        .lb-blue { background: rgba(33,150,243,0.15); color: var(--accent-blue); border: 1px solid rgba(33,150,243,0.25); }
-        .lb-emerald { background: rgba(16,185,129,0.15); color: var(--accent-emerald); border: 1px solid rgba(16,185,129,0.25); }
-        .lb-red { background: rgba(239,68,68,0.15); color: var(--accent-red); border: 1px solid rgba(239,68,68,0.25); }
-        .lb-cyan { background: rgba(0,188,212,0.15); color: var(--accent-cyan); border: 1px solid rgba(0,188,212,0.25); }
+        .sub { font-size: 0.95rem; color: var(--light); max-width: 750px; text-align: center; line-height: 1.6; margin-top: 8px; margin-bottom: 14px; font-weight: 400; }
+        .lb { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; padding: 4px 14px; border-radius: 30px; margin-bottom: 12px; }
+        .lb-g { background: rgba(240,165,0,0.15); color: var(--gold); border: 1px solid rgba(240,165,0,0.25); }
+        .lb-b { background: rgba(33,150,243,0.15); color: var(--blue); border: 1px solid rgba(33,150,243,0.25); }
+        .lb-e { background: rgba(16,185,129,0.15); color: var(--emer); border: 1px solid rgba(16,185,129,0.25); }
+        .lb-r { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+        .lb-c { background: rgba(0,188,212,0.15); color: var(--cyan); border: 1px solid rgba(0,188,212,0.25); }
+        .lb-o { background: rgba(249,115,22,0.15); color: var(--orange); border: 1px solid rgba(249,115,22,0.25); }
 
-        .g { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 20px 24px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; width: 100%; }
+        .bx { background: var(--glass); border: 1px solid var(--gb); border-radius: 14px; padding: 18px 22px; }
+        .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
+        .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; width: 100%; }
 
-        .stat { text-align: center; }
-        .stat .num { font-size: 2.5rem; font-weight: 900; line-height: 1; }
-        .stat .txt { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+        .bx h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
+        .bx p, .bx li { font-size: 0.76rem; color: var(--muted); line-height: 1.55; }
+        .bx ul { list-style: none; padding: 0; }
+        .bx ul li { padding: 2px 0; }
+        .bx ul li::before { content: '→'; margin-right: 6px; color: var(--gold); font-weight: 700; }
 
-        .ac { position: relative; overflow: hidden; padding-left: 26px; }
-        .ac::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
-        .ac.c-gold::before { background: var(--accent-gold); }
-        .ac.c-emerald::before { background: var(--accent-emerald); }
-        .ac.c-blue::before { background: var(--accent-blue); }
-        .ac.c-cyan::before { background: var(--accent-cyan); }
-        .ac.c-red::before { background: var(--accent-red); }
-        .ac.c-orange::before { background: var(--accent-orange); }
-        .ac h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
-        .ac p, .ac li { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; }
-        .ac ul { list-style: none; padding: 0; }
-        .ac ul li::before { content: '→'; margin-right: 8px; color: var(--accent-gold); font-weight: 700; }
+        /* Problem box */
+        .prob { background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.15); border-left: 4px solid var(--red); }
+        .prob h4 { color: var(--red); }
+        .prob .sc { display: inline-flex; align-items: center; gap: 4px; background: rgba(239,68,68,0.12); padding: 2px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; color: #f87171; margin-left: 6px; }
 
-        .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; }
-        .badge-done { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); color: var(--accent-emerald); }
-        .badge-school { background: rgba(240,165,0,0.12); border: 1px solid rgba(240,165,0,0.25); color: var(--accent-gold); }
-        .badge-yayasan { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: #f87171; }
+        /* Action box */
+        .aksi { background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.15); border-left: 4px solid var(--emer); }
+        .aksi h4 { color: var(--emer); }
+        .aksi ul li::before { content: '✅'; margin-right: 6px; }
 
-        .px { display: flex; gap: 14px; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px; padding: 14px 18px; }
-        .px-num { flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.85rem; }
-        .px-body { flex: 1; }
-        .px-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 3px; }
-        .px-desc { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
-        .px-insight { font-size: 0.7rem; color: var(--accent-gold); font-weight: 600; font-style: italic; margin-top: 4px; }
-        .px-scores { display: flex; gap: 6px; margin-top: 6px; flex-shrink: 0; }
-        .px-score { text-align: center; padding: 5px 10px; border-radius: 8px; }
-        .px-score .v { font-size: 1.1rem; font-weight: 900; }
-        .px-score .l { font-size: 0.6rem; color: var(--text-muted); }
+        /* Indicator box */
+        .indi { background: rgba(33,150,243,0.04); border: 1px solid rgba(33,150,243,0.15); border-left: 4px solid var(--blue); }
+        .indi h4 { color: var(--blue); }
+        .indi ul li::before { content: '📏'; margin-right: 6px; }
 
-        .step { display: flex; gap: 14px; margin-bottom: 8px; }
-        .step-num { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0; }
-        .step-body h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 2px; }
-        .step-body p { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+        /* Highlight box */
+        .hbox { background: linear-gradient(135deg, rgba(240,165,0,0.08), rgba(240,165,0,0.03)); border: 1px solid rgba(240,165,0,0.2); border-radius: 12px; padding: 14px 20px; text-align: center; width: 100%; }
+        .hbox p { font-size: 0.82rem; color: var(--light); line-height: 1.5; }
 
-        .tl-item { display: flex; gap: 16px; padding: 10px 0; align-items: flex-start; }
-        .tl-dot { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; flex-shrink: 0; }
-        .tl-date { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
-        .tl-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 2px; }
-        .tl-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 20px; font-size: 0.62rem; font-weight: 700; }
+        .bdg-done { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); color: var(--emer); }
+        .bdg-rtl { background: rgba(240,165,0,0.12); border: 1px solid rgba(240,165,0,0.25); color: var(--gold); }
+        .bdg-yys { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: #f87171; }
+        .bdg-sch { background: rgba(33,150,243,0.12); border: 1px solid rgba(33,150,243,0.25); color: var(--blue); }
 
-        .big-quote { position: relative; padding: 24px 36px; background: linear-gradient(135deg, rgba(240,165,0,0.06), rgba(240,165,0,0.02)); border-left: 4px solid var(--accent-gold); border-radius: 0 14px 14px 0; max-width: 820px; }
-        .big-quote::before { content: '"'; position: absolute; top: -10px; left: 12px; font-size: 4rem; color: rgba(240,165,0,0.15); font-family: Georgia, serif; line-height: 1; }
-        .big-quote p { font-size: 0.95rem; line-height: 1.7; color: var(--text-light); font-style: italic; }
+        .bar-t { flex: 1; height: 20px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
+        .bar-f { height: 100%; border-radius: 5px; transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; font-size: 0.65rem; font-weight: 700; color: var(--navy); width: 0; }
+        .bar-f.gr { background: linear-gradient(90deg, #10b981, #34d399); }
+        .bar-f.yl { background: linear-gradient(90deg, #f0a500, #ffc845); }
+        .bar-f.re { background: linear-gradient(90deg, #ef4444, #f87171); }
 
-        .highlight-box { background: linear-gradient(135deg, rgba(240,165,0,0.08), rgba(240,165,0,0.03)); border: 1px solid rgba(240,165,0,0.2); border-radius: 12px; padding: 14px 20px; text-align: center; width: 100%; }
-        .highlight-box p { font-size: 0.82rem; color: var(--text-light); line-height: 1.5; }
+        .big-q { position: relative; padding: 22px 32px; background: linear-gradient(135deg, rgba(240,165,0,0.06), rgba(240,165,0,0.02)); border-left: 4px solid var(--gold); border-radius: 0 14px 14px 0; max-width: 820px; }
+        .big-q::before { content: '"'; position: absolute; top: -10px; left: 12px; font-size: 4rem; color: rgba(240,165,0,0.15); font-family: Georgia, serif; line-height: 1; }
+        .big-q p { font-size: 0.92rem; line-height: 1.7; color: var(--light); font-style: italic; }
 
-        .compact h2 { font-size: 1.65rem; margin-bottom: 6px; }
-        .compact .sub { font-size: 0.92rem; margin-top: 8px; margin-bottom: 14px; }
+        .tl { display: flex; gap: 14px; padding: 8px 0; align-items: flex-start; }
+        .tl-d { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; flex-shrink: 0; }
+        .tl-dt { font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+        .tl-tt { font-size: 0.82rem; font-weight: 700; margin-bottom: 2px; }
+        .tl-ds { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
 
         /* NAV */
-        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: rgba(10,22,40,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; z-index: 100; }
-        .nav-dots { display: flex; gap: 7px; align-items: center; }
-        .nav-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.15); cursor: pointer; transition: all 0.3s; }
-        .nav-dot.active { width: 24px; border-radius: 4px; background: var(--accent-gold); }
-        .nav-dot:hover:not(.active) { background: rgba(255,255,255,0.3); }
-        .nav-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: var(--text-white); padding: 7px 20px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; }
-        .nav-btn:hover { background: rgba(240,165,0,0.2); border-color: rgba(240,165,0,0.4); }
-        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .slide-counter { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
-        .fs-btn { position: fixed; top: 18px; right: 18px; z-index: 200; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.3s; }
-        .fs-btn:hover { background: rgba(240,165,0,0.2); color: var(--accent-gold); }
+        .nav { position: fixed; bottom: 0; left: 0; right: 0; height: 52px; background: rgba(10,22,40,0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--gb); display: flex; align-items: center; justify-content: space-between; padding: 0 36px; z-index: 100; }
+        .ndots { display: flex; gap: 6px; align-items: center; }
+        .nd { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.15); cursor: pointer; transition: all 0.3s; }
+        .nd.act { width: 22px; border-radius: 4px; background: var(--gold); }
+        .nd:hover:not(.act) { background: rgba(255,255,255,0.3); }
+        .nb { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: var(--white); padding: 6px 18px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit; }
+        .nb:hover { background: rgba(240,165,0,0.2); border-color: rgba(240,165,0,0.4); }
+        .nb:disabled { opacity: 0.3; cursor: not-allowed; }
+        .sc-c { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+        .fs { position: fixed; top: 14px; right: 14px; z-index: 200; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: all 0.3s; }
+        .fs:hover { background: rgba(240,165,0,0.2); color: var(--gold); }
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
-        .slide.active .anim { animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; }
-        .slide.active .d1 { animation-delay: 0.1s; } .slide.active .d2 { animation-delay: 0.2s; } .slide.active .d3 { animation-delay: 0.3s; } .slide.active .d4 { animation-delay: 0.4s; } .slide.active .d5 { animation-delay: 0.5s; }
-        .slide { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
-        .slide::-webkit-scrollbar { width: 4px; } .slide::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        @keyframes fiu { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+        .s.act .a { animation: fiu 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; }
+        .s.act .d1 { animation-delay: 0.1s; } .s.act .d2 { animation-delay: 0.2s; } .s.act .d3 { animation-delay: 0.3s; } .s.act .d4 { animation-delay: 0.4s; } .s.act .d5 { animation-delay: 0.5s; }
+        .s { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
+        .s::-webkit-scrollbar { width: 4px; } .s::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
-        .bar-track { flex: 1; height: 22px; background: rgba(255,255,255,0.06); border-radius: 5px; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 5px; transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 0.7rem; font-weight: 700; color: var(--navy); width: 0; }
-        .bar-fill.green { background: linear-gradient(90deg, #10b981, #34d399); }
-        .bar-fill.yellow { background: linear-gradient(90deg, #f0a500, #ffc845); }
-        .bar-fill.red { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .acol { display: flex; flex-direction: column; gap: 10px; }
     </style>
 </head>
 <body>
-    <button class="fs-btn" onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
+    <button class="fs" onclick="togFS()" title="Fullscreen">⛶</button>
 
-    <div class="presentation">
+    <div class="pres">
 
         <!-- ===== SLIDE 1: COVER ===== -->
-        <div class="slide active bg-1" data-slide="0">
-            <div class="content" style="text-align: center;">
-                <span class="label lb-gold anim d1">Rapat Yayasan • 11 Juli 2026</span>
-                <h1 class="anim d2" style="font-size: 2.3rem;">
-                    Rencana Tindak Lanjut<br>
-                    <span class="gold">Kebijakan Transformasi</span><br>
-                    SMKS Pembda Nias
+        <div class="s act bg1" data-slide="0">
+            <div class="ct" style="text-align: center;">
+                <span class="lb lb-g a d1">Rapat Yayasan • 11 Juli 2026</span>
+                <h1 class="a d2" style="font-size: 2.2rem;">
+                    <span class="gd">Turning Vision Into Action</span><br>
+                    <span style="font-size: 1.3rem; font-weight: 500; color: var(--light);">Rencana Tindak Lanjut Kebijakan Transformasi SMKS Pembda Nias</span>
                 </h1>
-                <p class="sub anim d3" style="max-width: 700px;">
-                    Bukan mengulangi teori — hari ini kita <strong style="color: var(--accent-gold);">membagi tugas</strong>, menetapkan <strong style="color: var(--accent-gold);">langkah konkret</strong>, dan <strong style="color: var(--accent-gold);">bergerak bersama</strong>.
+                <p class="sub a d3" style="max-width: 680px;">
+                    Setiap masalah dari survey → menjadi <strong style="color: var(--gold);">aktivitas nyata</strong> mulai TP 2026/2027.<br>
+                    Setiap aktivitas → punya <strong style="color: var(--gold);">indikator keberhasilan</strong> yang terukur.<br>
+                    <strong style="color: var(--gold);">Tidak ada omong kosong. Keep Moving Forward.</strong>
                 </p>
-                <div class="anim d4" style="margin-top: 24px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;">
-                    <div class="g" style="padding: 12px 22px; text-align: center;">
-                        <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px;">Surat Edaran</div>
-                        <div style="font-size: 0.82rem; font-weight: 700;">2 Juli 2026 ✓</div>
+                <div class="a d4" style="margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                    <div class="bx" style="padding: 10px 20px; text-align: center;">
+                        <div style="font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Surat Edaran</div>
+                        <div style="font-size: 0.78rem; font-weight: 700;">2 Juli ✓</div>
                     </div>
-                    <div class="g" style="padding: 12px 22px; text-align: center;">
-                        <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px;">Survey Guru</div>
-                        <div style="font-size: 0.82rem; font-weight: 700;">4 Juli 2026 ✓</div>
+                    <div class="bx" style="padding: 10px 20px; text-align: center;">
+                        <div style="font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Survey 32 Guru</div>
+                        <div style="font-size: 0.78rem; font-weight: 700;">4 Juli ✓</div>
                     </div>
-                    <div class="g" style="padding: 12px 22px; text-align: center; border-color: rgba(240,165,0,0.3);">
-                        <div style="font-size: 0.65rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px;">Hari Ini</div>
-                        <div style="font-size: 0.82rem; font-weight: 700; color: var(--accent-gold);">Rapat RTL</div>
+                    <div class="bx" style="padding: 10px 20px; text-align: center; border-color: rgba(240,165,0,0.3);">
+                        <div style="font-size: 0.6rem; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">Hari Ini</div>
+                        <div style="font-size: 0.78rem; font-weight: 700; color: var(--gold);">Problem → Action</div>
                     </div>
                 </div>
-                <p class="anim d5" style="margin-top: 20px; font-size: 0.82rem; color: var(--text-muted);">Yulianus Zega, S.Kom., M.Pd.T — Ketua Yayasan</p>
+                <p class="a d5" style="margin-top: 18px; font-size: 0.78rem; color: var(--muted);">Yulianus Zega, S.Kom., M.Pd.T — Ketua Yayasan Perguruan Pembda Nias</p>
             </div>
         </div>
 
         <!-- ===== SLIDE 2: RECAP EDARAN ===== -->
-        <div class="slide bg-2" data-slide="1">
-            <div class="slide-tag">Slide 02</div>
-            <div class="org-tag">Yayasan Perguruan Pembda Nias</div>
-            <div class="content compact">
-                <span class="label lb-gold anim d1">Recap Surat Edaran</span>
-                <h2 class="anim d2">6 Kebijakan Utama — <span class="gold">Status Hari Ini</span></h2>
-                <p class="sub anim d2">Diedarkan 2 Juli 2026 — mana yang sudah, mana yang harus ditindaklanjuti</p>
-
-                <div class="grid-3 anim d3">
-                    <div class="g ac c-emerald">
-                        <h4>1. Survey Yayasan</h4>
-                        <p>Pengukuran nilai-nilai pendidikan teknologi kejuruan kepada seluruh guru</p>
-                        <div style="margin-top: 6px;"><span class="badge badge-done">✓ Selesai 4 Juli</span></div>
-                    </div>
-                    <div class="g ac c-gold">
-                        <h4>2. Sistem Penilaian Guru</h4>
-                        <p>Kepsek menyusun sistem penilaian komprehensif + Usulan Penataan Ketenagaan</p>
-                        <div style="margin-top: 6px;"><span class="badge badge-school">📋 RTL hari ini</span></div>
-                    </div>
-                    <div class="g ac c-blue">
-                        <h4>3. Program Strategis</h4>
-                        <p>TEFA, Robotika, Dojo, Green Line, UP — ditinjau relevansi & dampak nyata</p>
-                        <div style="margin-top: 6px;"><span class="badge badge-school">📋 RTL hari ini</span></div>
-                    </div>
-                    <div class="g ac c-cyan">
-                        <h4>4. Penugasan Tambahan</h4>
-                        <p>Semua jabatan tambahan ditinjau: output, manfaat, kontribusi nyata</p>
-                        <div style="margin-top: 6px;"><span class="badge badge-school">📋 RTL hari ini</span></div>
-                    </div>
-                    <div class="g ac c-orange">
-                        <h4>5. Relevansi Mapel</h4>
-                        <p>Setiap guru menjelaskan relevansi mapelnya terhadap pendidikan kejuruan</p>
-                        <div style="margin-top: 6px;"><span class="badge badge-school">📋 RTL hari ini</span></div>
-                    </div>
-                    <div class="g ac c-red">
-                        <h4>6. Penugasan Guru</h4>
-                        <p>Mempertimbangkan: penilaian + survey + kompetensi + komitmen + kesiapan</p>
-                        <div style="margin-top: 6px;"><span class="badge badge-yayasan">⚖️ Kewenangan Yayasan</span></div>
-                    </div>
+        <div class="s bg2" data-slide="1">
+            <div class="stag">02</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-g a d1">Surat Edaran 2 Juli 2026</span>
+                <h2 class="a d2">6 Kebijakan — <span class="gd">Status Hari Ini</span></h2>
+                <p class="sub a d2">Mana yang selesai, mana yang jadi aksi hari ini</p>
+                <div class="g3 a d3">
+                    <div class="bx" style="border-left: 4px solid var(--emer);"><h4><span class="em">1.</span> Survey Yayasan</h4><p>Pengukuran kesiapan vocational spirit guru</p><div style="margin-top: 6px;"><span class="badge bdg-done">✓ Selesai 4 Juli</span></div></div>
+                    <div class="bx" style="border-left: 4px solid var(--gold);"><h4><span class="gd">2.</span> Penilaian Guru</h4><p>Sistem penilaian + Usulan Penataan Ketenagaan</p><div style="margin-top: 6px;"><span class="badge bdg-rtl">📋 Aksi hari ini</span></div></div>
+                    <div class="bx" style="border-left: 4px solid var(--blue);"><h4><span class="bl">3.</span> Program Strategis</h4><p>TEFA, Robotika, Dojo, Green Line, UP</p><div style="margin-top: 6px;"><span class="badge bdg-rtl">📋 Aksi hari ini</span></div></div>
+                    <div class="bx" style="border-left: 4px solid var(--cyan);"><h4><span class="cn">4.</span> Penugasan Tambahan</h4><p>Review semua jabatan di luar Kepsek/Waka/KaTU/WK</p><div style="margin-top: 6px;"><span class="badge bdg-rtl">📋 Aksi hari ini</span></div></div>
+                    <div class="bx" style="border-left: 4px solid var(--orange);"><h4><span style="color:var(--orange);">5.</span> Relevansi Mapel</h4><p>Setiap guru menjelaskan relevansi mapelnya</p><div style="margin-top: 6px;"><span class="badge bdg-rtl">📋 Aksi hari ini</span></div></div>
+                    <div class="bx" style="border-left: 4px solid var(--red);"><h4><span class="rd">6.</span> Penugasan Guru</h4><p>Penetapan berdasarkan data objektif</p><div style="margin-top: 6px;"><span class="badge bdg-yys">⚖️ Yayasan</span></div></div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== SLIDE 3: TEMUAN SURVEY — RINGKAS ===== -->
-        <div class="slide bg-3" data-slide="2">
-            <div class="slide-tag">Slide 03</div>
-            <div class="org-tag">Yayasan Perguruan Pembda Nias</div>
-            <div class="content compact">
-                <span class="label lb-blue anim d1">Temuan Survey</span>
-                <h2 class="anim d2">Hasil Survey <span class="blue">4 Juli</span> — Ringkas & Jujur</h2>
-                <p class="sub anim d2">32 guru (13 kejuruan, 19 umum) • Rata-rata keseluruhan: <strong style="color: var(--accent-gold);">3.57 / 5.0</strong></p>
-
-                <div class="grid-2 anim d3">
-                    <!-- Kekuatan -->
-                    <div class="g" style="padding: 18px 22px;">
-                        <h3 style="color: var(--accent-emerald); font-size: 0.85rem; margin-bottom: 10px;">✅ Yang Sudah Baik</h3>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <div class="bar-track"><div class="bar-fill green bar-anim" data-width="91.6">4.58</div></div>
-                            <div style="font-size: 0.72rem; color: var(--text-light); min-width: 200px;">Guru umum yakin mapelnya berkontribusi</div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <div class="bar-track"><div class="bar-fill green bar-anim" data-width="86.8">4.34</div></div>
-                            <div style="font-size: 0.72rem; color: var(--text-light); min-width: 200px;">Konsisten menerapkan hasil pelatihan</div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <div class="bar-track"><div class="bar-fill green bar-anim" data-width="84.4">4.22</div></div>
-                            <div style="font-size: 0.72rem; color: var(--text-light); min-width: 200px;">Manajemen melibatkan guru</div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div class="bar-track"><div class="bar-fill green bar-anim" data-width="83.2">4.16</div></div>
-                            <div style="font-size: 0.72rem; color: var(--text-light); min-width: 200px;">Aktif pakai teknologi digital</div>
+        <!-- ===== SLIDE 3: SURVEY — KEKUATAN ===== -->
+        <div class="s bg3" data-slide="2">
+            <div class="stag">03</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-e a d1">Temuan Survey • 32 Guru</span>
+                <h2 class="a d2">Kekuatan yang <span class="em">Kita Miliki</span></h2>
+                <p class="sub a d2">Rata-rata keseluruhan: <strong style="color: var(--gold);">3.57 / 5.0</strong> — ada modal untuk maju</p>
+                <div class="g2 a d3">
+                    <div class="bx" style="border-left: 4px solid var(--emer);">
+                        <h4 style="color: var(--emer); font-size: 0.82rem;">Skor Tertinggi — Modal Kita</h4>
+                        <div style="margin-top: 10px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;"><div class="bar-t"><div class="bar-f gr bra" data-width="91.6">4.58</div></div><div style="font-size: 0.7rem; color: var(--light); min-width: 190px;">Guru yakin mapelnya berkontribusi</div></div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;"><div class="bar-t"><div class="bar-f gr bra" data-width="86.8">4.34</div></div><div style="font-size: 0.7rem; color: var(--light); min-width: 190px;">Konsisten terapkan hasil pelatihan</div></div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;"><div class="bar-t"><div class="bar-f gr bra" data-width="84.4">4.22</div></div><div style="font-size: 0.7rem; color: var(--light); min-width: 190px;">Manajemen libatkan guru</div></div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;"><div class="bar-t"><div class="bar-f gr bra" data-width="83.2">4.16</div></div><div style="font-size: 0.7rem; color: var(--light); min-width: 190px;">Aktif berkolaborasi lintas mapel</div></div>
+                            <div style="display: flex; align-items: center; gap: 8px;"><div class="bar-t"><div class="bar-f gr bra" data-width="83.2">4.16</div></div><div style="font-size: 0.7rem; color: var(--light); min-width: 190px;">Pakai teknologi digital (AI, IoT)</div></div>
                         </div>
                     </div>
-
-                    <!-- Kelemahan -->
-                    <div class="g" style="padding: 18px 22px;">
-                        <h3 style="color: var(--accent-red); font-size: 0.85rem; margin-bottom: 10px;">🔴 Yang Perlu Dibenahi</h3>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <div class="bar-track"><div class="bar-fill red bar-anim" data-width="52.6">2.63</div></div>
-                            <div style="font-size: 0.72rem; color: #f87171; min-width: 200px; font-weight: 600;">Guru umum sulit relasikan mapel ke kejuruan</div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <div class="bar-track"><div class="bar-fill red bar-anim" data-width="53.8">2.69</div></div>
-                            <div style="font-size: 0.72rem; color: #f87171; min-width: 200px; font-weight: 600;">Visi TEFA/wirausaha belum operasional</div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <div class="bar-track"><div class="bar-fill red bar-anim" data-width="53.8">2.69</div></div>
-                            <div style="font-size: 0.72rem; color: #f87171; min-width: 200px; font-weight: 600;">Budaya kerja industri masih longgar</div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div class="bar-track"><div class="bar-fill red bar-anim" data-width="55.6">2.78</div></div>
-                            <div style="font-size: 0.72rem; color: #f87171; min-width: 200px; font-weight: 600;">Pembelajaran masih menitikberatkan teori</div>
+                    <div class="bx" style="border-left: 4px solid var(--red);">
+                        <h4 style="color: var(--red); font-size: 0.82rem;">Skor Terendah — Masalah Kita</h4>
+                        <div style="margin-top: 10px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;"><div class="bar-t"><div class="bar-f re bra" data-width="52.6">2.63</div></div><div style="font-size: 0.7rem; color: #f87171; min-width: 190px; font-weight: 600;">Guru umum sulit relasikan ke kejuruan</div></div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;"><div class="bar-t"><div class="bar-f re bra" data-width="53.8">2.69</div></div><div style="font-size: 0.7rem; color: #f87171; min-width: 190px; font-weight: 600;">Visi belum jadi rencana operasional</div></div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;"><div class="bar-t"><div class="bar-f re bra" data-width="53.8">2.69</div></div><div style="font-size: 0.7rem; color: #f87171; min-width: 190px; font-weight: 600;">Budaya kerja industri masih longgar</div></div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;"><div class="bar-t"><div class="bar-f re bra" data-width="55.6">2.78</div></div><div style="font-size: 0.7rem; color: #f87171; min-width: 190px; font-weight: 600;">Pembelajaran masih teori</div></div>
+                            <div style="display: flex; align-items: center; gap: 8px;"><div class="bar-t"><div class="bar-f re bra" data-width="63">3.15</div></div><div style="font-size: 0.7rem; color: #f87171; min-width: 190px; font-weight: 600;">TeFa belum standar industri</div></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Paradoks ringkas -->
-                <div class="anim d4" style="width: 100%; margin-top: 14px;">
-                    <div class="highlight-box" style="background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(239,68,68,0.02)); border-color: rgba(239,68,68,0.15);">
-                        <p style="text-align: left;">
-                            <strong style="color: var(--accent-red); font-size: 0.88rem;">⚡ 3 Paradoks yang Harus Kita Hadapi:</strong><br>
-                            <span style="color: var(--text-light);">
-                            <strong>1.</strong> Guru umum <span class="emerald">yakin mapelnya berkontribusi (4.58)</span> tapi <span class="red">tidak bisa jelaskan caranya (2.63)</span> — keyakinan tanpa pemahaman mendalam.<br>
-                            <strong>2.</strong> Guru <span class="emerald">klaim aktif berkolaborasi (4.16)</span> tapi <span class="red">hasilnya tidak terlihat (2.63)</span> — kolaborasi tanpa arah.<br>
-                            <strong>3.</strong> Dalam essay, keluhan terbesar = <span class="red">kurang infokus & fasilitas</span>, tapi skor filosofi kejuruan rendah — <strong style="color: var(--accent-gold);">infokus di tangan yang belum paham filosofi = tetap untuk ceramah teori.</strong>
-                            </span>
-                        </p>
-                    </div>
+                <div class="a d4 hbox" style="margin-top: 12px;">
+                    <p><strong style="color: var(--gold);">Paradoks:</strong> Guru <span class="em">yakin berkontribusi (4.58)</span> tapi <span class="rd">tidak bisa jelaskan caranya (2.63)</span>. <span class="em">Klaim berkolaborasi (4.16)</span> tapi <span class="rd">hasilnya tidak terlihat</span>. <span class="em">Klaim pakai teknologi (4.16)</span> tapi <span class="rd">mengajar masih teori (2.78)</span>. <strong style="color: var(--gold);">Slide berikutnya: setiap masalah ini dijawab dengan aksi konkret.</strong></p>
                 </div>
             </div>
         </div>
 
-        <!-- ===== SLIDE 4: RTL — PENGUATAN SDM ===== -->
-        <div class="slide bg-5" data-slide="3">
-            <div class="slide-tag">Slide 04</div>
-            <div class="org-tag">Yayasan Perguruan Pembda Nias</div>
-            <div class="content compact">
-                <span class="label lb-gold anim d1">RTL Kebijakan 2 & 6</span>
-                <h2 class="anim d2">Penguatan <span class="gold">Sumber Daya Manusia</span></h2>
-                <p class="sub anim d2">Langkah konkret untuk sistem penilaian guru & penataan ketenagaan</p>
-
-                <div class="grid-2 anim d3">
-                    <div class="g" style="padding: 18px 22px;">
-                        <h3 style="color: var(--accent-gold);">🎯 Sistem Penilaian Guru Baru</h3>
-                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">Tidak lagi hanya mengukur kehadiran & administrasi</p>
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">1</div>
-                            <div class="step-body">
-                                <h4>Indikator Kompetensi Mengajar</h4>
-                                <p>Penguasaan materi, metode pembelajaran berbasis praktik, kemampuan menghasilkan karya siswa</p>
-                            </div>
+        <!-- ===== SLIDE 4: AKSI 1 — FILOSOFI & RELEVANSI ===== -->
+        <div class="s bg5" data-slide="3">
+            <div class="stag">04</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-r a d1">Problem → Action #1</span>
+                <h2 class="a d2">Guru Belum Paham <span class="rd">Filosofi Kejuruan</span></h2>
+                <p class="sub a d2">Skor relevansi mapel ke kejuruan: 2.63 • Visi belum operasional: 2.69</p>
+                <div class="g2 a d3">
+                    <div class="acol">
+                        <div class="bx prob">
+                            <h4>🔴 Problem dari Survey</h4>
+                            <ul>
+                                <li>Guru umum yakin mapelnya penting <span class="sc">4.58</span> tapi tidak bisa menjelaskan relasinya ke kejuruan <span class="sc">2.63</span></li>
+                                <li>Visi besar (TEFA, wirausaha) belum diterjemahkan jadi rencana operasional <span class="sc">2.69</span></li>
+                                <li>Essay: ±10 guru menuntut fasilitas, tapi filosofi saja belum dipahami</li>
+                            </ul>
                         </div>
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">2</div>
-                            <div class="step-body">
-                                <h4>Indikator Kontribusi Program</h4>
-                                <p>Keterlibatan di TEFA, Robotika, Unit Produksi, kewirausahaan — bukan hanya hadir, tapi berdampak</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">3</div>
-                            <div class="step-body">
-                                <h4>Indikator Kolaborasi & Inovasi</h4>
-                                <p>Kolaborasi lintas mapel, inovasi pembelajaran, PBL yang nyata — bukan kolaborasi di atas kertas</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">4</div>
-                            <div class="step-body">
-                                <h4>Indikator Budaya Kejuruan</h4>
-                                <p>Implementasi budaya kerja industri (5R/5S, SOP, disiplin) di setiap proses pembelajaran</p>
-                            </div>
+                        <div class="bx aksi">
+                            <h4>✅ Aksi Mulai TP 2026/2027</h4>
+                            <ul>
+                                <li><strong>Setiap guru wajib menyusun Dokumen Relevansi Mapel</strong> — jelaskan MENGAPA mapelnya bermakna bagi siswa SMK</li>
+                                <li><strong>Presentasi di forum guru</strong> — setiap guru menyampaikan relevansi mapelnya dalam 5 menit di forum sekolah</li>
+                                <li><strong>Soal & tugas kontekstual</strong> — setiap BAB minimal 1 tugas berbasis konteks kejuruan (RAB, proposal usaha, kalkulasi material)</li>
+                                <li><strong>Catatan relevansi di RPP</strong> — setiap RPP menyertakan kolom "Relevansi terhadap Kompetensi Kejuruan"</li>
+                            </ul>
                         </div>
                     </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 14px;">
-                        <div class="g" style="padding: 18px 22px;">
-                            <h3 style="color: var(--accent-blue);">📋 Usulan Penataan Ketenagaan</h3>
-                            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px;">Kepsek menyusun berdasarkan:</p>
-                            <div class="step">
-                                <div class="step-num" style="background: rgba(33,150,243,0.15); color: var(--accent-blue);">→</div>
-                                <div class="step-body">
-                                    <h4>Kompetensi & Relevansi</h4>
-                                    <p>Guru ditempatkan sesuai bidang keahlian dan kebutuhan program</p>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <div class="step-num" style="background: rgba(33,150,243,0.15); color: var(--accent-blue);">→</div>
-                                <div class="step-body">
-                                    <h4>Hasil Penilaian + Survey</h4>
-                                    <p>Data objektif, bukan persepsi — penilaian Kepsek + survey Yayasan</p>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <div class="step-num" style="background: rgba(33,150,243,0.15); color: var(--accent-blue);">→</div>
-                                <div class="step-body">
-                                    <h4>Komitmen & Kesiapan</h4>
-                                    <p>Kemampuan memahami & mengimplementasikan filosofi kejuruan</p>
-                                </div>
-                            </div>
+                    <div class="acol">
+                        <div class="bx indi">
+                            <h4>📏 Indikator Keberhasilan</h4>
+                            <ul>
+                                <li><strong>100% guru</strong> menyerahkan Dokumen Relevansi Mapel</li>
+                                <li><strong>100% guru</strong> mempresentasikan di forum guru (5 menit)</li>
+                                <li>Setiap RPP memuat kolom relevansi kejuruan — <strong>cek via supervisi</strong></li>
+                                <li>Minimal <strong>1 tugas kontekstual per BAB</strong> — bukti dokumentasi</li>
+                                <li>Survey berikutnya: skor relevansi mapel naik dari <strong>2.63 → minimal 3.50</strong></li>
+                            </ul>
                         </div>
-
-                        <div class="g" style="padding: 14px 22px; border-color: rgba(239,68,68,0.2); background: rgba(239,68,68,0.03);">
-                            <h3 style="color: var(--accent-red); font-size: 0.85rem;">⚖️ Konsekuensi — Tegas tapi Adil</h3>
-                            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;">Guru yang <strong>belum mampu</strong> menunjukkan keselarasan pemahaman, relevansi mapel, serta rencana implementasi yang jelas → menjadi <strong style="color: var(--accent-red);">perhatian dalam pembinaan</strong> dan <strong style="color: var(--accent-red);">pertimbangan Yayasan</strong> dalam penetapan penugasan TP 2026/2027.</p>
+                        <div class="bx" style="background: rgba(240,165,0,0.04); border-color: rgba(240,165,0,0.15);">
+                            <h4 style="color: var(--gold); font-size: 0.82rem;">💡 Contoh Konkret</h4>
+                            <p><strong>Matematika:</strong> Hitung RAB proyek bangunan, margin keuntungan usaha</p>
+                            <p style="margin-top: 4px;"><strong>B. Indonesia:</strong> Tulis proposal usaha, surat penawaran ke klien</p>
+                            <p style="margin-top: 4px;"><strong>Fisika:</strong> Hitung gaya pada konstruksi, efisiensi mesin</p>
+                            <p style="margin-top: 4px;"><strong>B. Inggris:</strong> Presentasi produk ke buyer asing, manual teknis</p>
+                            <p style="margin-top: 4px;"><strong>PAI/PKN:</strong> Etika bisnis, kejujuran dalam berwirausaha</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== SLIDE 5: RTL — PROGRAM STRATEGIS ===== -->
-        <div class="slide bg-2" data-slide="4">
-            <div class="slide-tag">Slide 05</div>
-            <div class="org-tag">Yayasan Perguruan Pembda Nias</div>
-            <div class="content compact">
-                <span class="label lb-emerald anim d1">RTL Kebijakan 3 & 4</span>
-                <h2 class="anim d2">Penguatan <span class="emerald">Program Strategis</span> & Penataan Jabatan</h2>
-                <p class="sub anim d2">Setiap program harus punya dampak nyata — yang tidak berdampak, hentikan atau transformasi</p>
-
-                <div class="grid-2 anim d3">
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <div class="g ac c-emerald">
-                            <h4>🏭 Teaching Factory (TEFA)</h4>
+        <!-- ===== SLIDE 5: AKSI 2 — DARI TEORI KE PRAKTIK ===== -->
+        <div class="s bg4" data-slide="4">
+            <div class="stag">05</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-o a d1">Problem → Action #2</span>
+                <h2 class="a d2">Pembelajaran Masih <span style="color:var(--orange);">Menitikberatkan Teori</span></h2>
+                <p class="sub a d2">Skor: 2.78 • Guru klaim pakai teknologi (4.16) tapi output tetap teori</p>
+                <div class="g2 a d3">
+                    <div class="acol">
+                        <div class="bx prob">
+                            <h4>🔴 Problem dari Survey</h4>
                             <ul>
-                                <li>TEFA = bagian dari proses pembelajaran, BUKAN program tambahan</li>
-                                <li>Siswa belajar melayani pelanggan nyata, memproduksi barang standar pasar</li>
-                                <li>Kepsek: evaluasi apakah TEFA saat ini sudah mencerminkan standar industri (survey: 3.15)</li>
+                                <li>Pembelajaran masih menitikberatkan penyelesaian materi teori <span class="sc">2.78</span></li>
+                                <li>Guru klaim aktif pakai teknologi digital & AI <span class="sc">4.16</span> tapi hasilnya? Masih untuk menampilkan slide teori</li>
+                                <li>Penugasan PBL ada <span class="sc">3.95</span> tapi belum menghasilkan karya/produk nyata</li>
                             </ul>
                         </div>
-                        <div class="g ac c-blue">
-                            <h4>🤖 Robotika & IoT</h4>
+                        <div class="bx aksi">
+                            <h4>✅ Aksi Mulai TP 2026/2027</h4>
                             <ul>
-                                <li>Program unggulan — sudah buktikan di LKS tingkat Provinsi</li>
-                                <li>Perluas ke lebih banyak siswa, bukan hanya tim lomba</li>
-                                <li>Integrasikan ke kurikulum, bukan hanya ekstrakurikuler</li>
-                            </ul>
-                        </div>
-                        <div class="g ac c-cyan">
-                            <h4>💰 Unit Produksi & Kewirausahaan</h4>
-                            <ul>
-                                <li>Wadah nyata siswa mengelola keuangan, pemasaran, produksi</li>
-                                <li>Budaya kewirausahaan tumbuh di SEMUA mapel — bukan hanya guru produktif</li>
-                                <li>Setiap guru harus bisa menjelaskan: "Produk/jasa apa yang bisa dihasilkan dari mapel saya?"</li>
+                                <li><strong>Rasio teori:praktik</strong> — Mapel produktif max 40:60, Mapel umum max 70:30 (praktik = konteks kejuruan)</li>
+                                <li><strong>Setiap semester, siswa menghasilkan minimal 1 karya/produk</strong> dari setiap mapel produktif</li>
+                                <li><strong>Teknologi dipakai SISWA</strong> untuk simulasi & produksi — bukan hanya guru untuk presentasi</li>
+                                <li><strong>PBL wajib menghasilkan output</strong> — bukan hanya laporan, tapi produk/jasa/prototipe</li>
+                                <li><strong>Kelas terbuka</strong> — Kepsek/Waka boleh masuk kapan saja untuk verifikasi rasio praktik</li>
                             </ul>
                         </div>
                     </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <div class="g ac c-gold">
-                            <h4>🥋 Dojo & Green Line</h4>
+                    <div class="acol">
+                        <div class="bx indi">
+                            <h4>📏 Indikator Keberhasilan</h4>
                             <ul>
-                                <li>Tinjau relevansi terhadap visi sekolah kejuruan</li>
-                                <li>Apakah berdampak pada kompetensi siswa?</li>
-                                <li>Program yang dipertahankan = program yang memberikan manfaat nyata</li>
+                                <li>Supervisi kelas: <strong>≥30% waktu pembelajaran</strong> diisi aktivitas praktik/proyek (mapel umum)</li>
+                                <li>Supervisi kelas: <strong>≥60% waktu</strong> untuk mapel produktif</li>
+                                <li><strong>Setiap siswa punya portofolio</strong> karya per semester — minimal 3 karya dari mapel produktif</li>
+                                <li>Setiap PBL punya <strong>output fisik/digital yang bisa dipamerkan</strong></li>
+                                <li>Survey berikutnya: skor "masih teori" turun dari <strong>2.78 → di bawah 2.00</strong></li>
                             </ul>
                         </div>
-                        <div class="g ac c-orange" style="border-color: rgba(249,115,22,0.2);">
-                            <h4>🔍 Kriteria Review Program</h4>
+                        <div class="bx" style="background: rgba(249,115,22,0.04); border-color: rgba(249,115,22,0.15);">
+                            <h4 style="color: var(--orange); font-size: 0.82rem;">⚡ Teknologi = Alat Produksi, Bukan Alat Presentasi</h4>
+                            <p><strong>Salah:</strong> Guru pakai laptop untuk tampilkan PowerPoint teori</p>
+                            <p style="margin-top: 4px;"><strong>Benar:</strong> Siswa pakai CAD untuk desain konstruksi, pakai spreadsheet untuk kalkulasi RAB, pakai AI untuk riset pasar</p>
+                            <p style="margin-top: 8px; color: var(--gold); font-weight: 600; font-style: italic;">→ Jika teknologi tidak menghasilkan kompetensi siswa, itu bukan pemanfaatan teknologi.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SLIDE 6: AKSI 3 — TEFA & PROGRAM ===== -->
+        <div class="s bg2" data-slide="5">
+            <div class="stag">06</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-e a d1">Problem → Action #3</span>
+                <h2 class="a d2">TEFA & Program Strategis <span class="em">Belum Berdampak</span></h2>
+                <p class="sub a d2">TeFa belum standar industri: 3.15 • Visi wirausaha belum operasional: 2.69</p>
+                <div class="g2 a d3">
+                    <div class="acol">
+                        <div class="bx prob">
+                            <h4>🔴 Problem dari Survey</h4>
+                            <ul>
+                                <li>TeFa belum mencerminkan standar industri <span class="sc">3.15</span></li>
+                                <li>Visi TEFA/wirausaha belum diterjemahkan jadi rencana operasional <span class="sc">2.69</span></li>
+                                <li>Fasilitas bengkel/lab belum sepenuhnya memadai <span class="sc">3.66</span></li>
+                                <li>Guru setuju lulusan = wirausaha <span class="sc">4.03</span> tapi belum ada aktivitas konkretnya</li>
+                            </ul>
+                        </div>
+                        <div class="bx aksi">
+                            <h4>✅ Aksi Mulai TP 2026/2027</h4>
+                            <ul>
+                                <li><strong>TEFA punya SOP tertulis</strong> — alur produksi, standar kualitas, sistem keuangan</li>
+                                <li><strong>Target produksi per semester</strong> — bukan aktivitas tanpa target</li>
+                                <li><strong>Setiap program wajib punya:</strong> tujuan jelas, output terukur, dampak pada siswa</li>
+                                <li><strong>Program tanpa dampak → dihentikan atau ditransformasi</strong></li>
+                                <li><strong>Unit Produksi:</strong> siswa mengelola keuangan nyata — omzet tercatat</li>
+                                <li><strong>Minimal 2 MOU aktif</strong> dengan industri/DUDI lokal</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="acol">
+                        <div class="bx indi">
+                            <h4>📏 Indikator Keberhasilan</h4>
+                            <ul>
+                                <li><strong>SOP TEFA tertulis</strong> dan ditempel di bengkel/lab — bisa diverifikasi</li>
+                                <li>Minimal <strong>2 produk/jasa TEFA per semester</strong> yang dijual ke masyarakat</li>
+                                <li><strong>Omzet Unit Produksi tercatat</strong> dan dilaporkan per bulan</li>
+                                <li>Setiap program strategis punya <strong>laporan dampak per semester</strong></li>
+                                <li><strong>Minimal 2 MOU aktif</strong> dengan industri — ada bukti aktivitas (guru tamu, magang, pesanan)</li>
+                                <li><strong>100% siswa kelas XII</strong> punya pengalaman magang/praktik industri</li>
+                                <li>Survey berikutnya: skor TeFa naik dari <strong>3.15 → minimal 3.80</strong></li>
+                            </ul>
+                        </div>
+                        <div class="bx" style="background: rgba(16,185,129,0.04); border-color: rgba(16,185,129,0.15);">
+                            <h4 style="color: var(--emer); font-size: 0.82rem;">🔍 Kriteria Review Program</h4>
+                            <p>Setiap program (TEFA, Robotika, Dojo, Green Line, UP) diuji:</p>
                             <ul>
                                 <li>Relevansi terhadap visi sekolah kejuruan</li>
-                                <li>Implementasi nyata dalam proses pembelajaran</li>
-                                <li>Keberlanjutan program</li>
-                                <li>Dampak terhadap kompetensi peserta didik</li>
-                                <li>Kontribusi terhadap budaya sekolah kejuruan</li>
-                            </ul>
-                        </div>
-
-                        <div class="g ac c-red" style="border-color: rgba(239,68,68,0.2);">
-                            <h4>🏷️ Penataan Penugasan Tambahan</h4>
-                            <ul>
-                                <li>Semua jabatan di luar Kepsek, Waka, KaTU, Wali Kelas → di-review</li>
-                                <li>Setiap jabatan harus punya: tujuan jelas, output terukur, dampak nyata</li>
-                                <li>Jabatan tanpa nilai tambah → dihapus</li>
+                                <li>Dampak terukur pada kompetensi siswa</li>
+                                <li>Keberlanjutan dan efisiensi sumber daya</li>
                             </ul>
                         </div>
                     </div>
@@ -439,302 +375,281 @@
             </div>
         </div>
 
-        <!-- ===== SLIDE 6: RTL — SETIAP GURU WAJIB ===== -->
-        <div class="slide bg-4" data-slide="5">
-            <div class="slide-tag">Slide 06</div>
-            <div class="org-tag">Yayasan Perguruan Pembda Nias</div>
-            <div class="content compact">
-                <span class="label lb-red anim d1">RTL Kebijakan 5</span>
-                <h2 class="anim d2">Yang <span class="red">Harus Dilakukan</span> Setiap Guru</h2>
-                <p class="sub anim d2">Bukan opsional — ini adalah tugas yang ditetapkan oleh surat edaran Yayasan</p>
-
-                <div class="grid-2 anim d3">
-                    <div class="g" style="padding: 20px 24px;">
-                        <h3 style="color: var(--accent-gold);">📄 Setiap Guru Menyusun Dokumen Relevansi Mapel</h3>
-                        <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px;">Yayasan meyakini kemampuan guru menjelaskan relevansi mapel = <strong>indikator penting</strong> bahwa guru memahami filosofi pendidikan kejuruan.</p>
-
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">1</div>
-                            <div class="step-body">
-                                <h4>Relevansi Mapel</h4>
-                                <p>Jelaskan secara sistematis bagaimana mapel yang diampu relevan terhadap pendidikan teknologi kejuruan</p>
-                            </div>
+        <!-- ===== SLIDE 7: AKSI 4 — BUDAYA KERJA & KOLABORASI ===== -->
+        <div class="s bg6" data-slide="6">
+            <div class="stag">07</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-c a d1">Problem → Action #4</span>
+                <h2 class="a d2">Budaya Kerja Industri & <span class="cn">Kolaborasi Nyata</span></h2>
+                <p class="sub a d2">Budaya kerja masih longgar: 2.69 • Kolaborasi klaim tinggi (4.16) tapi hasilnya nihil</p>
+                <div class="g2 a d3">
+                    <div class="acol">
+                        <div class="bx prob">
+                            <h4>🔴 Problem dari Survey</h4>
+                            <ul>
+                                <li>Budaya kerja industri (5R, K3, SOP) masih longgar <span class="sc">2.69</span></li>
+                                <li>Guru klaim aktif berkolaborasi <span class="sc">4.16</span> tapi guru umum tetap tidak bisa relasikan mapel ke kejuruan <span class="sc">2.63</span></li>
+                                <li>Essay: guru bekerja individual, inovasi sendiri-sendiri (±7 guru)</li>
+                                <li>Kolaborasi tanpa arah = kolaborasi di atas kertas</li>
+                            </ul>
                         </div>
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">2</div>
-                            <div class="step-body">
-                                <h4>Kontribusi terhadap Siswa</h4>
-                                <p>Kontribusi mapel terhadap kesiapan kerja maupun kewirausahaan peserta didik</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">3</div>
-                            <div class="step-body">
-                                <h4>Strategi Implementasi</h4>
-                                <p>Bagaimana pembelajaran akan diterapkan — PBL, praktik, proyek, kolaborasi?</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">4</div>
-                            <div class="step-body">
-                                <h4>Inovasi Pembelajaran</h4>
-                                <p>Inovasi apa yang akan dikembangkan selama proses pembelajaran?</p>
-                            </div>
-                        </div>
-                        <div class="step">
-                            <div class="step-num" style="background: rgba(240,165,0,0.15); color: var(--accent-gold);">5</div>
-                            <div class="step-body">
-                                <h4>Rencana Aksi TP 2026/2027</h4>
-                                <p>Langkah konkret yang akan dilaksanakan — bukan rencana umum, tapi aksi terukur</p>
-                            </div>
+                        <div class="bx aksi">
+                            <h4>✅ Aksi Mulai TP 2026/2027</h4>
+                            <ul>
+                                <li><strong>5R/5S di setiap ruangan</strong> — kelas, bengkel, lab, kantor guru. Checklist mingguan</li>
+                                <li><strong>SOP masuk bengkel/lab</strong> — APD wajib, briefing K3 sebelum praktik</li>
+                                <li><strong>Team Teaching wajib</strong> — minimal 1x per semester guru umum + guru kejuruan co-teaching</li>
+                                <li><strong>Proyek lintas mapel</strong> — minimal 1 proyek kolaborasi per semester yang menghasilkan produk</li>
+                                <li><strong>Forum berbagi praktik baik</strong> — setiap bulan, 2 guru mempresentasikan inovasi pembelajaran</li>
+                            </ul>
                         </div>
                     </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <div class="g" style="padding: 18px 22px; background: rgba(240,165,0,0.04); border-color: rgba(240,165,0,0.15);">
-                            <h3 style="color: var(--accent-gold); font-size: 0.88rem;">💡 Contoh: Guru Matematika</h3>
-                            <div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;">
-                                <p><strong style="color: var(--text-light);">Relevansi:</strong> Matematika melatih logika berpikir yang dibutuhkan dalam kalkulasi biaya produksi, desain teknik, dan perencanaan usaha.</p>
-                                <p style="margin-top: 6px;"><strong style="color: var(--text-light);">Strategi:</strong> Soal-soal kontekstual berbasis kejuruan — menghitung RAB proyek, margin keuntungan usaha, luas material konstruksi.</p>
-                                <p style="margin-top: 6px;"><strong style="color: var(--text-light);">Inovasi:</strong> Proyek kolaborasi dengan guru DPIB untuk menghitung kebutuhan material bangunan nyata.</p>
-                                <p style="margin-top: 6px;"><strong style="color: var(--text-light);">Rencana Aksi:</strong> Setiap BAB minimal 1 tugas berbasis konteks kejuruan.</p>
-                            </div>
+                    <div class="acol">
+                        <div class="bx indi">
+                            <h4>📏 Indikator Keberhasilan</h4>
+                            <ul>
+                                <li><strong>Checklist 5R mingguan</strong> ditempel di setiap ruangan — ada tanda tangan penanggung jawab</li>
+                                <li><strong>Zero accident</strong> di bengkel/lab selama TP 2026/2027</li>
+                                <li><strong>Minimal 1 bukti team teaching</strong> per guru per semester — RPP bersama + dokumentasi</li>
+                                <li><strong>Minimal 1 produk kolaborasi lintas mapel</strong> per semester yang bisa dipamerkan</li>
+                                <li><strong>10 forum berbagi praktik baik</strong> per semester — absensi + materi terdokumentasi</li>
+                                <li>Survey berikutnya: skor budaya kerja naik dari <strong>2.69 → minimal 3.50</strong></li>
+                                <li>Survey berikutnya: skor kolaborasi <strong>diverifikasi</strong> dengan bukti output nyata</li>
+                            </ul>
                         </div>
-
-                        <div class="g" style="padding: 14px 22px; background: rgba(239,68,68,0.04); border-color: rgba(239,68,68,0.15);">
-                            <h3 style="color: var(--accent-red); font-size: 0.82rem;">⚠️ Mengapa Ini Penting?</h3>
-                            <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.6;">
-                                Survey menunjukkan paradoks: guru <strong>yakin</strong> mapelnya berkontribusi (4.58) tapi <strong>tidak bisa menjelaskan</strong> relasinya ke kejuruan (2.63).<br><br>
-                                Dokumen ini memaksa setiap guru untuk <strong style="color: var(--accent-gold);">berpikir mendalam</strong> — bukan sekadar mengajar, tapi memahami <strong>mengapa</strong> mapelnya bermakna bagi masa depan siswa SMK.
-                            </p>
-                        </div>
-
-                        <div class="highlight-box">
-                            <p><strong style="color: var(--accent-gold);">Prinsip:</strong> Di SMKS Pembda Nias, <strong>setiap guru adalah pendidik teknologi kejuruan</strong>. Apa pun mapelnya.</p>
+                        <div class="hbox" style="background: linear-gradient(135deg, rgba(0,188,212,0.06), rgba(0,188,212,0.02)); border-color: rgba(0,188,212,0.15);">
+                            <p><strong style="color: var(--cyan);">Prinsip:</strong> Kolaborasi diukur bukan dari <em>frekuensi bertemu</em>, tapi dari <strong>output yang dihasilkan bersama</strong>.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== SLIDE 7: PEMBAGIAN TUGAS ===== -->
-        <div class="slide bg-5" data-slide="6">
-            <div class="slide-tag">Slide 07</div>
-            <div class="org-tag">Yayasan Perguruan Pembda Nias</div>
-            <div class="content compact">
-                <span class="label lb-gold anim d1">Pembagian Tugas Hari Ini</span>
-                <h2 class="anim d2"><span class="gold">Tugas</span> yang Ditetapkan Rapat Ini</h2>
-                <p class="sub anim d2">Ditetapkan 11 Juli 2026 — tugas sekolah disesuaikan dengan jadwal operasional sekolah</p>
-
-                <div class="grid-2 anim d3" style="margin-bottom: 12px;">
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1.5px;">🏫 Tanggung Jawab Kepala Sekolah</div>
-                        <div class="g ac c-gold">
-                            <h4>1. Sistem Penilaian Guru</h4>
+        <!-- ===== SLIDE 8: AKSI 5 — SDM & PENUGASAN ===== -->
+        <div class="s bg4" data-slide="7">
+            <div class="stag">08</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-r a d1">Problem → Action #5</span>
+                <h2 class="a d2">Penguatan <span class="rd">SDM</span> & Penataan Penugasan</h2>
+                <p class="sub a d2">Manajemen dinilai baik (4.22) tapi visi tidak berjalan (2.69) — dilibatkan tanpa eksekusi</p>
+                <div class="g2 a d3">
+                    <div class="acol">
+                        <div class="bx prob">
+                            <h4>🔴 Problem dari Survey</h4>
                             <ul>
-                                <li>Susun instrumen penilaian 4 indikator (kompetensi, kontribusi, kolaborasi, budaya kejuruan)</li>
-                                <li>Masukkan hasil survey Yayasan sebagai bahan</li>
-                                <li>Sertakan Usulan Penataan Ketenagaan TP 2026/2027</li>
+                                <li>Guru merasa dilibatkan dalam keputusan <span class="sc">4.22</span> tapi visi tidak jadi rencana operasional <span class="sc">2.69</span></li>
+                                <li>Dilibatkan tanpa eksekusi = keterlibatan tanpa tanggung jawab</li>
+                                <li>Essay: beban administrasi berlebihan (±8 guru), jabatan tambahan tanpa output jelas (±9 guru)</li>
                             </ul>
-                            <div style="margin-top: 6px;"><span class="badge badge-school">📅 Sesuai jadwal sekolah</span></div>
                         </div>
-                        <div class="g ac c-emerald">
-                            <h4>2. Tinjauan Program Strategis</h4>
+                        <div class="bx aksi">
+                            <h4>✅ Aksi Mulai TP 2026/2027</h4>
                             <ul>
-                                <li>Evaluasi relevansi & dampak nyata setiap program</li>
-                                <li>Program tanpa dampak → hentikan atau transformasi</li>
+                                <li><strong>Sistem penilaian guru baru</strong> — 4 indikator: kompetensi mengajar, kontribusi program, kolaborasi & inovasi, budaya kejuruan</li>
+                                <li><strong>Review semua jabatan tambahan</strong> — di luar Kepsek/Waka/KaTU/Wali Kelas → setiap jabatan wajib punya output terukur</li>
+                                <li><strong>Jabatan tanpa nilai tambah → dihapus</strong></li>
+                                <li><strong>Administrasi disederhanakan</strong> — cukup yang bermakna untuk pembelajaran, bukan untuk sekadar laporan</li>
+                                <li><strong>Setiap guru punya "kontrak kinerja"</strong> — target semester yang disepakati dengan Kepsek</li>
                             </ul>
-                            <div style="margin-top: 6px;"><span class="badge badge-school">📅 Sesuai jadwal sekolah</span></div>
-                        </div>
-                        <div class="g ac c-cyan">
-                            <h4>3. Penataan Penugasan Tambahan</h4>
-                            <ul>
-                                <li>Review jabatan di luar Kepsek, Waka, KaTU, Wali Kelas</li>
-                                <li>Tujuan jelas, output terukur, dampak nyata</li>
-                            </ul>
-                            <div style="margin-top: 6px;"><span class="badge badge-school">📅 Sesuai jadwal sekolah</span></div>
                         </div>
                     </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-emerald); text-transform: uppercase; letter-spacing: 1.5px;">👨‍🏫 Tanggung Jawab Setiap Guru</div>
-                        <div class="g ac c-blue">
-                            <h4>4. Dokumen Relevansi Mata Pelajaran</h4>
+                    <div class="acol">
+                        <div class="bx indi">
+                            <h4>📏 Indikator Keberhasilan</h4>
                             <ul>
-                                <li>Relevansi mapel terhadap pendidikan teknologi kejuruan</li>
-                                <li>Kontribusi terhadap kesiapan kerja/wirausaha siswa</li>
-                                <li>Strategi implementasi & inovasi pembelajaran</li>
-                                <li>Rencana aksi konkret TP 2026/2027</li>
+                                <li><strong>Instrumen penilaian guru</strong> selesai disusun dan disosialisasikan</li>
+                                <li><strong>100% jabatan tambahan</strong> punya deskripsi tugas, output, dan penanggung jawab yang jelas</li>
+                                <li><strong>Jumlah dokumen administrasi berkurang</strong> — hanya yang terkait langsung dengan kualitas pembelajaran</li>
+                                <li><strong>100% guru</strong> menandatangani "kontrak kinerja" semester</li>
+                                <li><strong>Evaluasi tengah semester</strong> — review pencapaian target masing-masing guru</li>
+                                <li>Survey berikutnya: skor "visi → operasional" naik dari <strong>2.69 → minimal 3.50</strong></li>
                             </ul>
-                            <div style="margin-top: 6px;"><span class="badge badge-school">📅 Sesuai jadwal sekolah</span></div>
                         </div>
-
-                        <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px;">⚖️ Kewenangan Yayasan</div>
-                        <div class="g ac c-red">
-                            <h4>5. Penetapan Penugasan Guru TP 2026/2027</h4>
-                            <ul>
-                                <li>Berdasarkan: penilaian Kepsek + survey + dokumen relevansi + komitmen</li>
-                                <li>Guru yang belum selaras → perhatian dalam pembinaan</li>
-                            </ul>
-                            <div style="margin-top: 6px;"><span class="badge badge-yayasan">⚡ Ditetapkan oleh Yayasan</span></div>
+                        <div class="bx" style="background: rgba(239,68,68,0.04); border-color: rgba(239,68,68,0.15);">
+                            <h4 style="color: var(--red); font-size: 0.82rem;">⚖️ Konsekuensi — Tegas tapi Adil</h4>
+                            <p>Guru yang <strong>belum mampu</strong> menunjukkan keselarasan pemahaman, relevansi mapel, serta rencana implementasi → menjadi <strong style="color: var(--red);">perhatian dalam pembinaan</strong> dan <strong style="color: var(--red);">pertimbangan Yayasan</strong> dalam penetapan penugasan TP 2026/2027.</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="anim d4 highlight-box">
-                    <p><strong style="color: var(--accent-gold);">Prinsip:</strong> Yayasan menetapkan <strong>arah kebijakan</strong>, Kepala Sekolah mengatur <strong>jadwal operasional</strong>. Yang penting bukan cepat, tapi <strong>benar dan tuntas</strong>.</p>
                 </div>
             </div>
         </div>
 
-        <!-- ===== SLIDE 8: TIMELINE ===== -->
-        <div class="slide bg-3" data-slide="7">
-            <div class="slide-tag">Slide 08</div>
-            <div class="org-tag">Yayasan Perguruan Pembda Nias</div>
-            <div class="content compact">
-                <span class="label lb-emerald anim d1">Timeline</span>
-                <h2 class="anim d2">Perjalanan <span class="emerald">Transformasi</span></h2>
-                <p class="sub anim d2">Apa yang sudah dilakukan, apa yang ditetapkan hari ini, dan apa yang akan datang</p>
+        <!-- ===== SLIDE 9: PEMBAGIAN TUGAS ===== -->
+        <div class="s bg5" data-slide="8">
+            <div class="stag">09</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-g a d1">Pembagian Tugas Hari Ini</span>
+                <h2 class="a d2"><span class="gd">Tugas</span> yang Ditetapkan Rapat Ini</h2>
+                <p class="sub a d2">Ditetapkan 11 Juli 2026 — jadwal operasional disesuaikan oleh sekolah</p>
+                <div class="g2 a d3" style="margin-bottom: 10px;">
+                    <div class="acol">
+                        <div style="font-size: 0.7rem; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: 1.5px;">🏫 Kepala Sekolah</div>
+                        <div class="bx" style="border-left: 4px solid var(--gold);">
+                            <h4 style="color: var(--gold);">1. Sistem Penilaian Guru (4 Indikator)</h4>
+                            <p>Susun instrumen + Usulan Penataan Ketenagaan TP 2026/2027</p>
+                            <div style="margin-top: 5px;"><span class="badge bdg-sch">📅 Sesuai jadwal sekolah</span></div>
+                        </div>
+                        <div class="bx" style="border-left: 4px solid var(--emer);">
+                            <h4 style="color: var(--emer);">2. Tinjauan Program Strategis</h4>
+                            <p>TEFA, Robotika, Dojo, Green Line, UP — SOP, target, review dampak</p>
+                            <div style="margin-top: 5px;"><span class="badge bdg-sch">📅 Sesuai jadwal sekolah</span></div>
+                        </div>
+                        <div class="bx" style="border-left: 4px solid var(--cyan);">
+                            <h4 style="color: var(--cyan);">3. Penataan Penugasan Tambahan</h4>
+                            <p>Review jabatan, hapus yang tidak bernilai tambah</p>
+                            <div style="margin-top: 5px;"><span class="badge bdg-sch">📅 Sesuai jadwal sekolah</span></div>
+                        </div>
+                        <div class="bx" style="border-left: 4px solid var(--blue);">
+                            <h4 style="color: var(--blue);">4. Implementasi Budaya Kerja</h4>
+                            <p>5R/5S, SOP bengkel, checklist mingguan, K3</p>
+                            <div style="margin-top: 5px;"><span class="badge bdg-sch">📅 Sesuai jadwal sekolah</span></div>
+                        </div>
+                    </div>
+                    <div class="acol">
+                        <div style="font-size: 0.7rem; font-weight: 700; color: var(--emer); text-transform: uppercase; letter-spacing: 1.5px;">👨‍🏫 Setiap Guru</div>
+                        <div class="bx" style="border-left: 4px solid var(--orange);">
+                            <h4 style="color: var(--orange);">5. Dokumen Relevansi Mapel</h4>
+                            <p>Relevansi, kontribusi, strategi, inovasi, rencana aksi — dan presentasi di forum</p>
+                            <div style="margin-top: 5px;"><span class="badge bdg-sch">📅 Sesuai jadwal sekolah</span></div>
+                        </div>
+                        <div class="bx" style="border-left: 4px solid var(--blue);">
+                            <h4 style="color: var(--blue);">6. RPP Berbasis Praktik</h4>
+                            <p>Kolom relevansi kejuruan, minimal 1 tugas kontekstual per BAB, rasio praktik terpenuhi</p>
+                            <div style="margin-top: 5px;"><span class="badge bdg-sch">📅 Sesuai jadwal sekolah</span></div>
+                        </div>
+                        <div class="bx" style="border-left: 4px solid var(--cyan);">
+                            <h4 style="color: var(--cyan);">7. Team Teaching & Kolaborasi</h4>
+                            <p>Minimal 1x co-teaching per semester + 1 proyek lintas mapel</p>
+                            <div style="margin-top: 5px;"><span class="badge bdg-sch">📅 Sesuai jadwal sekolah</span></div>
+                        </div>
+                        <div style="font-size: 0.7rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px;">⚖️ Yayasan</div>
+                        <div class="bx" style="border-left: 4px solid var(--red);">
+                            <h4 style="color: var(--red);">8. Penetapan Penugasan Guru</h4>
+                            <p>Berdasarkan: penilaian Kepsek + survey + dokumen relevansi + komitmen</p>
+                            <div style="margin-top: 5px;"><span class="badge bdg-yys">⚡ Ditetapkan Yayasan</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="a d4 hbox">
+                    <p><strong style="color: var(--gold);">Prinsip:</strong> Yayasan menetapkan <strong>arah & indikator</strong>, Kepala Sekolah mengatur <strong>jadwal operasional</strong>. Yang penting: <strong>benar, tuntas, dan terukur</strong>.</p>
+                </div>
+            </div>
+        </div>
 
-                <div class="grid-2 anim d3">
+        <!-- ===== SLIDE 10: TIMELINE ===== -->
+        <div class="s bg3" data-slide="9">
+            <div class="stag">10</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-e a d1">Timeline</span>
+                <h2 class="a d2">Perjalanan <span class="em">Transformasi</span></h2>
+                <p class="sub a d2">Yang sudah terjadi, yang ditetapkan hari ini, dan yang akan datang</p>
+                <div class="g2 a d3">
                     <div>
-                        <div class="tl-item">
-                            <div class="tl-dot" style="background: rgba(16,185,129,0.2); color: var(--accent-emerald);">✓</div>
-                            <div>
-                                <div class="tl-date" style="color: var(--accent-emerald);">2 Juli 2026</div>
-                                <div class="tl-title">Surat Edaran Diedarkan</div>
-                                <div class="tl-desc">6 kebijakan transformasi disampaikan ke seluruh guru & Kepsek</div>
-                            </div>
-                        </div>
-                        <div class="tl-item">
-                            <div class="tl-dot" style="background: rgba(16,185,129,0.2); color: var(--accent-emerald);">✓</div>
-                            <div>
-                                <div class="tl-date" style="color: var(--accent-emerald);">4 Juli 2026</div>
-                                <div class="tl-title">Survey Yayasan Dilaksanakan</div>
-                                <div class="tl-desc">32 guru mengisi survey — data kekuatan & kelemahan teridentifikasi</div>
-                            </div>
-                        </div>
-                        <div class="tl-item">
-                            <div class="tl-dot" style="background: rgba(240,165,0,0.3); color: var(--accent-gold);">⬤</div>
-                            <div>
-                                <div class="tl-date" style="color: var(--accent-gold);">11 Juli 2026 — Hari Ini</div>
-                                <div class="tl-title">Rapat RTL & Pembagian Tugas</div>
-                                <div class="tl-desc">Hasil survey dibahas, RTL praktis ditetapkan, tugas dibagi — <strong style="color: var(--accent-gold);">hari ini kita sepakat bergerak</strong></div>
-                            </div>
-                        </div>
+                        <div class="tl"><div class="tl-d" style="background: rgba(16,185,129,0.2); color: var(--emer);">✓</div><div><div class="tl-dt" style="color: var(--emer);">2 Juli 2026</div><div class="tl-tt">Surat Edaran Diedarkan</div><div class="tl-ds">6 kebijakan transformasi disampaikan ke seluruh guru & Kepsek</div></div></div>
+                        <div class="tl"><div class="tl-d" style="background: rgba(16,185,129,0.2); color: var(--emer);">✓</div><div><div class="tl-dt" style="color: var(--emer);">4 Juli 2026</div><div class="tl-tt">Survey Yayasan Dilaksanakan</div><div class="tl-ds">32 guru mengisi survey — kekuatan, kelemahan & paradoks teridentifikasi</div></div></div>
+                        <div class="tl"><div class="tl-d" style="background: rgba(240,165,0,0.3); color: var(--gold);">⬤</div><div><div class="tl-dt" style="color: var(--gold);">11 Juli 2026 — Hari Ini</div><div class="tl-tt">Problem → Action Ditetapkan</div><div class="tl-ds">5 problem survey → 5 aksi konkret dengan indikator terukur. Tugas dibagi hari ini. <strong style="color: var(--gold);">Tidak ada omong kosong.</strong></div></div></div>
                     </div>
                     <div>
-                        <div class="tl-item">
-                            <div class="tl-dot" style="background: rgba(33,150,243,0.2); color: var(--accent-blue);">→</div>
-                            <div>
-                                <div class="tl-date" style="color: var(--accent-blue);">Sesuai Jadwal Sekolah</div>
-                                <div class="tl-title">Kepsek: Sistem Penilaian + Tinjauan Program + Penataan Jabatan</div>
-                                <div class="tl-desc">Disusun dan diserahkan ke Yayasan sesuai jadwal operasional sekolah</div>
-                            </div>
-                        </div>
-                        <div class="tl-item">
-                            <div class="tl-dot" style="background: rgba(0,188,212,0.2); color: var(--accent-cyan);">→</div>
-                            <div>
-                                <div class="tl-date" style="color: var(--accent-cyan);">Sesuai Jadwal Sekolah</div>
-                                <div class="tl-title">Guru: Dokumen Relevansi Mata Pelajaran</div>
-                                <div class="tl-desc">Relevansi, kontribusi, strategi, inovasi, rencana aksi</div>
-                            </div>
-                        </div>
-                        <div class="tl-item">
-                            <div class="tl-dot" style="background: rgba(239,68,68,0.2); color: var(--accent-red);">⚖️</div>
-                            <div>
-                                <div class="tl-date" style="color: var(--accent-red);">Ditetapkan Yayasan</div>
-                                <div class="tl-title">Penetapan Penugasan Guru TP 2026/2027</div>
-                                <div class="tl-desc">Berdasarkan semua data — penilaian + survey + dokumen + komitmen</div>
-                            </div>
-                        </div>
-                        <div class="tl-item">
-                            <div class="tl-dot" style="background: rgba(16,185,129,0.2); color: var(--accent-emerald);">🚀</div>
-                            <div>
-                                <div class="tl-date" style="color: var(--accent-emerald);">TP 2026/2027</div>
-                                <div class="tl-title">Ekosistem Baru Berjalan</div>
-                                <div class="tl-desc">Penugasan baru, budaya baru, cara berpikir baru</div>
-                            </div>
-                        </div>
+                        <div class="tl"><div class="tl-d" style="background: rgba(33,150,243,0.2); color: var(--blue);">→</div><div><div class="tl-dt" style="color: var(--blue);">Sesuai Jadwal Sekolah</div><div class="tl-tt">Kepsek: Penilaian, Program, Jabatan, Budaya Kerja</div><div class="tl-ds">Disusun dan diimplementasikan sesuai jadwal operasional sekolah</div></div></div>
+                        <div class="tl"><div class="tl-d" style="background: rgba(0,188,212,0.2); color: var(--cyan);">→</div><div><div class="tl-dt" style="color: var(--cyan);">Sesuai Jadwal Sekolah</div><div class="tl-tt">Guru: Dokumen Relevansi, RPP Praktik, Team Teaching</div><div class="tl-ds">Setiap guru menjalankan aksi yang ditetapkan — bukti terukur</div></div></div>
+                        <div class="tl"><div class="tl-d" style="background: rgba(239,68,68,0.2); color: var(--red);">⚖️</div><div><div class="tl-dt" style="color: var(--red);">Ditetapkan Yayasan</div><div class="tl-tt">Penetapan Penugasan Guru TP 2026/2027</div><div class="tl-ds">Berdasarkan semua data objektif — penilaian + survey + dokumen + komitmen</div></div></div>
+                        <div class="tl"><div class="tl-d" style="background: rgba(16,185,129,0.2); color: var(--emer);">🚀</div><div><div class="tl-dt" style="color: var(--emer);">TP 2026/2027</div><div class="tl-tt">Ekosistem Baru Berjalan</div><div class="tl-ds">Budaya baru, cara berpikir baru, output terukur — <strong style="color: var(--emer);">Keep Moving Forward</strong></div></div></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== SLIDE 9: PENUTUP ===== -->
-        <div class="slide bg-1" data-slide="8">
-            <div class="slide-tag">Slide 09</div>
-            <div class="org-tag">Yayasan Perguruan Pembda Nias</div>
-            <div class="content" style="text-align: center;">
-                <span class="label lb-gold anim d1">Penutup</span>
-                <h2 class="anim d2" style="font-size: 1.8rem;">Transformasi Dimulai dari <span class="gold">Tindakan Hari Ini</span></h2>
+        <!-- ===== SLIDE 11: RINGKASAN INDIKATOR ===== -->
+        <div class="s bg6" data-slide="10">
+            <div class="stag">11</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct">
+                <span class="lb lb-b a d1">Dashboard Keberhasilan</span>
+                <h2 class="a d2">Ringkasan <span class="bl">Indikator Keberhasilan</span></h2>
+                <p class="sub a d2">Inilah ukuran apakah transformasi berjalan atau hanya wacana</p>
+                <div class="g3 a d3">
+                    <div class="bx" style="text-align: center; border-top: 3px solid var(--red);">
+                        <div style="font-size: 1.8rem; margin-bottom: 4px;">📄</div>
+                        <div style="font-size: 0.82rem; font-weight: 700;">100% Guru</div>
+                        <div style="font-size: 0.72rem; color: var(--muted);">Serahkan Dokumen Relevansi & Presentasi di Forum</div>
+                    </div>
+                    <div class="bx" style="text-align: center; border-top: 3px solid var(--orange);">
+                        <div style="font-size: 1.8rem; margin-bottom: 4px;">📐</div>
+                        <div style="font-size: 0.82rem; font-weight: 700;">Rasio Praktik Terpenuhi</div>
+                        <div style="font-size: 0.72rem; color: var(--muted);">≥60% produktif, ≥30% umum — verifikasi via supervisi</div>
+                    </div>
+                    <div class="bx" style="text-align: center; border-top: 3px solid var(--emer);">
+                        <div style="font-size: 1.8rem; margin-bottom: 4px;">🏭</div>
+                        <div style="font-size: 0.82rem; font-weight: 700;">≥2 Produk TEFA/Semester</div>
+                        <div style="font-size: 0.72rem; color: var(--muted);">SOP tertulis, omzet UP tercatat, 2 MOU aktif</div>
+                    </div>
+                    <div class="bx" style="text-align: center; border-top: 3px solid var(--cyan);">
+                        <div style="font-size: 1.8rem; margin-bottom: 4px;">🤝</div>
+                        <div style="font-size: 0.82rem; font-weight: 700;">Team Teaching + Proyek Kolaborasi</div>
+                        <div style="font-size: 0.72rem; color: var(--muted);">Min 1x co-teaching/semester + 1 produk kolaborasi</div>
+                    </div>
+                    <div class="bx" style="text-align: center; border-top: 3px solid var(--blue);">
+                        <div style="font-size: 1.8rem; margin-bottom: 4px;">🏷️</div>
+                        <div style="font-size: 0.82rem; font-weight: 700;">5R Mingguan + Zero Accident</div>
+                        <div style="font-size: 0.72rem; color: var(--muted);">Checklist ditempel, SOP bengkel, K3 konsisten</div>
+                    </div>
+                    <div class="bx" style="text-align: center; border-top: 3px solid var(--gold);">
+                        <div style="font-size: 1.8rem; margin-bottom: 4px;">📊</div>
+                        <div style="font-size: 0.82rem; font-weight: 700;">Skor Survey Naik</div>
+                        <div style="font-size: 0.72rem; color: var(--muted);">Relevansi: 2.63→3.50 • Teori: 2.78→<2.00 • TeFa: 3.15→3.80</div>
+                    </div>
+                </div>
+                <div class="a d4 hbox" style="margin-top: 12px;">
+                    <p><strong style="color: var(--gold);">Evaluasi:</strong> Survey yang sama akan dijalankan lagi di <strong>akhir semester 1 TP 2026/2027</strong> untuk mengukur apakah aksi yang ditetapkan hari ini benar-benar berjalan.</p>
+                </div>
+            </div>
+        </div>
 
-                <div class="big-quote anim d3">
-                    <p>"Di SMKS Pembda Nias, kami percaya bahwa pendidikan teknologi kejuruan bukan sekadar proses mengajar, melainkan proses <strong style="color: var(--accent-gold);">membentuk manusia</strong>. Setiap guru adalah pendidik teknologi kejuruan, setiap mata pelajaran memiliki makna terhadap masa depan peserta didik, setiap proses pembelajaran harus menghasilkan nilai, dan setiap lulusan harus meninggalkan sekolah dengan <strong style="color: var(--accent-gold);">kompetensi, karakter, karya, serta keberanian untuk berkarya</strong>."</p>
+        <!-- ===== SLIDE 12: PENUTUP ===== -->
+        <div class="s bg1" data-slide="11">
+            <div class="stag">12</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="ct" style="text-align: center;">
+                <span class="lb lb-g a d1">Penutup</span>
+                <h2 class="a d2" style="font-size: 1.7rem;"><span class="gd">Turning Vision Into Action</span></h2>
+
+                <div class="big-q a d3">
+                    <p>"Di SMKS Pembda Nias, kami percaya bahwa pendidikan teknologi kejuruan bukan sekadar proses mengajar, melainkan proses <strong style="color: var(--gold);">membentuk manusia</strong>. Setiap guru adalah pendidik teknologi kejuruan, setiap mata pelajaran memiliki makna terhadap masa depan peserta didik, setiap proses pembelajaran harus menghasilkan nilai, dan setiap lulusan harus meninggalkan sekolah dengan <strong style="color: var(--gold);">kompetensi, karakter, karya, serta keberanian untuk berkarya</strong>."</p>
                 </div>
 
-                <div class="anim d4" style="margin-top: 24px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-                    <div class="g stat" style="min-width: 150px;">
-                        <div style="font-size: 1.3rem; margin-bottom: 4px;">🤝</div>
-                        <div style="font-size: 0.82rem; font-weight: 700;">Bukan Menyalahkan</div>
-                        <div style="font-size: 0.72rem; color: var(--text-muted);">Tapi membangun bersama</div>
-                    </div>
-                    <div class="g stat" style="min-width: 150px;">
-                        <div style="font-size: 1.3rem; margin-bottom: 4px;">📐</div>
-                        <div style="font-size: 0.82rem; font-weight: 700;">Bukan Teori</div>
-                        <div style="font-size: 0.72rem; color: var(--text-muted);">Tapi tindakan terukur</div>
-                    </div>
-                    <div class="g stat" style="min-width: 150px;">
-                        <div style="font-size: 1.3rem; margin-bottom: 4px;">⏰</div>
-                        <div style="font-size: 0.82rem; font-weight: 700;">Bukan Nanti</div>
-                        <div style="font-size: 0.72rem; color: var(--text-muted);">Tapi mulai hari ini</div>
-                    </div>
+                <div class="a d4" style="margin-top: 20px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;">
+                    <div class="bx" style="min-width: 140px; text-align: center;"><div style="font-size: 1.2rem; margin-bottom: 3px;">🔴</div><div style="font-size: 0.78rem; font-weight: 700;">5 Problem</div><div style="font-size: 0.68rem; color: var(--muted);">Teridentifikasi dari survey</div></div>
+                    <div class="bx" style="min-width: 140px; text-align: center;"><div style="font-size: 1.2rem; margin-bottom: 3px;">✅</div><div style="font-size: 0.78rem; font-weight: 700;">5 Aksi Konkret</div><div style="font-size: 0.68rem; color: var(--muted);">Mulai TP 2026/2027</div></div>
+                    <div class="bx" style="min-width: 140px; text-align: center;"><div style="font-size: 1.2rem; margin-bottom: 3px;">📏</div><div style="font-size: 0.78rem; font-weight: 700;">Indikator Terukur</div><div style="font-size: 0.68rem; color: var(--muted);">Setiap aksi ada ukurannya</div></div>
+                    <div class="bx" style="min-width: 140px; text-align: center;"><div style="font-size: 1.2rem; margin-bottom: 3px;">📊</div><div style="font-size: 0.78rem; font-weight: 700;">Survey Ulang</div><div style="font-size: 0.68rem; color: var(--muted);">Akhir semester 1 = evaluasi</div></div>
                 </div>
 
-                <div class="anim d5" style="margin-top: 24px;">
-                    <p style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold);">Mari Bergerak Bersama.</p>
-                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 6px;">Yulianus Zega, S.Kom., M.Pd.T<br>Ketua Yayasan Perguruan Pembangunan Daerah Nias</p>
+                <div class="a d5" style="margin-top: 20px;">
+                    <p style="font-size: 1.1rem; font-weight: 800; color: var(--gold);">Keep Moving Forward.</p>
+                    <p style="font-size: 0.78rem; color: var(--muted); margin-top: 6px;">Yulianus Zega, S.Kom., M.Pd.T<br>Ketua Yayasan Perguruan Pembangunan Daerah Nias</p>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- NAVIGATION -->
-    <div class="nav-bar">
-        <button class="nav-btn" id="prevBtn" onclick="prevSlide()">← Sebelumnya</button>
-        <div style="display: flex; align-items: center; gap: 14px;">
-            <div class="nav-dots" id="navDots"></div>
-            <span class="slide-counter" id="slideCounter">1 / 9</span>
+    <!-- NAV -->
+    <div class="nav">
+        <button class="nb" id="pb" onclick="pv()">← Sebelumnya</button>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="ndots" id="nd"></div>
+            <span class="sc-c" id="sc">1 / 12</span>
         </div>
-        <button class="nav-btn" id="nextBtn" onclick="nextSlide()">Selanjutnya →</button>
+        <button class="nb" id="nb" onclick="nx()">Selanjutnya →</button>
     </div>
 
     <script>
-        const slides = document.querySelectorAll('.slide');
-        let cur = 0;
-        const total = slides.length;
-        const dots = document.getElementById('navDots');
-        for (let i = 0; i < total; i++) { const d = document.createElement('div'); d.className = 'nav-dot' + (i === 0 ? ' active' : ''); d.onclick = () => go(i); dots.appendChild(d); }
-
-        function update() {
-            slides.forEach((s, i) => { s.classList.remove('active', 'exit-left'); if (i < cur) s.classList.add('exit-left'); if (i === cur) s.classList.add('active'); });
-            document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === cur));
-            document.getElementById('slideCounter').textContent = `${cur + 1} / ${total}`;
-            document.getElementById('prevBtn').disabled = cur === 0;
-            document.getElementById('nextBtn').disabled = cur === total - 1;
-            setTimeout(() => { const a = slides[cur]; a.querySelectorAll('.bar-anim').forEach((b, i) => setTimeout(() => b.style.width = b.dataset.width + '%', i * 80)); }, 400);
-        }
-        function nextSlide() { if (cur < total - 1) { cur++; update(); } }
-        function prevSlide() { if (cur > 0) { cur--; update(); } }
-        function go(n) { cur = n; update(); }
-
-        document.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); nextSlide(); } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); prevSlide(); } else if (e.key === 'f' || e.key === 'F') toggleFullscreen(); });
-        let tx = 0;
-        document.addEventListener('touchstart', e => tx = e.changedTouches[0].screenX);
-        document.addEventListener('touchend', e => { const d = tx - e.changedTouches[0].screenX; if (Math.abs(d) > 60) { d > 0 ? nextSlide() : prevSlide(); } });
-        function toggleFullscreen() { !document.fullscreenElement ? document.documentElement.requestFullscreen() : document.exitFullscreen(); }
-        update();
+        const sl=document.querySelectorAll('.s');let c=0;const t=sl.length;const dd=document.getElementById('nd');
+        for(let i=0;i<t;i++){const d=document.createElement('div');d.className='nd'+(i===0?' act':'');d.onclick=()=>go(i);dd.appendChild(d);}
+        function up(){sl.forEach((s,i)=>{s.classList.remove('act','exl');if(i<c)s.classList.add('exl');if(i===c)s.classList.add('act');});document.querySelectorAll('.nd').forEach((d,i)=>d.classList.toggle('act',i===c));document.getElementById('sc').textContent=`${c+1} / ${t}`;document.getElementById('pb').disabled=c===0;document.getElementById('nb').disabled=c===t-1;setTimeout(()=>{sl[c].querySelectorAll('.bra').forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.width+'%',i*80));},400);}
+        function nx(){if(c<t-1){c++;up();}}function pv(){if(c>0){c--;up();}}function go(n){c=n;up();}
+        document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='Enter'){e.preventDefault();nx();}else if(e.key==='ArrowLeft'||e.key==='Backspace'){e.preventDefault();pv();}else if(e.key==='f'||e.key==='F')togFS();});
+        let tx=0;document.addEventListener('touchstart',e=>tx=e.changedTouches[0].screenX);document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].screenX;if(Math.abs(d)>60){d>0?nx():pv();}});
+        function togFS(){!document.fullscreenElement?document.documentElement.requestFullscreen():document.exitFullscreen();}
+        up();
     </script>
 </body>
 </html>

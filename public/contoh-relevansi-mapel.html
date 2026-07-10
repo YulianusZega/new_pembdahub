@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contoh Praktis Relevansi Mata Pelajaran SMK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a1628;
+            --navy-light: #162a45;
+            --gold: #f0a500;
+            --blue: #2196F3;
+            --emer: #10b981;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--navy);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 {
+            color: var(--gold);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--blue);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--navy-light);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(240,165,0,0.3);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: var(--emer);
+            font-size: 1.2rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .card.umum h3 { color: var(--gold); }
+        .item {
+            margin-bottom: 12px;
+        }
+        .item-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .item-content {
+            font-size: 0.95rem;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 10px 24px;
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            background: var(--gold);
+            color: var(--navy);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Panduan Relevansi & Tugas Kontekstual</h1>
+        <p class="subtitle">Contoh Praktis Penerapan Mata Pelajaran Umum & Kejuruan di SMKS Pembda Nias</p>
+    </header>
+
+    <div class="section-title">📘 Kelompok Mata Pelajaran Umum (Normatif & Adaptif)</div>
+    <div class="grid">
+        <div class="card umum">
+            <h3>Matematika</h3>
+            <div class="item">
+                <div class="item-label">Relevansi Kejuruan</div>
+                <div class="item-content">Melatih logika berpikir komputasional, presisi perhitungan material, dan analisis kelayakan bisnis.</div>
+            </div>
+            <div class="item">
+                <div class="item-label">Contoh Tugas Kontekstual</div>
+                <div class="item-content">
+                    - <strong>Teknik/Bangunan:</strong> Menghitung Rencana Anggaran Biaya (RAB) pembuatan gazebo.<br>
+                    - <strong>Bisnis:</strong> Menghitung margin keuntungan, BEP (Break Even Point), dan proyeksi ROI dari Unit Produksi kelas.
+                </div>
+            </div>
+        </div>
+
+        <div class="card umum">
+            <h3>Bahasa Indonesia</h3>
+            <div class="item">
+                <div class="item-label">Relevansi Kejuruan</div>
+                <div class="item-content">Kemampuan komunikasi profesional, negosiasi, dan penyusunan dokumen teknis standar industri.</div>
+            </div>
+            <div class="item">
+                <div class="item-label">Contoh Tugas Kontekstual</div>
+                <div class="item-content">
+                    - Menyusun proposal penawaran jasa TEFA ke masyarakat.<br>
+                    - Membuat manual book / panduan penggunaan alat dari produk yang dirakit siswa.<br>
+                    - Simulasi wawancara kerja dan presentasi produk (pitching).
+                </div>
+            </div>
+        </div>
+
+        <div class="card umum">
+            <h3>Bahasa Inggris</h3>
+            <div class="item">
+                <div class="item-label">Relevansi Kejuruan</div>
+                <div class="item-content">Penguasaan literatur teknis global dan kesiapan menghadapi klien/pasar internasional.</div>
+            </div>
+            <div class="item">
+                <div class="item-label">Contoh Tugas Kontekstual</div>
+                <div class="item-content">
+                    - Menerjemahkan manual pengoperasian mesin industri berbahasa Inggris.<br>
+                    - Role-play melayani pelanggan asing di program TEFA (misal: jasa service/komputer).<br>
+                    - Menulis surat lamaran kerja internasional (Cover Letter).
+                </div>
+            </div>
+        </div>
+
+        <div class="card umum">
+            <h3>Pendidikan Agama / PKn</h3>
+            <div class="item">
+                <div class="item-label">Relevansi Kejuruan</div>
+                <div class="item-content">Pembentukan karakter (attitude) pekerja profesional, etika bisnis, dan integritas kerja.</div>
+            </div>
+            <div class="item">
+                <div class="item-label">Contoh Tugas Kontekstual</div>
+                <div class="item-content">
+                    - Analisis studi kasus pelanggaran K3 atau etika profesi di tempat kerja nyata.<br>
+                    - Proyek kampanye budaya anti-korupsi dan kejujuran dalam berwirausaha (praktek di Kantin Kejujuran/UP).
+                </div>
+            </div>
+        </div>
+
+        <div class="card umum">
+            <h3>Fisika</h3>
+            <div class="item">
+                <div class="item-label">Relevansi Kejuruan</div>
+                <div class="item-content">Pemahaman dasar mekanika, elektronika, dan termodinamika untuk memecahkan masalah rekayasa.</div>
+            </div>
+            <div class="item">
+                <div class="item-label">Contoh Tugas Kontekstual</div>
+                <div class="item-content">
+                    - <strong>TKRO/TBSM:</strong> Menghitung torsi mesin, efisiensi pengereman, dan kelistrikan kendaraan.<br>
+                    - <strong>TKJ/Robotika:</strong> Menghitung daya listrik, hukum ohm pada rangkaian sensor IoT.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title" style="color: var(--emer);">⚙️ Kelompok Mata Pelajaran Kejuruan (Produktif)</div>
+    <div class="grid">
+        <div class="card">
+            <h3>Teknik Kendaraan Ringan / Motor</h3>
+            <div class="item">
+                <div class="item-label">Target Lulusan</div>
+                <div class="item-content">Mekanik handal berstandar SOP industri & wirausahawan bengkel mandiri.</div>
+            </div>
+            <div class="item">
+                <div class="item-label">Contoh Praktik Terukur (TEFA)</div>
+                <div class="item-content">
+                    - Menerima pesanan servis berkala nyata dari masyarakat sekitar dengan standar waktu (Time Limits).<br>
+                    - Proyek akhir: Merestorasi/memperbaiki 1 unit kendaraan bermasalah hingga layak jalan dan lulus uji emisi.
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Teknik Komputer & Jaringan (TKJ/RPL)</h3>
+            <div class="item">
+                <div class="item-label">Target Lulusan</div>
+                <div class="item-content">Network Engineer, Developer, & IT Support Profesional.</div>
+            </div>
+            <div class="item">
+                <div class="item-label">Contoh Praktik Terukur (TEFA)</div>
+                <div class="item-content">
+                    - <strong>Proyek IoT:</strong> Membuat sistem smart farming (penyiram tanaman otomatis berbasis sensor) untuk dijual.<br>
+                    - <strong>Jasa IT:</strong> Membuka jasa perakitan PC, instalasi jaringan, dan pembuatan website untuk UMKM lokal.
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Desain Pemodelan & Info Bangunan (DPIB)</h3>
+            <div class="item">
+                <div class="item-label">Target Lulusan</div>
+                <div class="item-content">Drafter profesional, estimator, dan wirausaha jasa desain.</div>
+            </div>
+            <div class="item">
+                <div class="item-label">Contoh Praktik Terukur (TEFA)</div>
+                <div class="item-content">
+                    - Menerima pesanan desain rumah/ruko dari klien nyata lengkap dengan gambar 2D/3D (AutoCAD/SketchUp) dan RAB.<br>
+                    - Kolaborasi dengan guru Matematika untuk akurasi RAB, dan Bahasa Indonesia untuk proposal tender.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 50px;">
+        <a href="presentasi-transformasi-smk.html" class="back-btn">← Kembali ke Presentasi</a>
+    </div>
+</div>
+
+</body>
+</html>

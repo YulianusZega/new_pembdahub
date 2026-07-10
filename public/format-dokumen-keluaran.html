@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contoh Format Dokumen Keluaran (Output)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a1628;
+            --navy-light: #162a45;
+            --gold: #f0a500;
+            --blue: #2196F3;
+            --emer: #10b981;
+            --red: #ef4444;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --bg-paper: #ffffff;
+            --text-paper: #1e293b;
+            --border-paper: #cbd5e1;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--navy);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+        }
+        h1 { color: var(--gold); margin-bottom: 5px; }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .nav-links a:hover { background: var(--gold); color: var(--navy); }
+
+        .paper {
+            background: var(--bg-paper);
+            color: var(--text-paper);
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 60px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .paper-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--text-paper);
+            padding-bottom: 15px;
+        }
+        .paper-header h2 { margin: 0; font-size: 1.4rem; text-transform: uppercase; }
+        .paper-header p { margin: 5px 0 0; font-size: 0.9rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        th, td {
+            border: 1px solid var(--border-paper);
+            padding: 10px;
+            text-align: left;
+        }
+        th { background-color: #f1f5f9; font-weight: 700; }
+        .center { text-align: center; }
+        
+        .form-row { margin-bottom: 15px; }
+        .form-label { font-weight: 600; display: inline-block; width: 200px; }
+        .form-value { border-bottom: 1px dotted var(--border-paper); display: inline-block; width: calc(100% - 220px); }
+
+        .signature {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .sig-box { text-align: center; width: 200px; }
+        .sig-name { margin-top: 70px; font-weight: 600; border-bottom: 1px solid var(--text-paper); }
+
+        .back-btn {
+            display: block;
+            width: max-content;
+            margin: 0 auto;
+            padding: 12px 24px;
+            background: var(--gold);
+            color: var(--navy);
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Draft Dokumen Output (Keluaran)</h1>
+        <p>Contoh format fisik yang harus diserahkan sebagai bukti pelaksanaan tugas.</p>
+    </header>
+
+    <div class="nav-links">
+        <a href="#penilaian">1. Form Penilaian Guru</a>
+        <a href="#tefa">2. SOP Dasar TEFA</a>
+        <a href="#5r">3. Checklist 5R</a>
+        <a href="#relevansi">4. Form Relevansi Mapel</a>
+    </div>
+
+    <!-- 1. Form Penilaian Guru -->
+    <div id="penilaian" class="paper">
+        <div class="paper-header">
+            <h2>INSTRUMEN PENILAIAN GURU BERBASIS KINERJA & KONTRIBUSI</h2>
+            <p>SMKS PEMBDA NIAS - TAHUN PELAJARAN 2026/2027</p>
+        </div>
+        <div class="form-row">
+            <span class="form-label">Nama Guru</span><span class="form-value">: </span>
+        </div>
+        <div class="form-row">
+            <span class="form-label">Mata Pelajaran</span><span class="form-value">: </span>
+        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th width="5%">No</th>
+                    <th width="35%">Indikator Penilaian</th>
+                    <th width="45%">Bukti / Deskripsi Capaian</th>
+                    <th width="15%" class="center">Skor (1-5)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="center">1</td>
+                    <td><strong>Kompetensi Mengajar & Praktik</strong><br><small>Rasio praktik (mapel umum 30%, produktif 60%), penggunaan teknologi untuk produksi.</small></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="center">2</td>
+                    <td><strong>Kontribusi Program Sekolah</strong><br><small>Keterlibatan di TEFA, UP, ekstra, kepanitiaan dengan output nyata.</small></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="center">3</td>
+                    <td><strong>Kolaborasi & Team Teaching</strong><br><small>Minimal 1x co-teaching per semester & proyek kolaborasi lintas mapel.</small></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="center">4</td>
+                    <td><strong>Implementasi Budaya Kejuruan</strong><br><small>Penerapan 5R, K3, dan penanaman etika wirausaha/industri pada siswa.</small></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="text-align: right; font-weight: 700;">TOTAL SKOR RATA-RATA:</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><em>* Skor 1 (Sangat Kurang) s.d 5 (Sangat Baik). Syarat perpanjangan penugasan Yayasan: Rata-rata > 3.5.</em></p>
+        
+        <div class="signature">
+            <div class="sig-box">
+                <p>Guru yang Dinilai,</p>
+                <div class="sig-name"></div>
+            </div>
+            <div class="sig-box">
+                <p>Kepala Sekolah,</p>
+                <div class="sig-name"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. SOP Dasar TEFA -->
+    <div id="tefa" class="paper">
+        <div class="paper-header">
+            <h2>STANDAR OPERASIONAL PROSEDUR (SOP)</h2>
+            <p>PELAKSANAAN TEACHING FACTORY (TEFA) - BENGKEL / LAB / UNIT PRODUKSI</p>
+        </div>
+        
+        <p><strong>1. Tujuan:</strong> Memastikan layanan TEFA berjalan sesuai standar industri, menghasilkan produk berkualitas, dan menjadi sarana belajar yang efektif bagi siswa.</p>
+        
+        <p><strong>2. Alur Pelayanan Pesanan / Jasa:</strong></p>
+        <table>
+            <thead>
+                <tr>
+                    <th width="20%">Tahap</th>
+                    <th width="50%">Deskripsi Aktivitas</th>
+                    <th width="30%">Penanggung Jawab</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Penerimaan & Order</td>
+                    <td>Menerima pesanan/keluhan pelanggan, mencatat di buku order, menyusun estimasi biaya (RAB) dan waktu.</td>
+                    <td>Siswa (Petugas Front Desk) didampingi Guru</td>
+                </tr>
+                <tr>
+                    <td>Pengerjaan / Produksi</td>
+                    <td>Siswa mengerjakan sesuai SOP teknis mapel dengan menggunakan APD wajib.</td>
+                    <td>Kelompok Kerja Siswa (Mekanik/Teknisi)</td>
+                </tr>
+                <tr>
+                    <td>Quality Control (QC)</td>
+                    <td>Pemeriksaan fungsi dan kualitas hasil akhir sebelum diserahkan.</td>
+                    <td>Guru Produktif (Kepala Bengkel)</td>
+                </tr>
+                <tr>
+                    <td>Penyerahan & Pembayaran</td>
+                    <td>Penyerahan barang/jasa ke pelanggan, pencatatan transaksi masuk ke kas Unit Produksi.</td>
+                    <td>Siswa (Kasir/Admin)</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="signature">
+            <div class="sig-box">
+                <p>Kepala Program Keahlian,</p>
+                <div class="sig-name"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Checklist 5R -->
+    <div id="5r" class="paper">
+        <div class="paper-header">
+            <h2>FORM CHECKLIST 5R MINGGUAN</h2>
+            <p>RUANGAN: BENGKEL / LAB / KELAS ...........................</p>
+        </div>
+        <p><strong>Bulan/Minggu Ke:</strong> ......................................................</p>
+        <table>
+            <thead>
+                <tr>
+                    <th width="15%">Komponen</th>
+                    <th width="45%">Indikator Pengecekan</th>
+                    <th width="10%" class="center">Ya</th>
+                    <th width="10%" class="center">Tidak</th>
+                    <th width="20%">Catatan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>RINGKAS</strong></td>
+                    <td>Tidak ada barang yang tidak diperlukan (rongsokan/sampah) di area kerja.</td>
+                    <td class="center">◻</td>
+                    <td class="center">◻</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>RAPI</strong></td>
+                    <td>Alat kerja & bahan dikembalikan ke tempat asalnya (lemari/tool box) sesuai label.</td>
+                    <td class="center">◻</td>
+                    <td class="center">◻</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>RESIK</strong></td>
+                    <td>Lantai disapu/dipel, mesin bersih dari debu/oli/kotoran, meja rapi.</td>
+                    <td class="center">◻</td>
+                    <td class="center">◻</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>RAWAT</strong></td>
+                    <td>Peralatan dipelihara agar tidak rusak, kabel tertata aman.</td>
+                    <td class="center">◻</td>
+                    <td class="center">◻</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><strong>RAJIN</strong></td>
+                    <td>Seluruh siswa mematuhi aturan 5R tanpa harus ditegur.</td>
+                    <td class="center">◻</td>
+                    <td class="center">◻</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="signature">
+            <div class="sig-box">
+                <p>Petugas Piket / Ketua Kelas,</p>
+                <div class="sig-name"></div>
+            </div>
+            <div class="sig-box">
+                <p>Guru Pengampu / Wali Kelas,</p>
+                <div class="sig-name"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Dokumen Relevansi -->
+    <div id="relevansi" class="paper">
+        <div class="paper-header">
+            <h2>DOKUMEN PERNYATAAN RELEVANSI MATA PELAJARAN</h2>
+            <p>TERHADAP PENDIDIKAN TEKNOLOGI KEJURUAN</p>
+        </div>
+        <div class="form-row">
+            <span class="form-label">Nama Guru</span><span class="form-value">: </span>
+        </div>
+        <div class="form-row">
+            <span class="form-label">Mata Pelajaran yang Diampu</span><span class="form-value">: </span>
+        </div>
+        <div class="form-row">
+            <span class="form-label">Mengajar di Jurusan</span><span class="form-value">: </span>
+        </div>
+
+        <p><strong>1. Penjelasan Relevansi Mapel:</strong></p>
+        <div style="width: 100%; height: 80px; border: 1px solid var(--border-paper); margin-bottom: 20px;"></div>
+
+        <p><strong>2. Rencana Pembuatan 1 Produk / Tugas Kontekstual (Per Semester):</strong></p>
+        <div style="width: 100%; height: 80px; border: 1px solid var(--border-paper); margin-bottom: 20px;"></div>
+        
+        <p><strong>3. Rencana Team Teaching / Kolaborasi (Dengan Guru Mapel Apa):</strong></p>
+        <div style="width: 100%; height: 80px; border: 1px solid var(--border-paper); margin-bottom: 20px;"></div>
+
+        <p><em>Dokumen ini mengikat dan akan menjadi salah satu acuan penilaian kinerja pada akhir semester.</em></p>
+
+        <div class="signature">
+            <div class="sig-box">
+                <p>Gunungsitoli, ...................... 2026<br>Guru Mapel,</p>
+                <div class="sig-name"></div>
+            </div>
+            <div class="sig-box">
+                <p><br>Kepala Sekolah,</p>
+                <div class="sig-name"></div>
+            </div>
+        </div>
+    </div>
+
+    <a href="presentasi-transformasi-smk.html" class="back-btn">← Kembali ke Presentasi</a>
+</div>
+
+</body>
+</html>

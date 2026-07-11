@@ -220,10 +220,12 @@
                             <div class="w-full md:w-2/3 bg-black/60 rounded-xl border border-forum-light p-3 flex flex-col items-center justify-center relative overflow-hidden">
                                 <h3 class="text-xs font-bold text-forum-muted uppercase tracking-wider mb-3 w-full text-left" x-text="`${puzzle.title} (${puzzle.progress.percentage}%)`"></h3>
                                 
-                                <div class="w-full max-w-[500px] relative shadow-2xl bg-forum-card border border-forum-light/50"
-                                     :style="`display: grid; grid-template-columns: repeat(${puzzle.grid_x}, 1fr); grid-template-rows: repeat(${puzzle.grid_y}, 1fr); aspect-ratio: ${puzzle.grid_x}/${puzzle.grid_y};`">
-                                    
-                                    <template x-for="(piece, i) in board" :key="'board-'+i">
+                                <div class="w-full max-w-[500px] relative shadow-2xl bg-forum-card border border-forum-light/50">
+                                    <!-- Aspect ratio hack -->
+                                    <div :style="`padding-bottom: ${(puzzle.grid_y / puzzle.grid_x) * 100}%;`"></div>
+                                    <div class="absolute inset-0"
+                                         :style="`display: grid; grid-template-columns: repeat(${puzzle.grid_x}, 1fr); grid-template-rows: repeat(${puzzle.grid_y}, 1fr);`">
+                                        <template x-for="(piece, i) in board" :key="'board-'+i">
                                         <div class="w-full h-full border-[0.5px] border-white/10 relative group cursor-pointer bg-black/40"
                                              @click="placeAt(i)">
                                              
@@ -243,6 +245,7 @@
                                             </div>
                                         </div>
                                     </template>
+                                    </div>
                                 </div>
                             </div>
                         </div>

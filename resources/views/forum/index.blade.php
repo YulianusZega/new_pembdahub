@@ -170,7 +170,7 @@
 
             <!-- Pembda Place Widget -->
             <div class="mb-6 bg-forum-card/90 border border-forum-light rounded-2xl overflow-hidden shadow-xl" x-data="pembdaPlace()">
-                <div class="p-4 border-b border-forum-light flex justify-between items-center bg-black/40">
+                <div class="p-4 border-b border-forum-light flex justify-between items-center bg-black/40 cursor-pointer hover:bg-black/60 transition" @click="toggleCollapse()">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500 to-rose-500 flex items-center justify-center shadow-lg shadow-rose-500/20">
                             <i class="ph-bold ph-palette text-white text-xl"></i>
@@ -180,14 +180,18 @@
                             <span class="text-xs text-forum-body hidden sm:inline">Kolaborasi kanvas piksel angkatan. 1 Piksel / 5 Menit.</span>
                         </div>
                     </div>
-                    <div>
-                        <button @click="showGuide = true" class="text-xs font-bold text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-lg hover:bg-rose-500/20 transition">
+                    <div class="flex items-center gap-2">
+                        <button @click.stop="showGuide = true" class="text-xs font-bold text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-lg hover:bg-rose-500/20 transition">
                             <i class="ph-bold ph-book-open mr-1"></i> Panduan
+                        </button>
+                        <button class="text-forum-muted hover:text-white transition p-1.5 bg-forum-light-5 rounded-lg">
+                            <i class="ph-bold ph-caret-down transition-transform duration-300" :class="isCollapsed ? '' : 'rotate-180'"></i>
                         </button>
                     </div>
                 </div>
                 
-                <div class="relative bg-black flex justify-center items-center overflow-hidden h-[300px] sm:h-[400px] select-none touch-none" 
+                <div x-show="!isCollapsed" x-transition.opacity.duration.300ms>
+                    <div class="relative bg-black flex justify-center items-center overflow-hidden h-[300px] sm:h-[400px] select-none touch-none" 
                      id="place-container"
                      @mousedown="startPan" @mousemove="doPan" @mouseup="endPan" @mouseleave="endPan"
                      @touchstart.passive="startPan" @touchmove.passive="doPan" @touchend.passive="endPan"
@@ -231,6 +235,7 @@
                         </template>
                     </div>
                 </div>
+                </div> <!-- End Collapsible Section -->
 
                 <!-- Guide Modal -->
                 <div x-show="showGuide" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" style="display: none;">
@@ -510,6 +515,7 @@ async function toggleLike(btn, url) {
 function pembdaPlace() {
     return {
         showGuide: false,
+        isCollapsed: false,
         cooldown: 0,
         colors: [
             '#000000', '#ffffff', '#94a3b8', '#ff0000', '#ff3366', '#ff8c00', '#ffd700', 
@@ -542,8 +548,26 @@ function pembdaPlace() {
             this.fetchCanvas();
             this.startTicker();
             
+            // Load collapse state
+            const savedState = localStorage.getItem('pembdaPlaceCollapsed');
+            if (savedState !== null) {
+                this.isCollapsed = savedState === 'true';
+            }
+            
             // Poll for updates every 8 seconds
-            setInterval(() => this.fetchUpdates(), 8000);
+            setInterval(() => {
+                if(!this.isCollapsed) this.fetchUpdates();
+            }, 8000);
+        },
+        
+        toggleCollapse() {
+            this.isCollapsed = !this.isCollapsed;
+            localStorage.setItem('pembdaPlaceCollapsed', this.isCollapsed);
+            
+            // If just opened, fetch updates immediately
+            if(!this.isCollapsed) {
+                this.fetchUpdates();
+            }
         },
         
         async fetchCanvas() {

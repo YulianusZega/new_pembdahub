@@ -19,9 +19,11 @@
 </script>
 
 <script>
-  tailwind.config = {
-    corePlugins: {
-      preflight: false,
+  if (typeof tailwind !== 'undefined') {
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
     }
   }
 </script>

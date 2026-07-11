@@ -76,7 +76,7 @@ class PublicRegistrationController extends Controller
                 'address' => 'required|string',
                 'phone' => 'nullable|string',
                 'email' => 'nullable|email',
-                'photo' => 'nullable|image|max:2048',
+                'photo' => 'nullable|image|max:4096',
                 'father_name' => 'required|string',
                 'father_phone' => 'nullable|string',
                 'father_occupation' => 'nullable|string',

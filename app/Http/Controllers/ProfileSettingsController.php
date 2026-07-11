@@ -104,7 +104,7 @@ class ProfileSettingsController extends Controller
             'birth_place' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
             'religion' => 'nullable|string|max:50',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:4096',
         ]);
 
         // Upload Photo jika ada

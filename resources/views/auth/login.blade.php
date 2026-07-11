@@ -54,13 +54,15 @@
             background: linear-gradient(to right, #4338ca, #6d28d9); /* indigo-700 to violet-700 */
         }
 
-        /* Placeholder karakter * dengan ukuran besar */
-        #login::placeholder,
-        #password::placeholder {
-            font-size: 1.5rem;
-            letter-spacing: 0.15em;
+        /* Password masking: karakter * dengan ukuran besar */
+        #password-display {
+            font-size: 1.4rem;
+            letter-spacing: 0.25em;
+        }
+        #password-display::placeholder {
+            font-size: 1.4rem;
+            letter-spacing: 0.25em;
             color: #b0b8c8;
-            line-height: 1;
         }
     </style>
 </head>
@@ -239,7 +241,7 @@
                             <i class="fas fa-user text-gray-400"></i>
                         </div>
                         <input type="text" id="login" name="login" value="{{ old('login') }}" required
-                               placeholder="* * * * * * * *"
+                               placeholder="Masukkan username atau email"
                                class="block w-full pl-11 pr-4 py-3.5 text-base border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all font-semibold text-gray-800">
                     </div>
                 </div>
@@ -251,9 +253,11 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fas fa-lock text-gray-400"></i>
                         </div>
-                        <input type="password" id="password" name="password" required
-                               placeholder="* * * * * * * *"
-                               class="block w-full pl-11 pr-4 py-3.5 text-base border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all font-semibold text-gray-800">
+                        <input type="hidden" id="password" name="password">
+                        <input type="text" id="password-display" required
+                               placeholder="* * * * * *"
+                               autocomplete="off" autocapitalize="off" spellcheck="false"
+                               class="block w-full pl-11 pr-4 py-3.5 border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all font-semibold text-gray-800">
                     </div>
                 </div>
 
@@ -288,6 +292,57 @@
 
         </div>
     </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const display = document.getElementById('password-display');
+    const hidden = document.getElementById('password');
+    let realPassword = '';
+
+    display.addEventListener('input', function(e) {
+        const pos = this.selectionStart;
+        const val = this.value;
+        const lenDiff = val.length - realPassword.length;
+
+        if (lenDiff > 0) {
+            // Karakter ditambahkan
+            const addedCount = lenDiff;
+            const addedText = val.substring(pos - addedCount, pos);
+            realPassword = realPassword.substring(0, pos - addedCount) + addedText + realPassword.substring(pos - addedCount);
+        } else if (lenDiff < 0) {
+            // Karakter dihapus
+            const removedCount = -lenDiff;
+            realPassword = realPassword.substring(0, pos) + realPassword.substring(pos + removedCount);
+        } else if (e.data) {
+            // Panjang sama = replace (select 1 char, ketik 1 char)
+            realPassword = realPassword.substring(0, pos - 1) + e.data + realPassword.substring(pos);
+        }
+
+        hidden.value = realPassword;
+        this.value = '*'.repeat(realPassword.length);
+        this.setSelectionRange(pos, pos);
+    });
+
+    // Tangani paste
+    display.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+        const pos = this.selectionStart;
+        const end = this.selectionEnd;
+
+        realPassword = realPassword.substring(0, pos) + pastedText + realPassword.substring(end);
+        hidden.value = realPassword;
+        this.value = '*'.repeat(realPassword.length);
+
+        const newPos = pos + pastedText.length;
+        this.setSelectionRange(newPos, newPos);
+    });
+
+    // Blokir copy/cut agar password tidak bocor
+    display.addEventListener('copy', function(e) { e.preventDefault(); });
+    display.addEventListener('cut', function(e) { e.preventDefault(); });
+});
+</script>
 
 </body>
 </html>

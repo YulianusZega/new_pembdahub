@@ -53,6 +53,15 @@
         .btn-custom-gradient:hover {
             background: linear-gradient(to right, #4338ca, #6d28d9); /* indigo-700 to violet-700 */
         }
+
+        /* Placeholder karakter * dengan ukuran besar */
+        #login::placeholder,
+        #password::placeholder {
+            font-size: 1.5rem;
+            letter-spacing: 0.15em;
+            color: #b0b8c8;
+            line-height: 1;
+        }
     </style>
 </head>
 
@@ -230,7 +239,7 @@
                             <i class="fas fa-user text-gray-400"></i>
                         </div>
                         <input type="text" id="login" name="login" value="{{ old('login') }}" required
-                               placeholder="Masukkan username atau email"
+                               placeholder="* * * * * * * *"
                                class="block w-full pl-11 pr-4 py-3.5 text-base border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all font-semibold text-gray-800">
                     </div>
                 </div>
@@ -243,7 +252,7 @@
                             <i class="fas fa-lock text-gray-400"></i>
                         </div>
                         <input type="password" id="password" name="password" required
-                               placeholder="••••••••"
+                               placeholder="* * * * * * * *"
                                class="block w-full pl-11 pr-4 py-3.5 text-base border-2 border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 transition-all font-semibold text-gray-800">
                     </div>
                 </div>

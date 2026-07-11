@@ -42,7 +42,7 @@
             background: var(--bg-body);
             color: var(--black);
             overflow: hidden;
-            font-size: 20px; /* Base larger font */
+            font-size: 16px; /* Base font size disesuaikan agar tidak terlalu besar */
         }
         
         * { box-sizing: border-box; }
@@ -63,14 +63,14 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            padding: 40px;
+            padding: 30px;
         }
 
         /* Layout Content inside slide */
         .ct {
             width: 95vw;
-            max-width: 1500px;
-            max-height: 90vh;
+            max-width: 1400px;
+            max-height: 95vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -78,49 +78,49 @@
 
         /* Tags */
         .stag {
-            position: absolute; top: 30px; left: 40px;
+            position: absolute; top: 25px; left: 35px;
             font-size: 1.2rem; font-weight: 800; color: var(--gray); opacity: 0.5;
         }
         .otag {
-            position: absolute; top: 30px; right: 40px;
+            position: absolute; top: 25px; right: 35px;
             font-size: 1rem; font-weight: 700; color: var(--gray); opacity: 0.5;
         }
 
         /* Typography */
-        h1 { font-size: 4rem; line-height: 1.1; margin: 0 0 20px 0; font-weight: 800; letter-spacing: -1px; }
-        h2 { font-size: 2.8rem; margin: 0 0 10px 0; font-weight: 800; letter-spacing: -0.5px; }
-        p { font-size: 1.2rem; line-height: 1.6; margin: 0; }
-        .sub { font-size: 1.4rem; color: var(--gray); font-weight: 600; margin-bottom: 40px; }
+        h1 { font-size: 3.2rem; line-height: 1.1; margin: 0 0 15px 0; font-weight: 800; letter-spacing: -1px; }
+        h2 { font-size: 2.2rem; margin: 0 0 10px 0; font-weight: 800; letter-spacing: -0.5px; }
+        p { font-size: 1.15rem; line-height: 1.6; margin: 0; }
+        .sub { font-size: 1.3rem; color: var(--gray); font-weight: 600; margin-bottom: 30px; }
         
         .label {
             display: inline-block;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             color: var(--white);
         }
         
         /* Box/Cards */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         
         .bx {
             background: var(--white);
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
             border: 1px solid rgba(0,0,0,0.05);
             transition: transform 0.3s, box-shadow 0.3s;
         }
-        .bx:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
-        .bx h4 { margin: 0 0 15px 0; font-size: 1.4rem; font-weight: 800; }
-        .bx ul { padding-left: 20px; margin: 0; font-size: 1.15rem; line-height: 1.6; }
-        .bx li { margin-bottom: 12px; }
+        .bx:hover { transform: translateY(-5px); box-shadow: 0 12px 35px rgba(0,0,0,0.1); }
+        .bx h4 { margin: 0 0 12px 0; font-size: 1.3rem; font-weight: 800; }
+        .bx ul { padding-left: 20px; margin: 0; font-size: 1.1rem; line-height: 1.6; }
+        .bx li { margin-bottom: 8px; }
 
         /* Specific Colors */
         .text-red { color: var(--red); }
@@ -129,50 +129,58 @@
         .text-yellow { color: var(--yellow); }
         .text-orange { color: var(--orange); }
         .text-white { color: var(--white); }
+        .text-gray { color: var(--gray); }
+        .text-black { color: var(--black); }
 
         .bg-dark { background: var(--dark-grad); color: var(--white); }
         .bg-dark .bx { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: var(--white); }
+        .bg-dark .text-gray { color: rgba(255,255,255,0.6); }
         
+        .bg-body { background: var(--bg-body); }
         .bg-blue { background: var(--blue-grad); color: var(--white); }
         .bg-red { background: var(--red-grad); color: var(--white); }
 
         /* Badges */
         .badge {
-            display: inline-block; padding: 6px 12px; border-radius: 6px;
-            font-size: 0.9rem; font-weight: 700; color: var(--white);
+            display: inline-block; padding: 5px 10px; border-radius: 6px;
+            font-size: 0.85rem; font-weight: 700; color: var(--white);
         }
 
         /* Horizontal Bar Chart */
-        .bar-wrap { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
-        .bar-label { font-size: 1.1rem; min-width: 380px; font-weight: 600; }
-        .bar-track { flex: 1; background: #e2e8f0; border-radius: 20px; height: 35px; position: relative; overflow: hidden; }
+        .bar-wrap { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+        .bar-label { font-size: 1.05rem; min-width: 380px; font-weight: 600; line-height: 1.3; }
+        .bar-track { flex: 1; background: #e2e8f0; border-radius: 20px; height: 32px; position: relative; overflow: hidden; }
         .bar-fill { height: 100%; border-radius: 20px; display: flex; align-items: center; padding-left: 15px; font-weight: 800; color: var(--white); text-shadow: 0 1px 2px rgba(0,0,0,0.5); width: 0; transition: width 1s ease-out; }
 
         /* Animations */
-        .ani { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .ani { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .active .ani { opacity: 1; transform: translateY(0); }
         
         .d1 { transition-delay: 0.1s; }
-        .d2 { transition-delay: 0.3s; }
-        .d3 { transition-delay: 0.5s; }
-        .d4 { transition-delay: 0.7s; }
-        .d5 { transition-delay: 0.9s; }
+        .d2 { transition-delay: 0.25s; }
+        .d3 { transition-delay: 0.4s; }
+        .d4 { transition-delay: 0.55s; }
 
         /* Navigation */
         .nav {
-            position: fixed; bottom: 30px; right: 40px;
-            display: flex; gap: 15px; z-index: 100;
+            position: fixed; bottom: 25px; right: 35px;
+            display: flex; gap: 12px; z-index: 100;
         }
         .btn {
-            background: var(--black); color: var(--white);
-            border: none; padding: 12px 24px; border-radius: 50px;
-            font-size: 1.1rem; font-weight: 700; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s;
+            background: rgba(15, 23, 42, 0.65); /* Semi-transparent black */
+            color: var(--white);
+            border: none; padding: 10px 20px; border-radius: 50px;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            backdrop-filter: blur(4px); /* Blur effect */
+            -webkit-backdrop-filter: blur(4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
         }
-        .btn:hover { background: var(--blue); transform: scale(1.05); }
-        .btn:disabled { background: var(--gray); cursor: not-allowed; opacity: 0.5; transform: none; }
+        .btn:hover { background: rgba(59, 130, 246, 0.8); transform: scale(1.05); }
+        .btn-blue { background: rgba(59, 130, 246, 0.65); }
+        .btn-blue:hover { background: rgba(59, 130, 246, 0.9); }
+        .btn:disabled { background: rgba(100, 116, 139, 0.5); cursor: not-allowed; opacity: 0.5; transform: none; }
         .prg {
-            position: fixed; top: 0; left: 0; height: 6px;
+            position: fixed; top: 0; left: 0; height: 5px;
             background: var(--blue-grad); transition: width 0.3s; z-index: 100;
         }
     </style>
@@ -468,7 +476,10 @@
                         <div class="bx" style="margin-bottom: 15px; border-left: 6px solid var(--orange);">
                             <h4 class="text-orange">3. Dokumen Relevansi Mapel</h4>
                             <p>Form isian tertulis relevansi & target 1 semester.</p>
-                            <a href="format-dokumen-keluaran.html#relevansi" target="_blank" style="display:inline-block; margin-top:10px; color:var(--orange); font-weight:700;">📄 Lihat Form Relevansi</a>
+                            <div style="margin-top:10px; display:flex; gap: 15px;">
+                                <a href="format-dokumen-keluaran.html#relevansi" target="_blank" style="color:var(--orange); font-weight:700;">📄 Format Kosong</a>
+                                <a href="contoh-relevansi-mapel.html" target="_blank" style="color:var(--blue); font-weight:700;">📘 Panduan Lengkap Mapel</a>
+                            </div>
                         </div>
                         <div class="bx" style="border-left: 6px solid var(--blue);">
                             <h4 class="text-blue">4. RPP Praktik (Ganjil)</h4>

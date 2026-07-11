@@ -1125,4 +1125,45 @@ class ForumController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Kepingan berhasil diletakkan! (+10 Poin)']);
     }
+
+    /**
+     * Reset papan puzzle ke awal (hanya 10 keping acak dari Sistem).
+     * Hanya bisa diakses oleh admin.
+     */
+    public function resetPuzzle(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user || $user->role !== 'admin') {
+            return response()->json(['success' => false, 'message' => 'Hanya admin yang bisa mereset puzzle']);
+        }
+
+        $puzzle = \App\Models\Puzzle::where('is_active', true)->latest()->first();
+        if (!$puzzle) {
+            return response()->json(['success' => false, 'message' => 'Tidak ada puzzle aktif']);
+        }
+
+        // Reset semua keping ke belum terpasang
+        \App\Models\PuzzlePiece::where('puzzle_id', $puzzle->id)->update([
+            'is_placed' => false,
+            'placed_by_user_id' => null,
+            'placed_at' => null,
+        ]);
+
+        // Pasang 10 keping acak sebagai bonus awal dari Sistem
+        $bonusIds = \App\Models\PuzzlePiece::where('puzzle_id', $puzzle->id)
+            ->inRandomOrder()
+            ->limit(10)
+            ->pluck('id');
+
+        \App\Models\PuzzlePiece::whereIn('id', $bonusIds)->update([
+            'is_placed' => true,
+            'placed_at' => now(),
+            // placed_by_user_id tetap null = Sistem (Bonus)
+        ]);
+
+        return response()->json([
+            'success' => true, 
+            'message' => 'Puzzle berhasil direset! 10 keping acak telah dipasang oleh Sistem.'
+        ]);
+    }
 }

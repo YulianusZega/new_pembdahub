@@ -825,6 +825,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/place/updates', [App\Http\Controllers\ForumController::class, 'getPlaceUpdates'])->name('place.updates');
         Route::get('/puzzle', [App\Http\Controllers\ForumController::class, 'getPuzzleState'])->name('puzzle.state');
         Route::post('/puzzle/place', [App\Http\Controllers\ForumController::class, 'placePuzzlePiece'])->name('puzzle.place');
+        Route::post('/puzzle/reset', [App\Http\Controllers\ForumController::class, 'resetPuzzle'])->name('puzzle.reset');
         Route::get('/{thread}', [App\Http\Controllers\ForumController::class, 'show'])->name('show');
         Route::post('/{thread}/reply', [App\Http\Controllers\ForumController::class, 'reply'])->name('reply');
         Route::post('/{thread}/like', [App\Http\Controllers\ForumController::class, 'like'])->name('like');

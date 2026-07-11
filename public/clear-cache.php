@@ -249,9 +249,47 @@ if (isset($_GET['migrate']) && $_GET['migrate'] === 'yes') {
         echo "<span class='err'>❌ Migration error: " . htmlspecialchars($e->getMessage()) . "</span>\n";
     }
     echo "</pre>";
+} else if (isset($_GET['reset_puzzle']) && $_GET['reset_puzzle'] === 'yes') {
+    echo "<h2>3. Reset Puzzle Pembda Colabs</h2><pre>";
+    try {
+        // Reset semua keping puzzle ke belum terpasang
+        $puzzle = \App\Models\Puzzle::where('is_active', true)->latest()->first();
+        if ($puzzle) {
+            \App\Models\PuzzlePiece::where('puzzle_id', $puzzle->id)->update([
+                'is_placed' => false,
+                'placed_by_user_id' => null,
+                'placed_at' => null,
+            ]);
+
+            // Pasang 10 keping acak sebagai bonus awal dari Sistem
+            $bonusIds = \App\Models\PuzzlePiece::where('puzzle_id', $puzzle->id)
+                ->inRandomOrder()
+                ->limit(10)
+                ->pluck('id');
+
+            \App\Models\PuzzlePiece::whereIn('id', $bonusIds)->update([
+                'is_placed' => true,
+                'placed_at' => now(),
+            ]);
+
+            $totalPieces = \App\Models\PuzzlePiece::where('puzzle_id', $puzzle->id)->count();
+            $placedNow = \App\Models\PuzzlePiece::where('puzzle_id', $puzzle->id)->where('is_placed', true)->count();
+            echo "<span class='ok'>✅ Puzzle '{$puzzle->title}' berhasil direset!</span>\n";
+            echo "<span class='ok'>   Total keping: {$totalPieces}</span>\n";
+            echo "<span class='ok'>   Terpasang (Bonus Sistem): {$placedNow}</span>\n";
+            echo "<span class='ok'>   Tersisa untuk siswa: " . ($totalPieces - $placedNow) . "</span>\n";
+        } else {
+            echo "<span class='err'>❌ Tidak ada puzzle aktif!</span>\n";
+        }
+    } catch (\Exception $e) {
+        echo "<span class='err'>❌ Error: " . htmlspecialchars($e->getMessage()) . "</span>\n";
+    }
+    echo "</pre>";
 } else {
     echo "<h2>3. Migrasi Database & Restore Data</h2>";
     echo "<a class='btn' href='?secret=pembda99&migrate=yes'>▶️ Jalankan Migrasi & Seeder</a><br><br>";
+    echo "<b>🧩 Puzzle Pembda Colabs:</b> ";
+    echo "<a class='btn' style='background:#40c4ff;' href='?secret=pembda99&reset_puzzle=yes'>🔄 Reset Puzzle (10 keping awal)</a><br><br>";
     echo "<b>Restore TP 2026/2027:</b> ";
     echo "<a class='btn' style='background:#03dac6;' href='/restore-tp-2026?secret=pembda99&dry_run=1' target='_blank'>🔍 Test Dry Run (Simulasi)</a>";
     echo "<a class='btn' style='background:#00e676;' href='/restore-tp-2026?secret=pembda99' target='_blank'>▶️ Restore Sekarang</a><br><br>";

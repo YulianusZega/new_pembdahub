@@ -387,17 +387,24 @@
             @csrf
             <input type="hidden" name="parent_reply_id" id="parent_reply_id">
             
-            <!-- Emoji Picker for Input -->
-            <div class="relative flex-shrink-0 mb-1" @click.away="composeEmojiOpen = false">
-                <button type="button" @click="toggleComposeEmoji()" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 flex items-center justify-center text-forum-body hover:text-white transition">
+            <!-- Emoji Picker for Input (Vanilla JS) -->
+            <div class="relative flex-shrink-0 mb-1">
+                <button type="button" onclick="toggleComposeEmojiVanilla(event)" class="compose-emoji-trigger w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 flex items-center justify-center text-forum-body hover:text-white transition">
                     <i class="ph-bold ph-plus text-xl"></i>
                 </button>
-                <div x-show="composeEmojiOpen" class="compose-emoji-picker">
-                    <template x-for="emoji in ['😀','😂','😍','👍','🔥','👏','❤️','💡','🤔','🎉','🙏','✨']">
-                        <button type="button" @click="insertEmoji(emoji); composeEmojiOpen = false" class="compose-emoji-btn">
-                            <span x-text="emoji"></span>
-                        </button>
-                    </template>
+                <div id="compose-emoji-picker" class="compose-emoji-picker" style="display: none;">
+                    <button type="button" onclick="insertEmojiVanilla('😀')" class="compose-emoji-btn"><span>😀</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('😂')" class="compose-emoji-btn"><span>😂</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('😍')" class="compose-emoji-btn"><span>😍</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('👍')" class="compose-emoji-btn"><span>👍</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('🔥')" class="compose-emoji-btn"><span>🔥</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('👏')" class="compose-emoji-btn"><span>👏</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('❤️')" class="compose-emoji-btn"><span>❤️</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('💡')" class="compose-emoji-btn"><span>💡</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('🤔')" class="compose-emoji-btn"><span>🤔</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('🎉')" class="compose-emoji-btn"><span>🎉</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('🙏')" class="compose-emoji-btn"><span>🙏</span></button>
+                    <button type="button" onclick="insertEmojiVanilla('✨')" class="compose-emoji-btn"><span>✨</span></button>
                 </div>
             </div>
 
@@ -424,7 +431,6 @@
 function forumChat() {
     return {
         pickerOpen: null,
-        composeEmojiOpen: false,
         togglePicker(id) {
             this.pickerOpen = this.pickerOpen === id ? null : id;
         },
@@ -435,30 +441,54 @@ function forumChat() {
         reactReply(replyId, emoji) {
             reactReplyAjax(replyId, emoji);
             this.pickerOpen = null;
-        },
-        toggleComposeEmoji() {
-            const now = Date.now();
-            if (now - this.lastInsertTime < 150) return;
-            this.lastInsertTime = now;
-            this.composeEmojiOpen = !this.composeEmojiOpen;
-        },
-        lastInsertTime: 0,
-        insertEmoji(emoji) {
-            const now = Date.now();
-            if (now - this.lastInsertTime < 150) return;
-            this.lastInsertTime = now;
-
-            const textarea = document.querySelector('textarea[name="content"]');
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const text = textarea.value;
-            textarea.value = text.substring(0, start) + emoji + text.substring(end);
-            textarea.focus();
-            textarea.style.height = '';
-            textarea.style.height = textarea.scrollHeight + 'px';
         }
     }
 }
+
+// Vanilla JS Emoji Picker & Insertion
+function toggleComposeEmojiVanilla(event) {
+    event.stopPropagation();
+    const picker = document.getElementById('compose-emoji-picker');
+    if (!picker) return;
+    if (picker.style.display === 'none') {
+        picker.style.display = 'grid';
+    } else {
+        picker.style.display = 'none';
+    }
+}
+
+let lastInsertTimeVanilla = 0;
+function insertEmojiVanilla(emoji) {
+    const now = Date.now();
+    if (now - lastInsertTimeVanilla < 150) return;
+    lastInsertTimeVanilla = now;
+
+    const textarea = document.querySelector('textarea[name="content"]');
+    if (textarea) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+        textarea.value = text.substring(0, start) + emoji + text.substring(end);
+        textarea.focus();
+        textarea.style.height = '';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    const picker = document.getElementById('compose-emoji-picker');
+    if (picker) picker.style.display = 'none';
+}
+
+// Close picker when clicking anywhere outside
+document.addEventListener('click', function(event) {
+    const picker = document.getElementById('compose-emoji-picker');
+    if (!picker || picker.style.display === 'none') return;
+    
+    const trigger = event.target.closest('.compose-emoji-trigger');
+    const insidePicker = event.target.closest('#compose-emoji-picker');
+    if (!trigger && !insidePicker) {
+        picker.style.display = 'none';
+    }
+});
 
 // Quote functionality
 function quoteReply(id, user, text) {

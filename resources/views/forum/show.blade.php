@@ -427,7 +427,52 @@
 @endif
 </div>
 
+<!-- Live Diagnostic Panel -->
+<div id="live-diag-panel" style="position: fixed; bottom: 80px; right: 20px; width: 300px; max-height: 250px; background: rgba(0,0,0,0.9); border: 2px solid #00e676; border-radius: 12px; padding: 12px; color: #fff; font-family: monospace; font-size: 10px; z-index: 99999; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+    <div style="font-weight: bold; color: #03dac6; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px; margin-bottom: 6px; display: flex; justify-content: space-between;">
+        <span>🔍 Live Debug Console</span>
+        <button onclick="document.getElementById('live-diag-panel').style.display='none'" style="background:none; border:none; color:#ff5252; cursor:pointer; font-weight:bold;">[X]</button>
+    </div>
+    <div id="live-diag-status" style="margin-bottom: 8px;">
+        Picker Display: <span id="diag-picker-display" style="color: #ff5722; font-weight:bold;">unknown</span><br>
+        Alpine Loaded: <span id="diag-alpine-status" style="color: #ff5722; font-weight:bold;">unknown</span>
+    </div>
+    <div id="live-diag-logs" style="max-height: 150px; overflow-y: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 6px;">
+        [Console initialized. Click things to test...]
+    </div>
+</div>
+
 <script>
+function logDiag(msg) {
+    const logs = document.getElementById('live-diag-logs');
+    if (logs) {
+        const time = new Date().toLocaleTimeString();
+        logs.innerHTML = `<div>[${time}] ${msg}</div>` + logs.innerHTML;
+    }
+}
+
+// Update picker display state in loop
+setInterval(function() {
+    const picker = document.getElementById('compose-emoji-picker');
+    const displaySpan = document.getElementById('diag-picker-display');
+    if (picker && displaySpan) {
+        displaySpan.textContent = picker.style.display;
+        displaySpan.style.color = picker.style.display === 'none' ? '#ff5252' : '#00e676';
+    }
+    const alpineSpan = document.getElementById('diag-alpine-status');
+    if (alpineSpan) {
+        alpineSpan.textContent = (typeof Alpine !== 'undefined') ? 'Yes' : 'No';
+        alpineSpan.style.color = (typeof Alpine !== 'undefined') ? '#00e676' : '#ff5252';
+    }
+}, 300);
+
+window.onerror = function(message, source, lineno, colno, error) {
+    const errStr = `Err: ${message} at ${lineno}:${colno}`;
+    logDiag(errStr);
+    alert("GLOBAL JS ERROR:\n" + message + "\nLine: " + lineno + ":" + colno);
+    return false;
+};
+
 function forumChat() {
     return {
         pickerOpen: null,
@@ -447,20 +492,31 @@ function forumChat() {
 
 // Vanilla JS Emoji Picker & Insertion
 function toggleComposeEmojiVanilla(event) {
+    logDiag("toggleComposeEmojiVanilla clicked");
     event.stopPropagation();
     const picker = document.getElementById('compose-emoji-picker');
-    if (!picker) return;
+    if (!picker) {
+        logDiag("Error: compose-emoji-picker element NOT found!");
+        return;
+    }
+    logDiag("Current state: " + picker.style.display);
     if (picker.style.display === 'none') {
         picker.style.display = 'grid';
+        logDiag("Set state: grid");
     } else {
         picker.style.display = 'none';
+        logDiag("Set state: none");
     }
 }
 
 let lastInsertTimeVanilla = 0;
 function insertEmojiVanilla(emoji) {
+    logDiag("insertEmojiVanilla clicked: " + emoji);
     const now = Date.now();
-    if (now - lastInsertTimeVanilla < 150) return;
+    if (now - lastInsertTimeVanilla < 150) {
+        logDiag("Debounce blocked insert");
+        return;
+    }
     lastInsertTimeVanilla = now;
 
     const textarea = document.querySelector('textarea[name="content"]');
@@ -472,10 +528,16 @@ function insertEmojiVanilla(emoji) {
         textarea.focus();
         textarea.style.height = '';
         textarea.style.height = textarea.scrollHeight + 'px';
+        logDiag("Emoji inserted successfully");
+    } else {
+        logDiag("Error: textarea name=content NOT found!");
     }
 
     const picker = document.getElementById('compose-emoji-picker');
-    if (picker) picker.style.display = 'none';
+    if (picker) {
+        picker.style.display = 'none';
+        logDiag("Picker closed after select");
+    }
 }
 
 // Close picker when clicking anywhere outside
@@ -485,8 +547,12 @@ document.addEventListener('click', function(event) {
     
     const trigger = event.target.closest('.compose-emoji-trigger');
     const insidePicker = event.target.closest('#compose-emoji-picker');
+    
+    logDiag(`Doc click: trigger=${!!trigger}, inside=${!!insidePicker}`);
+    
     if (!trigger && !insidePicker) {
         picker.style.display = 'none';
+        logDiag("Picker closed via click outside");
     }
 });
 

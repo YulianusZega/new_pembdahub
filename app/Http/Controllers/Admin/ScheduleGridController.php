@@ -59,12 +59,7 @@ class ScheduleGridController extends Controller
             ->where('academic_year_id', $selectedYearId)
             ->where('is_active', 1);
 
-        $selectedGradeLevel = $request->input('grade_level');
-        
-        // Jika belum ada pilihan sama sekali (baru buka halaman), set ke tingkat pertama
-        if ($selectedGradeLevel === null && $availableGrades->isNotEmpty()) {
-            $selectedGradeLevel = $availableGrades->first();
-        }
+        $selectedGradeLevel = $request->input('grade_level', 'all');
 
         // Jika selected = 'all', kita biarkan kosong (tidak di-filter)
         if ($selectedGradeLevel && $selectedGradeLevel !== 'all') {

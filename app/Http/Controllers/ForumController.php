@@ -1025,4 +1025,104 @@ class ForumController extends Controller
 
         return response()->json(['success' => true, 'pixels' => $pixels, 'timestamp' => time()]);
     }
+
+    // ==========================================
+    // PEMBDA COLABS (PUZZLE)
+    // ==========================================
+    public function getPuzzleState()
+    {
+        $puzzle = \App\Models\Puzzle::where('is_active', true)->latest()->first();
+        if (!$puzzle) {
+            return response()->json(['success' => false, 'message' => 'Tidak ada puzzle aktif']);
+        }
+
+        $pieces = \App\Models\PuzzlePiece::where('puzzle_id', $puzzle->id)
+                    ->with('user:id,name')
+                    ->get()
+                    ->map(function ($p) {
+                        return [
+                            'id' => $p->id,
+                            'index' => $p->piece_index,
+                            'is_placed' => $p->is_placed,
+                            'placed_by' => $p->user ? $p->user->name : null,
+                            'placed_at' => $p->placed_at ? $p->placed_at->diffForHumans() : null,
+                        ];
+                    });
+
+        // Check if current user has placed a piece today
+        $user = Auth::user();
+        $hasPlacedToday = false;
+        if ($user) {
+            $hasPlacedToday = \App\Models\PuzzlePiece::where('puzzle_id', $puzzle->id)
+                ->where('placed_by_user_id', $user->id)
+                ->whereDate('placed_at', \Carbon\Carbon::today())
+                ->exists();
+        }
+
+        return response()->json([
+            'success' => true,
+            'puzzle' => [
+                'id' => $puzzle->id,
+                'title' => $puzzle->title,
+                'image_url' => asset('storage/' . $puzzle->image_path),
+                'grid_x' => $puzzle->grid_x,
+                'grid_y' => $puzzle->grid_y,
+                'progress' => $puzzle->progress,
+            ],
+            'pieces' => $pieces,
+            'has_placed_today' => $hasPlacedToday,
+        ]);
+    }
+
+    public function placePuzzlePiece(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Anda harus login']);
+        }
+
+        $validated = $request->validate([
+            'puzzle_id' => 'required|exists:puzzles,id',
+            'piece_index' => 'required|integer',
+            'target_index' => 'required|integer',
+        ]);
+
+        // Check if placed on correct index
+        if ($validated['piece_index'] !== $validated['target_index']) {
+            return response()->json(['success' => false, 'message' => 'Posisi salah! Coba letakkan di tempat yang benar. (Jatah harian Anda masih aman)']);
+        }
+
+        // Check if user already placed today
+        $hasPlacedToday = \App\Models\PuzzlePiece::where('puzzle_id', $validated['puzzle_id'])
+            ->where('placed_by_user_id', $user->id)
+            ->whereDate('placed_at', \Carbon\Carbon::today())
+            ->exists();
+
+        if ($hasPlacedToday) {
+            return response()->json(['success' => false, 'message' => 'Anda sudah meletakkan kepingan hari ini. Kembali lagi besok!']);
+        }
+
+        $piece = \App\Models\PuzzlePiece::where('puzzle_id', $validated['puzzle_id'])
+            ->where('piece_index', $validated['piece_index'])
+            ->first();
+
+        if (!$piece) {
+            return response()->json(['success' => false, 'message' => 'Kepingan tidak ditemukan']);
+        }
+
+        if ($piece->is_placed) {
+            return response()->json(['success' => false, 'message' => 'Kepingan ini sudah diletakkan oleh orang lain']);
+        }
+
+        $piece->update([
+            'is_placed' => true,
+            'placed_by_user_id' => $user->id,
+            'placed_at' => now(),
+        ]);
+
+        // Gamification
+        \App\Models\ReputationLog::log($user->id, 10, 'forum', 'Meletakkan kepingan Pembda Colabs');
+
+        return response()->json(['success' => true, 'message' => 'Kepingan berhasil diletakkan! (+10 Poin)']);
+    }
 }

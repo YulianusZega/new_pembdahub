@@ -845,6 +845,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/place/canvas', [App\Http\Controllers\ForumController::class, 'getPlaceCanvas'])->name('place.canvas');
         Route::post('/place/draw', [App\Http\Controllers\ForumController::class, 'drawPlacePixel'])->name('place.draw');
         Route::get('/place/updates', [App\Http\Controllers\ForumController::class, 'getPlaceUpdates'])->name('place.updates');
+        
+        // Pembda Colabs (Puzzle)
+        Route::get('/puzzle', [App\Http\Controllers\ForumController::class, 'getPuzzleState'])->name('puzzle.state');
+        Route::post('/puzzle/place', [App\Http\Controllers\ForumController::class, 'placePuzzlePiece'])->name('puzzle.place');
     });
 
     // Alumni & Tracer Study Routes

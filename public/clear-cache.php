@@ -110,6 +110,11 @@ if (isset($_GET['migrate']) && $_GET['migrate'] === 'yes') {
         \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'SurveySeeder', '--force' => true], $output2);
         echo "<span class='ok'>" . htmlspecialchars($output2->fetch()) . "</span>\n";
 
+        echo "\n<span class='info'>--- Running Puzzle Seeder ---</span>\n";
+        $outputPuzzle = new \Symfony\Component\Console\Output\BufferedOutput();
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'PuzzleSeeder', '--force' => true], $outputPuzzle);
+        echo "<span class='ok'>" . htmlspecialchars($outputPuzzle->fetch()) . "</span>\n";
+
         echo "\n<span class='info'>--- Running TEFA Employee Seeder ---</span>\n";
         $output3 = new \Symfony\Component\Console\Output\BufferedOutput();
         \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'TefaEmployeeSeeder', '--force' => true], $output3);

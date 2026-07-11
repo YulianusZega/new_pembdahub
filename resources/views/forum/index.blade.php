@@ -168,20 +168,20 @@
                 </div>
             </div>
 
-            <!-- Pembda Place Widget -->
-            <div class="mb-6 bg-forum-card/90 border border-forum-light rounded-2xl overflow-hidden shadow-xl" x-data="pembdaPlace()">
+            <!-- Pembda Colabs (Puzzle) Widget -->
+            <div class="mb-6 bg-forum-card/90 border border-forum-light rounded-2xl overflow-hidden shadow-xl" x-data="pembdaColabs()">
                 <div class="p-4 border-b border-forum-light flex justify-between items-center bg-black/40 cursor-pointer hover:bg-black/60 transition" @click="toggleCollapse()">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500 to-rose-500 flex items-center justify-center shadow-lg shadow-rose-500/20">
-                            <i class="ph-bold ph-palette text-white text-xl"></i>
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                            <i class="ph-bold ph-puzzle-piece text-white text-xl"></i>
                         </div>
                         <div>
-                            <h2 class="forum-hdr text-lg font-bold text-white tracking-tight leading-tight">Pembda PLACE</h2>
-                            <span class="text-xs text-forum-body hidden sm:inline">Kolaborasi kanvas piksel angkatan. 1 Piksel / 5 Menit.</span>
+                            <h2 class="forum-hdr text-lg font-bold text-white tracking-tight leading-tight">Pembda COLABS</h2>
+                            <span class="text-xs text-forum-body hidden sm:inline">Susun puzzle bersama angkatan. 1 Keping / Hari.</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button @click.stop="showGuide = true" class="text-xs font-bold text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-lg hover:bg-rose-500/20 transition">
+                        <button @click.stop="showGuide = true" class="text-xs font-bold text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg hover:bg-blue-500/20 transition">
                             <i class="ph-bold ph-book-open mr-1"></i> Panduan
                         </button>
                         <button class="text-forum-muted hover:text-white transition p-1.5 bg-forum-light-5 rounded-lg">
@@ -190,68 +190,82 @@
                     </div>
                 </div>
                 
-                <div x-show="!isCollapsed" x-transition.opacity.duration.300ms>
-                    <div class="relative bg-black flex justify-center items-center overflow-hidden h-[300px] sm:h-[400px] select-none touch-none" 
-                     id="place-container"
-                     @mousedown="startPan" @mousemove="doPan" @mouseup="endPan" @mouseleave="endPan"
-                     @touchstart.passive="startPan" @touchmove.passive="doPan" @touchend.passive="endPan"
-                     @wheel.prevent="doZoom">
-                    
-                    <div class="relative transform-origin-center absolute"
-                         :style="`transform: translate(${pan.x}px, ${pan.y}px) scale(${zoom}); width: 300px; height: 300px;`">
-                        <canvas id="place-canvas" width="100" height="100" 
-                                class="pixelated-canvas cursor-crosshair absolute inset-0 w-full h-full bg-white shadow-[0_0_50px_rgba(255,255,255,0.1)]"
-                                @click="clickCanvas" @mousemove="hoverCanvas" @mouseleave="hoverPixel = null"></canvas>
-                        <!-- Grid Overlay -->
-                        <div class="pixel-grid absolute inset-0 w-full h-full z-10 pointer-events-none"></div>
-                    </div>
-
-                    <!-- Hover Tooltip -->
-                    <div x-show="hoverPixel" class="absolute z-50 bg-black/90 border border-forum-light px-3 py-2 rounded-xl text-xs text-white pointer-events-none transform -translate-x-1/2 -translate-y-[120%] whitespace-nowrap shadow-xl"
-                         :style="`left: ${tooltip.x}px; top: ${tooltip.y}px;`">
-                        <div class="font-bold text-fuchsia-400" x-text="hoverPixel?.user || 'Kosong'"></div>
-                        <div class="text-forum-muted" x-text="`Pos: (${hoverPixel?.x}, ${hoverPixel?.y})`"></div>
-                        <div class="text-[10px] mt-1 text-emerald-400" x-text="hoverPixel?.time || ''" x-show="hoverPixel?.time"></div>
-                    </div>
-                    
-                    <!-- Cooldown Overlay -->
-                    <div x-show="cooldown > 0" class="absolute bottom-4 right-4 bg-black/80 backdrop-blur border border-rose-500/30 px-4 py-2 rounded-xl flex items-center gap-3 shadow-lg z-40 pointer-events-none">
-                        <i class="ph-bold ph-timer text-rose-400 text-lg animate-spin-slow"></i>
-                        <div>
-                            <div class="text-[10px] text-forum-muted font-bold uppercase tracking-wider">Cooldown</div>
-                            <div class="text-sm font-mono text-white font-bold" x-text="formatTime(cooldown)"></div>
+                <div x-show="!isCollapsed" x-transition.opacity.duration.300ms class="p-4">
+                    <template x-if="puzzle">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <!-- Left: Inventory (Available Pieces) -->
+                            <div class="w-full md:w-1/3 bg-black/40 rounded-xl border border-forum-light p-3">
+                                <h3 class="text-xs font-bold text-forum-muted uppercase tracking-wider mb-3">Kepingan Tersedia</h3>
+                                
+                                <div x-show="hasPlacedToday" class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-blue-300 mb-3 text-center">
+                                    <i class="ph-bold ph-check-circle text-2xl mb-1 block"></i>
+                                    Kamu sudah menaruh kepingan hari ini! Kembali besok.
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-1 max-h-[300px] overflow-y-auto no-scrollbar justify-center" :class="hasPlacedToday ? 'opacity-50 pointer-events-none' : ''">
+                                    <template x-for="idx in inventory" :key="'inv-'+idx">
+                                        <button @click="selectPiece(idx)" 
+                                                class="w-10 h-10 sm:w-12 sm:h-12 border-2 transition-all duration-200"
+                                                :class="selectedPiece === idx ? 'border-white scale-110 z-10 shadow-[0_0_10px_rgba(255,255,255,0.5)]' : 'border-forum-light hover:border-blue-400 hover:scale-105'"
+                                                :style="`background-image: url(${puzzle.image_url}); background-size: ${puzzle.grid_x * 100}% ${puzzle.grid_y * 100}%; background-position: ${getBgPos(idx)};`">
+                                        </button>
+                                    </template>
+                                    <div x-show="inventory.length === 0" class="text-sm text-emerald-400 font-bold p-4 text-center w-full">
+                                        Puzzle Selesai! 🎉
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Board -->
+                            <div class="w-full md:w-2/3 bg-black/60 rounded-xl border border-forum-light p-3 flex flex-col items-center justify-center relative overflow-hidden">
+                                <h3 class="text-xs font-bold text-forum-muted uppercase tracking-wider mb-3 w-full text-left" x-text="`${puzzle.title} (${puzzle.progress.percentage}%)`"></h3>
+                                
+                                <div class="w-full max-w-[500px] aspect-[2/1] relative shadow-2xl bg-forum-card border border-forum-light/50"
+                                     :style="`display: grid; grid-template-columns: repeat(${puzzle.grid_x}, 1fr); grid-template-rows: repeat(${puzzle.grid_y}, 1fr);`">
+                                    
+                                    <template x-for="(piece, i) in board" :key="'board-'+i">
+                                        <div class="w-full h-full border-[0.5px] border-white/10 relative group cursor-pointer bg-black/40"
+                                             @click="placeAt(i)">
+                                             
+                                            <!-- Empty Slot -->
+                                            <div x-show="!piece" class="absolute inset-0 hover:bg-white/20 transition flex items-center justify-center">
+                                                <i x-show="selectedPiece !== null" class="ph-bold ph-plus text-white/50"></i>
+                                            </div>
+                                            
+                                            <!-- Placed Piece -->
+                                            <div x-show="piece" class="absolute inset-0"
+                                                 :style="`background-image: url(${puzzle.image_url}); background-size: ${puzzle.grid_x * 100}% ${puzzle.grid_y * 100}%; background-position: ${getBgPos(i)};`">
+                                            </div>
+                                            
+                                            <!-- Tooltip -->
+                                            <div x-show="piece" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/90 text-white text-[10px] px-2 py-1 rounded pointer-events-none opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-50">
+                                                Oleh <span class="font-bold text-blue-400" x-text="piece ? piece.placed_by : ''"></span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </template>
+                    <template x-if="!puzzle">
+                        <div class="text-center p-8 text-forum-muted">Sedang memuat puzzle...</div>
+                    </template>
                 </div>
-
-                <!-- Color Palette -->
-                <div class="p-4 bg-black/40 border-t border-forum-light overflow-x-auto no-scrollbar">
-                    <div class="flex flex-nowrap sm:flex-wrap gap-2 justify-start sm:justify-center min-w-max">
-                        <template x-for="c in colors">
-                            <button @click="selectedColor = c" 
-                                    class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg shadow-sm transition-all duration-200 border-[3px] flex-shrink-0"
-                                    :class="selectedColor === c ? 'scale-110 border-white shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'border-transparent hover:scale-105 opacity-80 hover:opacity-100'"
-                                    :style="`background-color: ${c}`"></button>
-                        </template>
-                    </div>
-                </div>
-                </div> <!-- End Collapsible Section -->
 
                 <!-- Guide Modal -->
                 <div x-show="showGuide" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" style="display: none;">
                     <div @click.away="showGuide = false" class="bg-forum-card border border-forum-light rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
                         <div class="p-5 border-b border-forum-light flex justify-between items-center bg-black/40">
-                            <h3 class="forum-hdr text-lg font-bold text-white"><i class="ph-bold ph-palette text-rose-400 mr-2"></i> Panduan Bermain</h3>
+                            <h3 class="forum-hdr text-lg font-bold text-white"><i class="ph-bold ph-puzzle-piece text-blue-400 mr-2"></i> Cara Main Pembda Colabs</h3>
                             <button @click="showGuide = false" class="text-forum-muted hover:text-white"><i class="ph-bold ph-x text-xl"></i></button>
                         </div>
                         <div class="p-5 space-y-4 text-sm text-forum-body">
-                            <p><strong class="text-white">1. Satu Piksel, 5 Menit:</strong> Anda memiliki hak menempatkan 1 piksel warna setiap 5 menit. Gunakan dengan bijak!</p>
-                            <p><strong class="text-white">2. Kolaborasi Kelas:</strong> Kanvas 100x100 ini pas untuk digambar bersama. Ajak teman sekelas untuk menggambar logo/maskot!</p>
-                            <p><strong class="text-white">3. Jejak Digital Terbaca:</strong> Arahkan kursor (*hover*) ke piksel untuk melihat nama penggambar. Jejak Anda tercatat!</p>
-                            <p><strong class="text-white">4. Geser & Zoom:</strong> Scroll atau Pinch untuk memperbesar kanvas (Zoom). Klik dan tahan (drag) untuk menggeser kanvas agar mudah menggambar.</p>
-                            <p><strong class="text-rose-400">5. Jaga Kesopanan:</strong> Dilarang keras menggambar simbol/kata-kata pornografi, SARA, atau kebencian. Pelanggar akan diblokir aksesnya secara permanen.</p>
+                            <p><strong class="text-white">1. Pilih Kepingan:</strong> Di sebelah kiri, pilih satu kepingan puzzle yang tersedia.</p>
+                            <p><strong class="text-white">2. Letakkan dengan Benar:</strong> Klik salah satu kotak kosong di papan kanan. Jika posisinya salah, kepingan akan ditolak.</p>
+                            <p><strong class="text-white">3. Satu Hari, Satu Keping:</strong> Setiap siswa hanya memiliki hak meletakkan 1 kepingan puzzle per hari (berhasil ataupun tidak). Gunakan dengan bijak!</p>
+                            <p><strong class="text-blue-400">4. +10 Poin Reputasi:</strong> Jika kepingan diletakkan dengan benar, kamu mendapat tambahan poin!</p>
                             <div class="mt-6 pt-4 border-t border-forum-light text-center">
-                                <button @click="showGuide = false" class="px-6 py-2 bg-gradient-to-r from-fuchsia-500 to-rose-500 hover:from-fuchsia-400 hover:to-rose-400 text-white font-bold rounded-xl transition w-full shadow-lg shadow-rose-500/25">Mengerti, Ayo Main!</button>
+                                <button @click="showGuide = false" class="px-6 py-2 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-400 hover:to-blue-400 text-white font-bold rounded-xl transition w-full shadow-lg shadow-blue-500/25">Mengerti, Ayo Main!</button>
                             </div>
                         </div>
                     </div>
@@ -512,213 +526,118 @@ async function toggleLike(btn, url) {
     }
 }
 
-function pembdaPlace() {
+function pembdaColabs() {
     return {
+        puzzle: null,
+        pieces: [],
+        hasPlacedToday: false,
         showGuide: false,
         isCollapsed: false,
-        cooldown: 0,
-        colors: [
-            '#000000', '#ffffff', '#94a3b8', '#ff0000', '#ff3366', '#ff8c00', '#ffd700', 
-            '#00ff00', '#00cc66', '#00ffff', '#0080ff', '#0000ff', '#8a2be2', '#ff00ff', '#ffb6c1', '#8b4513'
-        ],
-        selectedColor: '#ff3366',
-        pixels: [],
-        ctx: null,
-        canvas: null,
-        pan: { x: 0, y: 0 },
-        zoom: 1, // Start a bit zoomed out to see everything or zoom 2 for clearer pixels
-        isPanning: false,
-        startPanPos: { x: 0, y: 0 },
-        hoverPixel: null,
-        tooltip: { x: 0, y: 0 },
-        lastUpdate: 0,
+        selectedPiece: null, 
+        inventory: [], 
+        board: [],
         
-        init() {
-            this.canvas = document.getElementById('place-canvas');
-            if(!this.canvas) return;
-            this.ctx = this.canvas.getContext('2d');
+        async init() {
+            const savedState = localStorage.getItem('pembdaColabsCollapsed');
+            if (savedState !== null) this.isCollapsed = savedState === 'true';
             
-            // Default center based on screen width
-            if (window.innerWidth < 640) {
-                this.zoom = 1.5;
-            } else {
-                this.zoom = 2;
-            }
-            
-            this.fetchCanvas();
-            this.startTicker();
-            
-            // Load collapse state
-            const savedState = localStorage.getItem('pembdaPlaceCollapsed');
-            if (savedState !== null) {
-                this.isCollapsed = savedState === 'true';
-            }
-            
-            // Poll for updates every 8 seconds
+            await this.fetchState();
             setInterval(() => {
-                if(!this.isCollapsed) this.fetchUpdates();
-            }, 8000);
+                if(!this.isCollapsed) this.fetchState();
+            }, 5000);
+        },
+        
+        async fetchState() {
+            try {
+                const res = await fetch('{{ route("forum.puzzle.state") }}');
+                const data = await res.json();
+                if(data.success) {
+                    this.puzzle = data.puzzle;
+                    this.hasPlacedToday = data.has_placed_today;
+                    this.pieces = data.pieces;
+                    this.rebuildBoard();
+                }
+            } catch(e) {}
+        },
+        
+        rebuildBoard() {
+            if(!this.puzzle) return;
+            const total = this.puzzle.grid_x * this.puzzle.grid_y;
+            let newBoard = new Array(total).fill(null);
+            let placedIndices = new Set();
+            
+            this.pieces.forEach(p => {
+                if(p.is_placed) {
+                    newBoard[p.index] = p;
+                    placedIndices.add(p.index);
+                }
+            });
+            this.board = newBoard;
+            
+            let newInv = [];
+            for(let i=0; i<total; i++) {
+                if(!placedIndices.has(i)) newInv.push(i);
+            }
+            if(this.inventory.length !== newInv.length) {
+                this.inventory = newInv.sort(() => Math.random() - 0.5);
+            }
         },
         
         toggleCollapse() {
             this.isCollapsed = !this.isCollapsed;
-            localStorage.setItem('pembdaPlaceCollapsed', this.isCollapsed);
-            
-            // If just opened, fetch updates immediately
-            if(!this.isCollapsed) {
-                this.fetchUpdates();
-            }
+            localStorage.setItem('pembdaColabsCollapsed', this.isCollapsed);
+            if(!this.isCollapsed) this.fetchState();
         },
         
-        async fetchCanvas() {
-            try {
-                const res = await fetch('{{ route("forum.place.canvas") }}');
-                const data = await res.json();
-                if(data.success) {
-                    this.pixels = data.pixels;
-                    this.lastUpdate = data.timestamp;
-                    this.drawCanvas();
-                }
-            } catch(e) {}
+        getBgPos(index) {
+            if(!this.puzzle) return '0 0';
+            const col = index % this.puzzle.grid_x;
+            const row = Math.floor(index / this.puzzle.grid_x);
+            const x = this.puzzle.grid_x > 1 ? (col / (this.puzzle.grid_x - 1)) * 100 : 0;
+            const y = this.puzzle.grid_y > 1 ? (row / (this.puzzle.grid_y - 1)) * 100 : 0;
+            return `${x}% ${y}%`;
         },
         
-        async fetchUpdates() {
-            if(!this.lastUpdate) return;
-            try {
-                const res = await fetch(`{{ route("forum.place.updates") }}?since=${this.lastUpdate}`);
-                const data = await res.json();
-                if(data.success) {
-                    this.lastUpdate = data.timestamp;
-                    if(data.pixels.length > 0) {
-                        data.pixels.forEach(newPx => {
-                            const idx = this.pixels.findIndex(p => p.x === newPx.x && p.y === newPx.y);
-                            if(idx >= 0) this.pixels[idx] = newPx;
-                            else this.pixels.push(newPx);
-                        });
-                        this.drawCanvas();
-                    }
-                }
-            } catch(e) {}
-        },
-        
-        drawCanvas() {
-            // Background is managed by CSS bg-white on canvas element, but we can clear anyway
-            this.ctx.clearRect(0, 0, 100, 100);
-            
-            this.pixels.forEach(p => {
-                this.ctx.fillStyle = p.color;
-                this.ctx.fillRect(p.x, p.y, 1, 1);
-            });
-        },
-        
-        // --- Pan & Zoom Logic ---
-        startPan(e) {
-            this.isPanning = true;
-            const ev = e.touches ? e.touches[0] : e;
-            this.startPanPos = { x: ev.clientX - this.pan.x, y: ev.clientY - this.pan.y };
-        },
-        doPan(e) {
-            if(!this.isPanning) return;
-            const ev = e.touches ? e.touches[0] : e;
-            this.pan.x = ev.clientX - this.startPanPos.x;
-            this.pan.y = ev.clientY - this.startPanPos.y;
-        },
-        endPan() {
-            this.isPanning = false;
-        },
-        doZoom(e) {
-            const zoomDelta = e.deltaY > 0 ? -0.5 : 0.5;
-            let newZoom = this.zoom + zoomDelta;
-            if(newZoom < 0.5) newZoom = 0.5;
-            if(newZoom > 25) newZoom = 25; // max zoom
-            this.zoom = newZoom;
-        },
-        
-        // --- Interaction Logic ---
-        async clickCanvas(e) {
-            // Prevent drawing if we were just panning
-            if (e.type === 'click' && Math.abs(this.pan.x - (this.startPanPos.x ? e.clientX - this.startPanPos.x : this.pan.x)) > 5) {
+        selectPiece(index) {
+            if(this.hasPlacedToday) {
+                alert("Anda sudah meletakkan kepingan hari ini! Tunggu besok.");
                 return;
             }
-
-            if(this.cooldown > 0) {
-                alert("Mohon tunggu waktu cooldown (" + this.formatTime(this.cooldown) + ") selesai.");
-                return;
-            }
+            this.selectedPiece = index;
+        },
+        
+        async placeAt(targetIndex) {
+            if(this.selectedPiece === null) return;
             
-            const rect = this.canvas.getBoundingClientRect();
-            // account for scaling - get real pixels
-            const scaleX = 100 / rect.width;
-            const scaleY = 100 / rect.height;
-            
-            const x = Math.floor((e.clientX - rect.left) * scaleX);
-            const y = Math.floor((e.clientY - rect.top) * scaleY);
-            
-            if(x < 0 || x >= 100 || y < 0 || y >= 100) return;
+            const pieceIdx = this.selectedPiece;
+            this.selectedPiece = null; 
             
             try {
-                const csrf = getCsrfToken();
-                const res = await fetch('{{ route("forum.place.draw") }}', {
+                const res = await fetch('{{ route("forum.puzzle.place") }}', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-XSRF-TOKEN': csrf },
-                    body: JSON.stringify({ x, y, color: this.selectedColor })
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-XSRF-TOKEN': getCsrfToken()
+                    },
+                    body: JSON.stringify({
+                        puzzle_id: this.puzzle.id,
+                        piece_index: pieceIdx,
+                        target_index: targetIndex
+                    })
                 });
-                const data = await res.json();
                 
+                const data = await res.json();
                 if(data.success) {
-                    this.cooldown = 300; // 5 mins
-                    
-                    // optimistically update local
-                    const idx = this.pixels.findIndex(p => p.x === data.pixel.x && p.y === data.pixel.y);
-                    if(idx >= 0) this.pixels[idx] = data.pixel;
-                    else this.pixels.push(data.pixel);
-                    
-                    this.drawCanvas();
+                    alert(data.message);
+                    this.hasPlacedToday = true;
+                    this.fetchState();
                 } else {
-                    if(data.ttl) this.cooldown = data.ttl;
                     alert(data.message);
                 }
-            } catch(err) {
-                alert("Gagal menaruh piksel. Pastikan koneksi stabil.");
+            } catch(e) {
+                alert("Error koneksi saat meletakkan puzzle.");
             }
-        },
-        
-        hoverCanvas(e) {
-            if(this.isPanning) {
-                this.hoverPixel = null;
-                return;
-            }
-            
-            const rect = this.canvas.getBoundingClientRect();
-            const scaleX = 100 / rect.width;
-            const scaleY = 100 / rect.height;
-            
-            const x = Math.floor((e.clientX - rect.left) * scaleX);
-            const y = Math.floor((e.clientY - rect.top) * scaleY);
-            
-            const p = this.pixels.find(px => px.x === x && px.y === y);
-            if(p) {
-                this.hoverPixel = p;
-                
-                // Position tooltip relative to container
-                const containerRect = document.getElementById('place-container').getBoundingClientRect();
-                this.tooltip.x = e.clientX - containerRect.left;
-                this.tooltip.y = e.clientY - containerRect.top;
-            } else {
-                this.hoverPixel = null;
-            }
-        },
-        
-        // --- Timer Logic ---
-        startTicker() {
-            setInterval(() => {
-                if(this.cooldown > 0) this.cooldown--;
-            }, 1000);
-        },
-        formatTime(sec) {
-            const m = Math.floor(sec / 60);
-            const s = sec % 60;
-            return `${m}:${s.toString().padStart(2, '0')}`;
         }
     }
 }

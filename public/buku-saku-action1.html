@@ -30,6 +30,7 @@
             --pink: #ec4899;
             --purple: #8b5cf6;
             --cyan: #06b6d4;
+            --teal: #14b8a6;
         }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -75,16 +76,6 @@
         }
         .info-box p {
             margin: 0; font-size: 1rem; color: var(--gray);
-        }
-        .section-title {
-            font-size: 1.8rem;
-            color: var(--black);
-            margin-top: 50px;
-            margin-bottom: 25px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 15px;
         }
         .grid {
             display: grid;
@@ -172,17 +163,18 @@
         <header>
             <div style="font-size: 0.9rem; letter-spacing: 2px; color: var(--red); text-transform: uppercase; margin-bottom: 10px; font-weight: 800;">Action #1: Filosofi & Relevansi Mapel</div>
             <h1>Buku Saku Ide Aktivitas Guru</h1>
-            <p class="subtitle">Kumpulan skenario aktivitas praktis (PBL) per mata pelajaran agar relevan dengan kompetensi kejuruan.</p>
+            <p class="subtitle">Kumpulan 24 skenario aktivitas praktis (PBL) untuk 12 Mata Pelajaran Umum & Vokasi Dasar agar 100% relevan dengan kompetensi kejuruan.</p>
         </header>
 
         <div class="info-box" style="border-left-color: var(--red);">
-            <h4 style="color: var(--red);">📌 Tujuan Buku Saku</h4>
-            <p>Dokumen ini disusun agar tidak ada lagi guru yang beralasan "Saya tidak tahu cara menyambungkan materi umum ke jurusan anak". Silakan tiru dan modifikasi ide-ide di bawah ini!</p>
+            <h4 style="color: var(--red);">📌 Tujuan Buku Saku Lengkap 12 Mapel</h4>
+            <p>Dokumen komprehensif ini memuat SEMUA mata pelajaran di SMK (kelompok A, B, dan muatan lokal). Disusun agar tidak ada satupun guru yang tertinggal atau beralasan "Materi saya tidak bisa nyambung ke kejuruan anak". Silakan tiru dan praktikkan langsung di kelas!</p>
         </div>
 
         <div class="grid">
+            <!-- 1. MATEMATIKA -->
             <div class="card" style="border-top-color: var(--blue);">
-                <h3 style="color: var(--blue);">Matematika</h3>
+                <h3 style="color: var(--blue);">1. Matematika</h3>
                 <div class="activity" style="border-left-color: var(--green);">
                     <div class="act-title">Kalkulasi RAB Bangunan (Geometri)</div>
                     <p class="act-desc">Guru membagikan blueprint bangunan. Siswa menghitung total volume material (pasir, semen, batu bata) menggunakan rumus bangun ruang dan mengalikan harga bahan riil.</p>
@@ -190,27 +182,29 @@
                 </div>
                 <div class="activity" style="border-left-color: var(--red);">
                     <div class="act-title">Perhitungan Margin TEFA (Aritmetika)</div>
-                    <p class="act-desc">Siswa menghitung Harga Pokok Penjualan (HPP) oli, biaya sewa alat bengkel, dan persentase keuntungan (BEP).</p>
+                    <p class="act-desc">Siswa menghitung Harga Pokok Penjualan (HPP) oli, biaya sewa alat bengkel, dan persentase keuntungan agar mencapai Break Even Point (BEP).</p>
                     <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-tkj">Target: TKJ</span>
                 </div>
             </div>
 
+            <!-- 2. BAHASA INDONESIA -->
             <div class="card" style="border-top-color: var(--orange);">
-                <h3 style="color: var(--orange);">Bahasa Indonesia</h3>
+                <h3 style="color: var(--orange);">2. Bahasa Indonesia</h3>
                 <div class="activity" style="border-left-color: var(--blue);">
                     <div class="act-title">Role-Play Customer Service (Persuasi)</div>
-                    <p class="act-desc">Siswa disimulasikan sebagai Teknisi IT yang harus menenangkan pelanggan marah akibat komplain jaringan internet yang mati menggunakan kalimat profesional dan solutif.</p>
+                    <p class="act-desc">Siswa disimulasikan sebagai Teknisi yang harus menenangkan pelanggan marah akibat komplain jasa menggunakan kalimat profesional dan solutif.</p>
                     <span class="act-meta meta-all">Target: Semua Jurusan</span>
                 </div>
                 <div class="activity" style="border-left-color: var(--orange);">
                     <div class="act-title">SOP Keselamatan Alat (Teks Prosedur)</div>
-                    <p class="act-desc">Menulis instruksi penggunaan alat berbahaya (mesin bubut/crimping) dengan kejelasan tingkat tinggi agar tidak membahayakan pembacanya (adik kelas).</p>
+                    <p class="act-desc">Menulis instruksi penggunaan alat berbahaya dengan kejelasan tingkat tinggi agar tidak membahayakan pembacanya (adik kelas).</p>
                     <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-dpib">Target: DPIB</span>
                 </div>
             </div>
 
+            <!-- 3. BAHASA INGGRIS -->
             <div class="card" style="border-top-color: var(--red);">
-                <h3 style="color: var(--red);">Bahasa Inggris</h3>
+                <h3 style="color: var(--red);">3. Bahasa Inggris</h3>
                 <div class="activity" style="border-left-color: var(--blue);">
                     <div class="act-title">Bedah Datasheet Asing (Reading)</div>
                     <p class="act-desc">Guru memberikan buku manual servis mesin pabrikan / datasheet server Cisco bahasa Inggris. Siswa menerjemahkan prosedur perbaikannya.</p>
@@ -218,36 +212,143 @@
                 </div>
                 <div class="activity" style="border-left-color: var(--red);">
                     <div class="act-title">Pitching ke Investor (Speaking)</div>
-                    <p class="act-desc">Siswa mempresentasikan desain rancang bangun atau produk IoT mereka kepada guru/teman yang bertindak sebagai Investor Asing.</p>
+                    <p class="act-desc">Siswa mempresentasikan rancang bangun atau produk IoT mereka kepada guru/teman yang bertindak sebagai Investor Asing dalam bahasa Inggris.</p>
                     <span class="act-meta meta-dpib">Target: DPIB</span> <span class="act-meta meta-tkj">Target: TKJ</span>
                 </div>
             </div>
 
+            <!-- 4. PEND. AGAMA -->
             <div class="card" style="border-top-color: var(--green);">
-                <h3 style="color: var(--green);">Pend. Agama & PPKn</h3>
+                <h3 style="color: var(--green);">4. Pend. Agama & Budi Pekerti</h3>
                 <div class="activity" style="border-left-color: var(--green);">
-                    <div class="act-title">Etika Profesi & Fiqih Jual Beli</div>
-                    <p class="act-desc">Simulasi memberikan garansi layanan di TEFA secara transparan (tanpa riba, penipuan, pemalsuan spare-part).</p>
+                    <div class="act-title">Fiqih Jual Beli / Etika Bisnis</div>
+                    <p class="act-desc">Simulasi memberikan layanan garansi di TEFA secara transparan sesuai ajaran agama (tanpa riba, penipuan, atau pemalsuan spare-part).</p>
                     <span class="act-meta meta-all">Target: Semua Jurusan</span>
                 </div>
+                <div class="activity" style="border-left-color: var(--gold);">
+                    <div class="act-title">Studi Kasus Dosa Jariyah Proyek</div>
+                    <p class="act-desc">Menganalisis hukum agama akibat kontraktor/mekanik yang curang mengurangi standar kualitas (misal: mengurangi semen) yang berakibat mencelakai orang lain.</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span> <span class="act-meta meta-tsm">Target: TSM</span>
+                </div>
+            </div>
+
+            <!-- 5. PPKN -->
+            <div class="card" style="border-top-color: var(--cyan);">
+                <h3 style="color: var(--cyan);">5. Pendidikan Pancasila (PPKn)</h3>
                 <div class="activity" style="border-left-color: var(--blue);">
-                    <div class="act-title">Hak Tenaga Kerja & UU AMDAL</div>
-                    <p class="act-desc">Menganalisis surat kontrak kerja mekanik/drafter (UMR, BPJS) dan mendebatkan tata kelola limbah bengkel berdasarkan undang-undang.</p>
+                    <div class="act-title">Hak Tenaga Kerja & Kontrak</div>
+                    <p class="act-desc">Menganalisis surat kontrak kerja industri, hak buruh/mekanik (UMR, jam kerja), dan kewajiban BPJS sesuai Undang-Undang Ketenagakerjaan yang berlaku.</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--red);">
+                    <div class="act-title">Debat Regulasi AMDAL & Limbah</div>
+                    <p class="act-desc">Sidang simulasi tata kelola limbah beracun bengkel otomotif atau sisa material bangunan berdasarkan Perda dan hukum lingkungan hidup.</p>
                     <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-dpib">Target: DPIB</span>
                 </div>
             </div>
-            
-            <div class="card" style="border-top-color: var(--yellow);">
-                <h3 style="color: var(--orange);">PJOK & Seni Budaya</h3>
+
+            <!-- 6. SEJARAH -->
+            <div class="card" style="border-top-color: var(--pink);">
+                <h3 style="color: var(--pink);">6. Sejarah Indonesia</h3>
+                <div class="activity" style="border-left-color: var(--pink);">
+                    <div class="act-title">Evolusi Arsitektur Lokal Nias</div>
+                    <p class="act-desc">Siswa meneliti struktur rumah adat tradisional (Omo Hada) Nias yang tahan gempa di masa lampau, dan membandingkannya dengan konstruksi beton saat ini.</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
                 <div class="activity" style="border-left-color: var(--orange);">
-                    <div class="act-title">Ergonomi & K3 Angkat Beban</div>
-                    <p class="act-desc">Melatih siswa TKJ peregangan pencegah Carpal Tunnel (terlalu lama di PC) dan mempraktikkan gaya angkat (Squat) mesin yang benar agar tidak saraf kejepit.</p>
+                    <div class="act-title">Kronologi Mesin & Revolusi Industri 4.0</div>
+                    <p class="act-desc">Membuat timeline sejarah penemuan mesin uap hingga IoT. Mendiskusikan bagaimana disrupsi masa lalu mematikan banyak profesi teknis konvensional.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+            </div>
+
+            <!-- 7. PJOK -->
+            <div class="card" style="border-top-color: var(--orange);">
+                <h3 style="color: var(--orange);">7. PJOK (Penjasorkes)</h3>
+                <div class="activity" style="border-left-color: var(--orange);">
+                    <div class="act-title">Senam Ergonomi & Peregangan</div>
+                    <p class="act-desc">Melatih siswa peregangan pencegah Carpal Tunnel (terlalu lama mengetik/duduk) untuk mencegah kelainan tulang punggung di dunia kerja.</p>
+                    <span class="act-meta meta-tkj">Target: TKJ</span> <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--red);">
+                    <div class="act-title">Teknik Angkat Beban Mesin (K3 Fisik)</div>
+                    <p class="act-desc">Mempraktikkan gaya angkat beban berat (Squat) yang benar saat memindahkan blok mesin agar tidak terjadi saraf kejepit (Herniated Disc).</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span>
+                </div>
+            </div>
+
+            <!-- 8. SENI BUDAYA -->
+            <div class="card" style="border-top-color: var(--purple);">
+                <h3 style="color: var(--purple);">8. Seni Budaya / Seni Rupa</h3>
+                <div class="activity" style="border-left-color: var(--purple);">
+                    <div class="act-title">Estetika UI/UX Aplikasi</div>
+                    <p class="act-desc">Membuat hirarki warna (Color Palette) dan tipografi untuk memperindah antarmuka aplikasi/website yang sedang mereka buat di kelas kejuruan.</p>
+                    <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--red);">
+                    <div class="act-title">Kriya Estetik Body Kendaraan</div>
+                    <p class="act-desc">Menerapkan prinsip komposisi cat, decal, atau airbrush pada modifikasi body kendaraan otomotif.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span>
+                </div>
+            </div>
+
+            <!-- 9. IPAS (FISIKA & KIMIA) -->
+            <div class="card" style="border-top-color: var(--teal);">
+                <h3 style="color: var(--teal);">9. IPAS / Fisika & Kimia</h3>
+                <div class="activity" style="border-left-color: var(--teal);">
+                    <div class="act-title">Termodinamika Mesin Bakar</div>
+                    <p class="act-desc">Menganalisis efisiensi pembakaran bahan bakar pada motor bensin vs motor listrik, serta menghitung rasio kompresi mesin.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--blue);">
+                    <div class="act-title">Kelistrikan & Hukum Ohm Rangkaian</div>
+                    <p class="act-desc">Menghitung resistansi, daya, dan batas aman arus listrik pada instalasi rumah (DPIB) atau merakit sensor Internet of Things (TKJ).</p>
+                    <span class="act-meta meta-tkj">Target: TKJ</span> <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+            </div>
+
+            <!-- 10. INFORMATIKA / SIMDIG -->
+            <div class="card" style="border-top-color: var(--blue);">
+                <h3 style="color: var(--blue);">10. Informatika / SimDig</h3>
+                <div class="activity" style="border-left-color: var(--orange);">
+                    <div class="act-title">Manajemen Data Proyek (Spreadsheet)</div>
+                    <p class="act-desc">Siswa menggunakan fitur lanjutan Excel/Spreadsheet untuk membuat sistem rekap data inventory spare-part bengkel atau daftar harga material bangunan secara otomatis.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--blue);">
+                    <div class="act-title">Pembuatan Profil Portofolio Digital</div>
+                    <p class="act-desc">Siswa mengemas laporan proyek praktiknya menjadi sebuah halaman website portofolio interaktif yang siap dipamerkan ke DUDI.</p>
                     <span class="act-meta meta-all">Target: Semua Jurusan</span>
                 </div>
-                <div class="activity" style="border-left-color: var(--purple);">
-                    <div class="act-title">Estetika UI/UX & Kriya Body Motor</div>
-                    <p class="act-desc">Membuat hirarki warna/tipografi untuk memperindah antarmuka aplikasi atau komposisi cat pada body kendaraan modifikasi.</p>
-                    <span class="act-meta meta-tkj">Target: TKJ</span> <span class="act-meta meta-tsm">Target: TSM</span>
+            </div>
+
+            <!-- 11. PKK (KEWIRAUSAHAAN) -->
+            <div class="card" style="border-top-color: var(--gold);">
+                <h3 style="color: var(--gold);">11. PKK (Kewirausahaan)</h3>
+                <div class="activity" style="border-left-color: var(--green);">
+                    <div class="act-title">Simulasi Bisnis Jasa TEFA</div>
+                    <p class="act-desc">Siswa membuat proposal bisnis penawaran jasa servis kunjung (home-service), jasa perbaikan komputer keliling, atau jasa desain IMB murah untuk masyarakat desa.</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--orange);">
+                    <div class="act-title">Pemasaran Digital (Digital Marketing)</div>
+                    <p class="act-desc">Siswa membuat akun media sosial bisnis untuk produk jurusannya, merancang *copywriting* iklan, dan mempraktikkan cara mencari *leads* pelanggan nyata di internet.</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+            </div>
+
+            <!-- 12. MUATAN LOKAL -->
+            <div class="card" style="border-top-color: var(--green);">
+                <h3 style="color: var(--green);">12. Muatan Lokal (Budaya Nias)</h3>
+                <div class="activity" style="border-left-color: var(--pink);">
+                    <div class="act-title">Penerapan Motif Nias pada Produk</div>
+                    <p class="act-desc">Mengintegrasikan ukiran atau motif khas Nias (Ni'obawandruhombo, dll) pada desain fasad rumah modern (DPIB) atau pada decal stiker otomotif (TSM).</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span> <span class="act-meta meta-tsm">Target: TSM</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--blue);">
+                    <div class="act-title">Aplikasi Pariwisata Lokal</div>
+                    <p class="act-desc">Membangun website sistem informasi pariwisata terintegrasi untuk desa-desa di wilayah Nias yang belum terjamah teknologi informasi digital.</p>
+                    <span class="act-meta meta-tkj">Target: TKJ</span>
                 </div>
             </div>
         </div>

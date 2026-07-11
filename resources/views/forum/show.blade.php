@@ -304,13 +304,27 @@
                         @if($reply->parent)
                             <div class="bg-forum-light-5 border-l-2 border-indigo-500 rounded-lg p-2.5 max-w-2xl text-xs text-forum-body mb-2 cursor-pointer hover:bg-forum-light-10 transition" onclick="document.getElementById('reply-{{ $reply->parent_id }}').scrollIntoView({behavior: 'smooth'})">
                                 <div class="font-bold text-indigo-400 mb-1">Membalas {{ $reply->parent->user->name }}</div>
-                                <div class="line-clamp-2">{!! strip_tags($reply->parent->content) !!}</div>
+                                <div class="line-clamp-2">
+                                    @if($reply->parent->voice_note_path)
+                                        <i class="ph-bold ph-microphone"></i> Pesan Suara
+                                    @else
+                                        {!! strip_tags($reply->parent->content) !!}
+                                    @endif
+                                </div>
                             </div>
                         @endif
 
                         <!-- Bubble -->
                         <div class="{{ $reply->is_accepted ? 'bg-amber-500/10 border-amber-500/30 ring-1 ring-amber-500/20' : 'bg-forum-light-5 border-forum-light' }} border rounded-2xl rounded-tl-none p-4 max-w-2xl text-sm text-slate-200">
-                            {!! nl2br(e($reply->content)) !!}
+                            @if($reply->voice_note_path)
+                                <div class="mb-2 flex items-center gap-2 text-indigo-400 font-bold text-xs">
+                                    <i class="ph-bold ph-microphone text-lg"></i> Pesan Suara
+                                </div>
+                                <audio controls class="w-full h-10 rounded-xl max-w-[250px] sm:max-w-xs mb-2 bg-forum-light-5" src="{{ asset('storage/' . $reply->voice_note_path) }}"></audio>
+                            @endif
+                            @if($reply->content)
+                                {!! nl2br(e($reply->content)) !!}
+                            @endif
                         </div>
 
                         <!-- Actions -->
@@ -383,9 +397,10 @@
             </div>
         </div>
 
-        <form action="{{ route('forum.reply', $thread) }}" method="POST" class="flex gap-3 items-end">
+        <form action="{{ route('forum.reply', $thread) }}" method="POST" enctype="multipart/form-data" class="flex gap-3 items-end" id="reply-form">
             @csrf
             <input type="hidden" name="parent_reply_id" id="parent_reply_id">
+            <input type="file" name="voice_note" id="voice_note_input" style="display:none;" accept="audio/*">
             
             <!-- Emoji Picker for Input (Vanilla JS) -->
             <div class="relative flex-shrink-0 mb-1">
@@ -408,8 +423,25 @@
                 </div>
             </div>
 
-            <div class="flex-1 bg-black/40 border border-forum-light rounded-2xl overflow-hidden focus-within:border-indigo-500 transition-colors">
-                <textarea name="content" rows="1" required placeholder="Ketik pesan..." class="w-full bg-transparent text-white px-4 py-3 outline-none resize-none min-h-[48px] max-h-32 text-sm sm:text-base no-scrollbar" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+            <div class="flex-1 bg-black/40 border border-forum-light rounded-2xl overflow-hidden focus-within:border-indigo-500 transition-colors flex flex-col justify-center min-h-[48px]">
+                
+                <!-- Voice Note Preview -->
+                <div id="vn-preview" class="w-full bg-transparent text-white px-4 py-2 flex items-center gap-3" style="display: none;">
+                    <i class="ph-bold ph-microphone text-rose-400"></i>
+                    <audio id="vn-audio" controls class="h-8 flex-1 max-w-[200px] sm:max-w-[300px]"></audio>
+                    <button type="button" onclick="cancelVoiceNote()" class="p-1.5 bg-rose-500/20 text-rose-400 rounded-lg hover:bg-rose-500/30 transition ml-auto" title="Hapus rekaman">
+                        <i class="ph-bold ph-trash text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-end">
+                    <textarea name="content" rows="1" placeholder="Ketik pesan..." class="w-full bg-transparent text-white px-4 py-3 outline-none resize-none min-h-[48px] max-h-32 text-sm sm:text-base no-scrollbar" id="reply-textarea" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
+                    
+                    <!-- Mic Button -->
+                    <button type="button" id="record-btn" onclick="toggleRecord()" class="p-3 text-forum-muted hover:text-rose-400 transition flex-shrink-0 mb-0.5 mr-0.5 rounded-xl flex items-center justify-center" title="Merekam voice note">
+                        <i class="ph-bold ph-microphone text-xl"></i>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 hover:scale-105 transition flex-shrink-0 mb-1">
@@ -618,6 +650,101 @@ async function votePoll(optionId) {
             });
         }
     } catch (e) { alert("Poll JS Error: " + e.message); }
+}
+
+// --- Voice Note Logic ---
+let mediaRecorder;
+let audioChunks = [];
+let audioBlob;
+let recordTimer;
+let recordSeconds = 0;
+let isRecording = false;
+
+async function toggleRecord() {
+    const recordBtn = document.getElementById('record-btn');
+    const textarea = document.getElementById('reply-textarea');
+    const vnPreview = document.getElementById('vn-preview');
+    const vnAudio = document.getElementById('vn-audio');
+    const fileInput = document.getElementById('voice_note_input');
+
+    if (isRecording) {
+        stopRecording();
+        return;
+    }
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) audioChunks.push(e.data);
+        };
+        
+        mediaRecorder.onstop = () => {
+            audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            vnAudio.src = audioUrl;
+            
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(new File([audioBlob], 'voicenote.webm', { type: 'audio/webm' }));
+            fileInput.files = dataTransfer.files;
+            
+            textarea.style.display = 'none';
+            vnPreview.style.display = 'flex';
+            
+            // Stop tracks
+            stream.getTracks().forEach(track => track.stop());
+            
+            recordBtn.innerHTML = '<i class="ph-bold ph-microphone text-xl"></i>';
+            recordBtn.classList.remove('text-rose-500', 'animate-pulse');
+            recordBtn.style.display = 'none'; // hide record button while audio is there
+        };
+        
+        mediaRecorder.start();
+        isRecording = true;
+        recordSeconds = 0;
+        
+        recordBtn.innerHTML = '<i class="ph-bold ph-stop text-xl"></i>';
+        recordBtn.classList.add('text-rose-500', 'animate-pulse');
+        textarea.placeholder = "Merekam... (Maks 15 detik)";
+        textarea.disabled = true;
+        
+        recordTimer = setInterval(() => {
+            recordSeconds++;
+            textarea.placeholder = `Merekam... 00:${recordSeconds.toString().padStart(2, '0')}`;
+            if (recordSeconds >= 15) {
+                stopRecording();
+            }
+        }, 1000);
+        
+    } catch (err) {
+        alert("Tidak dapat mengakses mikrofon. Pastikan Anda telah memberikan izin di browser.");
+    }
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        isRecording = false;
+        clearInterval(recordTimer);
+        const textarea = document.getElementById('reply-textarea');
+        textarea.placeholder = "Ketik pesan...";
+        textarea.disabled = false;
+    }
+}
+
+function cancelVoiceNote() {
+    const fileInput = document.getElementById('voice_note_input');
+    const vnPreview = document.getElementById('vn-preview');
+    const textarea = document.getElementById('reply-textarea');
+    const recordBtn = document.getElementById('record-btn');
+    
+    fileInput.value = '';
+    vnPreview.style.display = 'none';
+    textarea.style.display = 'block';
+    textarea.value = '';
+    recordBtn.style.display = 'flex';
 }
 </script>
 @endsection

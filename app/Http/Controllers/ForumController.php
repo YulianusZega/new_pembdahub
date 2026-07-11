@@ -233,16 +233,23 @@ class ForumController extends Controller
         }
 
         $validated = $request->validate([
-            'content' => 'required|string|max:5000',
+            'content' => 'required_without:voice_note|string|max:5000|nullable',
+            'voice_note' => 'nullable|file|mimes:webm,mp3,mp4,m4a,ogg,wav|max:5120',
             'parent_reply_id' => 'nullable|exists:forum_replies,id',
         ]);
 
         DB::beginTransaction();
         try {
+            $voiceNotePath = null;
+            if ($request->hasFile('voice_note')) {
+                $voiceNotePath = $request->file('voice_note')->store('forum_voice_notes', 'public');
+            }
+
             $reply = ForumReply::create([
                 'forum_thread_id' => $thread->id,
                 'user_id' => $user->id,
-                'content' => $validated['content'],
+                'content' => $validated['content'] ?? '',
+                'voice_note_path' => $voiceNotePath,
                 'parent_reply_id' => $validated['parent_reply_id'] ?? null,
             ]);
 

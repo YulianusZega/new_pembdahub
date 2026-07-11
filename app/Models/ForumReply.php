@@ -14,6 +14,7 @@ class ForumReply extends Model
         'forum_thread_id',
         'user_id',
         'content',
+        'voice_note_path',
         'is_accepted',
         'parent_reply_id',
     ];

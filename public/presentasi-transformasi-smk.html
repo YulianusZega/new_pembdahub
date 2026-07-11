@@ -76,6 +76,12 @@
         .btn:hover { background: rgba(37, 99, 235, 0.9); transform: scale(1.05); }
         .btn:disabled { background: rgba(100, 116, 139, 0.8); cursor: not-allowed; opacity: 0.5; transform: none; }
         .prg { position: fixed; top: 0; left: 0; height: 6px; background: var(--blue-grad); transition: width 0.3s; z-index: 100; }
+        /* Bar Charts */
+        .chart-row { margin-bottom: 12px; }
+        .chart-label { display: flex; justify-content: space-between; font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: var(--black); }
+        .chart-bar-bg { width: 100%; height: 24px; background: rgba(0,0,0,0.1); border-radius: 4px; overflow: hidden; }
+        .chart-bar-fill { height: 100%; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: white; font-weight: 800; font-size: 0.85rem; border-radius: 4px; }
+        .s.bg-body .chart-label { color: var(--black); }
 </style>
 </head>
 <body>
@@ -173,26 +179,51 @@
             </div>
         </div>
 
-        <!-- SLIDE 4: SURVEY KESIAPAN -->
+                <!-- SLIDE 4: SURVEY KESIAPAN -->
         <div class="s bg-body">
             <div class="stag">04</div><div class="otag">Kebijakan #1</div>
             <div class="ct">
                 <span class="label ani d1" style="background: var(--green-grad);">Evaluasi Hasil Survey</span>
                 <h2 class="ani d2">Realita "Vocational Spirit" Kita</h2>
                 <div class="grid-2 ani d3">
-                    <div class="problem-box">
-                        <h4 class="text-red" style="font-size: 1.5rem; margin-bottom: 5px;">🔴 Fakta Lapangan</h4>
-                        <p style="font-weight: 600; color: var(--gray); margin-bottom: 15px;">Dari data pengisian Survey 4 Juli 2026:</p>
-                        <ul style="padding-left: 20px;">
-                            <li style="margin-bottom: 10px;">Guru merasa mengajar dengan baik (Skor Persepsi Diri: 4.58/5).</li>
-                            <li style="margin-bottom: 10px;">NAMUN kesulitan merumuskan inovasi riil kejuruan (Skor Inovasi: 2.63/5).</li>
-                            <li style="margin-bottom: 10px;">Visi besar Yayasan (TEFA, wirausaha) belum diterjemahkan menjadi rencana operasional harian (Skor Visi: 2.69/5).</li>
-                        </ul>
+                    <div class="problem-box" style="padding: 25px;">
+                        <h4 class="text-red" style="font-size: 1.5rem; margin-bottom: 15px;">📊 Grafik Hasil Survey (Kekurangan & Kelebihan)</h4>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <p style="font-weight: 800; color: var(--green); margin: 0 0 10px 0; font-size: 1.1rem;">Kelebihan (Klaim Diri Guru):</p>
+                            <div class="chart-row">
+                                <div class="chart-label"><span>Tanggung Jawab Mengajar</span><span>4.58 / 5.0</span></div>
+                                <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 92%; background: var(--green);">92%</div></div>
+                            </div>
+                            <div class="chart-row">
+                                <div class="chart-label"><span>Interaksi dengan Siswa</span><span>4.40 / 5.0</span></div>
+                                <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 88%; background: var(--green);">88%</div></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p style="font-weight: 800; color: var(--red); margin: 0 0 10px 0; font-size: 1.1rem;">Kekurangan (Realita Eksekusi):</p>
+                            <div class="chart-row">
+                                <div class="chart-label"><span>Visi Operasional Kejuruan</span><span>2.69 / 5.0</span></div>
+                                <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 53%; background: var(--red);">53%</div></div>
+                            </div>
+                            <div class="chart-row">
+                                <div class="chart-label"><span>Ide Inovasi Praktik/TEFA</span><span>2.63 / 5.0</span></div>
+                                <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 52%; background: var(--red);">52%</div></div>
+                            </div>
+                            <div class="chart-row">
+                                <div class="chart-label"><span>Kolaborasi Lintas Mapel</span><span>2.45 / 5.0</span></div>
+                                <div class="chart-bar-bg"><div class="chart-bar-fill" style="width: 49%; background: var(--orange);">49%</div></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="action-box">
-                        <h4 class="text-green" style="font-size: 1.5rem; margin-bottom: 5px;">✅ Action (Tindak Lanjut)</h4>
-                        <p><strong>Kepala Sekolah wajib memegang data pemetaan ini.</strong> Guru yang skor kesiapannya masih "Belum Siap" tidak boleh dibiarkan, harus masuk dalam target <em>Coaching & Mentoring</em> spesifik semester ini.</p>
-                        <button class="btn-link" onclick="window.open('instrumen-kontrol-kepsek.html#kesiapan', '_blank')">Lihat Form Checklist Kesiapan &rarr;</button>
+                    <div class="action-box" style="display: flex; flex-direction: column; justify-content: center;">
+                        <h4 class="text-green" style="font-size: 1.5rem; margin-bottom: 10px;">✅ Action (Tindak Lanjut)</h4>
+                        <p style="margin-bottom: 15px;">Grafik di samping menunjukkan bahwa <strong>Guru merasa sudah mengajar dengan baik, TAPI tidak tahu bagaimana menyambungkannya dengan inovasi kejuruan.</strong></p>
+                        <p><strong>Kepala Sekolah wajib memegang data pemetaan ini.</strong> Guru yang skor inovasinya "Merah" harus dipaksa berkolaborasi dan masuk dalam target <em>Coaching</em> semester ini.</p>
+                        <div>
+                            <button class="btn-link" onclick="window.open('instrumen-kontrol-kepsek.html#kesiapan', '_blank')">Lihat Form Checklist Kesiapan &rarr;</button>
+                        </div>
                     </div>
                 </div>
             </div>

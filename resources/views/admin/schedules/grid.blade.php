@@ -262,6 +262,7 @@
             <div class="flex-1 min-w-[120px]">
                 <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tingkat</label>
                 <select name="grade_level" class="filter-select">
+                    <option value="all" {{ $selectedGradeLevel === 'all' ? 'selected' : '' }}>Semua Tingkat</option>
                     @foreach($availableGrades as $grade)
                         <option value="{{ $grade }}" {{ $selectedGradeLevel == $grade ? 'selected' : '' }}>Kelas {{ $grade }}</option>
                     @endforeach

@@ -17,8 +17,8 @@ class ProfileSettingsController extends Controller
     {
         $user = auth()->user();
         $biodata = null;
-        if ($user->isSiswa()) $biodata = $user->student;
-        elseif ($user->isGuru()) $biodata = $user->teacher;
+        if ($user->student) $biodata = $user->student;
+        elseif ($user->teacher) $biodata = $user->teacher;
         else $biodata = $user->employee;
 
         $isBiodataEditable = now()->format('Y-m') <= '2026-07';

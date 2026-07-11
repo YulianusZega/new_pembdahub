@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class ForumThread extends Model
 {
@@ -38,17 +39,26 @@ class ForumThread extends Model
     ];
 
     public const CATEGORIES = [
-        'diskusi' => '💬 Tanya & Bahas',
-        'sharing' => '📂 Bagi File & Catatan',
-        'info' => '📢 Info & Wara-Wara',
-        'performance' => '🏆 Panggung Eksistensi',
-        'art_gallery' => '🎨 Galeri Seni & Foto',
-        'talent' => '🎵 Unjuk Bakat & Musik',
-        'gaming' => '🎮 E-Sports & Mabar',
-        'portfolio' => '🚀 Portofolio Juara',
-        'project_idea' => '💡 Kolab Ide & Project',
+        'diskusi' => '💬 Lobi Utama',
+        'info' => '📢 Pengumuman',
+        'tanya_jawab' => '❓ Tanya Jawab',
+        'sharing' => '📁 Bank File',
+        'art_gallery' => '🎨 Karya Seni',
+        'talent' => '🎵 Musik & Bakat',
+        'performance' => '🏆 Hall of Fame',
+        'gaming' => '🎮 Gaming & Mabar',
+        'trending' => '🔥 Trending & Viral',
+        'project_idea' => '💡 Ide Proyek',
         'committee' => '👥 Rekrut Panitia',
-        'charity' => '❤️ Aksi Sosial & Donasi',
+        'charity' => '❤️ Aksi Sosial',
+    ];
+
+    public const CHANNEL_GROUPS = [
+        '💬 OBROLAN' => ['diskusi', 'info'],
+        '📚 AKADEMIK' => ['tanya_jawab', 'sharing'],
+        '🎨 SHOWCASE' => ['art_gallery', 'talent', 'performance'],
+        '🎮 HANGOUT' => ['gaming', 'trending'],
+        '🤝 KOLABORASI' => ['project_idea', 'committee', 'charity'],
     ];
 
     // Relationships
@@ -80,6 +90,27 @@ class ForumThread extends Model
     public function isLikedBy(User $user): bool
     {
         return $this->likes()->where('user_id', $user->id)->exists();
+    }
+
+    public function reactions()
+    {
+        return $this->hasMany(ForumReaction::class);
+    }
+
+    public function poll()
+    {
+        return $this->hasOne(ForumPoll::class);
+    }
+
+    public function getReactionCounts(): array
+    {
+        return $this->reactions()->select('emoji', DB::raw('count(*) as count'))
+            ->groupBy('emoji')->pluck('count', 'emoji')->toArray();
+    }
+
+    public function hasReacted(User $user, string $emoji): bool
+    {
+        return $this->reactions()->where('user_id', $user->id)->where('emoji', $emoji)->exists();
     }
 
     public function reference()

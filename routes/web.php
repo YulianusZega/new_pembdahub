@@ -832,6 +832,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/member/{member}/reject', [App\Http\Controllers\ForumController::class, 'rejectMember'])->name('member.reject');
         Route::post('/{thread}/status', [App\Http\Controllers\ForumController::class, 'updateStatus'])->name('status.update');
         Route::post('/{thread}/donate', [App\Http\Controllers\ForumController::class, 'donate'])->name('donate');
+        
+        // Reactions
+        Route::post('/{thread}/react', [App\Http\Controllers\ForumController::class, 'react'])->name('react');
+        Route::post('/reply/{reply}/react', [App\Http\Controllers\ForumController::class, 'reactReply'])->name('reply.react');
+
+        // Polls
+        Route::post('/{thread}/poll', [App\Http\Controllers\ForumController::class, 'createPoll'])->name('poll.create');
+        Route::post('/poll/{option}/vote', [App\Http\Controllers\ForumController::class, 'votePoll'])->name('poll.vote');
     });
 
     // Alumni & Tracer Study Routes

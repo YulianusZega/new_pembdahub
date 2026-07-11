@@ -9,6 +9,10 @@ use App\Models\ForumMember;
 use App\Models\ReputationLog;
 use App\Models\CbtExamResult;
 use App\Models\Badge;
+use App\Models\ForumReaction;
+use App\Models\ForumPoll;
+use App\Models\ForumPollOption;
+use App\Models\ForumPollVote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +29,7 @@ class ForumController extends Controller
         $search = $request->get('search');
         $user = Auth::user();
 
-        $query = ForumThread::with(['user', 'replies', 'likes', 'members'])
+        $query = ForumThread::with(['user', 'replies', 'likes', 'members', 'reactions', 'poll'])
             ->pinnedFirst();
 
         // Scope by category
@@ -38,13 +42,16 @@ class ForumController extends Controller
             $query->search($search);
         }
 
-        $threads = $query->paginate(10)->withQueryString();
+        $threads = $query->paginate(15)->withQueryString();
 
-        // Get category count for tabs
+        // Get category count for channel badges
         $counts = ForumThread::select('category', DB::raw('count(*) as total'))
             ->groupBy('category')
             ->pluck('total', 'category')
             ->toArray();
+
+        // Channel groups for sidebar
+        $channelGroups = ForumThread::CHANNEL_GROUPS;
 
         // Fetch top 5 students for leaderboard
         $topStudents = \App\Models\Reputation::with(['user.student.classroom', 'user.badges'])
@@ -63,7 +70,21 @@ class ForumController extends Controller
             ->take(3)
             ->get();
 
-        return view('forum.index', compact('threads', 'counts', 'category', 'search', 'topStudents', 'activeCollabs'));
+        // Total threads count
+        $totalThreads = ForumThread::count();
+
+        // Online users approximation (users active in last 15 min)
+        try {
+            $onlineCount = \App\Models\User::where('last_login_at', '>=', now()->subMinutes(15))->count();
+        } catch (\Exception $e) {
+            $onlineCount = 0;
+        }
+
+        return view('forum.index', compact(
+            'threads', 'counts', 'category', 'search', 
+            'topStudents', 'activeCollabs', 'channelGroups',
+            'totalThreads', 'onlineCount'
+        ));
     }
 
     /**
@@ -182,7 +203,7 @@ class ForumController extends Controller
     public function show(ForumThread $thread)
     {
         $thread->increment('views_count');
-        $thread->load(['user', 'replies.user', 'likes', 'members.user']);
+        $thread->load(['user', 'replies.user', 'replies.parent', 'replies.reactions', 'likes', 'members.user', 'reactions', 'poll.options.votes']);
 
         // Build the performance reference view representation if linked
         $perfCard = null;
@@ -195,7 +216,10 @@ class ForumController extends Controller
             }
         }
 
-        return view('forum.show', compact('thread', 'perfCard'));
+        // Get reaction counts for the thread
+        $threadReactions = $thread->getReactionCounts();
+
+        return view('forum.show', compact('thread', 'perfCard', 'threadReactions'));
     }
 
     /**
@@ -210,6 +234,7 @@ class ForumController extends Controller
 
         $validated = $request->validate([
             'content' => 'required|string|max:5000',
+            'parent_reply_id' => 'nullable|exists:forum_replies,id',
         ]);
 
         DB::beginTransaction();
@@ -218,6 +243,7 @@ class ForumController extends Controller
                 'forum_thread_id' => $thread->id,
                 'user_id' => $user->id,
                 'content' => $validated['content'],
+                'parent_reply_id' => $validated['parent_reply_id'] ?? null,
             ]);
 
             // Gamification hook: +5 points for replying
@@ -676,6 +702,204 @@ class ForumController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Gagal menghapus topik: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Toggle emoji reaction on a thread (AJAX)
+     */
+    public function react(Request $request, ForumThread $thread)
+    {
+        $user = Auth::user();
+        
+        $validated = $request->validate([
+            'emoji' => 'required|string|in:🔥,❤️,😂,🤔,💡,👏',
+        ]);
+
+        $existing = ForumReaction::where('user_id', $user->id)
+            ->where('forum_thread_id', $thread->id)
+            ->whereNull('forum_reply_id')
+            ->where('emoji', $validated['emoji'])
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $reacted = false;
+        } else {
+            ForumReaction::create([
+                'user_id' => $user->id,
+                'forum_thread_id' => $thread->id,
+                'forum_reply_id' => null,
+                'emoji' => $validated['emoji'],
+            ]);
+            $reacted = true;
+        }
+
+        return response()->json([
+            'success' => true,
+            'reacted' => $reacted,
+            'counts' => $thread->getReactionCounts(),
+        ]);
+    }
+
+    /**
+     * Toggle emoji reaction on a reply (AJAX)
+     */
+    public function reactReply(Request $request, ForumReply $reply)
+    {
+        $user = Auth::user();
+        
+        $validated = $request->validate([
+            'emoji' => 'required|string|in:🔥,❤️,😂,🤔,💡,👏',
+        ]);
+
+        $existing = ForumReaction::where('user_id', $user->id)
+            ->where('forum_reply_id', $reply->id)
+            ->whereNull('forum_thread_id')
+            ->where('emoji', $validated['emoji'])
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $reacted = false;
+        } else {
+            ForumReaction::create([
+                'user_id' => $user->id,
+                'forum_thread_id' => null,
+                'forum_reply_id' => $reply->id,
+                'emoji' => $validated['emoji'],
+            ]);
+            $reacted = true;
+        }
+
+        return response()->json([
+            'success' => true,
+            'reacted' => $reacted,
+            'counts' => $reply->getReactionCounts(),
+        ]);
+    }
+
+    /**
+     * Create a poll for a thread
+     */
+    public function createPoll(Request $request, ForumThread $thread)
+    {
+        $user = Auth::user();
+
+        // Only thread author or admin/teacher can create poll
+        if ($user->id !== $thread->user_id && !$user->isSuperAdmin() && !$user->isGuru()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Only one poll per thread
+        if ($thread->poll) {
+            return back()->with('error', 'Thread ini sudah memiliki polling.');
+        }
+
+        $validated = $request->validate([
+            'question' => 'required|string|max:500',
+            'options' => 'required|array|min:2|max:6',
+            'options.*' => 'required|string|max:255',
+            'is_multiple_choice' => 'nullable|boolean',
+            'closes_at' => 'nullable|date|after:now',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $poll = ForumPoll::create([
+                'forum_thread_id' => $thread->id,
+                'question' => $validated['question'],
+                'is_multiple_choice' => $validated['is_multiple_choice'] ?? false,
+                'closes_at' => $validated['closes_at'] ?? null,
+            ]);
+
+            foreach ($validated['options'] as $optionText) {
+                ForumPollOption::create([
+                    'forum_poll_id' => $poll->id,
+                    'option_text' => $optionText,
+                ]);
+            }
+
+            DB::commit();
+            return back()->with('success', 'Polling berhasil dibuat!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal membuat polling: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Vote on a poll option (AJAX)
+     */
+    public function votePoll(Request $request, ForumPollOption $option)
+    {
+        $user = Auth::user();
+        $poll = $option->poll;
+
+        if (!$poll->isOpen()) {
+            return response()->json(['success' => false, 'message' => 'Polling sudah ditutup.'], 422);
+        }
+
+        // Check if already voted
+        $existingVote = ForumPollVote::where('forum_poll_id', $poll->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        DB::beginTransaction();
+        try {
+            if ($existingVote) {
+                // If voting for same option, remove vote
+                if ($existingVote->forum_poll_option_id === $option->id) {
+                    $existingVote->delete();
+                    $option->decrement('votes_count');
+                    DB::commit();
+                    
+                    return response()->json([
+                        'success' => true,
+                        'voted' => false,
+                        'options' => $poll->fresh()->options->map(fn($o) => [
+                            'id' => $o->id,
+                            'votes_count' => $o->votes_count,
+                            'percentage' => $poll->totalVotes() > 0 ? round(($o->votes_count / $poll->totalVotes()) * 100) : 0,
+                        ]),
+                    ]);
+                }
+                
+                // Switch vote to different option
+                $oldOption = $existingVote->option;
+                $oldOption->decrement('votes_count');
+                $existingVote->update(['forum_poll_option_id' => $option->id]);
+                $option->increment('votes_count');
+            } else {
+                ForumPollVote::create([
+                    'forum_poll_id' => $poll->id,
+                    'forum_poll_option_id' => $option->id,
+                    'user_id' => $user->id,
+                ]);
+                $option->increment('votes_count');
+            }
+
+            DB::commit();
+
+            $poll->refresh();
+            $totalVotes = $poll->totalVotes();
+
+            return response()->json([
+                'success' => true,
+                'voted' => true,
+                'voted_option_id' => $option->id,
+                'options' => $poll->options->map(fn($o) => [
+                    'id' => $o->id,
+                    'votes_count' => $o->votes_count,
+                    'percentage' => $totalVotes > 0 ? round(($o->votes_count / $totalVotes) * 100) : 0,
+                ]),
+                'total_votes' => $totalVotes,
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 }

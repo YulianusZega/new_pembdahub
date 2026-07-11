@@ -1,362 +1,278 @@
 @extends(auth()->user()->layout)
 
-@section('title', 'Edit Postingan 📝')
+@section('title', 'Edit Obrolan')
 
 @section('content')
 <!-- Dynamic Google Fonts & Phosphor Icons -->
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;650;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;650;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
 <style>
-    .forum-hdr {
-        font-family: 'Space Grotesk', sans-serif;
-    }
+    .forum-hdr { font-family: 'Space Grotesk', sans-serif; }
+    body { background-color: #0f0f14; color: #f8fafc; font-family: 'Inter', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    input[type="radio"] { appearance: none; -webkit-appearance: none; }
 </style>
 
-<div class="forum-custom-workspace max-w-full w-full px-4 sm:px-8 xl:px-12 py-8 space-y-6" x-data="{ 
-    category: '{{ old('category', $thread->category) }}',
-    perfType: '{{ $thread->reference_type === \App\Models\CbtExamResult::class ? 'grade' : 'badge' }}',
-    hasTargetVolunteers: {{ !empty($thread->charity_target_volunteers) ? 'true' : 'false' }},
-    hasTargetDonation: {{ !empty($thread->charity_target_amount) ? 'true' : 'false' }},
-    imageUrl: '{{ $thread->image_path ? asset('storage/' . $thread->image_path) : '' }}',
-    fileChosen(event) {
-        const file = event.target.files[0];
-        if (file) {
-            this.imageUrl = URL.createObjectURL(file);
-        } else {
-            this.imageUrl = '{{ $thread->image_path ? asset('storage/' . $thread->image_path) : '' }}';
-        }
-    }
-}">
-    <!-- Breadcrumb & Back -->
-    <div class="flex items-center justify-between">
-        <a href="{{ route('forum.show', $thread) }}" class="inline-flex items-center gap-2 text-base font-black text-slate-655 hover:text-indigo-600 transition">
-            <i class="ph-bold ph-chevron-left"></i> Kembali ke Postingan 🔙
+<div class="max-w-[1200px] mx-auto min-h-screen pt-4 pb-20 px-4 sm:px-6" x-data="editPost()">
+    
+    <!-- Header -->
+    <div class="flex items-center gap-4 bg-[#16161f]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/5 mb-6 sticky top-4 z-40 shadow-2xl shadow-black/20">
+        <a href="{{ route('forum.show', $thread) }}" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300 hover:text-white transition">
+            <i class="ph-bold ph-arrow-left text-xl"></i>
         </a>
+        <div>
+            <h1 class="forum-hdr text-xl font-bold text-white">Edit Obrolan</h1>
+            <div class="text-xs text-amber-400 font-bold uppercase tracking-wider">Perbarui informasi</div>
+        </div>
     </div>
 
-    <!-- Main Card Form -->
-    <div class="bg-white rounded-3xl border-2 border-slate-100 shadow-xl overflow-hidden">
-        <!-- Card Header -->
-        <div class="px-10 py-10 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white relative">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-            <h3 class="forum-hdr text-3xl md:text-4xl font-black tracking-tight">Edit Postinganmu ✏️</h3>
-            <p class="text-sm text-indigo-50 mt-1.5 font-bold">Sesuaikan atau perbarui informasi postingan karyamu di sini agar tetap kece dan up-to-date!</p>
+    @if($errors->any())
+        <div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400">
+            <div class="font-bold mb-2 flex items-center gap-2"><i class="ph-bold ph-warning"></i> Ada kesalahan:</div>
+            <ul class="list-disc list-inside text-sm">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('forum.update', $thread) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+        @csrf
+        @method('PUT')
+
+        <!-- Category Selection -->
+        <div class="bg-[#16161f] border border-white/5 rounded-2xl p-6 shadow-xl">
+            <label class="block text-sm font-bold text-slate-300 uppercase tracking-widest mb-4">Pilih Saluran <span class="text-rose-500">*</span></label>
+            <input type="hidden" name="category" :value="category">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                @foreach(\App\Models\ForumThread::CATEGORIES as $key => $label)
+                    @if($key === 'info' && !(auth()->user()->isSuperAdmin() || auth()->user()->isAdminSekolah() || auth()->user()->isGuru()))
+                        @continue
+                    @endif
+                    @php
+                        preg_match('/^[\p{Emoji_Presentation}\p{Extended_Pictographic}]/u', $label, $matches);
+                        $emoji = $matches[0] ?? '💬';
+                        $cleanLabel = trim(str_replace($emoji, '', $label));
+                        
+                        $color = match($key) {
+                            'diskusi' => 'indigo', 'info' => 'amber', 'tanya_jawab' => 'cyan',
+                            'sharing' => 'emerald', 'art_gallery' => 'pink', 'talent' => 'violet',
+                            'performance' => 'purple', 'gaming' => 'rose', 'trending' => 'orange',
+                            'project_idea' => 'blue', 'committee' => 'teal', 'charity' => 'red',
+                            default => 'slate'
+                        };
+                    @endphp
+                    
+                    <button type="button" @click="category = '{{ $key }}'" 
+                            :class="category === '{{ $key }}' ? 'border-{{ $color }}-500 bg-{{ $color }}-500/10 ring-1 ring-{{ $color }}-500/50' : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'"
+                            class="flex items-center gap-4 p-4 rounded-xl border transition-all text-left group">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0 transition-colors"
+                             :class="category === '{{ $key }}' ? 'bg-{{ $color }}-500/20 text-{{ $color }}-400' : 'bg-white/10 text-slate-400 group-hover:text-slate-300'">
+                            {{ $emoji }}
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-slate-200" :class="category === '{{ $key }}' ? 'text-{{ $color }}-300' : ''">{{ $cleanLabel }}</div>
+                        </div>
+                    </button>
+                @endforeach
+            </div>
         </div>
 
-        <form action="{{ route('forum.update', $thread) }}" method="POST" enctype="multipart/form-data" class="p-10 space-y-8">
-            @csrf
-            @method('PUT')
-
-            <!-- Category Grid Selection -->
-            <div class="space-y-4">
-                <label class="block text-sm font-black text-slate-655 uppercase tracking-widest px-1">Pilih Kategori Obrolan / Karya <span class="text-rose-500">*</span></label>
-                
-                <input type="hidden" name="category" :value="category">
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
-                    <!-- Diskusi -->
-                    <div @click="category = 'diskusi'" 
-                         :class="category === 'diskusi' ? 'border-indigo-600 bg-indigo-50/40 ring-2 ring-indigo-500/20 shadow-md shadow-indigo-600/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-chat-circle-dots"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">💬 Tanya & Bahas</h5>
-                            <p class="text-xs text-slate-550 mt-1 font-bold leading-normal">Tanyakan PR atau bahas topik pelajaran bareng.</p>
-                        </div>
-                    </div>
-
-                    <!-- Sharing -->
-                    <div @click="category = 'sharing'" 
-                         :class="category === 'sharing' ? 'border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-500/20 shadow-md shadow-emerald-600/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-file-lines"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">📂 Bagi File & Catatan</h5>
-                            <p class="text-xs text-slate-550 mt-1 font-bold leading-normal">Bagi file rangkuman materi, PDF, atau presentasimu.</p>
-                        </div>
-                    </div>
-
-                    <!-- Info (Restricted) -->
-                    @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdminSekolah() || auth()->user()->isGuru())
-                    <div @click="category = 'info'" 
-                         :class="category === 'info' ? 'border-amber-600 bg-amber-50/40 ring-2 ring-amber-500/20 shadow-md shadow-amber-600/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-megaphone"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">📢 Info & Wara-Wara</h5>
-                            <p class="text-xs text-slate-550 mt-1 font-bold leading-normal">Info pengumuman resmi sekolah/yayasan Pembda.</p>
-                        </div>
-                    </div>
-                    @endif
-
-                    <!-- Panggung Eksistensi -->
-                    <div @click="category = 'performance'" 
-                         :class="category === 'performance' ? 'border-purple-650 bg-purple-50/40 ring-2 ring-purple-500/20 shadow-md shadow-purple-600/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-trophy"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">🏆 Panggung Eksistensi</h5>
-                            <p class="text-xs text-slate-555 mt-1 font-bold leading-normal">Pamerkan karyamu, prestasi non-akademik, atau karya seni.</p>
-                        </div>
-                    </div>
-
-                    <!-- Galeri Seni & Foto -->
-                    <div @click="category = 'art_gallery'" 
-                         :class="category === 'art_gallery' ? 'border-pink-600 bg-pink-50/40 ring-2 ring-pink-500/20 shadow-md shadow-pink-655/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-pink-100 flex items-center justify-center text-pink-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-palette"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">🎨 Galeri Seni & Foto</h5>
-                            <p class="text-xs text-slate-555 mt-1 font-bold leading-normal">Post gambar digital, foto estetik, ilustrasi, atau desain.</p>
-                        </div>
-                    </div>
-
-                    <!-- Unjuk Bakat & Musik -->
-                    <div @click="category = 'talent'" 
-                         :class="category === 'talent' ? 'border-violet-600 bg-violet-50/40 ring-2 ring-violet-500/20 shadow-md shadow-violet-655/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-violet-100 flex items-center justify-center text-violet-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-music-notes"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">🎵 Unjuk Bakat & Musik</h5>
-                            <p class="text-xs text-slate-555 mt-1 font-bold leading-normal">Share video cover lagu, dance, band, or main musik.</p>
-                        </div>
-                    </div>
-
-                    <!-- E-Sports & Mabar -->
-                    <div @click="category = 'gaming'" 
-                         :class="category === 'gaming' ? 'border-rose-600 bg-rose-50/40 ring-2 ring-rose-500/20 shadow-md shadow-rose-655/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-game-controller"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">🎮 E-Sports & Mabar</h5>
-                            <p class="text-xs text-slate-555 mt-1 font-bold leading-normal">Cari tim/teman mabar, diskusikan game, anime, & hobi.</p>
-                        </div>
-                    </div>
-
-                    <!-- Portofolio Juara -->
-                    <div @click="category = 'portfolio'" 
-                         :class="category === 'portfolio' ? 'border-cyan-600 bg-cyan-50/40 ring-2 ring-cyan-500/20 shadow-md shadow-cyan-655/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-650 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-certificate"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">🚀 Portofolio Juara</h5>
-                            <p class="text-xs text-slate-555 mt-1 font-bold leading-normal">Pamerkan sertifikat, piala, lomba eksternal sekolah.</p>
-                        </div>
-                    </div>
-
-                    <!-- Project Idea -->
-                    <div @click="category = 'project_idea'" 
-                         :class="category === 'project_idea' ? 'border-blue-600 bg-blue-50/40 ring-2 ring-blue-500/20 shadow-md shadow-blue-600/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-lightbulb"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">💡 Kolab Ide & Project</h5>
-                            <p class="text-xs text-slate-555 mt-1 font-bold leading-normal">Rekrut kru/tim buat bikin aplikasi, inovasi, atau startup.</p>
-                        </div>
-                    </div>
-
-                    <!-- Committee -->
-                    <div @click="category = 'committee'" 
-                         :class="category === 'committee' ? 'border-teal-600 bg-teal-50/40 ring-2 ring-teal-500/20 shadow-md shadow-teal-600/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-teal-100 flex items-center justify-center text-teal-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-users-three"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">👥 Rekrut Panitia</h5>
-                            <p class="text-xs text-slate-555 mt-1 font-bold leading-normal">Cari panitia kegiatan OSIS, class meeting, atau pensi.</p>
-                        </div>
-                    </div>
-
-                    <!-- Charity -->
-                    <div @click="category = 'charity'" 
-                         :class="category === 'charity' ? 'border-rose-600 bg-rose-50/40 ring-2 ring-rose-500/20 shadow-md shadow-rose-600/5' : 'border-slate-150 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-350'" 
-                         class="p-5 border-2 rounded-2xl cursor-pointer transition flex gap-3.5 items-start">
-                        <div class="w-11 h-11 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 flex-shrink-0 text-lg">
-                            <i class="ph-bold ph-heart"></i>
-                        </div>
-                        <div>
-                            <h5 class="text-sm font-black text-slate-800 block">❤️ Aksi Sosial & Donasi</h5>
-                            <p class="text-xs text-slate-555 mt-1 font-bold leading-normal">Galang dana kemanusiaan atau kumpulin relawan sosial.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <!-- Main Content -->
+        <div class="bg-[#16161f] border border-white/5 rounded-2xl p-6 shadow-xl space-y-5">
             <!-- Judul -->
-            <div class="space-y-2">
-                <label class="block text-sm font-black text-slate-655 uppercase tracking-widest px-1">Judul Postingan / Judul Karya Kece Kamu <span class="text-rose-500">*</span></label>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Judul Obrolan <span class="text-rose-500">*</span></label>
                 <input type="text" name="title" value="{{ old('title', $thread->title) }}" 
-                       class="w-full px-5 py-4 border-2 border-slate-200 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-xl text-base font-bold text-slate-850 transition outline-none" 
-                       placeholder="Bikin judul yang menarik..." required>
+                       class="w-full px-5 py-4 bg-black/40 border border-white/10 focus:border-indigo-500 rounded-xl text-white placeholder-slate-600 outline-none transition" 
+                       placeholder="Judul postingan..." required>
             </div>
 
             <!-- Konten -->
-            <div class="space-y-2">
-                <label class="block text-sm font-black text-slate-655 uppercase tracking-widest px-1">Tulis Isi Postinganmu Di Sini <span class="text-rose-500">*</span></label>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Pesan Utama <span class="text-rose-500">*</span></label>
                 <textarea name="content" rows="8" 
-                          class="w-full px-5 py-5 border-2 border-slate-200 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 rounded-xl text-base font-bold text-slate-850 transition outline-none resize-y" 
-                          placeholder="Jelaskan detail karya..." required>{{ old('content', $thread->content) }}</textarea>
+                          class="w-full px-5 py-4 bg-black/40 border border-white/10 focus:border-indigo-500 rounded-xl text-white placeholder-slate-600 outline-none transition resize-y" 
+                          placeholder="Isi konten..." required>{{ old('content', $thread->content) }}</textarea>
             </div>
+        </div>
 
-            <!-- --- DYNAMIC SECTION: PERFORMANCE/ACHIEVEMENT SHOWCASE --- -->
-            <div x-show="['performance', 'art_gallery', 'talent', 'portfolio'].includes(category)" 
-                 x-transition:enter="transition ease-out duration-300"
-                 class="p-6 rounded-2xl bg-indigo-50/60 border border-indigo-150 space-y-4">
-                <h4 class="text-base font-black text-indigo-900"><i class="ph-bold ph-medal mr-1.5 text-amber-500"></i> 🏅 Hubungkan dengan Prestasi Karaktermu (Biar Tambah Keren!)</h4>
-                <p class="text-sm text-indigo-900/90 leading-relaxed font-bold">
-                    Pilih lencana kece atau nilai CBT gokilmu biar nampang langsung di postingan ini sebagai bukti prestasi otentikmu!
-                </p>
-                
-                <div class="flex items-center gap-6">
-                    <label class="flex items-center gap-2 cursor-pointer text-sm font-black text-slate-700 select-none">
-                        <input type="radio" name="reference_type" value="badge" x-model="perfType" class="text-indigo-600 focus:ring-indigo-500">
-                        <span>🎖️ Lencana Terkunci</span>
-                    </label>
-                    @if(auth()->user()->isSiswa())
-                    <label class="flex items-center gap-2 cursor-pointer text-sm font-black text-slate-700 select-none">
-                        <input type="radio" name="reference_type" value="grade" x-model="perfType" class="text-indigo-600 focus:ring-indigo-500">
-                        <span>💯 Nilai Ujian CBT</span>
-                    </label>
-                    @endif
+        <!-- Performance / Achievements -->
+        <div x-show="['performance', 'art_gallery', 'talent', 'portfolio'].includes(category)" style="display: none;"
+             x-transition:enter="transition ease-out duration-300"
+             class="bg-purple-500/5 border border-purple-500/20 rounded-2xl p-6 shadow-xl space-y-4 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center text-purple-400"><i class="ph-bold ph-medal text-xl"></i></div>
+                <div>
+                    <h4 class="forum-hdr text-sm font-bold text-white">Hubungkan Prestasi</h4>
+                    <div class="text-xs text-purple-400 font-bold uppercase tracking-wider">Buktikan karya/skor kamu valid</div>
                 </div>
-
-                <!-- Badges Selector -->
-                <div x-show="perfType === 'badge'" class="space-y-1.5">
-                    <select name="reference_id" 
-                            class="w-full px-5 py-4 bg-white border-2 border-slate-200 focus:border-indigo-400 transition outline-none cursor-pointer rounded-xl text-sm font-bold text-slate-755">
-                        <option value="">-- Pilih Lencana Terhebatmu --</option>
-                        @foreach($badges as $badge)
-                            <option value="{{ $badge->id }}" {{ $thread->reference_type === \App\Models\Badge::class && $thread->reference_id == $badge->id ? 'selected' : '' }}>{{ $badge->name }} (Poin: {{ $badge->requirement_value }})</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <!-- CBT Results Selector -->
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-4">
+                <label class="flex items-center gap-2 cursor-pointer text-sm font-bold text-slate-300">
+                    <input type="radio" name="reference_type" value="badge" x-model="perfType" class="w-4 h-4 rounded border-white/20 bg-black/40 checked:bg-purple-500 checked:border-purple-500 text-purple-500 focus:ring-purple-500/50">
+                    <span>🎖️ Lencana Terkunci</span>
+                </label>
                 @if(auth()->user()->isSiswa())
-                <div x-show="perfType === 'grade'" class="space-y-1.5">
-                    <select name="reference_id" 
-                            class="w-full px-5 py-4 bg-white border-2 border-slate-200 focus:border-indigo-400 transition outline-none cursor-pointer rounded-xl text-sm font-bold text-slate-755">
-                        <option value="">-- Pilih Nilai CBT Tergokil Anda --</option>
-                        @foreach($cbtResults as $result)
-                            <option value="{{ $result->id }}" {{ $thread->reference_type === \App\Models\CbtExamResult::class && $thread->reference_id == $result->id ? 'selected' : '' }}>{{ $result->exam->exam_title }} - Nilai: {{ $result->final_score }}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <label class="flex items-center gap-2 cursor-pointer text-sm font-bold text-slate-300">
+                    <input type="radio" name="reference_type" value="grade" x-model="perfType" class="w-4 h-4 rounded border-white/20 bg-black/40 checked:bg-purple-500 checked:border-purple-500 text-purple-500 focus:ring-purple-500/50">
+                    <span>💯 Nilai Ujian CBT</span>
+                </label>
                 @endif
             </div>
 
-            <!-- --- DYNAMIC SECTION: COLLABORATION RECRUITMENT --- -->
-            <div x-show="category === 'project_idea' || category === 'committee'" 
-                 x-transition:enter="transition ease-out duration-300"
-                 class="p-6 rounded-2xl bg-emerald-50 border border-emerald-250 space-y-4">
-                <h4 class="text-base font-black text-emerald-900"><i class="ph-bold ph-user-group mr-1.5 text-emerald-600"></i> 🤝 Cari Anggota Tim / Rekrutmen Panitia</h4>
-                <p class="text-sm text-emerald-800 leading-relaxed font-bold">
-                    Biar temen-temen yang lain bisa pendaftar baru masuk ke proyek Anda.
-                </p>
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" name="recruitment_enabled" value="1" {{ $thread->status !== 'completed' ? 'checked' : '' }} id="recruitCheck" 
-                           class="w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500 cursor-pointer">
-                    <label for="recruitCheck" class="text-sm font-black text-slate-755 cursor-pointer select-none">Aktifkan pendaftaran kru/anggota baru</label>
+            <!-- Selectors -->
+            <div x-show="perfType === 'badge'" class="space-y-2">
+                <select name="reference_id" class="w-full px-5 py-3 bg-black/40 border border-white/10 focus:border-purple-500 rounded-xl text-sm font-bold text-slate-300 outline-none transition">
+                    <option value="">-- Pilih Lencana Terhebatmu --</option>
+                    @foreach($badges as $badge)
+                        <option value="{{ $badge->id }}" {{ $thread->reference_type === \App\Models\Badge::class && $thread->reference_id == $badge->id ? 'selected' : '' }}>{{ $badge->name }} (Poin: {{ $badge->requirement_value }})</option>
+                    @endforeach
+                </select>
+            </div>
+
+            @if(auth()->user()->isSiswa())
+            <div x-show="perfType === 'grade'" class="space-y-2" style="display: none;">
+                <select name="reference_id" class="w-full px-5 py-3 bg-black/40 border border-white/10 focus:border-purple-500 rounded-xl text-sm font-bold text-slate-300 outline-none transition">
+                    <option value="">-- Pilih Nilai CBT --</option>
+                    @foreach($cbtResults as $result)
+                        <option value="{{ $result->id }}" {{ $thread->reference_type === \App\Models\CbtExamResult::class && $thread->reference_id == $result->id ? 'selected' : '' }}>{{ $result->exam->exam_title }} - Nilai: {{ $result->final_score }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+        </div>
+
+        <!-- Collab -->
+        <div x-show="['project_idea', 'committee'].includes(category)" style="display: none;"
+             x-transition:enter="transition ease-out duration-300"
+             class="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400"><i class="ph-bold ph-handshake text-xl"></i></div>
+                <div>
+                    <h4 class="forum-hdr text-sm font-bold text-white">Rekrutmen Tim</h4>
+                    <div class="text-xs text-blue-400 font-bold uppercase tracking-wider">Buka/Tutup pendaftaran</div>
+                </div>
+            </div>
+            <label class="flex items-center gap-3 cursor-pointer group">
+                <div class="relative flex items-center">
+                    <input type="checkbox" name="recruitment_enabled" value="1" {{ $thread->status !== 'completed' ? 'checked' : '' }} class="peer sr-only">
+                    <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                </div>
+                <span class="text-sm font-bold text-slate-300 group-hover:text-white transition">Aktifkan pendaftaran anggota baru</span>
+            </label>
+        </div>
+
+        <!-- Charity -->
+        <div x-show="category === 'charity'" style="display: none;"
+             x-transition:enter="transition ease-out duration-300"
+             class="bg-red-500/5 border border-red-500/20 rounded-2xl p-6 shadow-xl space-y-5 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400"><i class="ph-bold ph-heart text-xl"></i></div>
+                <div>
+                    <h4 class="forum-hdr text-sm font-bold text-white">Target Aksi Sosial</h4>
                 </div>
             </div>
 
-            <!-- --- DYNAMIC SECTION: CHARITY & VOLUNTEERING --- -->
-            <div x-show="category === 'charity'" 
-                 x-transition:enter="transition ease-out duration-300"
-                 class="p-6 rounded-2xl bg-amber-50 border border-amber-250 space-y-6">
-                <h4 class="text-base font-black text-amber-900"><i class="ph-bold ph-heart mr-1.5 text-amber-600"></i> ❤️ Info Penggalangan Dana & Sukarelawan</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <div class="relative flex items-center">
+                            <input type="checkbox" x-model="hasTargetDonation" class="peer sr-only">
+                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                        </div>
+                        <span class="text-sm font-bold text-slate-300 group-hover:text-white transition">Target Donasi (Uang)</span>
+                    </label>
+                    <div x-show="hasTargetDonation" style="display:none;">
+                        <input type="number" name="charity_target_amount" value="{{ old('charity_target_amount', $thread->charity_target_amount) }}" class="w-full px-5 py-3 bg-black/40 border border-white/10 focus:border-red-500 rounded-xl text-sm text-white outline-none" placeholder="Target Rp...">
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <div class="relative flex items-center">
+                            <input type="checkbox" x-model="hasTargetVolunteers" class="peer sr-only">
+                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                        </div>
+                        <span class="text-sm font-bold text-slate-300 group-hover:text-white transition">Target Relawan (Orang)</span>
+                    </label>
+                    <div x-show="hasTargetVolunteers" style="display:none;">
+                        <input type="number" name="charity_target_volunteers" value="{{ old('charity_target_volunteers', $thread->charity_target_volunteers) }}" class="w-full px-5 py-3 bg-black/40 border border-white/10 focus:border-red-500 rounded-xl text-sm text-white outline-none" placeholder="Jumlah orang...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attachments -->
+        <div class="bg-[#16161f] border border-white/5 rounded-2xl p-6 shadow-xl grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Image -->
+            <div class="space-y-3">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"><i class="ph-bold ph-image text-indigo-400 mr-1"></i> Gambar Utama</label>
+                <input type="file" name="image" accept="image/*" @change="fileChosen" 
+                       class="w-full px-4 py-3 bg-black/40 border border-white/10 focus:border-indigo-500 rounded-xl text-sm text-slate-400 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-500/20 file:text-indigo-400 file:font-bold cursor-pointer transition">
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Format JPG/PNG, Maks 5MB</p>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Donation Target -->
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" x-model="hasTargetDonation" id="donationCheck" class="w-4 h-4 text-amber-600 rounded cursor-pointer">
-                            <label for="donationCheck" class="text-sm font-black text-slate-755 uppercase tracking-wider cursor-pointer select-none">Ada Target Donasi Uang</label>
-                        </div>
-                        <div x-show="hasTargetDonation" class="space-y-1.5" x-transition>
-                            <label class="text-[11px] font-black text-slate-550 uppercase tracking-widest block">Target Nominal Uang (Rp)</label>
-                            <input type="number" name="charity_target_amount" value="{{ old('charity_target_amount', $thread->charity_target_amount) }}" class="w-full px-5 py-3 border-2 border-slate-200 focus:border-indigo-500 rounded-xl text-base font-bold text-slate-800" placeholder="Contoh: 5000000">
-                        </div>
+                <template x-if="imageUrl">
+                    <div class="mt-3 relative inline-block rounded-xl overflow-hidden border border-white/10">
+                        <img :src="imageUrl" class="h-32 w-auto object-cover">
+                        <button type="button" @click="imageUrl = ''; $event.target.closest('.space-y-3').querySelector('input[type=file]').value = ''" 
+                                class="absolute top-2 right-2 w-7 h-7 bg-black/60 hover:bg-rose-500 text-white rounded-full flex items-center justify-center backdrop-blur-md transition">
+                            <i class="ph-bold ph-x text-xs"></i>
+                        </button>
                     </div>
-
-                    <!-- Volunteer Target -->
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" x-model="hasTargetVolunteers" id="volunteerCheck" class="w-4 h-4 text-amber-600 rounded cursor-pointer">
-                            <label for="volunteerCheck" class="text-sm font-black text-slate-755 uppercase tracking-wider cursor-pointer select-none">Butuh Relawan / Volunteer Kegiatan</label>
-                        </div>
-                        <div x-show="hasTargetVolunteers" class="space-y-1.5" x-transition>
-                            <label class="text-[11px] font-black text-slate-550 uppercase tracking-widest block">Target Jumlah Relawan (Orang)</label>
-                            <input type="number" name="charity_target_volunteers" value="{{ old('charity_target_volunteers', $thread->charity_target_volunteers) }}" class="w-full px-5 py-3 border-2 border-slate-200 focus:border-indigo-500 rounded-xl text-base font-bold text-slate-800" placeholder="Contoh: 15">
-                        </div>
-                    </div>
-                </div>
+                </template>
             </div>
 
-            <!-- Upload File & Gambar -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-slate-150">
-                <!-- Cover Image Upload & Preview -->
-                <div class="space-y-3">
-                    <label class="block text-sm font-black text-slate-655 uppercase tracking-widest px-1">🖼️ Unggah Foto Utama / Cover Karya Kece (Opsional)</label>
-                    <input type="file" name="image" accept="image/*" @change="fileChosen" 
-                           class="w-full px-4 py-3 border-2 border-dashed border-slate-300 hover:border-indigo-300 rounded-2xl text-sm file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-indigo-50 file:text-indigo-700 file:font-black cursor-pointer text-slate-600">
-                    <p class="text-xs text-slate-550 leading-normal font-bold">Unggah foto baru jika ingin mengganti cover saat ini (Format JPG/PNG, maks 5MB).</p>
-                    
-                    <!-- Preview block -->
-                    <template x-if="imageUrl">
-                        <div class="mt-3 p-2 rounded-2xl border border-slate-100 bg-slate-50 max-w-[240px] relative">
-                            <img :src="imageUrl" class="w-full h-40 object-cover rounded-xl shadow-sm">
-                            <button type="button" @click="imageUrl = ''; $refs.imageInput.value = ''" 
-                                    class="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-md hover:bg-rose-700 transition">
-                                <i class="ph-bold ph-xmark text-xs"></i>
-                            </button>
-                        </div>
-                    </template>
-                </div>
-
-                <!-- Attachment File Upload -->
-                <div class="space-y-3">
-                    <label class="block text-sm font-black text-slate-655 uppercase tracking-widest px-1">📎 Lampiran Dokumen Tambahan (PDF/ZIP, Opsional)</label>
-                    <input type="file" name="attachment" 
-                           class="w-full px-4 py-3 border-2 border-dashed border-slate-300 hover:border-indigo-300 rounded-2xl text-xs file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-slate-100 file:text-slate-700 file:font-black cursor-pointer text-slate-600">
-                    <p class="text-xs text-slate-550 leading-normal font-bold">Unggah file baru jika ingin mengganti dokumen lampiran saat ini (PDF, DOCS, ZIP, maks 10MB).</p>
-                    @if($thread->attachment_path)
-                        <div class="text-xs text-slate-500 mt-2 font-bold"><i class="ph-bold ph-paperclip mr-1"></i> File Terlampir: {{ $thread->attachment_name }}</div>
-                    @endif
-                </div>
+            <!-- File -->
+            <div class="space-y-3">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"><i class="ph-bold ph-file-arrow-up text-fuchsia-400 mr-1"></i> Lampiran File</label>
+                <input type="file" name="attachment" 
+                       class="w-full px-4 py-3 bg-black/40 border border-white/10 focus:border-fuchsia-500 rounded-xl text-sm text-slate-400 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-fuchsia-500/20 file:text-fuchsia-400 file:font-bold cursor-pointer transition">
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">PDF/ZIP/DOCS, Maks 10MB</p>
+                @if($thread->attachment_path)
+                    <div class="text-xs text-indigo-400 mt-2 font-bold"><i class="ph-bold ph-paperclip mr-1"></i> File Saat Ini: {{ $thread->attachment_name }}</div>
+                @endif
             </div>
+        </div>
 
-            <!-- Action Buttons -->
-            <div class="flex gap-4 pt-6 border-t border-slate-150">
-                <a href="{{ route('forum.show', $thread) }}" 
-                   class="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-center hover:bg-slate-200 transition text-base">
-                    Batal
-                </a>
-                <button type="submit" 
-                        class="flex-[2] py-4.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-2xl font-black hover:shadow-lg transition duration-300 text-base shadow-md shadow-indigo-600/10">
-                    Simpan Perubahan 💾
-                </button>
-            </div>
-        </form>
-    </div>
+        <!-- Submit -->
+        <div class="flex gap-4">
+            <a href="{{ route('forum.show', $thread) }}" class="px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold transition flex items-center justify-center">
+                Batal
+            </a>
+            <button type="submit" class="flex-1 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white rounded-xl font-bold text-lg shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                <i class="ph-bold ph-floppy-disk"></i> Simpan Perubahan
+            </button>
+        </div>
+
+    </form>
 </div>
+
+<script>
+function editPost() {
+    return {
+        category: '{{ old('category', $thread->category) }}',
+        perfType: '{{ $thread->reference_type === \App\Models\CbtExamResult::class ? 'grade' : 'badge' }}',
+        hasTargetVolunteers: {{ !empty($thread->charity_target_volunteers) ? 'true' : 'false' }},
+        hasTargetDonation: {{ !empty($thread->charity_target_amount) ? 'true' : 'false' }},
+        imageUrl: '{{ $thread->image_path ? asset('storage/' . $thread->image_path) : '' }}',
+        fileChosen(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.imageUrl = URL.createObjectURL(file);
+            } else {
+                this.imageUrl = '{{ $thread->image_path ? asset('storage/' . $thread->image_path) : '' }}';
+            }
+        }
+    }
+}
+</script>
 @endsection

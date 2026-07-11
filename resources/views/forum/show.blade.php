@@ -9,6 +9,16 @@
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
 
 <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+        alert("GLOBAL JS ERROR:\n" + message + "\nIn: " + source + "\nLine: " + lineno + ":" + colno);
+        return false;
+    };
+    window.onunhandledrejection = function(event) {
+        alert("UNHANDLED REJECTION:\n" + event.reason);
+    };
+</script>
+
+<script>
   tailwind.config = {
     corePlugins: {
       preflight: false,

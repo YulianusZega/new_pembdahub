@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Pembda Hub</title>
+    <title>Login - PembdaHUB</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- Modern Typography: Outfit -->
@@ -176,7 +176,7 @@
                     <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg p-1.5">
                         <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo Yayasan" class="w-full h-full object-contain">
                     </div>
-                    <h1 class="text-3xl font-extrabold tracking-tight text-white">Pembda<span class="text-indigo-300">Hub</span></h1>
+                    <h1 class="text-3xl font-extrabold tracking-tight text-white">Pembda<span class="text-red-500">HUB</span></h1>
                 </div>
                 
                 <div class="mt-4">
@@ -201,7 +201,7 @@
                 <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 p-2">
                     <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo Yayasan" class="w-full h-full object-contain">
                 </div>
-                <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">Pembda<span class="text-indigo-600">Hub</span></h1>
+                <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">Pembda<span class="text-red-600">HUB</span></h1>
             </div>
 
             <div class="mb-10 text-center md:text-left">
@@ -287,7 +287,7 @@
 
             <!-- Mobile Footer -->
             <div class="mt-12 text-center text-gray-400 text-sm font-medium md:hidden">
-                &copy; {{ date('Y') }} Pembda Hub.
+                &copy; {{ date('Y') }} PembdaHUB.
             </div>
 
         </div>

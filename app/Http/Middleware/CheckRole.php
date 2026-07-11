@@ -36,6 +36,19 @@ class CheckRole
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
+        // Prevent 404 trap for missing profiles
+        $effectiveRole = $activeRole ?? $user->role;
+        if (in_array('guru', $roles) || $effectiveRole === 'guru' || $effectiveRole === 'kepala_sekolah') {
+            if (!$user->isSuperAdmin() && !\App\Models\Teacher::where('user_id', $user->id)->exists()) {
+                return response()->view('errors.missing_profile', ['role' => 'Guru / Kepala Sekolah']);
+            }
+        }
+        if (in_array('siswa', $roles) || $effectiveRole === 'siswa') {
+            if (!\App\Models\Student::where('user_id', $user->id)->exists()) {
+                return response()->view('errors.missing_profile', ['role' => 'Siswa']);
+            }
+        }
+
         // Pembatasan ketat untuk user yang mengakses area admin (/admin/*)
         // namun BUKAN admin utama (superadmin, admin_sekolah, kepala_sekolah, bendahara, ketua_yayasan).
         // Mereka hanya boleh mengakses modul khusus sesuai kepanitiaan / tugas tambahan mereka.

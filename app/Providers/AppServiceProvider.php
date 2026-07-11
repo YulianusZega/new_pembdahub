@@ -63,12 +63,20 @@ class AppServiceProvider extends ServiceProvider
             try { app('files')->link(storage_path('app/public'), public_path('storage')); } catch (\Exception $e) {}
         }
 
-        // Fix CORS: Force URL and Asset to use the current requested host (www or non-www)
-        if (request()->hasHeader('X-Forwarded-Proto') && request()->header('X-Forwarded-Proto') == 'https') {
+        // Fix CORS & Mixed Content: Force HTTPS in production
+        if (config('app.env') === 'production' || (request()->hasHeader('X-Forwarded-Proto') && request()->header('X-Forwarded-Proto') == 'https')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
-        \Illuminate\Support\Facades\URL::forceRootUrl(request()->root());
-        config(['app.asset_url' => request()->root()]);
+        
+        // Don't blindly force root url to request()->root() if it's HTTP but we are in production
+        if (config('app.env') === 'production') {
+            $rootUrl = str_replace('http://', 'https://', request()->root());
+            \Illuminate\Support\Facades\URL::forceRootUrl($rootUrl);
+            config(['app.asset_url' => $rootUrl]);
+        } else {
+            \Illuminate\Support\Facades\URL::forceRootUrl(request()->root());
+            config(['app.asset_url' => request()->root()]);
+        }
         // Define default password rules application-wide
         Password::defaults(function () {
             return Password::min(8)

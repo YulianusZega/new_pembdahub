@@ -7,6 +7,15 @@
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;650;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
+<!-- Tailwind CDN without Preflight (To fix missing dark mode colors without breaking global layout) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false,
+    }
+  }
+</script>
 <style>
     .forum-hdr { font-family: 'Space Grotesk', sans-serif; }
     .no-scrollbar::-webkit-scrollbar { display: none; }

@@ -302,23 +302,16 @@ class ForumController extends Controller
             }
             DB::commit();
 
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'liked' => $isLiked,
-                    'likes_count' => $thread->likes()->count(),
-                    'message' => $message
-                ]);
-            }
-
-            return back()->with('success', $message);
+            return response()->json([
+                'success' => true,
+                'liked' => $isLiked,
+                'likes_count' => $thread->likes()->count(),
+                'message' => $message
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            if ($request->expectsJson()) {
-                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-            }
-            return back()->with('error', 'Gagal memproses upvote: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 

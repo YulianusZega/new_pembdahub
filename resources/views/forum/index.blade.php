@@ -365,6 +365,7 @@ async function toggleLike(btn, url) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSR-TOKEN': '{{ csrf_token() }}'
             }
         });

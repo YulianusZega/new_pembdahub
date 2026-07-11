@@ -141,13 +141,13 @@
 
                 <!-- Thread Reactions & Actions -->
                 <div class="flex flex-wrap items-center gap-2 mt-2">
-                        <!-- Picker Button -->
-                        <div class="relative">
-                            <button @click="togglePicker('thread')" class="w-8 h-8 rounded-full bg-forum-light-5 hover:bg-forum-light-10 border border-forum-light flex items-center justify-center text-forum-body hover:text-white transition">
-                                <i class="ph-bold ph-smiley"></i>
-                            </button>
-                            <!-- Picker Dropdown -->
-                            <div x-show="pickerOpen === 'thread'" @click.away="pickerOpen = null" class="absolute top-full left-0 mt-1 p-2 bg-[#1c1c28] border border-forum-light rounded-xl shadow-2xl flex gap-1 z-50">
+                    <!-- Picker Button -->
+                    <div class="flex items-center">
+                        <button @click="togglePicker('thread')" class="w-8 h-8 rounded-full bg-forum-light-5 hover:bg-forum-light-10 border border-forum-light flex items-center justify-center text-forum-body hover:text-white transition">
+                            <i class="ph-bold ph-smiley"></i>
+                        </button>
+                        <!-- Picker Dropdown (Inline) -->
+                        <div x-show="pickerOpen === 'thread'" class="ml-2 p-1 bg-[#1c1c28] border border-forum-light rounded-xl flex gap-1">
                             @foreach(\App\Models\ForumReaction::EMOJIS as $emoji => $name)
                                 <button @click="reactThread('{{ $emoji }}')" class="w-8 h-8 rounded-lg hover:bg-forum-light-10 flex items-center justify-center text-lg transition-transform hover:scale-125">
                                     {{ $emoji }}
@@ -266,44 +266,51 @@
                         </div>
 
                         <!-- Actions -->
-                        <div class="flex flex-wrap items-center gap-2 mt-1">
-                            <!-- Reply Picker -->
-                            <div class="relative">
-                                <button @click="togglePicker('reply-{{ $reply->id }}')" class="w-6 h-6 rounded-full hover:bg-forum-light-10 flex items-center justify-center text-forum-muted hover:text-white transition">
-                                    <i class="ph-bold ph-smiley"></i>
-                                </button>
-                                <div x-show="pickerOpen === 'reply-{{ $reply->id }}'" @click.away="pickerOpen = null" class="absolute top-full left-0 mt-1 p-2 bg-[#1c1c28] border border-forum-light rounded-xl shadow-2xl flex gap-1 z-50">
-                                    @foreach(\App\Models\ForumReaction::EMOJIS as $emoji => $name)
-                                        <button @click="reactReply('{{ $reply->id }}', '{{ $emoji }}')" class="w-8 h-8 rounded-lg hover:bg-forum-light-10 flex items-center justify-center text-lg transition-transform hover:scale-125">
-                                            {{ $emoji }}
+                        <div class="flex flex-wrap items-center justify-between gap-2 mt-2 w-full max-w-2xl">
+                            <!-- Left: Smiley & Reactions -->
+                            <div class="flex items-center gap-2">
+                                <!-- Reply Picker -->
+                                <div class="flex items-center">
+                                    <button @click="togglePicker('reply-{{ $reply->id }}')" class="w-6 h-6 rounded-full hover:bg-forum-light-10 flex items-center justify-center text-forum-muted hover:text-white transition">
+                                        <i class="ph-bold ph-smiley"></i>
+                                    </button>
+                                    <!-- Picker Dropdown (Inline) -->
+                                    <div x-show="pickerOpen === 'reply-{{ $reply->id }}'" class="ml-2 p-1 bg-[#1c1c28] border border-forum-light rounded-xl flex gap-1">
+                                        @foreach(\App\Models\ForumReaction::EMOJIS as $emoji => $name)
+                                            <button @click="reactReply('{{ $reply->id }}', '{{ $emoji }}')" class="w-6 h-6 rounded hover:bg-forum-light-10 flex items-center justify-center text-base transition-transform hover:scale-125">
+                                                {{ $emoji }}
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- Reactions -->
+                                <div id="reply-reactions-{{ $reply->id }}" class="flex flex-wrap gap-1">
+                                    @foreach($reply->getReactionCounts() as $emoji => $count)
+                                        <button onclick="reactReplyAjax({{ $reply->id }}, '{{ $emoji }}')" class="flex items-center gap-1 px-1.5 py-0.5 bg-forum-light-5 hover:bg-forum-light-10 border border-forum-light rounded text-[10px] font-bold text-slate-300 transition">
+                                            <span>{{ $emoji }}</span> <span>{{ $count }}</span>
                                         </button>
                                     @endforeach
                                 </div>
                             </div>
 
-                            <!-- Reactions -->
-                            <div id="reply-reactions-{{ $reply->id }}" class="flex flex-wrap gap-1">
-                                @foreach($reply->getReactionCounts() as $emoji => $count)
-                                    <button onclick="reactReplyAjax({{ $reply->id }}, '{{ $emoji }}')" class="flex items-center gap-1 px-1.5 py-0.5 bg-forum-light-5 hover:bg-forum-light-10 border border-forum-light rounded text-[10px] font-bold text-slate-300 transition">
-                                        <span>{{ $emoji }}</span> <span>{{ $count }}</span>
-                                    </button>
-                                @endforeach
+                            <!-- Right: Balas & Terbaik -->
+                            <div class="flex items-center gap-3 ml-auto">
+                                <!-- Reply Button -->
+                                <button @click="quoteReply({{ $reply->id }}, '{{ addslashes($reply->user->name) }}', '{{ addslashes(Str::limit(strip_tags($reply->content), 100)) }}')" class="text-[10px] font-bold text-forum-muted hover:text-indigo-400 transition">
+                                    BALAS
+                                </button>
+
+                                <!-- Accept Answer -->
+                                @if(!$reply->is_accepted && !$thread->replies->contains('is_accepted', true) && (auth()->id() === $thread->user_id || auth()->user()->isSuperAdmin() || auth()->user()->isGuru()))
+                                    <form action="{{ route('forum.reply.accept', $reply) }}" method="POST" class="inline-flex items-center">
+                                        @csrf
+                                        <button type="submit" class="text-[10px] font-bold text-forum-muted hover:text-amber-400 transition">
+                                            TERBAIK
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
-
-                            <!-- Reply Button -->
-                            <button @click="quoteReply({{ $reply->id }}, '{{ addslashes($reply->user->name) }}', '{{ addslashes(Str::limit(strip_tags($reply->content), 100)) }}')" class="text-[10px] font-bold text-forum-muted hover:text-indigo-400 ml-2 transition">
-                                BALAS
-                            </button>
-
-                            <!-- Accept Answer -->
-                            @if(!$reply->is_accepted && !$thread->replies->contains('is_accepted', true) && (auth()->id() === $thread->user_id || auth()->user()->isSuperAdmin() || auth()->user()->isGuru()))
-                                <form action="{{ route('forum.reply.accept', $reply) }}" method="POST" class="inline-flex items-center ml-2">
-                                    @csrf
-                                    <button type="submit" class="text-[10px] font-bold text-forum-muted hover:text-amber-400 transition">
-                                        TERBAIK
-                                    </button>
-                                </form>
-                            @endif
                         </div>
                     </div>
                 </div>

@@ -20,17 +20,25 @@
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; background: var(--black); color: var(--black); font-size: 110%; }
         h1, h2, h3, h4 { margin-top: 0; font-weight: 800; line-height: 1.2; }
         p { line-height: 1.6; font-size: 1.2rem; }
-        .text-white { color: var(--white); } .text-gray { color: var(--gray); }
-        .text-red { color: var(--red); } .text-green { color: var(--green); }
-        .text-blue { color: var(--blue); } .text-yellow { color: var(--yellow); }
-        .text-orange { color: var(--orange); } .text-black { color: var(--black); }
-        .bg-dark { background: var(--dark-grad); color: var(--white); }
-        .bg-body { background: var(--bg-body); }
-        .bg-white { background: var(--white); }
+        .text-white { color: var(--white) !important; } .text-gray { color: var(--gray) !important; }
+        .text-red { color: var(--red) !important; } .text-green { color: var(--green) !important; }
+        .text-blue { color: var(--blue) !important; } .text-yellow { color: var(--yellow) !important; }
+        .text-orange { color: var(--orange) !important; } .text-black { color: var(--black) !important; }
         
         .sc { display: flex; width: 100vw; height: 100vh; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .s { min-width: 100vw; height: 100vh; padding: 60px 80px; position: relative; display: flex; flex-direction: column; justify-content: center; background: var(--bg-body); }
+        .s { min-width: 100vw; height: 100vh; padding: 60px 80px; position: relative; display: flex; flex-direction: column; justify-content: center; }
+        
+        /* Fix Background Specificity */
+        .s.bg-dark { background: var(--dark-grad); color: var(--white); }
+        .s.bg-body { background: var(--bg-body); color: var(--black); }
+        .s.bg-white { background: var(--white); color: var(--black); }
+        .bx.bg-dark { background: var(--dark-grad); color: var(--white); }
+        .bx.bg-body { background: var(--bg-body); color: var(--black); }
+
         .stag { position: absolute; top: 40px; left: 60px; font-size: 4.5rem; font-weight: 800; opacity: 0.05; z-index: 1; }
+        .s.bg-dark .stag { color: var(--white); }
+        .s.bg-body .stag { color: var(--black); }
+
         .otag { position: absolute; top: 40px; right: 60px; font-size: 1.2rem; font-weight: 700; opacity: 0.5; z-index: 1; letter-spacing: 2px; text-transform: uppercase; }
         .ct { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; padding: 0 40px; }
         
@@ -43,8 +51,13 @@
         
         .bx { background: var(--white); padding: 35px; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); }
         .bx h4 { font-size: 1.6rem; margin-bottom: 15px; }
-        .bx p { font-size: 1.2rem; color: var(--gray); margin: 0; font-weight: 500; }
+        .bx p { font-size: 1.2rem; margin: 0; font-weight: 500; }
         
+        /* Make sure gray text is readable inside light boxes */
+        .s.bg-body .bx p { color: var(--gray); }
+        /* Make sure light text is readable inside dark boxes */
+        .s.bg-dark .bx p { color: #cbd5e1; }
+
         .problem-box { background: rgba(220, 38, 38, 0.08); border-left: 8px solid var(--red); padding: 35px; border-radius: 12px; margin-bottom: 25px; }
         .action-box { background: rgba(5, 150, 105, 0.08); border-left: 8px solid var(--green); padding: 35px; border-radius: 12px; }
         

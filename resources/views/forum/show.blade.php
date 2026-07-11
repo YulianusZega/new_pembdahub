@@ -36,6 +36,42 @@
     .border-forum-light { border-color: rgba(255, 255, 255, 0.1) !important; }
     .bg-forum-light-5 { background-color: rgba(255, 255, 255, 0.05) !important; }
     .bg-forum-light-10 { background-color: rgba(255, 255, 255, 0.1) !important; }
+
+    /* Compose Emoji Picker Custom CSS */
+    .compose-emoji-picker {
+        position: absolute !important;
+        bottom: 100% !important;
+        left: 0 !important;
+        margin-bottom: 8px !important;
+        padding: 10px !important;
+        background-color: #1c1c28 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+        display: grid !important;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+        gap: 4px !important;
+        z-index: 50 !important;
+        width: 224px !important;
+    }
+    .compose-emoji-btn {
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 18px !important;
+        transition: transform 0.2s !important;
+        background: transparent !important;
+        border: none !important;
+        cursor: pointer !important;
+        color: white !important;
+    }
+    .compose-emoji-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transform: scale(1.25) !important;
+    }
 </style>
 
 <!-- App Window Wrapper -->
@@ -344,9 +380,9 @@
                 <button type="button" @click="composeEmojiOpen = !composeEmojiOpen" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 flex items-center justify-center text-forum-body hover:text-white transition">
                     <i class="ph-bold ph-plus text-xl"></i>
                 </button>
-                <div x-show="composeEmojiOpen" @click.away="composeEmojiOpen = false" class="absolute bottom-full left-0 mb-2 p-2.5 bg-[#1c1c28] border border-forum-light rounded-2xl shadow-2xl grid grid-cols-6 gap-1 z-50 w-56">
+                <div x-show="composeEmojiOpen" @click.away="composeEmojiOpen = false" class="compose-emoji-picker">
                     <template x-for="emoji in ['😀','😂','😍','👍','🔥','👏','❤️','💡','🤔','🎉','🙏','✨']">
-                        <button type="button" @click="insertEmoji(emoji); composeEmojiOpen = false" class="w-8 h-8 rounded-lg hover:bg-forum-light-10 flex items-center justify-center text-lg transition-transform hover:scale-125">
+                        <button type="button" @click="insertEmoji(emoji); composeEmojiOpen = false" class="compose-emoji-btn">
                             <span x-text="emoji"></span>
                         </button>
                     </template>

@@ -7,8 +7,7 @@
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;650;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
-<!-- Tailwind CDN without Preflight (To fix missing dark mode colors without breaking global layout) -->
-<script src="https://cdn.tailwindcss.com"></script>
+
 <script>
   tailwind.config = {
     corePlugins: {
@@ -18,17 +17,31 @@
 </script>
 <style>
     .forum-hdr { font-family: 'Space Grotesk', sans-serif; }
+    /* Hide scrollbar for clean UI */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    input[type="radio"] { appearance: none; -webkit-appearance: none; }
+    
+    /* Bulletproof Dark Mode Colors */
+    .bg-forum-base { background-color: #0f0f14 !important; }
+    .bg-forum-panel { background-color: #12121a !important; }
+    .bg-forum-card { background-color: #16161f !important; }
+    .bg-forum-card-80 { background-color: rgba(22, 22, 31, 0.8) !important; }
+    .bg-forum-card-90 { background-color: rgba(22, 22, 31, 0.9) !important; }
+    .text-forum-title { color: #f8fafc !important; }
+    .text-forum-body { color: #94a3b8 !important; }
+    .text-forum-muted { color: #64748b !important; }
+    .border-forum { border-color: rgba(255, 255, 255, 0.05) !important; }
+    .border-forum-light { border-color: rgba(255, 255, 255, 0.1) !important; }
+    .bg-forum-light-5 { background-color: rgba(255, 255, 255, 0.05) !important; }
+    .bg-forum-light-10 { background-color: rgba(255, 255, 255, 0.1) !important; }
 </style>
 
 <!-- App Window Wrapper -->
-<div class="w-full bg-[#0f0f14] text-[#f8fafc] font-['Inter'] rounded-3xl shadow-2xl border border-white/10 mx-auto pt-4 pb-20 px-4 sm:px-6 relative" style="min-height: 85vh;" x-data="editPost()">
+<div class="w-full bg-forum-base text-forum-title font-['Inter'] rounded-3xl shadow-2xl border border-forum-light mx-auto pt-4 pb-20 px-4 sm:px-6 relative" style="min-height: 85vh;" x-data="editPost()">
     
     <!-- Header -->
-    <div class="flex items-center gap-4 bg-[#16161f]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/5 mb-6 sticky top-4 z-40 shadow-2xl shadow-black/20">
-        <a href="{{ route('forum.show', $thread) }}" class="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-300 hover:text-white transition">
+    <div class="flex items-center gap-4 bg-forum-card/80 backdrop-blur-xl p-4 rounded-2xl border border-forum mb-6 sticky top-4 z-40 shadow-2xl shadow-black/20">
+        <a href="{{ route('forum.show', $thread) }}" class="w-10 h-10 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 flex items-center justify-center text-slate-300 hover:text-white transition">
             <i class="ph-bold ph-arrow-left text-xl"></i>
         </a>
         <div>
@@ -53,7 +66,7 @@
         @method('PUT')
 
         <!-- Category Selection -->
-        <div class="bg-[#16161f] border border-white/5 rounded-2xl p-6 shadow-xl">
+        <div class="bg-forum-card border border-forum rounded-2xl p-6 shadow-xl">
             <label class="block text-sm font-bold text-slate-300 uppercase tracking-widest mb-4">Pilih Saluran <span class="text-rose-500">*</span></label>
             <input type="hidden" name="category" :value="category">
             
@@ -77,10 +90,10 @@
                     @endphp
                     
                     <button type="button" @click="category = '{{ $key }}'" 
-                            :class="category === '{{ $key }}' ? 'border-{{ $color }}-500 bg-{{ $color }}-500/10 ring-1 ring-{{ $color }}-500/50' : 'border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20'"
+                            :class="category === '{{ $key }}' ? 'border-{{ $color }}-500 bg-{{ $color }}-500/10 ring-1 ring-{{ $color }}-500/50' : 'border-forum-light bg-forum-light-5 hover:bg-forum-light-10 hover:border-white/20'"
                             class="flex items-center gap-4 p-4 rounded-xl border transition-all text-left group">
                         <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0 transition-colors"
-                             :class="category === '{{ $key }}' ? 'bg-{{ $color }}-500/20 text-{{ $color }}-400' : 'bg-white/10 text-slate-400 group-hover:text-slate-300'">
+                             :class="category === '{{ $key }}' ? 'bg-{{ $color }}-500/20 text-{{ $color }}-400' : 'bg-forum-light-10 text-forum-body group-hover:text-slate-300'">
                             {{ $emoji }}
                         </div>
                         <div>
@@ -92,20 +105,20 @@
         </div>
 
         <!-- Main Content -->
-        <div class="bg-[#16161f] border border-white/5 rounded-2xl p-6 shadow-xl space-y-5">
+        <div class="bg-forum-card border border-forum rounded-2xl p-6 shadow-xl space-y-5">
             <!-- Judul -->
             <div>
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Judul Obrolan <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-bold text-forum-body uppercase tracking-widest mb-2">Judul Obrolan <span class="text-rose-500">*</span></label>
                 <input type="text" name="title" value="{{ old('title', $thread->title) }}" 
-                       class="w-full px-5 py-4 bg-black/40 border border-white/10 focus:border-indigo-500 rounded-xl text-white placeholder-slate-600 outline-none transition" 
+                       class="w-full px-5 py-4 bg-black/40 border border-forum-light focus:border-indigo-500 rounded-xl text-white placeholder-slate-600 outline-none transition" 
                        placeholder="Judul postingan..." required>
             </div>
 
             <!-- Konten -->
             <div>
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Pesan Utama <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-bold text-forum-body uppercase tracking-widest mb-2">Pesan Utama <span class="text-rose-500">*</span></label>
                 <textarea name="content" rows="8" 
-                          class="w-full px-5 py-4 bg-black/40 border border-white/10 focus:border-indigo-500 rounded-xl text-white placeholder-slate-600 outline-none transition resize-y" 
+                          class="w-full px-5 py-4 bg-black/40 border border-forum-light focus:border-indigo-500 rounded-xl text-white placeholder-slate-600 outline-none transition resize-y" 
                           placeholder="Isi konten..." required>{{ old('content', $thread->content) }}</textarea>
             </div>
         </div>
@@ -138,7 +151,7 @@
 
             <!-- Selectors -->
             <div x-show="perfType === 'badge'" class="space-y-2">
-                <select name="reference_id" class="w-full px-5 py-3 bg-black/40 border border-white/10 focus:border-purple-500 rounded-xl text-sm font-bold text-slate-300 outline-none transition">
+                <select name="reference_id" class="w-full px-5 py-3 bg-black/40 border border-forum-light focus:border-purple-500 rounded-xl text-sm font-bold text-slate-300 outline-none transition">
                     <option value="">-- Pilih Lencana Terhebatmu --</option>
                     @foreach($badges as $badge)
                         <option value="{{ $badge->id }}" {{ $thread->reference_type === \App\Models\Badge::class && $thread->reference_id == $badge->id ? 'selected' : '' }}>{{ $badge->name }} (Poin: {{ $badge->requirement_value }})</option>
@@ -148,7 +161,7 @@
 
             @if(auth()->user()->isSiswa())
             <div x-show="perfType === 'grade'" class="space-y-2" style="display: none;">
-                <select name="reference_id" class="w-full px-5 py-3 bg-black/40 border border-white/10 focus:border-purple-500 rounded-xl text-sm font-bold text-slate-300 outline-none transition">
+                <select name="reference_id" class="w-full px-5 py-3 bg-black/40 border border-forum-light focus:border-purple-500 rounded-xl text-sm font-bold text-slate-300 outline-none transition">
                     <option value="">-- Pilih Nilai CBT --</option>
                     @foreach($cbtResults as $result)
                         <option value="{{ $result->id }}" {{ $thread->reference_type === \App\Models\CbtExamResult::class && $thread->reference_id == $result->id ? 'selected' : '' }}>{{ $result->exam->exam_title }} - Nilai: {{ $result->final_score }}</option>
@@ -173,7 +186,7 @@
             <label class="flex items-center gap-3 cursor-pointer group">
                 <div class="relative flex items-center">
                     <input type="checkbox" name="recruitment_enabled" value="1" {{ $thread->status !== 'completed' ? 'checked' : '' }} class="peer sr-only">
-                    <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
+                    <div class="w-11 h-6 bg-forum-light-10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-500"></div>
                 </div>
                 <span class="text-sm font-bold text-slate-300 group-hover:text-white transition">Aktifkan pendaftaran anggota baru</span>
             </label>
@@ -196,12 +209,12 @@
                     <label class="flex items-center gap-3 cursor-pointer group">
                         <div class="relative flex items-center">
                             <input type="checkbox" x-model="hasTargetDonation" class="peer sr-only">
-                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                            <div class="w-11 h-6 bg-forum-light-10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
                         </div>
                         <span class="text-sm font-bold text-slate-300 group-hover:text-white transition">Target Donasi (Uang)</span>
                     </label>
                     <div x-show="hasTargetDonation" style="display:none;">
-                        <input type="number" name="charity_target_amount" value="{{ old('charity_target_amount', $thread->charity_target_amount) }}" class="w-full px-5 py-3 bg-black/40 border border-white/10 focus:border-red-500 rounded-xl text-sm text-white outline-none" placeholder="Target Rp...">
+                        <input type="number" name="charity_target_amount" value="{{ old('charity_target_amount', $thread->charity_target_amount) }}" class="w-full px-5 py-3 bg-black/40 border border-forum-light focus:border-red-500 rounded-xl text-sm text-white outline-none" placeholder="Target Rp...">
                     </div>
                 </div>
 
@@ -209,28 +222,28 @@
                     <label class="flex items-center gap-3 cursor-pointer group">
                         <div class="relative flex items-center">
                             <input type="checkbox" x-model="hasTargetVolunteers" class="peer sr-only">
-                            <div class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                            <div class="w-11 h-6 bg-forum-light-10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
                         </div>
                         <span class="text-sm font-bold text-slate-300 group-hover:text-white transition">Target Relawan (Orang)</span>
                     </label>
                     <div x-show="hasTargetVolunteers" style="display:none;">
-                        <input type="number" name="charity_target_volunteers" value="{{ old('charity_target_volunteers', $thread->charity_target_volunteers) }}" class="w-full px-5 py-3 bg-black/40 border border-white/10 focus:border-red-500 rounded-xl text-sm text-white outline-none" placeholder="Jumlah orang...">
+                        <input type="number" name="charity_target_volunteers" value="{{ old('charity_target_volunteers', $thread->charity_target_volunteers) }}" class="w-full px-5 py-3 bg-black/40 border border-forum-light focus:border-red-500 rounded-xl text-sm text-white outline-none" placeholder="Jumlah orang...">
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Attachments -->
-        <div class="bg-[#16161f] border border-white/5 rounded-2xl p-6 shadow-xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-forum-card border border-forum rounded-2xl p-6 shadow-xl grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Image -->
             <div class="space-y-3">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"><i class="ph-bold ph-image text-indigo-400 mr-1"></i> Gambar Utama</label>
+                <label class="block text-xs font-bold text-forum-body uppercase tracking-widest mb-2"><i class="ph-bold ph-image text-indigo-400 mr-1"></i> Gambar Utama</label>
                 <input type="file" name="image" accept="image/*" @change="fileChosen" 
-                       class="w-full px-4 py-3 bg-black/40 border border-white/10 focus:border-indigo-500 rounded-xl text-sm text-slate-400 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-500/20 file:text-indigo-400 file:font-bold cursor-pointer transition">
-                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Format JPG/PNG, Maks 5MB</p>
+                       class="w-full px-4 py-3 bg-black/40 border border-forum-light focus:border-indigo-500 rounded-xl text-sm text-forum-body file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-indigo-500/20 file:text-indigo-400 file:font-bold cursor-pointer transition">
+                <p class="text-[10px] text-forum-muted font-bold uppercase tracking-wider">Format JPG/PNG, Maks 5MB</p>
                 
                 <template x-if="imageUrl">
-                    <div class="mt-3 relative inline-block rounded-xl overflow-hidden border border-white/10">
+                    <div class="mt-3 relative inline-block rounded-xl overflow-hidden border border-forum-light">
                         <img :src="imageUrl" class="h-32 w-auto object-cover">
                         <button type="button" @click="imageUrl = ''; $event.target.closest('.space-y-3').querySelector('input[type=file]').value = ''" 
                                 class="absolute top-2 right-2 w-7 h-7 bg-black/60 hover:bg-rose-500 text-white rounded-full flex items-center justify-center backdrop-blur-md transition">
@@ -242,10 +255,10 @@
 
             <!-- File -->
             <div class="space-y-3">
-                <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2"><i class="ph-bold ph-file-arrow-up text-fuchsia-400 mr-1"></i> Lampiran File</label>
+                <label class="block text-xs font-bold text-forum-body uppercase tracking-widest mb-2"><i class="ph-bold ph-file-arrow-up text-fuchsia-400 mr-1"></i> Lampiran File</label>
                 <input type="file" name="attachment" 
-                       class="w-full px-4 py-3 bg-black/40 border border-white/10 focus:border-fuchsia-500 rounded-xl text-sm text-slate-400 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-fuchsia-500/20 file:text-fuchsia-400 file:font-bold cursor-pointer transition">
-                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">PDF/ZIP/DOCS, Maks 10MB</p>
+                       class="w-full px-4 py-3 bg-black/40 border border-forum-light focus:border-fuchsia-500 rounded-xl text-sm text-forum-body file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-fuchsia-500/20 file:text-fuchsia-400 file:font-bold cursor-pointer transition">
+                <p class="text-[10px] text-forum-muted font-bold uppercase tracking-wider">PDF/ZIP/DOCS, Maks 10MB</p>
                 @if($thread->attachment_path)
                     <div class="text-xs text-indigo-400 mt-2 font-bold"><i class="ph-bold ph-paperclip mr-1"></i> File Saat Ini: {{ $thread->attachment_name }}</div>
                 @endif
@@ -254,7 +267,7 @@
 
         <!-- Submit -->
         <div class="flex gap-4">
-            <a href="{{ route('forum.show', $thread) }}" class="px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold transition flex items-center justify-center">
+            <a href="{{ route('forum.show', $thread) }}" class="px-6 py-4 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 text-slate-300 font-bold transition flex items-center justify-center">
                 Batal
             </a>
             <button type="submit" class="flex-1 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white rounded-xl font-bold text-lg shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">

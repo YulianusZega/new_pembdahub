@@ -291,7 +291,8 @@ class AuthController extends Controller
                         'full_name' => $user->name,
                         'gender' => 'L',
                         'employee_type' => 'guru',
-                        'employment_status' => 'tetap',
+                        'employment_status' => 'yayasan', // Harus sesuai ENUM database
+                        'tmt_date' => now()->format('Y-m-d'), // Diperlukan agar tidak error
                         'is_active' => true,
                     ]
                 );

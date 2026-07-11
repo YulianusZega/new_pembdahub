@@ -193,6 +193,19 @@ class TeachingAssignmentController extends Controller
             }
         }
 
+        // --- SISTEM GEMBOK KONTRAK KINERJA (Khusus SMK) ---
+        $hasContract = true;
+        if ($selectedTeacher && $selectedTeacher->school) {
+            $school = $selectedTeacher->school;
+            if (strtoupper($school->type) === 'SMK' || str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan')) {
+                $hasContract = \App\Models\PerformanceContract::where('employee_id', $selectedTeacher->employee_id)
+                    ->where('academic_year_id', $selectedAcademicYearId)
+                    ->whereIn('contract_type', [\App\Models\PerformanceContract::TYPE_PKG_KEJURUAN, \App\Models\PerformanceContract::TYPE_PKG_UMUM])
+                    ->where('status', \App\Models\PerformanceContract::STATUS_APPROVED_BY_YAYASAN)
+                    ->exists();
+            }
+        }
+
         return view('admin.assignments.teaching.create', compact(
             'teachers',
             'schools',
@@ -206,7 +219,8 @@ class TeachingAssignmentController extends Controller
             'selectedSchoolId',
             'selectedAcademicYearId',
             'selectedSemesterId',
-            'currentAssignments'
+            'currentAssignments',
+            'hasContract'
         ));
     }
 
@@ -236,7 +250,7 @@ class TeachingAssignmentController extends Controller
 
         // --- SISTEM GEMBOK KONTRAK KINERJA (Khusus SMK) ---
         $school = \App\Models\School::find($teacher->school_id);
-        if ($school && (str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan'))) {
+        if ($school && (strtoupper($school->type) === 'SMK' || str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan'))) {
             $hasContract = \App\Models\PerformanceContract::where('employee_id', $teacher->employee_id)
                 ->where('academic_year_id', $validated['academic_year_id'])
                 ->whereIn('contract_type', [\App\Models\PerformanceContract::TYPE_PKG_KEJURUAN, \App\Models\PerformanceContract::TYPE_PKG_UMUM])

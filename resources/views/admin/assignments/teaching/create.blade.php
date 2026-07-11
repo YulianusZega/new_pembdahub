@@ -192,6 +192,17 @@
         @endif
 
         <!-- Section 2: Penugasan Baru -->
+        @if(isset($hasContract) && !$hasContract)
+        <div class="bg-red-50 border-l-4 border-red-500 p-5 mb-6 rounded-2xl shadow-sm">
+            <div class="flex items-start gap-3">
+                <i class="fas fa-lock text-red-500 text-2xl mt-0.5"></i>
+                <div class="text-sm text-red-900 leading-relaxed">
+                    <h4 class="font-bold text-base mb-1">Akses Ditolak: Kontrak Kinerja Belum Disetujui</h4>
+                    <p>Guru atas nama <b>{{ $selectedTeacher->full_name }}</b> belum memiliki Kontrak Kinerja Mengajar (2A/2B) yang disetujui Yayasan untuk Tahun Pelajaran ini. Fitur Penugasan Mengajar dikunci sementara.</p>
+                </div>
+            </div>
+        </div>
+        @else
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-6">
             <div class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-600">
                 <div class="flex items-center justify-between">
@@ -309,6 +320,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </form>
 </div>
 

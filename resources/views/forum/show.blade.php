@@ -317,7 +317,6 @@
             @endforeach
         </div>
     </div>
-</div>
 
 <!-- STICKY COMPOSE BAR -->
 @if(!$thread->is_locked)
@@ -371,6 +370,7 @@
     </div>
 </div>
 @endif
+</div>
 
 <script>
 function forumChat() {

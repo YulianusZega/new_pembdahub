@@ -51,13 +51,25 @@
                                 @if($contract->status == 'draft')
                                     <span class="badge bg-secondary">Draft</span>
                                 @elseif($contract->status == 'submitted_to_kepsek')
-                                    <span class="badge bg-warning text-dark">Menunggu Kepsek</span>
+                                    <div class="d-flex align-items-center" style="gap: 5px; font-size: 0.85rem;">
+                                        <span class="badge bg-primary">1. Diajukan</span> <i class="fas fa-arrow-right text-muted" style="font-size: 10px;"></i>
+                                        <span class="badge bg-light text-secondary border">2. Kepsek</span> <i class="fas fa-arrow-right text-muted" style="font-size: 10px;"></i>
+                                        <span class="badge bg-light text-secondary border">3. Yayasan</span>
+                                    </div>
                                 @elseif($contract->status == 'approved_by_kepsek')
-                                    <span class="badge bg-primary">Menunggu Yayasan</span>
+                                    <div class="d-flex align-items-center" style="gap: 5px; font-size: 0.85rem;">
+                                        <span class="badge bg-success">1. Diajukan</span> <i class="fas fa-arrow-right text-muted" style="font-size: 10px;"></i>
+                                        <span class="badge bg-primary">2. Kepsek</span> <i class="fas fa-arrow-right text-muted" style="font-size: 10px;"></i>
+                                        <span class="badge bg-light text-secondary border">3. Yayasan</span>
+                                    </div>
                                 @elseif($contract->status == 'approved_by_yayasan')
-                                    <span class="badge bg-success">Disetujui Yayasan (Aktif)</span>
+                                    <div class="d-flex align-items-center" style="gap: 5px; font-size: 0.85rem;">
+                                        <span class="badge bg-success">1. Diajukan</span> <i class="fas fa-arrow-right text-success" style="font-size: 10px;"></i>
+                                        <span class="badge bg-success">2. Kepsek</span> <i class="fas fa-arrow-right text-success" style="font-size: 10px;"></i>
+                                        <span class="badge bg-success">3. Yayasan</span>
+                                    </div>
                                 @elseif($contract->status == 'rejected')
-                                    <span class="badge bg-danger">Ditolak</span>
+                                    <span class="badge bg-danger">Ditolak / Dikembalikan</span>
                                     <small class="d-block text-danger mt-1">Catatan: {{ $contract->notes }}</small>
                                 @endif
                             </td>

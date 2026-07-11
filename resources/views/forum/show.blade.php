@@ -60,7 +60,7 @@
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 16px !important;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
-        display: grid !important;
+        display: grid;
         grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
         gap: 4px !important;
         z-index: 50 !important;

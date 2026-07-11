@@ -840,6 +840,11 @@ Route::middleware('auth')->group(function () {
         // Polls
         Route::post('/{thread}/poll', [App\Http\Controllers\ForumController::class, 'createPoll'])->name('poll.create');
         Route::post('/poll/{option}/vote', [App\Http\Controllers\ForumController::class, 'votePoll'])->name('poll.vote');
+
+        // Pembda Place
+        Route::get('/place/canvas', [App\Http\Controllers\ForumController::class, 'getPlaceCanvas'])->name('place.canvas');
+        Route::post('/place/draw', [App\Http\Controllers\ForumController::class, 'drawPlacePixel'])->name('place.draw');
+        Route::get('/place/updates', [App\Http\Controllers\ForumController::class, 'getPlaceUpdates'])->name('place.updates');
     });
 
     // Alumni & Tracer Study Routes

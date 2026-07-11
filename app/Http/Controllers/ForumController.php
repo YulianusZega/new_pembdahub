@@ -933,4 +933,89 @@ class ForumController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    // --- Pembda Place (Live Collaborative Canvas) Methods ---
+
+    public function getPlaceCanvas()
+    {
+        $pixels = \App\Models\ForumPlacePixel::select('x', 'y', 'color', 'user_id', 'updated_at')
+                    ->with('user:id,name')
+                    ->get()
+                    ->map(function ($px) {
+                        return [
+                            'x' => $px->x,
+                            'y' => $px->y,
+                            'color' => $px->color,
+                            'user' => $px->user ? $px->user->name : 'Unknown',
+                            'time' => $px->updated_at->diffForHumans(),
+                        ];
+                    });
+
+        return response()->json(['success' => true, 'pixels' => $pixels, 'timestamp' => time()]);
+    }
+
+    public function drawPlacePixel(Request $request)
+    {
+        $request->validate([
+            'x' => 'required|integer|min:0|max:199',
+            'y' => 'required|integer|min:0|max:199',
+            'color' => 'required|string|size:7',
+        ]);
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $cacheKey = 'place_cooldown:' . $user->id;
+        $expiryTime = \Illuminate\Support\Facades\Cache::get($cacheKey);
+        if ($expiryTime && $expiryTime > time()) {
+            $ttl = $expiryTime - time();
+            return response()->json(['success' => false, 'message' => 'Cooldown aktif', 'ttl' => $ttl], 429);
+        }
+
+        // Save pixel
+        $pixel = \App\Models\ForumPlacePixel::updateOrCreate(
+            ['x' => $request->x, 'y' => $request->y],
+            ['color' => $request->color, 'user_id' => $user->id, 'updated_at' => now()]
+        );
+
+        // Set cooldown: 300 seconds (5 minutes)
+        \Illuminate\Support\Facades\Cache::put($cacheKey, time() + 300, 300);
+
+        return response()->json(['success' => true, 'pixel' => [
+            'x' => $pixel->x,
+            'y' => $pixel->y,
+            'color' => $pixel->color,
+            'user' => $user->name,
+            'time' => 'Baru saja'
+        ]]);
+    }
+
+    public function getPlaceUpdates(Request $request)
+    {
+        $timestamp = $request->get('since');
+        if (!$timestamp) {
+            return response()->json(['success' => false, 'pixels' => []]);
+        }
+
+        // since is in seconds
+        $date = \Carbon\Carbon::createFromTimestamp($timestamp);
+
+        $pixels = \App\Models\ForumPlacePixel::select('x', 'y', 'color', 'user_id', 'updated_at')
+                    ->where('updated_at', '>', $date)
+                    ->with('user:id,name')
+                    ->get()
+                    ->map(function ($px) {
+                        return [
+                            'x' => $px->x,
+                            'y' => $px->y,
+                            'color' => $px->color,
+                            'user' => $px->user ? $px->user->name : 'Unknown',
+                            'time' => $px->updated_at->diffForHumans(),
+                        ];
+                    });
+
+        return response()->json(['success' => true, 'pixels' => $pixels, 'timestamp' => time()]);
+    }
 }

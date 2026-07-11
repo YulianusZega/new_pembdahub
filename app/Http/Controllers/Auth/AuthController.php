@@ -280,9 +280,27 @@ class AuthController extends Controller
         if ($targetRole === 'guru') {
             $teacherExists = \App\Models\Teacher::where('user_id', $user->id)->exists();
             if (!$teacherExists) {
+                $schoolId = $user->school_id ?? \App\Models\School::first()->id ?? 1;
+                
+                // 1. Create Employee first (required)
+                $employee = \App\Models\Employee::firstOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'school_id' => $schoolId,
+                        'employee_code' => 'EMP-YYS-' . $user->id,
+                        'full_name' => $user->name,
+                        'gender' => 'L',
+                        'employee_type' => 'guru',
+                        'employment_status' => 'tetap',
+                        'is_active' => true,
+                    ]
+                );
+
+                // 2. Create Teacher linked to Employee
                 \App\Models\Teacher::create([
+                    'employee_id' => $employee->id,
                     'user_id' => $user->id,
-                    'school_id' => $user->school_id ?? \App\Models\School::first()->id ?? 1,
+                    'school_id' => $schoolId,
                     'teacher_code' => 'YYS-' . $user->id,
                     'full_name' => $user->name,
                     'gender' => 'L', // Default, bisa diubah nanti di profil

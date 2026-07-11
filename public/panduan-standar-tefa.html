@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Operasional Standar TEFA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a1628;
+            --navy-light: #162a45;
+            --gold: #f0a500;
+            --blue: #2196F3;
+            --emer: #10b981;
+            --red: #ef4444;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--navy);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 {
+            color: var(--emer);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--navy-light);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        .card h3 {
+            margin-top: 0;
+            color: var(--blue);
+            font-size: 1.2rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .item {
+            margin-bottom: 12px;
+        }
+        .item-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .item-content {
+            font-size: 0.95rem;
+        }
+        .info-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--emer);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+        }
+        .step {
+            display: flex;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.02);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--blue);
+        }
+        .step-num {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--emer);
+            margin-right: 15px;
+            min-width: 30px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 10px 24px;
+            background: var(--navy-light);
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="font-size: 0.8rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; font-weight: 700;">Action #3: TEFA & Program Berdampak</div>
+            <h1>Panduan Operasional Standar TEFA</h1>
+            <p class="subtitle">Membangun ekosistem bengkel/lab layaknya industri nyata yang menghasilkan nilai jual.</p>
+        </header>
+
+        <div class="info-box">
+            <h4 style="color: var(--emer); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem;">📌 Apa itu TEFA (Teaching Factory)?</h4>
+            <p style="margin: 0; font-size: 0.95rem; line-height: 1.5;">Bengkel atau lab sekolah bukan sekadar tempat mengajar, melainkan <strong>unit produksi jasa/barang</strong> yang beroperasi seperti dunia usaha nyata. Produk TEFA harus layak jual (layak pasar), dikerjakan oleh siswa di bawah bimbingan guru (QA), dan menghasilkan <strong>Omzet/Keuntungan</strong> yang tercatat.</p>
+        </div>
+
+        <h2 class="section-title">A. Standar Minimal Operasional (SOP) TEFA</h2>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px;">Setiap unit TEFA per jurusan wajib memiliki alur produksi (SOP) yang ditempel di ruang bengkel. Alur standar meliputi 4 tahapan wajib:</p>
+        
+        <div class="step">
+            <div class="step-num">1</div>
+            <div>
+                <h4 style="margin: 0 0 5px 0; color: var(--gold);">Penerimaan Order & Analisis Kebutuhan</h4>
+                <p style="margin: 0; font-size: 0.95rem;">Mencatat spesifikasi pesanan dari konsumen/klien. Membuat estimasi Rencana Anggaran Biaya (RAB), durasi pengerjaan, dan kesepakatan harga jual.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <div>
+                <h4 style="margin: 0 0 5px 0; color: var(--gold);">Eksekusi Produksi (Siswa sebagai Eksekutor)</h4>
+                <p style="margin: 0; font-size: 0.95rem;">Pengerjaan barang/jasa mutlak dilakukan oleh <strong>siswa</strong> (sesuai jadwal praktik blok atau ekstra), bukan dikerjakan oleh guru atau pihak ketiga. Guru bertindak sebagai supervisor teknis.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <div>
+                <h4 style="margin: 0 0 5px 0; color: var(--gold);">Quality Control (Guru sebagai QA)</h4>
+                <p style="margin: 0; font-size: 0.95rem;">Setiap produk/jasa wajib melewati proses uji kelayakan standar pasar (Quality Control). Produk cacat atau di bawah standar tidak boleh diserahkan ke pelanggan.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <div>
+                <h4 style="margin: 0 0 5px 0; color: var(--gold);">Penyerahan & Pencatatan Omzet</h4>
+                <p style="margin: 0; font-size: 0.95rem;">Barang diserahkan. Transaksi dicatat pada buku kas TEFA/Unit Produksi. Keuntungan dikelola transparan untuk subsidi bahan praktik, insentif siswa, dan pengembangan TEFA.</p>
+            </div>
+        </div>
+
+        <h2 class="section-title">B. Contoh Target Produk (2 per Semester)</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>TKJ (Teknologi Informasi)</h3>
+                <div class="item">
+                    <div class="item-label">Contoh Produk Layanan TEFA</div>
+                    <div class="item-content">
+                        <ul style="padding-left: 15px; margin: 0; color: var(--emer);">
+                            <li>Jasa instalasi OS & Software berlisensi untuk umum.</li>
+                            <li>Pemasangan jaringan LAN/WiFi untuk perkantoran lokal (Pemda/Desa).</li>
+                            <li>Jasa perawatan berkala PC Laboratorium SMP/SD di sekitar.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>DPIB (Desain Bangunan)</h3>
+                <div class="item">
+                    <div class="item-label">Contoh Produk Layanan TEFA</div>
+                    <div class="item-content">
+                        <ul style="padding-left: 15px; margin: 0; color: var(--emer);">
+                            <li>Jasa desain gambar kerja (2D) IMB (Izin Mendirikan Bangunan) untuk masyarakat.</li>
+                            <li>Jasa rendering desain fasad 3D (eksterior/interior) perumahan/ruko komersial.</li>
+                            <li>Jasa perhitungan RAB borongan fisik bangunan skala kecil.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>TSM (Otomotif)</h3>
+                <div class="item">
+                    <div class="item-label">Contoh Produk Layanan TEFA</div>
+                    <div class="item-content">
+                        <ul style="padding-left: 15px; margin: 0; color: var(--emer);">
+                            <li>Membuka bengkel servis berkala ringan/Tune-Up yang terbuka untuk warga sekitar.</li>
+                            <li>Layanan cuci motor premium dan *detailing/coating*.</li>
+                            <li>Jasa penggantian oli dan kampas rem dengan margin penjualan *spare-part*.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">C. Evaluasi & Kriteria Kemitraan (MOU)</h2>
+        <div class="grid" style="grid-template-columns: 1fr;">
+            <div class="card" style="border-left: 4px solid var(--red);">
+                <div class="item">
+                    <div class="item-label">Syarat Sah Sebuah MOU DUDI (Dunia Usaha/Industri)</div>
+                    <div class="item-content">
+                        MOU tidak boleh sekadar tanda tangan kertas untuk akreditasi. MoU dianggap <strong>AKTIF</strong> jika terjadi minimal salah satu aktivitas berikut dalam satu semester:
+                        <ul style="padding-left: 20px; margin-top: 10px;">
+                            <li>Industri mengirimkan <strong>Guru Tamu/Praktisi</strong> untuk mengajar minimal 2x pertemuan.</li>
+                            <li>Industri bersedia menjadi tempat <strong>Magang/PKL</strong> bagi siswa.</li>
+                            <li>Industri mengalihkan/mensubkontrakkan sebagian pekerjaannya untuk dikerjakan di TEFA sekolah (<i>Order sharing</i>).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="presentasi-transformasi-smk.html" class="back-btn">&larr; Kembali ke Presentasi Utama</a>
+        </div>
+    </div>
+</body>
+</html>

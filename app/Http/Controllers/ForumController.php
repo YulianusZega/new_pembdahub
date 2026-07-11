@@ -957,8 +957,8 @@ class ForumController extends Controller
     public function drawPlacePixel(Request $request)
     {
         $request->validate([
-            'x' => 'required|integer|min:0|max:199',
-            'y' => 'required|integer|min:0|max:199',
+            'x' => 'required|integer|min:0|max:99',
+            'y' => 'required|integer|min:0|max:99',
             'color' => 'required|string|size:7',
         ]);
 

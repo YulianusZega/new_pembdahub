@@ -42,6 +42,14 @@
         image-rendering: -moz-crisp-edges;
         image-rendering: crisp-edges;
     }
+    
+    .pixel-grid {
+        background-image: 
+            linear-gradient(to right, rgba(148, 163, 184, 0.25) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(148, 163, 184, 0.25) 1px, transparent 1px);
+        background-size: calc(100% / 100) calc(100% / 100);
+        pointer-events: none;
+    }
 </style>
 
 <!-- App Window Wrapper (Embedded in Global Layout) -->
@@ -185,10 +193,14 @@
                      @touchstart.passive="startPan" @touchmove.passive="doPan" @touchend.passive="endPan"
                      @wheel.prevent="doZoom">
                     
-                    <canvas id="place-canvas" width="200" height="200" 
-                            class="pixelated-canvas cursor-crosshair transform-origin-center absolute bg-white shadow-[0_0_50px_rgba(255,255,255,0.1)]"
-                            :style="`transform: translate(${pan.x}px, ${pan.y}px) scale(${zoom}); width: 200px; height: 200px;`"
-                            @click="clickCanvas" @mousemove="hoverCanvas" @mouseleave="hoverPixel = null"></canvas>
+                    <div class="relative transform-origin-center absolute"
+                         :style="`transform: translate(${pan.x}px, ${pan.y}px) scale(${zoom}); width: 300px; height: 300px;`">
+                        <canvas id="place-canvas" width="100" height="100" 
+                                class="pixelated-canvas cursor-crosshair absolute inset-0 w-full h-full bg-white shadow-[0_0_50px_rgba(255,255,255,0.1)]"
+                                @click="clickCanvas" @mousemove="hoverCanvas" @mouseleave="hoverPixel = null"></canvas>
+                        <!-- Grid Overlay -->
+                        <div class="pixel-grid absolute inset-0 w-full h-full z-10 pointer-events-none"></div>
+                    </div>
 
                     <!-- Hover Tooltip -->
                     <div x-show="hoverPixel" class="absolute z-50 bg-black/90 border border-forum-light px-3 py-2 rounded-xl text-xs text-white pointer-events-none transform -translate-x-1/2 -translate-y-[120%] whitespace-nowrap shadow-xl"
@@ -229,7 +241,7 @@
                         </div>
                         <div class="p-5 space-y-4 text-sm text-forum-body">
                             <p><strong class="text-white">1. Satu Piksel, 5 Menit:</strong> Anda memiliki hak menempatkan 1 piksel warna setiap 5 menit. Gunakan dengan bijak!</p>
-                            <p><strong class="text-white">2. Kolaborasi Kelas:</strong> Kanvas 200x200 ini terlalu besar digambar sendiri. Ajak teman sekelas untuk menggambar logo/maskot bersama.</p>
+                            <p><strong class="text-white">2. Kolaborasi Kelas:</strong> Kanvas 100x100 ini pas untuk digambar bersama. Ajak teman sekelas untuk menggambar logo/maskot!</p>
                             <p><strong class="text-white">3. Jejak Digital Terbaca:</strong> Arahkan kursor (*hover*) ke piksel untuk melihat nama penggambar. Jejak Anda tercatat!</p>
                             <p><strong class="text-white">4. Geser & Zoom:</strong> Scroll atau Pinch untuk memperbesar kanvas (Zoom). Klik dan tahan (drag) untuk menggeser kanvas agar mudah menggambar.</p>
                             <p><strong class="text-rose-400">5. Jaga Kesopanan:</strong> Dilarang keras menggambar simbol/kata-kata pornografi, SARA, atau kebencian. Pelanggar akan diblokir aksesnya secara permanen.</p>
@@ -567,7 +579,7 @@ function pembdaPlace() {
         
         drawCanvas() {
             // Background is managed by CSS bg-white on canvas element, but we can clear anyway
-            this.ctx.clearRect(0, 0, 200, 200);
+            this.ctx.clearRect(0, 0, 100, 100);
             
             this.pixels.forEach(p => {
                 this.ctx.fillStyle = p.color;
@@ -612,13 +624,13 @@ function pembdaPlace() {
             
             const rect = this.canvas.getBoundingClientRect();
             // account for scaling - get real pixels
-            const scaleX = 200 / rect.width;
-            const scaleY = 200 / rect.height;
+            const scaleX = 100 / rect.width;
+            const scaleY = 100 / rect.height;
             
             const x = Math.floor((e.clientX - rect.left) * scaleX);
             const y = Math.floor((e.clientY - rect.top) * scaleY);
             
-            if(x < 0 || x >= 200 || y < 0 || y >= 200) return;
+            if(x < 0 || x >= 100 || y < 0 || y >= 100) return;
             
             try {
                 const csrf = getCsrfToken();
@@ -654,8 +666,8 @@ function pembdaPlace() {
             }
             
             const rect = this.canvas.getBoundingClientRect();
-            const scaleX = 200 / rect.width;
-            const scaleY = 200 / rect.height;
+            const scaleX = 100 / rect.width;
+            const scaleY = 100 / rect.height;
             
             const x = Math.floor((e.clientX - rect.left) * scaleX);
             const y = Math.floor((e.clientY - rect.top) * scaleY);

@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapat Tindak Lanjut Pembenahan & Kesiapan TP 2026/2027</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>        :root {
+    <style>
+        :root {
             --black: #0f172a; --white: #ffffff;
-            --bg-body: #f8fafc; --gray: #64748b;
-            --red: #ef4444; --red-grad: linear-gradient(135deg, #dc2626, #ef4444);
-            --green: #10b981; --green-grad: linear-gradient(135deg, #059669, #10b981);
-            --blue: #3b82f6; --blue-grad: linear-gradient(135deg, #2563eb, #3b82f6);
-            --yellow: #f59e0b; --yellow-grad: linear-gradient(135deg, #d97706, #f59e0b);
-            --orange: #f97316; --orange-grad: linear-gradient(135deg, #ea580c, #f97316);
-            --dark-grad: linear-gradient(135deg, #0f172a, #1e293b);
+            --bg-body: #f8fafc; --gray: #475569;
+            --red: #dc2626; --red-grad: linear-gradient(135deg, #b91c1c, #dc2626);
+            --green: #059669; --green-grad: linear-gradient(135deg, #047857, #059669);
+            --blue: #2563eb; --blue-grad: linear-gradient(135deg, #1d4ed8, #2563eb);
+            --yellow: #d97706; --yellow-grad: linear-gradient(135deg, #b45309, #d97706);
+            --orange: #ea580c; --orange-grad: linear-gradient(135deg, #c2410c, #ea580c);
+            --dark-grad: linear-gradient(135deg, #020617, #0f172a);
         }
         * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; background: var(--black); color: var(--black); }
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; background: var(--black); color: var(--black); font-size: 110%; }
         h1, h2, h3, h4 { margin-top: 0; font-weight: 800; line-height: 1.2; }
-        p { line-height: 1.6; }
+        p { line-height: 1.6; font-size: 1.2rem; }
         .text-white { color: var(--white); } .text-gray { color: var(--gray); }
         .text-red { color: var(--red); } .text-green { color: var(--green); }
         .text-blue { color: var(--blue); } .text-yellow { color: var(--yellow); }
@@ -29,39 +30,40 @@
         
         .sc { display: flex; width: 100vw; height: 100vh; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .s { min-width: 100vw; height: 100vh; padding: 60px 80px; position: relative; display: flex; flex-direction: column; justify-content: center; background: var(--bg-body); }
-        .stag { position: absolute; top: 40px; left: 60px; font-size: 4rem; font-weight: 800; opacity: 0.05; z-index: 1; }
-        .otag { position: absolute; top: 40px; right: 60px; font-size: 1rem; font-weight: 700; opacity: 0.5; z-index: 1; letter-spacing: 2px; text-transform: uppercase; }
-        .ct { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .stag { position: absolute; top: 40px; left: 60px; font-size: 4.5rem; font-weight: 800; opacity: 0.05; z-index: 1; }
+        .otag { position: absolute; top: 40px; right: 60px; font-size: 1.2rem; font-weight: 700; opacity: 0.5; z-index: 1; letter-spacing: 2px; text-transform: uppercase; }
+        .ct { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; padding: 0 40px; }
         
-        h2 { font-size: 3.2rem; margin-bottom: 20px; }
-        p.sub { font-size: 1.4rem; color: var(--gray); font-weight: 500; margin-bottom: 40px; }
-        .label { display: inline-block; padding: 6px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; color: white; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
+        h2 { font-size: 3.8rem; margin-bottom: 30px; }
+        p.sub { font-size: 1.6rem; color: var(--gray); font-weight: 600; margin-bottom: 40px; }
+        .label { display: inline-block; padding: 8px 20px; border-radius: 50px; font-size: 1.1rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: stretch; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: stretch; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
         
-        .bx { background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
-        .bx h4 { font-size: 1.4rem; margin-bottom: 15px; }
-        .bx p { font-size: 1.05rem; color: var(--gray); margin: 0; }
+        .bx { background: var(--white); padding: 35px; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08); }
+        .bx h4 { font-size: 1.6rem; margin-bottom: 15px; }
+        .bx p { font-size: 1.2rem; color: var(--gray); margin: 0; font-weight: 500; }
         
-        .problem-box { background: rgba(239, 68, 68, 0.05); border-left: 6px solid var(--red); padding: 30px; border-radius: 12px; margin-bottom: 20px; }
-        .action-box { background: rgba(16, 185, 129, 0.05); border-left: 6px solid var(--green); padding: 30px; border-radius: 12px; }
+        .problem-box { background: rgba(220, 38, 38, 0.08); border-left: 8px solid var(--red); padding: 35px; border-radius: 12px; margin-bottom: 25px; }
+        .action-box { background: rgba(5, 150, 105, 0.08); border-left: 8px solid var(--green); padding: 35px; border-radius: 12px; }
         
-        .badge { display: inline-block; padding: 5px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; color: white; }
+        .badge { display: inline-block; padding: 6px 14px; border-radius: 6px; font-size: 1rem; font-weight: 800; color: white; }
 
-        .btn-link { display: inline-block; margin-top: 15px; padding: 10px 20px; background: var(--navy); color: white; text-decoration: none; font-weight: 700; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
-        .btn-link:hover { box-shadow: 0 4px 6px rgba(0,0,0,0.1); transform: translateY(-2px); background: var(--black);}
+        .btn-link { display: inline-block; margin-top: 20px; padding: 12px 25px; background: var(--black); color: white; text-decoration: none; font-weight: 800; border-radius: 50px; border: none; cursor: pointer; transition: 0.3s; font-size: 1.1rem;}
+        .btn-link:hover { box-shadow: 0 6px 12px rgba(0,0,0,0.2); transform: translateY(-3px); background: #1e293b;}
 
         /* Animations */
         .ani { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .active .ani { opacity: 1; transform: translateY(0); }
         .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.25s; } .d3 { transition-delay: 0.4s; } .d4 { transition-delay: 0.55s; }
 
-        .nav { position: fixed; bottom: 25px; right: 35px; display: flex; gap: 12px; z-index: 100; }
-        .btn { background: rgba(15, 23, 42, 0.65); color: var(--white); border: none; padding: 10px 20px; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s; }
-        .btn:hover { background: rgba(59, 130, 246, 0.8); transform: scale(1.05); }
-        .btn:disabled { background: rgba(100, 116, 139, 0.5); cursor: not-allowed; opacity: 0.5; transform: none; }
-        .prg { position: fixed; top: 0; left: 0; height: 5px; background: var(--blue-grad); transition: width 0.3s; z-index: 100; }</style>
+        .nav { position: fixed; bottom: 30px; right: 40px; display: flex; gap: 15px; z-index: 100; }
+        .btn { background: rgba(15, 23, 42, 0.8); color: var(--white); border: 2px solid rgba(255,255,255,0.1); padding: 12px 25px; border-radius: 50px; font-size: 1.1rem; font-weight: 800; cursor: pointer; backdrop-filter: blur(8px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; }
+        .btn:hover { background: rgba(37, 99, 235, 0.9); transform: scale(1.05); }
+        .btn:disabled { background: rgba(100, 116, 139, 0.8); cursor: not-allowed; opacity: 0.5; transform: none; }
+        .prg { position: fixed; top: 0; left: 0; height: 6px; background: var(--blue-grad); transition: width 0.3s; z-index: 100; }
+</style>
 </head>
 <body>
 

@@ -151,6 +151,24 @@ class PositionAssignmentController extends Controller
                 ->get();
         }
         
+        $approvedContractPositionIds = [];
+        $isSMK = false;
+        
+        if ($selectedEmployee && $selectedEmployee->school) {
+            $school = $selectedEmployee->school;
+            if (strtoupper($school->type) === 'SMK' || str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan')) {
+                $isSMK = true;
+                if ($currentYear) {
+                    $approvedContractPositionIds = \App\Models\PerformanceContract::where('employee_id', $selectedEmployee->id)
+                        ->where('academic_year_id', $currentYear->id)
+                        ->where('contract_type', \App\Models\PerformanceContract::TYPE_JABATAN)
+                        ->where('status', \App\Models\PerformanceContract::STATUS_APPROVED_BY_YAYASAN)
+                        ->pluck('position_id')
+                        ->toArray();
+                }
+            }
+        }
+        
         return view('admin.assignments.positions.create', compact(
             'teachers',
             'positions',
@@ -158,7 +176,9 @@ class PositionAssignmentController extends Controller
             'currentYear',
             'selectedEmployee',
             'currentPositions',
-            'classrooms'
+            'classrooms',
+            'isSMK',
+            'approvedContractPositionIds'
         ));
     }
     
@@ -186,7 +206,7 @@ class PositionAssignmentController extends Controller
 
         // --- SISTEM GEMBOK KONTRAK KINERJA JABATAN (Khusus SMK) ---
         $school = \App\Models\School::find($employee->school_id);
-        if ($school && (str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan'))) {
+        if ($school && (strtoupper($school->type) === 'SMK' || str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan'))) {
             foreach ($validated['positions'] as $posId) {
                 $position = \App\Models\Position::find($posId);
                 if (!$position) continue;

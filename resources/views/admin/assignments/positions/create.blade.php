@@ -116,6 +116,18 @@
                     <span class="font-semibold">Pilih satu atau lebih jabatan untuk guru ini</span>
                 </p>
 
+                @if(isset($isSMK) && $isSMK)
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 rounded-r-xl shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-exclamation-triangle text-amber-500 text-xl mt-0.5"></i>
+                        <div class="text-sm text-amber-900">
+                            <h4 class="font-bold text-base mb-1">Syarat Penugasan Jabatan (Khusus SMK)</h4>
+                            <p>Penugasan jabatan <b>selain</b> Kepala Sekolah, Wakil Kepala Sekolah, PKS, dan Wali Kelas <b>WAJIB</b> memiliki Kontrak Kinerja Jabatan yang telah disetujui Yayasan. Jabatan yang belum di-ACC akan otomatis digembok.</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 @foreach($positions as $category => $categoryPositions)
                 <div class="mb-6 last:mb-0">
                     <h3 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
@@ -125,17 +137,31 @@
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($categoryPositions as $position)
-                        <label class="relative flex items-start p-4 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition-all cursor-pointer group">
+                        @php
+                            $posName = strtolower($position->position_name);
+                            $isExempt = str_contains($posName, 'kepala sekolah') || 
+                                        str_contains($posName, 'wakil kepala sekolah') || 
+                                        str_contains($posName, 'pks ') || 
+                                        $posName == 'pks' ||
+                                        str_contains($posName, 'wali kelas');
+                            $hasApprovedContract = in_array($position->id, $approvedContractPositionIds ?? []);
+                            $isDisabled = isset($isSMK) && $isSMK && !$isExempt && !$hasApprovedContract;
+                        @endphp
+                        <label class="relative flex items-start p-4 border-2 {{ $isDisabled ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-75' : 'border-gray-200 hover:border-purple-400 hover:bg-purple-50 cursor-pointer group' }} rounded-xl transition-all">
                             <div class="flex items-center h-5">
                                 <input type="checkbox" 
                                        name="positions[]" 
                                        value="{{ $position->id }}" 
-                                       class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 focus:ring-2"
-                                       {{ in_array($position->id, old('positions', [])) ? 'checked' : '' }}>
+                                       class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 {{ $isDisabled ? 'cursor-not-allowed' : '' }}"
+                                       {{ in_array($position->id, old('positions', [])) ? 'checked' : '' }}
+                                       {{ $isDisabled ? 'disabled' : '' }}>
                             </div>
                             <div class="ml-3 flex-1">
-                                <span class="font-semibold text-gray-900 group-hover:text-purple-700">
+                                <span class="font-semibold {{ $isDisabled ? 'text-gray-500' : 'text-gray-900 group-hover:text-purple-700' }}">
                                     {{ $position->display_name }}
+                                    @if($isDisabled)
+                                        <i class="fas fa-lock text-red-400 ml-1 text-xs" title="Belum ACC Yayasan"></i>
+                                    @endif
                                 </span>
                                 <div class="flex items-center gap-2 mt-1">
                                     <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-bold rounded">

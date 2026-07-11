@@ -10,7 +10,7 @@ use App\Models\AcademicYear;
 class PerformanceContractController extends Controller
 {
     /**
-     * Tampilkan daftar kontrak kinerja (Menyesuaikan Role)
+     * Tampilkan daftar perjanjian kinerja (Menyesuaikan Role)
      */
     public function index(Request $request)
     {
@@ -27,11 +27,11 @@ class PerformanceContractController extends Controller
                 PerformanceContract::STATUS_APPROVED_BY_YAYASAN,
                 PerformanceContract::STATUS_REJECTED // Yayasan juga bisa nolak
             ]);
-            $viewTitle = 'Finalisasi Kontrak Kinerja (Yayasan)';
+            $viewTitle = 'Finalisasi Perjanjian Kinerja (Yayasan)';
         } else {
             // KEPSEK / ADMIN SEKOLAH: Melihat kontrak dari sekolahnya saja
             $query->where('school_id', $user->school_id);
-            $viewTitle = 'Validasi Kontrak Kinerja Guru';
+            $viewTitle = 'Validasi Perjanjian Kinerja Guru';
         }
 
         $contracts = $query->paginate(20);
@@ -82,12 +82,12 @@ class PerformanceContractController extends Controller
                 $contract->status = PerformanceContract::STATUS_APPROVED_BY_KEPSEK;
             }
             $contract->notes = null;
-            $msg = 'Kontrak Kinerja berhasil disetujui.';
+            $msg = 'Perjanjian Kinerja berhasil disetujui.';
         } else {
             // Ditolak
             $contract->status = PerformanceContract::STATUS_REJECTED;
             $contract->notes = $validated['notes'];
-            $msg = 'Kontrak Kinerja dikembalikan/ditolak.';
+            $msg = 'Perjanjian Kinerja dikembalikan/ditolak.';
         }
 
         $contract->save();

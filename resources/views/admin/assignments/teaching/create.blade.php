@@ -197,8 +197,8 @@
             <div class="flex items-start gap-3">
                 <i class="fas fa-lock text-red-500 text-2xl mt-0.5"></i>
                 <div class="text-sm text-red-900 leading-relaxed">
-                    <h4 class="font-bold text-base mb-1">Akses Ditolak: Kontrak Kinerja Belum Disetujui</h4>
-                    <p>Guru atas nama <b>{{ $selectedTeacher->full_name }}</b> belum memiliki Kontrak Kinerja Mengajar (2A/2B) yang disetujui Yayasan untuk Tahun Pelajaran ini. Fitur Penugasan Mengajar dikunci sementara.</p>
+                    <h4 class="font-bold text-base mb-1">Akses Ditolak: Perjanjian Kinerja Belum Disetujui</h4>
+                    <p>Guru atas nama <b>{{ $selectedTeacher->full_name }}</b> belum memiliki Perjanjian Kinerja Mengajar (2A/2B) yang disetujui Yayasan untuk Tahun Pelajaran ini. Fitur Penugasan Mengajar dikunci sementara.</p>
                 </div>
             </div>
         </div>

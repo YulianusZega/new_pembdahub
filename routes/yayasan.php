@@ -23,7 +23,7 @@ Route::prefix('yayasan')->name('yayasan.')->middleware('auth', 'yayasan')->group
     Route::put('/calendar/{calendar}', [App\Http\Controllers\Yayasan\EducationalCalendarController::class, 'update'])->name('calendar.update');
     Route::delete('/calendar/{calendar}', [App\Http\Controllers\Yayasan\EducationalCalendarController::class, 'destroy'])->name('calendar.destroy');
 
-    // Finalisasi Kontrak Kinerja (Satu Controller dengan Admin)
+    // Finalisasi Perjanjian Kinerja (Satu Controller dengan Admin)
     Route::prefix('performance-contracts')->name('performance_contracts.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\PerformanceContractController::class, 'index'])->name('index');
         Route::get('/{id}', [App\Http\Controllers\Admin\PerformanceContractController::class, 'show'])->name('show');

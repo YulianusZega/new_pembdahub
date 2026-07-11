@@ -88,7 +88,7 @@
                                 <i class="fas fa-folder-open text-2xl text-gray-300"></i>
                             </div>
                             <h3 class="text-gray-900 font-semibold mb-1">Belum Ada Pengajuan</h3>
-                            <p class="text-gray-500 text-sm mb-4">Belum ada data pengajuan kontrak kinerja untuk saat ini.</p>
+                            <p class="text-gray-500 text-sm mb-4">Belum ada data pengajuan perjanjian kinerja untuk saat ini.</p>
                         </td>
                     </tr>
                     @endforelse

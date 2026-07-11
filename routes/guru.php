@@ -222,7 +222,7 @@ Route::prefix('guru')->name('guru.')->middleware('auth', 'role:guru,kepala_sekol
     Route::get('surveys/{survey}', [App\Http\Controllers\Respondent\SurveyParticipantController::class, 'take'])->name('surveys.take');
     Route::post('surveys/{survey}', [App\Http\Controllers\Respondent\SurveyParticipantController::class, 'submit'])->name('surveys.submit');
 
-    // Kontrak Kinerja Guru
+    // Perjanjian Kinerja Guru
     Route::prefix('performance-contracts')->name('performance_contracts.')->group(function () {
         Route::get('/', [App\Http\Controllers\Guru\PerformanceContractController::class, 'index'])->name('index');
         Route::get('/create', [App\Http\Controllers\Guru\PerformanceContractController::class, 'create'])->name('create');

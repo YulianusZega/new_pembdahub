@@ -5,7 +5,7 @@
     {{-- Header Section --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Kontrak Kinerja Saya</h2>
+            <h2 class="text-2xl font-bold text-gray-800">Perjanjian Kinerja Saya</h2>
             <p class="text-sm text-gray-500 mt-1">Kelola dokumen perjanjian dan sasaran kinerja Anda.</p>
         </div>
         <a href="{{ route('guru.performance_contracts.create') }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
@@ -128,7 +128,7 @@
                                 <i class="fas fa-file-signature text-2xl text-gray-300"></i>
                             </div>
                             <h3 class="text-gray-900 font-semibold mb-1">Belum Ada Kontrak</h3>
-                            <p class="text-gray-500 text-sm mb-4">Anda belum membuat Kontrak Kinerja untuk Tahun Ajaran ini.</p>
+                            <p class="text-gray-500 text-sm mb-4">Anda belum membuat Perjanjian Kinerja untuk Tahun Ajaran ini.</p>
                             <a href="{{ route('guru.performance_contracts.create') }}" class="inline-flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold transition-all">
                                 <i class="fas fa-plus"></i> Buat Sekarang
                             </a>

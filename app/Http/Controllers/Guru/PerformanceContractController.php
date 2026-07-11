@@ -67,7 +67,7 @@ class PerformanceContractController extends Controller
             ->exists();
 
         if ($exists) {
-            return redirect()->back()->with('error', 'Anda sudah mengajukan kontrak kinerja untuk tipe ini di tahun ajaran ini.');
+            return redirect()->back()->with('error', 'Anda sudah mengajukan perjanjian kinerja untuk tipe ini di tahun ajaran ini.');
         }
 
         $contract = PerformanceContract::create([
@@ -80,7 +80,7 @@ class PerformanceContractController extends Controller
             'status' => PerformanceContract::STATUS_SUBMITTED_TO_KEPSEK,
         ]);
 
-        return redirect()->route('guru.performance_contracts.index')->with('success', 'Kontrak Kinerja berhasil diajukan ke Kepala Sekolah.');
+        return redirect()->route('guru.performance_contracts.index')->with('success', 'Perjanjian Kinerja berhasil diajukan ke Kepala Sekolah.');
     }
 
     public function print($id)
@@ -155,7 +155,7 @@ class PerformanceContractController extends Controller
             'notes' => null,
         ]);
 
-        return redirect()->route('guru.performance_contracts.index')->with('success', 'Kontrak Kinerja berhasil diperbarui dan diajukan ulang.');
+        return redirect()->route('guru.performance_contracts.index')->with('success', 'Perjanjian Kinerja berhasil diperbarui dan diajukan ulang.');
     }
 
     public function destroy($id)
@@ -171,6 +171,6 @@ class PerformanceContractController extends Controller
 
         $contract->delete();
 
-        return redirect()->route('guru.performance_contracts.index')->with('success', 'Kontrak Kinerja berhasil dihapus.');
+        return redirect()->route('guru.performance_contracts.index')->with('success', 'Perjanjian Kinerja berhasil dihapus.');
     }
 }

@@ -5,7 +5,7 @@
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Pemeriksaan Kontrak Kinerja</h2>
+            <h2 class="text-2xl font-bold text-gray-800">Pemeriksaan Perjanjian Kinerja</h2>
             <p class="text-sm text-gray-500 mt-1">Evaluasi dokumen perjanjian kinerja yang diajukan oleh guru.</p>
         </div>
         <a href="{{ route('admin.performance_contracts.index') }}" class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm">
@@ -126,11 +126,11 @@
                     <div class="text-center mb-8 border-b-4 border-indigo-600 pb-6 inline-block w-full">
                         <h2 class="text-2xl font-black text-gray-900 uppercase tracking-wide leading-tight">
                             @if($contract->contract_type == 'pkg_kejuruan')
-                                PENILAIAN KINERJA GURU<br><span class="text-indigo-600">(PRODUKTIF/KEJURUAN)</span>
+                                PERJANJIAN KINERJA GURU<br><span class="text-indigo-600">(PRODUKTIF/KEJURUAN)</span>
                             @elseif($contract->contract_type == 'pkg_umum')
-                                PENILAIAN KINERJA GURU<br><span class="text-indigo-600">(MAPEL UMUM)</span>
+                                PERJANJIAN KINERJA GURU<br><span class="text-indigo-600">(MAPEL UMUM)</span>
                             @else
-                                KONTRAK KINERJA JABATAN
+                                PERJANJIAN KINERJA JABATAN
                             @endif
                         </h2>
                         <p class="text-sm font-bold text-gray-500 mt-2 uppercase tracking-widest">Tahun Pelajaran {{ $contract->academicYear->year }}</p>
@@ -149,7 +149,7 @@
                                 <thead>
                                     <tr class="bg-gray-50 border-b border-gray-200">
                                         <th class="px-4 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-center border-r border-gray-200" width="5%">No</th>
-                                        <th class="px-4 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider border-r border-gray-200" width="35%">Pilar Penilaian Kinerja</th>
+                                        <th class="px-4 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider border-r border-gray-200" width="35%">Pilar Perjanjian Kinerja</th>
                                         <th class="px-4 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Rencana Bukti Fisik Nyata (Target)</th>
                                     </tr>
                                 </thead>

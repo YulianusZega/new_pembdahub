@@ -71,7 +71,7 @@
     </div>
 
     <div class="title">
-        PAKTA INTEGRITAS & KONTRAK KINERJA<br>
+        PAKTA INTEGRITAS & PERJANJIAN KINERJA<br>
         TAHUN PELAJARAN {{ $contract->academicYear->year }}
     </div>
 
@@ -86,7 +86,7 @@
                 <td>: 
                     @if($contract->contract_type == 'pkg_kejuruan') PKG Guru Kejuruan (Form 2A)
                     @elseif($contract->contract_type == 'pkg_umum') PKG Guru Mapel Umum (Form 2B)
-                    @else Kontrak Kinerja Jabatan (Form 4)
+                    @else Perjanjian Kinerja Jabatan (Form 4)
                     @endif
                 </td>
             </tr>

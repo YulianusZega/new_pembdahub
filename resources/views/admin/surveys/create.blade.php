@@ -56,7 +56,7 @@
                                 <i class="fas fa-heading text-indigo-400"></i> Judul Survei <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="title" name="title" value="{{ old('title') }}" required
-                                   placeholder="Contoh: Survei Penilaian Kinerja Guru oleh Siswa Semester Genap"
+                                   placeholder="Contoh: Survei Perjanjian Kinerja Guru oleh Siswa Semester Genap"
                                    class="form-input w-full px-4 py-3 border-2 {{ $errors->has('title') ? 'border-red-400 bg-red-50' : 'border-gray-200 bg-gray-50' }} rounded-2xl focus:outline-none focus:border-indigo-400 focus:bg-white text-sm font-semibold text-gray-800 placeholder-gray-300">
                             @error('title')
                                 <p class="text-red-500 text-xs font-semibold flex items-center gap-1">

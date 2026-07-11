@@ -83,11 +83,11 @@
                 <div class="text-center doc-header">
                     <h3 class="doc-title text-uppercase">
                         @if($contract->contract_type == 'pkg_kejuruan')
-                            PENILAIAN KINERJA GURU<br><span class="text-primary">(PRODUKTIF/KEJURUAN)</span>
+                            PERJANJIAN KINERJA GURU<br><span class="text-primary">(PRODUKTIF/KEJURUAN)</span>
                         @elseif($contract->contract_type == 'pkg_umum')
-                            PENILAIAN KINERJA GURU<br><span class="text-primary">(MAPEL UMUM)</span>
+                            PERJANJIAN KINERJA GURU<br><span class="text-primary">(MAPEL UMUM)</span>
                         @else
-                            KONTRAK KINERJA JABATAN
+                            PERJANJIAN KINERJA JABATAN
                         @endif
                     </h3>
                     <p class="doc-subtitle text-uppercase mt-2">SMKS PEMBDA NIAS - TAHUN PELAJARAN {{ $contract->academicYear->year }}</p>
@@ -128,7 +128,7 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="35%">Pilar Penilaian Kinerja</th>
+                                    <th width="35%">Pilar Perjanjian Kinerja</th>
                                     <th width="45%">Rencana Bukti Fisik Nyata (Target)</th>
                                     <th width="15%">Skor (1-5)</th>
                                 </tr>

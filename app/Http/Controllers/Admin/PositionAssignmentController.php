@@ -204,7 +204,7 @@ class PositionAssignmentController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        // --- SISTEM GEMBOK KONTRAK KINERJA JABATAN (Khusus SMK) ---
+        // --- SISTEM GEMBOK PERJANJIAN KINERJA JABATAN (Khusus SMK) ---
         $school = \App\Models\School::find($employee->school_id);
         if ($school && (strtoupper($school->type) === 'SMK' || str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan'))) {
             foreach ($validated['positions'] as $posId) {
@@ -221,7 +221,7 @@ class PositionAssignmentController extends Controller
                             str_contains($posName, 'wali kelas');
                             
                 if (!$isExempt) {
-                    // Wajib punya Kontrak Kinerja Jabatan (Tipe 4) untuk posisi ini yang di-ACC Yayasan
+                    // Wajib punya Perjanjian Kinerja Jabatan (Tipe 4) untuk posisi ini yang di-ACC Yayasan
                     $hasContract = \App\Models\PerformanceContract::where('employee_id', $employee->id)
                         ->where('academic_year_id', $validated['academic_year_id'])
                         ->where('contract_type', \App\Models\PerformanceContract::TYPE_JABATAN)
@@ -232,7 +232,7 @@ class PositionAssignmentController extends Controller
                     if (!$hasContract) {
                         return redirect()->back()
                             ->withInput()
-                            ->with('error', 'Akses Ditolak! Jabatan ' . $position->position_name . ' mewajibkan Instrumen Kontrak Kinerja (#4). Guru bersangkutan belum memiliki kontrak yang disetujui Yayasan.');
+                            ->with('error', 'Akses Ditolak! Jabatan ' . $position->position_name . ' mewajibkan Instrumen Perjanjian Kinerja (#4). Guru bersangkutan belum memiliki kontrak yang disetujui Yayasan.');
                     }
                 }
             }

@@ -99,7 +99,7 @@
                     <option value="">-- Silakan Pilih Tipe Kontrak --</option>
                     <option value="pkg_kejuruan" {{ $contract->contract_type == 'pkg_kejuruan' ? 'selected' : '' }}>Form 2A - PKG Guru Kejuruan / Produktif</option>
                     <option value="pkg_umum" {{ $contract->contract_type == 'pkg_umum' ? 'selected' : '' }}>Form 2B - PKG Guru Mapel Umum</option>
-                    <option value="jabatan_tambahan" {{ $contract->contract_type == 'jabatan_tambahan' ? 'selected' : '' }}>Form 4 - Kontrak Kinerja Jabatan</option>
+                    <option value="jabatan_tambahan" {{ $contract->contract_type == 'jabatan_tambahan' ? 'selected' : '' }}>Form 4 - Perjanjian Kinerja Jabatan</option>
                 </select>
             </div>
 
@@ -183,7 +183,7 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="35%">Pilar Penilaian Kinerja</th>
+                                    <th width="35%">Pilar Perjanjian Kinerja</th>
                                     <th width="45%">Rencana Bukti Fisik Nyata (Target)</th>
                                     <th width="15%">Skor (1-5)</th>
                                 </tr>
@@ -313,19 +313,19 @@ function toggleForm() {
             }
 
             if (type === 'pkg_kejuruan') {
-                document.getElementById('docTitle').innerHTML = 'PENILAIAN KINERJA GURU<br><span class="text-primary">(PRODUKTIF/KEJURUAN)</span>';
+                document.getElementById('docTitle').innerHTML = 'PERJANJIAN KINERJA GURU<br><span class="text-primary">(PRODUKTIF/KEJURUAN)</span>';
                 document.getElementById('alertKejuruan').style.display = 'block';
                 document.getElementById('pilar1_title').innerText = 'Kompetensi Praktik (30%)';
                 document.getElementById('pilar2_title').innerText = 'Kontribusi Program (30%)';
             } else {
-                document.getElementById('docTitle').innerHTML = 'PENILAIAN KINERJA GURU<br><span class="text-primary">(MAPEL UMUM)</span>';
+                document.getElementById('docTitle').innerHTML = 'PERJANJIAN KINERJA GURU<br><span class="text-primary">(MAPEL UMUM)</span>';
                 document.getElementById('alertUmum').style.display = 'block';
                 document.getElementById('pilar1_title').innerText = 'Kompetensi Relevansi Praktik (30%)';
                 document.getElementById('pilar2_title').innerText = 'Kontribusi Program/TEFA (30%)';
             }
         } 
         else if (type === 'jabatan_tambahan') {
-            document.getElementById('docTitle').innerHTML = 'KONTRAK KINERJA JABATAN';
+            document.getElementById('docTitle').innerHTML = 'PERJANJIAN KINERJA JABATAN';
             document.getElementById('tableJabatan').style.display = 'block';
             document.getElementById('rowJabatan').style.display = 'flex';
             document.getElementById('labelNama').innerText = 'Nama Pejabat';

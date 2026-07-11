@@ -193,7 +193,7 @@ class TeachingAssignmentController extends Controller
             }
         }
 
-        // --- SISTEM GEMBOK KONTRAK KINERJA (Khusus SMK) ---
+        // --- SISTEM GEMBOK PERJANJIAN KINERJA (Khusus SMK) ---
         $hasContract = true;
         if ($selectedTeacher && $selectedTeacher->school) {
             $school = $selectedTeacher->school;
@@ -248,7 +248,7 @@ class TeachingAssignmentController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        // --- SISTEM GEMBOK KONTRAK KINERJA (Khusus SMK) ---
+        // --- SISTEM GEMBOK PERJANJIAN KINERJA (Khusus SMK) ---
         $school = \App\Models\School::find($teacher->school_id);
         if ($school && (strtoupper($school->type) === 'SMK' || str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan'))) {
             $hasContract = \App\Models\PerformanceContract::where('employee_id', $teacher->employee_id)
@@ -260,7 +260,7 @@ class TeachingAssignmentController extends Controller
             if (!$hasContract) {
                 return redirect()->back()
                     ->withInput()
-                    ->with('error', 'Akses Ditolak! Guru atas nama ' . $teacher->full_name . ' belum memiliki Kontrak Kinerja Mengajar (2A/2B) yang disetujui Yayasan untuk Tahun Pelajaran ini.');
+                    ->with('error', 'Akses Ditolak! Guru atas nama ' . $teacher->full_name . ' belum memiliki Perjanjian Kinerja Mengajar (2A/2B) yang disetujui Yayasan untuk Tahun Pelajaran ini.');
             }
         }
         // --- END GEMBOK ---

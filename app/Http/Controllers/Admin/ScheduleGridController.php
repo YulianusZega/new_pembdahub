@@ -45,6 +45,15 @@ class ScheduleGridController extends Controller
             $selectedSchoolId = $user->school_id;
         }
         
+        // Get unique grade levels for the filter
+        $availableGrades = Classroom::where('school_id', $selectedSchoolId)
+            ->where('academic_year_id', $selectedYearId)
+            ->where('is_active', 1)
+            ->distinct()
+            ->pluck('grade_level')
+            ->sort()
+            ->values();
+            
         // Get classrooms for selected school (optimized with select)
         $classroomsQuery = Classroom::where('school_id', $selectedSchoolId)
             ->where('academic_year_id', $selectedYearId)
@@ -161,7 +170,8 @@ class ScheduleGridController extends Controller
             'hourSequences',
             'selectedYearId',
             'selectedSchoolId',
-            'semester'
+            'semester',
+            'availableGrades'
         ));
     }
     

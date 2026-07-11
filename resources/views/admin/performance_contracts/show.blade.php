@@ -90,8 +90,10 @@
                     Tindakan Persetujuan
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.performance_contracts.process', $contract->id) }}" method="POST">
+                    <form action="{{ route('admin.performance_contracts.process', $contract->id) }}" method="POST" id="approvalForm">
                         @csrf
+                        <input type="hidden" name="action" id="actionInput" value="">
+                        
                         <div class="mb-3" id="rejectNotesContainer" style="display: none;">
                             <label class="form-label text-danger fw-bold">Catatan Penolakan (Wajib jika ditolak)</label>
                             <textarea name="notes" id="rejectNotes" class="form-control" rows="3" placeholder="Sebutkan alasan penolakan agar guru memperbaiki komitmennya..."></textarea>
@@ -99,13 +101,10 @@
 
                         <div class="d-flex justify-content-between">
                             <button type="button" class="btn btn-outline-danger" onclick="showReject()">Tolak & Kembalikan</button>
-                            <button type="submit" name="action" value="approve" class="btn btn-success fw-bold px-4">
+                            <button type="button" class="btn btn-success fw-bold px-4" onclick="submitApprove()">
                                 <i class="fas fa-check-circle"></i> Setujui Kontrak Ini
                             </button>
                         </div>
-                        
-                        <!-- Hidden submit for reject -->
-                        <button type="submit" name="action" value="reject" id="btnRealReject" style="display: none;">Proses Tolak</button>
                     </form>
                 </div>
             </div>
@@ -116,6 +115,13 @@
 </div>
 
 <script>
+    function submitApprove() {
+        document.getElementById('actionInput').value = 'approve';
+        // Hapus requirement notes karena ini approve
+        document.getElementById('rejectNotes').required = false;
+        document.getElementById('approvalForm').submit();
+    }
+
     function showReject() {
         document.getElementById('rejectNotesContainer').style.display = 'block';
         document.getElementById('rejectNotes').required = true;
@@ -126,7 +132,8 @@
         rejectBtn.classList.remove('btn-outline-danger');
         rejectBtn.classList.add('btn-danger');
         rejectBtn.onclick = function() {
-            document.getElementById('btnRealReject').click();
+            document.getElementById('actionInput').value = 'reject';
+            document.getElementById('approvalForm').submit();
         };
     }
 </script>

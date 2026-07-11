@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Saku Action #1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f172a;
+            --white: #ffffff;
+            --bg-body: #f8fafc;
+            --gray: #64748b;
+            --red: #ef4444;
+            --red-grad: linear-gradient(135deg, #dc2626, #ef4444);
+            --red-light: #fef2f2;
+            --green: #10b981;
+            --green-grad: linear-gradient(135deg, #059669, #10b981);
+            --green-light: #ecfdf5;
+            --blue: #3b82f6;
+            --blue-grad: linear-gradient(135deg, #2563eb, #3b82f6);
+            --blue-light: #eff6ff;
+            --yellow: #f59e0b;
+            --yellow-grad: linear-gradient(135deg, #d97706, #f59e0b);
+            --yellow-light: #fffbeb;
+            --orange: #f97316;
+            --orange-grad: linear-gradient(135deg, #ea580c, #f97316);
+            --orange-light: #fff7ed;
+            --dark-grad: linear-gradient(135deg, #0f172a, #1e293b);
+            --pink: #ec4899;
+            --purple: #8b5cf6;
+            --cyan: #06b6d4;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--black);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px dashed rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--black);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        p.subtitle {
+            color: var(--gray);
+            font-size: 1.15rem;
+            font-weight: 500;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .info-box {
+            background: var(--white);
+            border-left: 6px solid;
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .info-box h4 {
+            margin-top: 0; margin-bottom: 10px; font-size: 1.2rem; font-weight: 700;
+        }
+        .info-box p {
+            margin: 0; font-size: 1rem; color: var(--gray);
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--black);
+            margin-top: 50px;
+            margin-bottom: 25px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            border-top: 6px solid;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            border-bottom: 2px solid rgba(0,0,0,0.05);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        .activity {
+            margin-bottom: 20px;
+            background: var(--bg-body);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .activity:last-child {
+            margin-bottom: 0;
+        }
+        .act-title {
+            font-weight: 800;
+            color: var(--black);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .act-desc {
+            font-size: 1rem;
+            color: var(--gray);
+            margin: 0 0 15px 0;
+        }
+        .act-meta {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .meta-tkj { background: var(--blue-light); color: var(--blue); }
+        .meta-dpib { background: var(--green-light); color: var(--green); }
+        .meta-tsm { background: var(--red-light); color: var(--red); }
+        .meta-all { background: var(--orange-light); color: var(--orange); }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 12px 30px;
+            background: var(--white);
+            color: var(--black);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .back-btn:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="font-size: 0.9rem; letter-spacing: 2px; color: var(--red); text-transform: uppercase; margin-bottom: 10px; font-weight: 800;">Action #1: Filosofi & Relevansi Mapel</div>
+            <h1>Buku Saku Ide Aktivitas Guru</h1>
+            <p class="subtitle">Kumpulan skenario aktivitas praktis (PBL) per mata pelajaran agar relevan dengan kompetensi kejuruan.</p>
+        </header>
+
+        <div class="info-box" style="border-left-color: var(--red);">
+            <h4 style="color: var(--red);">📌 Tujuan Buku Saku</h4>
+            <p>Dokumen ini disusun agar tidak ada lagi guru yang beralasan "Saya tidak tahu cara menyambungkan materi umum ke jurusan anak". Silakan tiru dan modifikasi ide-ide di bawah ini!</p>
+        </div>
+
+        <div class="grid">
+            <div class="card" style="border-top-color: var(--blue);">
+                <h3 style="color: var(--blue);">Matematika</h3>
+                <div class="activity" style="border-left-color: var(--green);">
+                    <div class="act-title">Kalkulasi RAB Bangunan (Geometri)</div>
+                    <p class="act-desc">Guru membagikan blueprint bangunan. Siswa menghitung total volume material (pasir, semen, batu bata) menggunakan rumus bangun ruang dan mengalikan harga bahan riil.</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--red);">
+                    <div class="act-title">Perhitungan Margin TEFA (Aritmetika)</div>
+                    <p class="act-desc">Siswa menghitung Harga Pokok Penjualan (HPP) oli, biaya sewa alat bengkel, dan persentase keuntungan (BEP).</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+            </div>
+
+            <div class="card" style="border-top-color: var(--orange);">
+                <h3 style="color: var(--orange);">Bahasa Indonesia</h3>
+                <div class="activity" style="border-left-color: var(--blue);">
+                    <div class="act-title">Role-Play Customer Service (Persuasi)</div>
+                    <p class="act-desc">Siswa disimulasikan sebagai Teknisi IT yang harus menenangkan pelanggan marah akibat komplain jaringan internet yang mati menggunakan kalimat profesional dan solutif.</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--orange);">
+                    <div class="act-title">SOP Keselamatan Alat (Teks Prosedur)</div>
+                    <p class="act-desc">Menulis instruksi penggunaan alat berbahaya (mesin bubut/crimping) dengan kejelasan tingkat tinggi agar tidak membahayakan pembacanya (adik kelas).</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+            </div>
+
+            <div class="card" style="border-top-color: var(--red);">
+                <h3 style="color: var(--red);">Bahasa Inggris</h3>
+                <div class="activity" style="border-left-color: var(--blue);">
+                    <div class="act-title">Bedah Datasheet Asing (Reading)</div>
+                    <p class="act-desc">Guru memberikan buku manual servis mesin pabrikan / datasheet server Cisco bahasa Inggris. Siswa menerjemahkan prosedur perbaikannya.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--red);">
+                    <div class="act-title">Pitching ke Investor (Speaking)</div>
+                    <p class="act-desc">Siswa mempresentasikan desain rancang bangun atau produk IoT mereka kepada guru/teman yang bertindak sebagai Investor Asing.</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span> <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+            </div>
+
+            <div class="card" style="border-top-color: var(--green);">
+                <h3 style="color: var(--green);">Pend. Agama & PPKn</h3>
+                <div class="activity" style="border-left-color: var(--green);">
+                    <div class="act-title">Etika Profesi & Fiqih Jual Beli</div>
+                    <p class="act-desc">Simulasi memberikan garansi layanan di TEFA secara transparan (tanpa riba, penipuan, pemalsuan spare-part).</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--blue);">
+                    <div class="act-title">Hak Tenaga Kerja & UU AMDAL</div>
+                    <p class="act-desc">Menganalisis surat kontrak kerja mekanik/drafter (UMR, BPJS) dan mendebatkan tata kelola limbah bengkel berdasarkan undang-undang.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+            </div>
+            
+            <div class="card" style="border-top-color: var(--yellow);">
+                <h3 style="color: var(--orange);">PJOK & Seni Budaya</h3>
+                <div class="activity" style="border-left-color: var(--orange);">
+                    <div class="act-title">Ergonomi & K3 Angkat Beban</div>
+                    <p class="act-desc">Melatih siswa TKJ peregangan pencegah Carpal Tunnel (terlalu lama di PC) dan mempraktikkan gaya angkat (Squat) mesin yang benar agar tidak saraf kejepit.</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+                <div class="activity" style="border-left-color: var(--purple);">
+                    <div class="act-title">Estetika UI/UX & Kriya Body Motor</div>
+                    <p class="act-desc">Membuat hirarki warna/tipografi untuk memperindah antarmuka aplikasi atau komposisi cat pada body kendaraan modifikasi.</p>
+                    <span class="act-meta meta-tkj">Target: TKJ</span> <span class="act-meta meta-tsm">Target: TSM</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="presentasi-transformasi-smk.html" class="back-btn">&larr; Kembali ke Presentasi Utama</a>
+        </div>
+    </div>
+</body>
+</html>

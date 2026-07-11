@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buku Saku Action #4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0f172a;
+            --white: #ffffff;
+            --bg-body: #f8fafc;
+            --gray: #64748b;
+            --red: #ef4444;
+            --red-grad: linear-gradient(135deg, #dc2626, #ef4444);
+            --red-light: #fef2f2;
+            --green: #10b981;
+            --green-grad: linear-gradient(135deg, #059669, #10b981);
+            --green-light: #ecfdf5;
+            --blue: #3b82f6;
+            --blue-grad: linear-gradient(135deg, #2563eb, #3b82f6);
+            --blue-light: #eff6ff;
+            --yellow: #f59e0b;
+            --yellow-grad: linear-gradient(135deg, #d97706, #f59e0b);
+            --yellow-light: #fffbeb;
+            --orange: #f97316;
+            --orange-grad: linear-gradient(135deg, #ea580c, #f97316);
+            --orange-light: #fff7ed;
+            --dark-grad: linear-gradient(135deg, #0f172a, #1e293b);
+            --pink: #ec4899;
+            --purple: #8b5cf6;
+            --cyan: #06b6d4;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--black);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px dashed rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--black);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+        p.subtitle {
+            color: var(--gray);
+            font-size: 1.15rem;
+            font-weight: 500;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .info-box {
+            background: var(--white);
+            border-left: 6px solid;
+            padding: 20px 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .info-box h4 {
+            margin-top: 0; margin-bottom: 10px; font-size: 1.2rem; font-weight: 700;
+        }
+        .info-box p {
+            margin: 0; font-size: 1rem; color: var(--gray);
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--black);
+            margin-top: 50px;
+            margin-bottom: 25px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            border-top: 6px solid;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            border-bottom: 2px solid rgba(0,0,0,0.05);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        .activity {
+            margin-bottom: 20px;
+            background: var(--bg-body);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .activity:last-child {
+            margin-bottom: 0;
+        }
+        .act-title {
+            font-weight: 800;
+            color: var(--black);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .act-desc {
+            font-size: 1rem;
+            color: var(--gray);
+            margin: 0 0 15px 0;
+        }
+        .act-meta {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .meta-tkj { background: var(--blue-light); color: var(--blue); }
+        .meta-dpib { background: var(--green-light); color: var(--green); }
+        .meta-tsm { background: var(--red-light); color: var(--red); }
+        .meta-all { background: var(--orange-light); color: var(--orange); }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 12px 30px;
+            background: var(--white);
+            color: var(--black);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .back-btn:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="font-size: 0.9rem; letter-spacing: 2px; color: var(--green); text-transform: uppercase; margin-bottom: 10px; font-weight: 800;">Action #4: Budaya Kerja & Kolaborasi</div>
+            <h1>Buku Saku Budaya 5R & Co-Teaching</h1>
+            <p class="subtitle">Membangun habit industri secara harian dan melatih guru berkolaborasi lintas mapel.</p>
+        </header>
+
+        <div class="info-box" style="border-left-color: var(--green);">
+            <h4 style="color: var(--green);">📌 Esensi Kolaborasi</h4>
+            <p>Kolaborasi antar guru dinilai BUKAN dari seberapa sering mereka rapat, tapi dari apakah ada 1 Proyek Nyata yang dikerjakan siswa, di mana proyek tersebut dinilai secara bersama oleh beberapa guru lintas mata pelajaran.</p>
+        </div>
+
+        <h2 class="section-title">A. Budaya Kerja 5R (5S)</h2>
+        <div class="grid">
+            <div class="card" style="border-top-color: var(--green);">
+                <h3 style="color: var(--green);">Indikator Kebersihan & Kerapian</h3>
+                <div class="activity" style="border-left-color: var(--blue);">
+                    <div class="act-title">1. Ringkas & Rapi</div>
+                    <p class="act-desc">Singkirkan barang tak perlu. Alat memiliki "rumahnya" sendiri (labeling). Kembalikan alat persis ke tempat semula setelah dipakai.</p>
+                </div>
+                <div class="activity" style="border-left-color: var(--orange);">
+                    <div class="act-title">2. Resik & Rawat</div>
+                    <p class="act-desc">Area bengkel disapu bersih dari debu/oli SETELAH jam praktik. Alat dirawat secara rutin agar umur pakainya lama.</p>
+                </div>
+                <div class="activity" style="border-left-color: var(--red);">
+                    <div class="act-title">3. Rajin (Habit) & Keselamatan (K3)</div>
+                    <p class="act-desc">Siswa yang tidak menggunakan APD/Wearpack/Sepatu Safety DILARANG KERAS mengikuti praktik (Zero Accident Policy).</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">B. Contoh Proyek Kolaborasi (Co-Teaching)</h2>
+        <div class="grid">
+            <div class="card" style="border-top-color: var(--blue);">
+                <h3 style="color: var(--black);">Skenario "Mendesain Rumah Tropis"</h3>
+                <div class="activity" style="border-left-color: var(--green); background: var(--green-light);">
+                    <div class="act-title">Tugas Mapel Kejuruan (DPIB)</div>
+                    <p class="act-desc">Siswa menggambar denah di AutoCAD dan merender fasad bangunan 3D. Nilai masuk ke kompetensi mendesain 2D/3D.</p>
+                </div>
+                <div class="activity" style="border-left-color: var(--orange); background: var(--orange-light);">
+                    <div class="act-title">Tugas Mapel Matematika</div>
+                    <p class="act-desc">Siswa menghitung kalkulasi volume semen, pasir, bata dari denah rumah tersebut dan menentukan RAB-nya. Nilai masuk ke kompetensi Aritmetika / Bangun Ruang.</p>
+                </div>
+                <div class="activity" style="border-left-color: var(--blue); background: var(--blue-light);">
+                    <div class="act-title">Tugas Mapel Bahasa (Indo/Inggris)</div>
+                    <p class="act-desc">Siswa mempresentasikan hasil render dan RAB tersebut secara meyakinkan di depan "klien". Nilai masuk ke Public Speaking & Teks Persuasif.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="presentasi-transformasi-smk.html" class="back-btn">&larr; Kembali ke Presentasi Utama</a>
+        </div>
+    </div>
+</body>
+</html>

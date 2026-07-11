@@ -192,6 +192,63 @@
 
             </div>
         </div>
+        
+        <!-- Hasil Evaluasi -->
+        @if($contract->evaluations && $contract->evaluations->count() > 0)
+        <div class="mt-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Hasil Evaluasi Akhir Semester</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @foreach($contract->evaluations as $eval)
+                    @if($eval->status === 'approved_by_yayasan')
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-500 to-blue-600 px-4 py-3">
+                            <h4 class="text-white font-bold">{{ $eval->semester->name ?? 'Semester' }}</h4>
+                            <p class="text-indigo-100 text-xs">{{ $eval->semester->academicYear->name ?? '' }}</p>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-sm font-semibold text-gray-500">Nilai Akhir:</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-3xl font-black text-indigo-700">{{ number_format($eval->score, 2) }}</span>
+                                    <div class="flex text-yellow-400 text-xs">
+                                        @for($i=1; $i<=5; $i++)
+                                            <i class="fas fa-star {{ $i <= round($eval->score) ? '' : 'text-gray-300' }}"></i>
+                                        @endfor
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3 mt-4 border-t border-gray-100 pt-4">
+                                <h5 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Rincian Penilaian</h5>
+                                @foreach($eval->evaluation_data as $key => $score)
+                                    @php $displayKey = ucwords(str_replace('_', ' ', $key)); @endphp
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="text-gray-700 truncate pr-4" title="{{ $displayKey }}">{{ $displayKey }}</span>
+                                        <span class="font-bold text-gray-900 bg-gray-100 px-2 py-0.5 rounded">{{ $score }} / 5</span>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            @if($eval->notes)
+                            <div class="mt-4 bg-yellow-50 p-3 rounded-lg border border-yellow-100">
+                                <p class="text-xs font-bold text-yellow-800 mb-1"><i class="fas fa-comment-dots"></i> Catatan Evaluasi:</p>
+                                <p class="text-sm text-yellow-900 italic">"{{ $eval->notes }}"</p>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
+                @endforeach
+            </div>
+            
+            @if($contract->evaluations->where('status', 'approved_by_yayasan')->count() === 0)
+                <div class="bg-gray-50 p-4 rounded-xl text-center border border-gray-200">
+                    <p class="text-gray-500 text-sm">Evaluasi semester sedang diproses atau belum di-ACC oleh Yayasan.</p>
+                </div>
+            @endif
+        </div>
+        @endif
+        
     </div>
 </div>
 @endsection

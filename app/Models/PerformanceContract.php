@@ -58,6 +58,11 @@ class PerformanceContract extends Model
         return $this->belongsTo(Position::class);
     }
 
+    public function evaluations()
+    {
+        return $this->hasMany(PerformanceEvaluation::class);
+    }
+
     // Scopes
     public function scopeApprovedByYayasan($query)
     {

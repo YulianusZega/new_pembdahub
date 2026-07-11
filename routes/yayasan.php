@@ -29,4 +29,9 @@ Route::prefix('yayasan')->name('yayasan.')->middleware('auth', 'yayasan')->group
         Route::get('/{id}', [App\Http\Controllers\Admin\PerformanceContractController::class, 'show'])->name('show');
         Route::post('/{id}/process', [App\Http\Controllers\Admin\PerformanceContractController::class, 'process'])->name('process');
     });
+
+    // Evaluasi Perjanjian Kinerja Akhir Semester (Satu Controller dengan Admin)
+    Route::get('/performance-evaluations', [App\Http\Controllers\Admin\PerformanceEvaluationController::class, 'index'])->name('performance_evaluations.index');
+    Route::get('/performance-evaluations/{contractId}/{semesterId}/evaluate', [App\Http\Controllers\Admin\PerformanceEvaluationController::class, 'evaluate'])->name('performance_evaluations.evaluate');
+    Route::post('/performance-evaluations/{contractId}/{semesterId}', [App\Http\Controllers\Admin\PerformanceEvaluationController::class, 'store'])->name('performance_evaluations.store');
 });

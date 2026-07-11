@@ -41,6 +41,12 @@
         <span class="text-sm flex-1 font-semibold">Finalisasi Perjanjian Kinerja</span>
     </a>
 
+    <!-- Evaluasi Perjanjian Kinerja -->
+    <a href="{{ route('yayasan.performance_evaluations.index') }}" class="menu-item flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('yayasan.performance_evaluations.*') ? $ac : 'text-gray-700 hover:bg-gray-50' }}">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-400 to-blue-600 flex items-center justify-center text-white shadow"><i class="fas fa-star-half-alt text-xs"></i></div>
+        <span class="text-sm flex-1 font-semibold">ACC Evaluasi Kinerja</span>
+    </a>
+
     <!-- ════════════════ GROUP: UNIT PENDIDIKAN ════════════════ -->
     <div class="pt-4" data-menu-group="schools">
         <button class="menu-group-toggle open w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600" onclick="toggleGroup(this)">

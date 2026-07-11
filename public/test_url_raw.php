@@ -1,9 +1,7 @@
 <?php
-require __DIR__.'/../vendor/autoload.php';
-$app = require_once __DIR__.'/../bootstrap/app.php';
-$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-echo "Testing URL helper directly:\n";
-echo "Test 1: " . url('/forum/poll/1/test') . "\n";
-echo "Test 2: " . url('/forum/poll/1/vote') . "\n";
-echo "Test 3: " . route('forum.poll.vote', ['option' => 1]) . "\n";
+echo "Testing raw strings:\n";
+echo "Str 1: https://perguruanpembda.com/forum/poll/1/test\n";
+echo "Str 2: https://perguruanpembda.com/forum/poll/1/vote\n";
+echo "Str 3: https://perguruanpembda.com/forum/reply/1/react\n";
+echo "Str 4: https://perguruanpembda.com/forum/1/like\n";
+echo "Str 5: ALL PRINTED OK\n";

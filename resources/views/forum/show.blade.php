@@ -387,12 +387,25 @@ function cancelQuote() {
     document.getElementById('quote-preview').classList.add('hidden');
 }
 
+function getCsrfToken() {
+    const name = "XSRF-TOKEN=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i].trim();
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return '{{ csrf_token() }}';
+}
+
 // AJAX Reactions
 async function reactThreadAjax(emoji) {
     try {
         const res = await fetch("{{ route('forum.react', $thread) }}", {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSR-TOKEN': '{{ csrf_token() }}' },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-XSRF-TOKEN': getCsrfToken() },
             body: JSON.stringify({ emoji: emoji })
         });
         if (!res.ok) {
@@ -411,7 +424,7 @@ async function reactReplyAjax(replyId, emoji) {
     try {
         const res = await fetch(`{{ url('/forum/reply') }}/${replyId}/react`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSR-TOKEN': '{{ csrf_token() }}' },
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-XSRF-TOKEN': getCsrfToken() },
             body: JSON.stringify({ emoji: emoji })
         });
         if (!res.ok) {
@@ -447,7 +460,7 @@ async function votePoll(optionId) {
     try {
         const res = await fetch(`{{ url('/forum/poll') }}/${optionId}/vote`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSR-TOKEN': '{{ csrf_token() }}' }
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-XSRF-TOKEN': getCsrfToken() }
         });
         if (!res.ok) {
             const text = await res.text();

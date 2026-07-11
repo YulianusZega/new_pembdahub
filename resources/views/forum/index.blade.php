@@ -358,6 +358,19 @@
 
 <!-- AJAX Like Script -->
 <script>
+function getCsrfToken() {
+    const name = "XSRF-TOKEN=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i].trim();
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return '{{ csrf_token() }}';
+}
+
 async function toggleLike(btn, url) {
     btn.disabled = true;
     try {
@@ -366,7 +379,7 @@ async function toggleLike(btn, url) {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'X-CSR-TOKEN': '{{ csrf_token() }}'
+                'X-XSRF-TOKEN': getCsrfToken()
             }
         });
         if (!response.ok) {

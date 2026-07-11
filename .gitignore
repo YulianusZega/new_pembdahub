@@ -22,10 +22,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-
-# Mencegah Hostinger auto-run composer saat Deploy
-composer.lock
-composer.json
 # Project-specific ignores
 *.sql
 *.docx

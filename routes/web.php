@@ -818,6 +818,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [App\Http\Controllers\ForumController::class, 'index'])->name('index');
         Route::get('/create', [App\Http\Controllers\ForumController::class, 'create'])->name('create');
         Route::post('/store', [App\Http\Controllers\ForumController::class, 'store'])->name('store');
+        
+        // Pembda Place & Colabs (MUST BE BEFORE /{thread})
+        Route::get('/place/canvas', [App\Http\Controllers\ForumController::class, 'getPlaceCanvas'])->name('place.canvas');
+        Route::post('/place/draw', [App\Http\Controllers\ForumController::class, 'drawPlacePixel'])->name('place.draw');
+        Route::get('/place/updates', [App\Http\Controllers\ForumController::class, 'getPlaceUpdates'])->name('place.updates');
+        Route::get('/puzzle', [App\Http\Controllers\ForumController::class, 'getPuzzleState'])->name('puzzle.state');
+        Route::post('/puzzle/place', [App\Http\Controllers\ForumController::class, 'placePuzzlePiece'])->name('puzzle.place');
         Route::get('/{thread}', [App\Http\Controllers\ForumController::class, 'show'])->name('show');
         Route::post('/{thread}/reply', [App\Http\Controllers\ForumController::class, 'reply'])->name('reply');
         Route::post('/{thread}/like', [App\Http\Controllers\ForumController::class, 'like'])->name('like');
@@ -840,15 +847,6 @@ Route::middleware('auth')->group(function () {
         // Polls
         Route::post('/{thread}/poll', [App\Http\Controllers\ForumController::class, 'createPoll'])->name('poll.create');
         Route::post('/poll/{option}/vote', [App\Http\Controllers\ForumController::class, 'votePoll'])->name('poll.vote');
-
-        // Pembda Place
-        Route::get('/place/canvas', [App\Http\Controllers\ForumController::class, 'getPlaceCanvas'])->name('place.canvas');
-        Route::post('/place/draw', [App\Http\Controllers\ForumController::class, 'drawPlacePixel'])->name('place.draw');
-        Route::get('/place/updates', [App\Http\Controllers\ForumController::class, 'getPlaceUpdates'])->name('place.updates');
-        
-        // Pembda Colabs (Puzzle)
-        Route::get('/puzzle', [App\Http\Controllers\ForumController::class, 'getPuzzleState'])->name('puzzle.state');
-        Route::post('/puzzle/place', [App\Http\Controllers\ForumController::class, 'placePuzzlePiece'])->name('puzzle.place');
     });
 
     // Alumni & Tracer Study Routes

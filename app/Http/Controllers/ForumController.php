@@ -300,19 +300,25 @@ class ForumController extends Controller
                 $isLiked = true;
                 $message = 'Topik berhasil diupvote! (+2 Poin Liker / +10 Poin Penulis)';
             }
-
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'liked' => $isLiked,
-                'likes_count' => $thread->likes()->count(),
-                'message' => $message
-            ]);
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'liked' => $isLiked,
+                    'likes_count' => $thread->likes()->count(),
+                    'message' => $message
+                ]);
+            }
+
+            return back()->with('success', $message);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            }
+            return back()->with('error', 'Gagal memproses upvote: ' . $e->getMessage());
         }
     }
 

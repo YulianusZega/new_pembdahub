@@ -404,7 +404,7 @@ async function reactThreadAjax(emoji) {
 
 async function reactReplyAjax(replyId, emoji) {
     try {
-        const res = await fetch(`/forum/reply/${replyId}/react`, {
+        const res = await fetch(`{{ url('/forum/reply') }}/${replyId}/react`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSR-TOKEN': '{{ csrf_token() }}' },
             body: JSON.stringify({ emoji: emoji })
@@ -435,7 +435,7 @@ function updateReactionUI(containerId, counts, isThread, replyId = null) {
 // AJAX Poll
 async function votePoll(optionId) {
     try {
-        const res = await fetch(`/forum/poll/${optionId}/vote`, {
+        const res = await fetch(`{{ url('/forum/poll') }}/${optionId}/vote`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSR-TOKEN': '{{ csrf_token() }}' }
         });

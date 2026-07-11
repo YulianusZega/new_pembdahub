@@ -173,8 +173,8 @@
             
             <div class="relative z-10">
                 <div class="flex items-center gap-3 mb-12">
-                    <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-indigo-900 shadow-lg">
-                        <i class="fas fa-graduation-cap text-2xl"></i>
+                    <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg p-1.5">
+                        <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo Yayasan" class="w-full h-full object-contain">
                     </div>
                     <h1 class="text-3xl font-extrabold tracking-tight text-white">Pembda<span class="text-indigo-300">Hub</span></h1>
                 </div>
@@ -198,8 +198,8 @@
             
             <!-- Mobile Logo (hidden on desktop) -->
             <div class="flex md:hidden items-center justify-center gap-3 mb-10">
-                <div class="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-                    <i class="fas fa-graduation-cap text-3xl"></i>
+                <div class="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 p-2">
+                    <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo Yayasan" class="w-full h-full object-contain">
                 </div>
                 <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">Pembda<span class="text-indigo-600">Hub</span></h1>
             </div>

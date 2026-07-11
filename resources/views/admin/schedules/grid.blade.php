@@ -85,23 +85,23 @@
     #scheduleTable thead tr th { padding:0; }
 
     /* Day header column */
-    .th-day { padding: 10px 12px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border-right: 1px solid rgba(255,255,255,0.15); position:sticky;left:0;z-index:20; white-space:nowrap; background: linear-gradient(135deg,#6d28d9,#a21caf); color:white; }
-    .th-time { padding: 10px 8px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border-right: 1px solid rgba(255,255,255,0.15); width:88px; min-width:88px; background: linear-gradient(135deg,#6d28d9,#a21caf); color:white; }
-    .th-class { padding: 8px 4px; text-align:center; font-size:11px; font-weight:700; border-right: 1px solid rgba(255,255,255,0.15); white-space:nowrap; background: linear-gradient(135deg,#7c3aed,#db2777); color:white; letter-spacing:.03em; min-width: 150px; }
+    .th-day { padding: 10px 12px; text-align:center; font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; border-right: 1px solid rgba(255,255,255,0.15); position:sticky;left:0;z-index:20; white-space:nowrap; background: #1e1b4b; color:white; }
+    .th-time { padding: 10px 8px; text-align:center; font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; border-right: 1px solid rgba(255,255,255,0.15); width:88px; min-width:88px; background: #312e81; color:white; }
+    .th-class { padding: 12px 6px; text-align:center; font-size:13px; font-weight:900; border-right: 1px solid rgba(255,255,255,0.25); white-space:nowrap; background: linear-gradient(135deg, #1e1b4b, #312e81); color:#f8fafc; letter-spacing:.04em; min-width: 150px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     thead tr { background: linear-gradient(135deg,#6d28d9,#db2777); }
 
     /* Day cell */
     .day-colors { Senin:'#4f46e5'; }
     .cell-day {
-        padding: 4px 10px;
-        font-size: 11px; font-weight: 800; letter-spacing:.04em; text-transform:uppercase;
+        padding: 8px 12px;
+        font-size: 16px; font-weight: 900; letter-spacing:.08em; text-transform:uppercase;
         border-right: 1px solid #e9d5ff;
-        align-content: center; vertical-align: middle;
+        align-content: center; vertical-align: middle; text-align: center;
         position: sticky; left: 0; z-index: 10;
         white-space: nowrap;
         writing-mode: vertical-rl; text-orientation: mixed;
         transform: rotate(180deg);
-        min-width: 28px;
+        min-width: 44px;
     }
     .day-senin  { background: linear-gradient(180deg,#ede9fe,#ddd6fe); color:#4c1d95; border-right:2px solid #7c3aed; }
     .day-selasa { background: linear-gradient(180deg,#fce7f3,#fbcfe8); color:#831843; border-right:2px solid #db2777; }
@@ -112,17 +112,23 @@
 
     /* Time cell */
     .cell-time {
-        padding: 4px 8px; vertical-align: middle;
+        padding: 6px 8px; vertical-align: middle; text-align: center;
         border-right: 1px solid #f0e6ff;
         background: #faf5ff;
         width: 88px; min-width: 88px;
     }
-    .cell-time .slot-name { font-size:11px; font-weight:700; color: #5b21b6; }
-    .cell-time .slot-time { font-size:10px; color:#9ca3af; margin-top:1px; }
+    .cell-time .slot-name { font-size:13px; font-weight:800; color: #4c1d95; }
+    .cell-time .slot-time { font-size:11px; font-weight:700; color:#6b7280; margin-top:2px; }
 
     /* Schedule row */
     .schedule-row { border-bottom: 1px solid #f3e8ff; transition: background 0.15s; }
-    .schedule-row:hover { background: #fdf4ff !important; }
+    .row-senin td.cell-empty { background-color: rgba(79, 70, 229, 0.04); }
+    .row-selasa td.cell-empty { background-color: rgba(219, 39, 119, 0.04); }
+    .row-rabu td.cell-empty { background-color: rgba(5, 150, 105, 0.04); }
+    .row-kamis td.cell-empty { background-color: rgba(217, 119, 6, 0.04); }
+    .row-jumat td.cell-empty { background-color: rgba(37, 99, 235, 0.04); }
+    .row-sabtu td.cell-empty { background-color: rgba(217, 70, 239, 0.04); }
+    .schedule-row:hover td.cell-empty { background: #fdf4ff !important; }
     .day-separator td { border-bottom: 2px solid #c4b5fd !important; }
 
     /* Content cell */
@@ -136,7 +142,7 @@
     .cell-content:hover .cell-plus { opacity:1; }
 
     /* Non-teaching cell */
-    .cell-break { background: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(0,0,0,0.02) 6px, rgba(0,0,0,0.02) 12px); }
+    .cell-break { background: repeating-linear-gradient(45deg, rgba(0,0,0,0.01), rgba(0,0,0,0.01) 10px, rgba(0,0,0,0.03) 10px, rgba(0,0,0,0.03) 20px); }
 
     /* === SCHEDULE CARD === */
     .scard {
@@ -381,7 +387,7 @@
                         
                         @if($daySlots->count() > 0)
                         @foreach($daySlots as $slotIndex => $timeSlot)
-                                <tr class="schedule-row {{ $loop->last ? 'day-separator' : '' }}">
+                                <tr class="schedule-row row-{{ strtolower($day) }} {{ $loop->last ? 'day-separator' : '' }}">
                                     @if($loop->first)
                                         <td rowspan="{{ $daySlots->count() }}" class="cell-day {{ $dayClass }} sticky left-0 z-10">
                                             {{ $day }}
@@ -463,9 +469,9 @@
                                             @elseif($timeSlot->is_teaching_slot)
                                                 <div class="cell-plus"><i class="fas fa-plus"></i></div>
                                             @else
-                                                <div class="flex items-center justify-center h-full gap-1">
-                                                    <i class="{{ $nonTeachingStyle['icon'] }} text-xs {{ $nonTeachingStyle['text'] }} opacity-50"></i>
-                                                    <span class="text-[9px] font-bold {{ $nonTeachingStyle['text'] }} opacity-50 uppercase tracking-wider">{{ $timeSlot->slot_name }}</span>
+                                                <div class="flex flex-col items-center justify-center h-full gap-1.5 p-1">
+                                                    <i class="{{ $nonTeachingStyle['icon'] }} text-lg {{ $nonTeachingStyle['text'] }} mb-0.5 shadow-sm"></i>
+                                                    <span class="text-[11px] font-black {{ $nonTeachingStyle['text'] }} uppercase tracking-widest text-center leading-tight drop-shadow-sm">{{ $timeSlot->slot_name }}</span>
                                                 </div>
                                             @endif
                                         </td>

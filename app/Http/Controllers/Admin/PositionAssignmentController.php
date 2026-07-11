@@ -183,6 +183,41 @@ class PositionAssignmentController extends Controller
         if (!$user->isSuperAdmin() && $employee->school_id !== $user->school_id) {
             abort(403, 'Unauthorized');
         }
+
+        // --- SISTEM GEMBOK KONTRAK KINERJA JABATAN (Khusus SMK) ---
+        $school = \App\Models\School::find($employee->school_id);
+        if ($school && (str_contains(strtolower($school->name), 'smk') || str_contains(strtolower($school->name), 'kejuruan'))) {
+            foreach ($validated['positions'] as $posId) {
+                $position = \App\Models\Position::find($posId);
+                if (!$position) continue;
+                
+                $posName = strtolower($position->position_name);
+                
+                // Pengecualian: Kepsek, PKS, Wali Kelas
+                $isExempt = str_contains($posName, 'kepala sekolah') || 
+                            str_contains($posName, 'wakil kepala sekolah') || 
+                            str_contains($posName, 'pks ') || 
+                            $posName == 'pks' ||
+                            str_contains($posName, 'wali kelas');
+                            
+                if (!$isExempt) {
+                    // Wajib punya Kontrak Kinerja Jabatan (Tipe 4) untuk posisi ini yang di-ACC Yayasan
+                    $hasContract = \App\Models\PerformanceContract::where('employee_id', $employee->id)
+                        ->where('academic_year_id', $validated['academic_year_id'])
+                        ->where('contract_type', \App\Models\PerformanceContract::TYPE_JABATAN)
+                        ->where('position_id', $posId)
+                        ->where('status', \App\Models\PerformanceContract::STATUS_APPROVED_BY_YAYASAN)
+                        ->exists();
+
+                    if (!$hasContract) {
+                        return redirect()->back()
+                            ->withInput()
+                            ->with('error', 'Akses Ditolak! Jabatan ' . $position->position_name . ' mewajibkan Instrumen Kontrak Kinerja (#4). Guru bersangkutan belum memiliki kontrak yang disetujui Yayasan.');
+                    }
+                }
+            }
+        }
+        // --- END GEMBOK ---
         
         DB::beginTransaction();
         try {

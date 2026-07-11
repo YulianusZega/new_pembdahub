@@ -7,8 +7,6 @@
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;650;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
-<!-- Tailwind CDN for dynamic compilation -->
-<script src="https://cdn.tailwindcss.com"></script>
 <style>
     .forum-hdr { font-family: 'Space Grotesk', sans-serif; }
     /* Hide scrollbar for clean UI */

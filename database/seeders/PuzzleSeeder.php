@@ -10,7 +10,17 @@ class PuzzleSeeder extends Seeder
 {
     public function run(): void
     {
-        if (Puzzle::count() > 0) return;
+        if (Puzzle::count() > 0) {
+            // Jika puzzle sudah ada tapi belum ada kepingan yang diletakkan (atau < 10), bantu letakkan 10 secara acak
+            if (PuzzlePiece::where('is_placed', true)->count() < 10) {
+                PuzzlePiece::where('is_placed', false)->inRandomOrder()->limit(10)->update([
+                    'is_placed' => true,
+                    'placed_at' => now(),
+                    // placed_by_user_id null = Sistem
+                ]);
+            }
+            return;
+        }
 
         $puzzle = Puzzle::create([
             'title' => 'Esports Championship (Minggu 1)',

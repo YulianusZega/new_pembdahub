@@ -239,7 +239,7 @@
                                             
                                             <!-- Tooltip -->
                                             <div x-show="piece" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-black/90 text-white text-[10px] px-2 py-1 rounded pointer-events-none opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-50">
-                                                Oleh <span class="font-bold text-blue-400" x-text="piece ? piece.placed_by : ''"></span>
+                                                Oleh <span class="font-bold text-blue-400" x-text="piece ? (piece.placed_by || 'Sistem (Bonus)') : ''"></span>
                                             </div>
                                         </div>
                                     </template>

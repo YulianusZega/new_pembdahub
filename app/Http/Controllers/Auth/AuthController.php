@@ -276,6 +276,22 @@ class AuthController extends Controller
         // Set role aktif di session
         session(['active_role' => $targetRole]);
 
+        // Auto-create teacher profile if missing for Super Admin
+        if ($targetRole === 'guru') {
+            $teacherExists = \App\Models\Teacher::where('user_id', $user->id)->exists();
+            if (!$teacherExists) {
+                \App\Models\Teacher::create([
+                    'user_id' => $user->id,
+                    'school_id' => $user->school_id ?? \App\Models\School::first()->id ?? 1,
+                    'teacher_code' => 'YYS-' . $user->id,
+                    'full_name' => $user->name,
+                    'gender' => 'L', // Default, bisa diubah nanti di profil
+                    'position' => 'Yayasan / Super Admin',
+                    'is_active' => true,
+                ]);
+            }
+        }
+
         $this->logActivity($user, 'switch_role', "Beralih ke tampilan role: {$targetRole}");
 
         return $this->redirectByRole($user)

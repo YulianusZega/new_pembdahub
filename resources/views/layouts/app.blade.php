@@ -175,28 +175,64 @@
                     </div>
                 </div>
             <div class="flex items-center gap-3">
-                @if(auth()->user() && auth()->user()->isKepalaSekolah())
+                @if(auth()->user())
                     @php
                         $currentRole = session('active_role') ?? auth()->user()->role;
                     @endphp
-                    <form action="{{ route('switch-role') }}" method="POST" class="inline">
-                        @csrf
-                        @if($currentRole === 'kepala_sekolah')
-                            <input type="hidden" name="role" value="guru">
-                            <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-extrabold transition flex items-center gap-1.5 shadow border border-emerald-400/30">
-                                <i class="fas fa-chalkboard-teacher text-xs"></i>
-                                <span class="hidden sm:inline">Masuk Mode Guru</span>
-                                <span class="sm:hidden">Mode Guru</span>
-                            </button>
-                        @else
-                            <input type="hidden" name="role" value="kepala_sekolah">
-                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-extrabold transition flex items-center gap-1.5 shadow border border-indigo-500/30">
-                                <i class="fas fa-user-shield text-xs"></i>
-                                <span class="hidden sm:inline">Masuk Mode Admin</span>
-                                <span class="sm:hidden">Mode Admin</span>
-                            </button>
-                        @endif
-                    </form>
+                    
+                    @if(auth()->user()->isSuperAdmin())
+                        <div class="hidden sm:flex items-center gap-1.5 bg-black/20 p-1 rounded-xl border border-white/10">
+                            @if($currentRole !== 'superadmin')
+                                <form action="{{ route('switch-role') }}" method="POST" class="m-0 p-0">
+                                    @csrf
+                                    <input type="hidden" name="role" value="superadmin">
+                                    <button type="submit" class="bg-gray-800 hover:bg-gray-700 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 shadow-sm border border-gray-600 tooltip" title="Masuk Mode Super Admin">
+                                        <i class="fas fa-chess-king text-gray-300"></i>
+                                        <span>Super Admin</span>
+                                    </button>
+                                </form>
+                            @endif
+                            @if($currentRole !== 'ketua_yayasan')
+                                <form action="{{ route('switch-role') }}" method="POST" class="m-0 p-0">
+                                    @csrf
+                                    <input type="hidden" name="role" value="ketua_yayasan">
+                                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 shadow-sm border border-purple-500/50 tooltip" title="Masuk Mode Yayasan">
+                                        <i class="fas fa-building text-purple-200"></i>
+                                        <span>Yayasan</span>
+                                    </button>
+                                </form>
+                            @endif
+                            @if($currentRole !== 'guru')
+                                <form action="{{ route('switch-role') }}" method="POST" class="m-0 p-0">
+                                    @csrf
+                                    <input type="hidden" name="role" value="guru">
+                                    <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 shadow-sm border border-emerald-400/50 tooltip" title="Masuk Mode Guru">
+                                        <i class="fas fa-chalkboard-teacher text-emerald-100"></i>
+                                        <span>Guru</span>
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    @elseif(auth()->user()->isKepalaSekolah())
+                        <form action="{{ route('switch-role') }}" method="POST" class="inline">
+                            @csrf
+                            @if($currentRole === 'kepala_sekolah')
+                                <input type="hidden" name="role" value="guru">
+                                <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-extrabold transition flex items-center gap-1.5 shadow border border-emerald-400/30">
+                                    <i class="fas fa-chalkboard-teacher text-xs"></i>
+                                    <span class="hidden sm:inline">Masuk Mode Guru</span>
+                                    <span class="sm:hidden">Mode Guru</span>
+                                </button>
+                            @else
+                                <input type="hidden" name="role" value="kepala_sekolah">
+                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-extrabold transition flex items-center gap-1.5 shadow border border-indigo-500/30">
+                                    <i class="fas fa-user-shield text-xs"></i>
+                                    <span class="hidden sm:inline">Masuk Mode Admin</span>
+                                    <span class="sm:hidden">Mode Admin</span>
+                                </button>
+                            @endif
+                        </form>
+                    @endif
                 @endif
                 <div class="hidden md:flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg text-sm">
                     <img src="{{ auth()->user()->photo_url }}" class="w-6 h-6 rounded-full object-cover border border-white/20 flex-shrink-0" alt="Avatar">

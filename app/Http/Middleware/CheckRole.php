@@ -24,9 +24,15 @@ class CheckRole
         }
 
         $user = Auth::user();
+        
+        $activeRole = session('active_role');
 
-        // Check if user has one of the required roles
-        if (!$user->hasAnyRole($roles)) {
+        // Check if user has one of the required roles directly, via active_role, or is superadmin
+        $hasAccess = $user->hasAnyRole($roles) 
+                  || ($activeRole && in_array($activeRole, $roles))
+                  || $user->isSuperAdmin();
+
+        if (!$hasAccess) {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 

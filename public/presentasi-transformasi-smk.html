@@ -3,795 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turning Vision Into Action - SMK Pembda Nias</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            /* Vibrant Palette */
-            --black: #0f172a;
-            --white: #ffffff;
-            --bg-body: #f8fafc;
-            --gray: #64748b;
-            
-            --red: #ef4444;
-            --red-grad: linear-gradient(135deg, #dc2626, #ef4444);
-            --red-light: #fef2f2;
-            
-            --green: #10b981;
-            --green-grad: linear-gradient(135deg, #059669, #10b981);
-            --green-light: #ecfdf5;
-            
-            --blue: #3b82f6;
-            --blue-grad: linear-gradient(135deg, #2563eb, #3b82f6);
-            --blue-light: #eff6ff;
-            
-            --yellow: #f59e0b;
-            --yellow-grad: linear-gradient(135deg, #d97706, #f59e0b);
-            --yellow-light: #fffbeb;
-            
-            --orange: #f97316;
-            --orange-grad: linear-gradient(135deg, #ea580c, #f97316);
-            --orange-light: #fff7ed;
-            
+    <title>Rapat Tindak Lanjut Pembenahan & Kesiapan TP 2026/2027</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>        :root {
+            --black: #0f172a; --white: #ffffff;
+            --bg-body: #f8fafc; --gray: #64748b;
+            --red: #ef4444; --red-grad: linear-gradient(135deg, #dc2626, #ef4444);
+            --green: #10b981; --green-grad: linear-gradient(135deg, #059669, #10b981);
+            --blue: #3b82f6; --blue-grad: linear-gradient(135deg, #2563eb, #3b82f6);
+            --yellow: #f59e0b; --yellow-grad: linear-gradient(135deg, #d97706, #f59e0b);
+            --orange: #f97316; --orange-grad: linear-gradient(135deg, #ea580c, #f97316);
             --dark-grad: linear-gradient(135deg, #0f172a, #1e293b);
         }
-        
-        body, html {
-            margin: 0; padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-body);
-            color: var(--black);
-            overflow: hidden;
-            font-size: 16px; /* Base font size disesuaikan agar tidak terlalu besar */
-        }
-        
         * { box-sizing: border-box; }
-
-        /* Container */
-        .sc {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            transition: transform 0.6s cubic-bezier(0.8, 0, 0.2, 1);
-        }
-
-        /* Slide Core */
-        .s {
-            width: 100vw; height: 100vh;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 30px;
-        }
-
-        /* Layout Content inside slide */
-        .ct {
-            width: 95vw;
-            max-width: 1400px;
-            max-height: 95vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Tags */
-        .stag {
-            position: absolute; top: 25px; left: 35px;
-            font-size: 1.2rem; font-weight: 800; color: var(--gray); opacity: 0.5;
-        }
-        .otag {
-            position: absolute; top: 25px; right: 35px;
-            font-size: 1rem; font-weight: 700; color: var(--gray); opacity: 0.5;
-        }
-
-        /* Typography */
-        h1 { font-size: 3.2rem; line-height: 1.1; margin: 0 0 15px 0; font-weight: 800; letter-spacing: -1px; }
-        h2 { font-size: 2.2rem; margin: 0 0 10px 0; font-weight: 800; letter-spacing: -0.5px; }
-        p { font-size: 1.15rem; line-height: 1.6; margin: 0; }
-        .sub { font-size: 1.3rem; color: var(--gray); font-weight: 600; margin-bottom: 30px; }
-        
-        .label {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            color: var(--white);
-        }
-        
-        /* Box/Cards */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-        
-        .bx {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
-            border: 1px solid rgba(0,0,0,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .bx:hover { transform: translateY(-5px); box-shadow: 0 12px 35px rgba(0,0,0,0.1); }
-        .bx h4 { margin: 0 0 12px 0; font-size: 1.3rem; font-weight: 800; }
-        .bx ul { padding-left: 20px; margin: 0; font-size: 1.1rem; line-height: 1.6; }
-        .bx li { margin-bottom: 8px; }
-
-        /* Specific Colors */
-        .text-red { color: var(--red); }
-        .text-green { color: var(--green); }
-        .text-blue { color: var(--blue); }
-        .text-yellow { color: var(--yellow); }
-        .text-orange { color: var(--orange); }
-        .text-white { color: var(--white); }
-        .text-gray { color: var(--gray); }
-        .text-black { color: var(--black); }
-
+        body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; background: var(--black); color: var(--black); }
+        h1, h2, h3, h4 { margin-top: 0; font-weight: 800; line-height: 1.2; }
+        p { line-height: 1.6; }
+        .text-white { color: var(--white); } .text-gray { color: var(--gray); }
+        .text-red { color: var(--red); } .text-green { color: var(--green); }
+        .text-blue { color: var(--blue); } .text-yellow { color: var(--yellow); }
+        .text-orange { color: var(--orange); } .text-black { color: var(--black); }
         .bg-dark { background: var(--dark-grad); color: var(--white); }
-        .bg-dark .bx { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: var(--white); }
-        .bg-dark .text-gray { color: rgba(255,255,255,0.6); }
-        
         .bg-body { background: var(--bg-body); }
-        .bg-blue { background: var(--blue-grad); color: var(--white); }
-        .bg-red { background: var(--red-grad); color: var(--white); }
+        .bg-white { background: var(--white); }
+        
+        .sc { display: flex; width: 100vw; height: 100vh; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .s { min-width: 100vw; height: 100vh; padding: 60px 80px; position: relative; display: flex; flex-direction: column; justify-content: center; background: var(--bg-body); }
+        .stag { position: absolute; top: 40px; left: 60px; font-size: 4rem; font-weight: 800; opacity: 0.05; z-index: 1; }
+        .otag { position: absolute; top: 40px; right: 60px; font-size: 1rem; font-weight: 700; opacity: 0.5; z-index: 1; letter-spacing: 2px; text-transform: uppercase; }
+        .ct { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
+        
+        h2 { font-size: 3.2rem; margin-bottom: 20px; }
+        p.sub { font-size: 1.4rem; color: var(--gray); font-weight: 500; margin-bottom: 40px; }
+        .label { display: inline-block; padding: 6px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 700; color: white; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: stretch; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        
+        .bx { background: var(--white); padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+        .bx h4 { font-size: 1.4rem; margin-bottom: 15px; }
+        .bx p { font-size: 1.05rem; color: var(--gray); margin: 0; }
+        
+        .problem-box { background: rgba(239, 68, 68, 0.05); border-left: 6px solid var(--red); padding: 30px; border-radius: 12px; margin-bottom: 20px; }
+        .action-box { background: rgba(16, 185, 129, 0.05); border-left: 6px solid var(--green); padding: 30px; border-radius: 12px; }
+        
+        .badge { display: inline-block; padding: 5px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 700; color: white; }
 
-        /* Badges */
-        .badge {
-            display: inline-block; padding: 5px 10px; border-radius: 6px;
-            font-size: 0.85rem; font-weight: 700; color: var(--white);
-        }
-
-        /* Horizontal Bar Chart */
-        .bar-wrap { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-        .bar-label { font-size: 1.05rem; min-width: 380px; font-weight: 600; line-height: 1.3; }
-        .bar-track { flex: 1; background: #e2e8f0; border-radius: 20px; height: 32px; position: relative; overflow: hidden; }
-        .bar-fill { height: 100%; border-radius: 20px; display: flex; align-items: center; padding-left: 15px; font-weight: 800; color: var(--white); text-shadow: 0 1px 2px rgba(0,0,0,0.5); width: 0; transition: width 1s ease-out; }
+        .btn-link { display: inline-block; margin-top: 15px; padding: 10px 20px; background: var(--navy); color: white; text-decoration: none; font-weight: 700; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; font-size: 0.9rem;}
+        .btn-link:hover { box-shadow: 0 4px 6px rgba(0,0,0,0.1); transform: translateY(-2px); background: var(--black);}
 
         /* Animations */
         .ani { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .active .ani { opacity: 1; transform: translateY(0); }
-        
-        .d1 { transition-delay: 0.1s; }
-        .d2 { transition-delay: 0.25s; }
-        .d3 { transition-delay: 0.4s; }
-        .d4 { transition-delay: 0.55s; }
+        .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.25s; } .d3 { transition-delay: 0.4s; } .d4 { transition-delay: 0.55s; }
 
-        /* Navigation */
-        .nav {
-            position: fixed; bottom: 25px; right: 35px;
-            display: flex; gap: 12px; z-index: 100;
-        }
-        .btn {
-            background: rgba(15, 23, 42, 0.65); /* Semi-transparent black */
-            color: var(--white);
-            border: none; padding: 10px 20px; border-radius: 50px;
-            font-size: 1rem; font-weight: 700; cursor: pointer;
-            backdrop-filter: blur(4px); /* Blur effect */
-            -webkit-backdrop-filter: blur(4px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s;
-        }
+        .nav { position: fixed; bottom: 25px; right: 35px; display: flex; gap: 12px; z-index: 100; }
+        .btn { background: rgba(15, 23, 42, 0.65); color: var(--white); border: none; padding: 10px 20px; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.3s; }
         .btn:hover { background: rgba(59, 130, 246, 0.8); transform: scale(1.05); }
-        .btn-blue { background: rgba(59, 130, 246, 0.65); }
-        .btn-blue:hover { background: rgba(59, 130, 246, 0.9); }
         .btn:disabled { background: rgba(100, 116, 139, 0.5); cursor: not-allowed; opacity: 0.5; transform: none; }
-        .prg {
-            position: fixed; top: 0; left: 0; height: 5px;
-            background: var(--blue-grad); transition: width 0.3s; z-index: 100;
-        }
-    </style>
+        .prg { position: fixed; top: 0; left: 0; height: 5px; background: var(--blue-grad); transition: width 0.3s; z-index: 100; }</style>
 </head>
 <body>
 
     <div class="prg" id="progress" style="width: 0%;"></div>
     
     <div class="sc" id="slider">
-        <!-- 1. COVER -->
+        <!-- SLIDE 1: COVER -->
         <div class="s bg-dark active">
             <div class="stag">01</div><div class="otag">SMKS Pembda Nias</div>
             <div class="ct" style="align-items: center; text-align: center;">
                 <h1 class="text-yellow ani d1" style="font-size: 5.5rem;">Turning Vision<br>Into Action</h1>
                 <p class="ani d2" style="font-size: 2rem; font-weight: 300; margin-bottom: 40px;">Rapat Tindak Lanjut Pembenahan & Kesiapan TP 2026/2027</p>
                 <div class="ani d3" style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
-                    <div class="bx" style="background: rgba(240,165,0,0.1); border: 1px solid var(--yellow);">
+                    <div class="bx bg-dark" style="background: rgba(240,165,0,0.1); border: 1px solid var(--yellow);">
                         <div style="font-size: 0.9rem; color: var(--yellow); font-weight: 700; letter-spacing: 2px;">TEMA HARI INI</div>
-                        <div style="font-size: 1.5rem; font-weight: 800;">Problem → Action (No Theory)</div>
+                        <div style="font-size: 1.5rem; font-weight: 800;">Problem &rarr; Action</div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-
-        <!-- 3. RECAP -->
+        <!-- SLIDE 2: THE WHY -->
         <div class="s bg-body">
             <div class="stag">02</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
             <div class="ct">
-                <span class="label ani d1" style="background: var(--dark-grad);">Edaran 2 Juli</span>
-                <h2 class="ani d2">6 Kebijakan & <span class="text-orange">Status Hari Ini</span></h2>
-                <p class="sub ani d2">Yang telah diselesaikan dan yang ditagih hari ini.</p>
+                <span class="label ani d1" style="background: var(--dark-grad);">Esensi Surat Edaran 2 Juli</span>
+                <h2 class="ani d2">Mengapa Kita Harus <span class="text-blue">Berubah?</span></h2>
+                <div class="grid-2 ani d3">
+                    <div class="bx">
+                        <h4 class="text-red">Sindrom "Jebakan Administrasi"</h4>
+                        <p>Selama ini, orientasi guru sering terjebak pada pemenuhan perangkat administrasi (RPP, silabus) sebagai tujuan akhir. Padahal administrasi HANYA alat. Tujuan akhirnya adalah kompetensi siswa.</p>
+                    </div>
+                    <div class="bx bg-dark" style="border-left: 8px solid var(--gold);">
+                        <h4 class="text-yellow">Deklarasi Yayasan</h4>
+                        <p style="font-size: 1.3rem; font-weight: 300; font-style: italic; line-height: 1.5;">"Di SMKS Pembda Nias, setiap guru adalah pendidik teknologi kejuruan. Apa pun mata pelajarannya, setiap guru memiliki tanggung jawab yang sama dalam mempersiapkan siswa."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: 6 KEBIJAKAN -->
+        <div class="s bg-body">
+            <div class="stag">03</div><div class="otag">Agenda Hari Ini</div>
+            <div class="ct">
+                <span class="label ani d1" style="background: var(--blue-grad);">Peta Jalan</span>
+                <h2 class="ani d2">6 Kebijakan & <span class="text-orange">Status Eksekusi</span></h2>
                 <div class="grid-3 ani d3">
                     <div class="bx" style="border-top: 6px solid var(--green); cursor: pointer;" onclick="window.open('instrumen-kontrol-kepsek.html#kesiapan', '_blank')">
-                        <h4 class="text-green">1. Survey Kesiapan</h4><p>Pengukuran kesiapan vocational spirit guru.</p>
-                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--green);">✓ Selesai</span></div>
+                        <h4 class="text-green">1. Survey Kesiapan</h4><p>Pemetaan "vocational spirit".</p>
+                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--green);">Selesai (Bedah Data Hari Ini)</span></div>
                     </div>
                     <div class="bx" style="border-top: 6px solid var(--yellow); cursor: pointer;" onclick="window.open('instrumen-kontrol-kepsek.html#penilaian', '_blank')">
-                        <h4 class="text-yellow">2. Penilaian Guru</h4><p>Sistem penilaian baru berbasis kinerja & kontribusi nyata.</p>
-                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--yellow); color: var(--black);">Aksi Hari Ini</span></div>
+                        <h4 class="text-yellow">2. Penilaian Guru</h4><p>Sistem PKG 4 Pilar baru.</p>
+                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--black);">Eksekusi (Penandatanganan)</span></div>
                     </div>
                     <div class="bx" style="border-top: 6px solid var(--blue); cursor: pointer;" onclick="window.open('instrumen-kontrol-kepsek.html#strategis', '_blank')">
-                        <h4 class="text-blue">3. Program Strategis</h4><p>TEFA, Unit Produksi, Dojo, Ekstra berbasis skill.</p>
-                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--yellow); color: var(--black);">Aksi Hari Ini</span></div>
+                        <h4 class="text-blue">3. Program Strategis</h4><p>Kewajiban omzet TEFA.</p>
+                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--black);">Eksekusi (Validasi Layanan)</span></div>
                     </div>
                     <div class="bx" style="border-top: 6px solid var(--orange); cursor: pointer;" onclick="window.open('instrumen-kontrol-kepsek.html#penugasan', '_blank')">
-                        <h4 class="text-orange">4. Penugasan Tambahan</h4><p>Perampingan jabatan yang tidak berdampak operasional.</p>
-                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--yellow); color: var(--black);">Aksi Hari Ini</span></div>
+                        <h4 class="text-orange">4. Penugasan Tambahan</h4><p>Perampingan jabatan via output.</p>
+                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--black);">Eksekusi (Kontrak Kinerja)</span></div>
                     </div>
                     <div class="bx" style="border-top: 6px solid var(--red); cursor: pointer;" onclick="window.open('instrumen-kontrol-kepsek.html#relevansi', '_blank')">
-                        <h4 class="text-red">5. Relevansi Mapel</h4><p>Penjelasan kontribusi mapel umum ke mapel produktif.</p>
-                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--yellow); color: var(--black);">Aksi Hari Ini</span></div>
+                        <h4 class="text-red">5. Relevansi Mapel</h4><p>Guru umum wajib relevan.</p>
+                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--black);">Eksekusi (Setor Bukti RPP)</span></div>
                     </div>
-                    <div class="bx" style="border-top: 6px solid var(--black);">
-                        <h4 class="text-black">6. Penugasan Guru</h4><p>Penetapan berdasar data (bukan sekadar masa kerja).</p>
-                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--black);">Wewenang Yayasan</span></div>
+                    <div class="bx" style="border-top: 6px solid var(--gray);">
+                        <h4 class="text-black">6. Penugasan Guru 26/27</h4><p>Penetapan SK berbasis Data.</p>
+                        <div style="margin-top: 15px;"><span class="badge" style="background: var(--gray);">Wewenang Final Yayasan</span></div>
                     </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px;" class="ani d4">
+                    <p style="font-weight: 700; color: var(--red);">Klik kotak di atas untuk melihat <b>Formulir Instrumen Kontrol</b> yang wajib diisi.</p>
                 </div>
             </div>
         </div>
 
-
-        <!-- 5. SURVEY (GRAFIK HORIZONTAL) -->
-        <div class="s">
-            <div class="stag">03</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
-            <div class="ct">
-                <span class="label ani d1" style="background: var(--dark-grad);">Temuan Survey (32 Guru)</span>
-                <h2 class="ani d2">Peta Kesiapan SDM Kita</h2>
-                <p class="sub ani d2">Rata-rata: <strong class="text-orange">3.57 / 5.0</strong> — Modal maju ada, masalah krusial wajib ditutup.</p>
-                
-                <div class="bx ani d3" style="width: 100%; border-left: 6px solid var(--blue);">
-                    <div class="bar-wrap">
-                        <div class="bar-label">
-                            <div>Guru yakin mapelnya berkontribusi</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Pemahaman terhadap peran mapel secara umum.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--green-grad);" data-width="91.6">4.58</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label">
-                            <div>Konsisten terapkan hasil pelatihan</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Klaim guru tentang penerapan materi diklat.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--green-grad);" data-width="86.8">4.34</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label">
-                            <div>Manajemen libatkan guru</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Transparansi dan pelibatan dalam kebijakan.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--green-grad);" data-width="84.4">4.22</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label">
-                            <div>Aktif berkolaborasi lintas mapel</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Klaim komunikasi antar-guru di sekolah.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--green-grad);" data-width="83.2">4.16</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label">
-                            <div>Pakai teknologi digital (AI, IoT)</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Penggunaan tools dasar seperti proyektor/internet.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--green-grad);" data-width="83.2">4.16</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label text-yellow">
-                            <div>TeFa belum standar industri</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Unit produksi masih beroperasi layaknya bengkel biasa.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--yellow-grad);" data-width="63">3.15</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label text-red">
-                            <div>Pembelajaran masih teori</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Siswa lebih banyak mencatat daripada memproduksi.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--red-grad);" data-width="55.6">2.78</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label text-red">
-                            <div>Budaya kerja industri longgar</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">5R (Ringkas, Rapi, Resik, dll) belum jadi kebiasaan.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--red-grad);" data-width="53.8">2.69</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label text-red">
-                            <div>Visi belum operasional</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Arahan Yayasan belum diturunkan jadi RPP/Silabus.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--red-grad);" data-width="53.8">2.69</div></div>
-                    </div>
-                    <div class="bar-wrap">
-                        <div class="bar-label text-red">
-                            <div>Guru umum sulit relasikan mapel</div>
-                            <div style="font-size: 0.8rem; color: var(--gray); font-weight: 400; margin-top: 2px;">Tidak tahu cara menyambung teori ke praktik kejuruan siswa.</div>
-                        </div>
-                        <div class="bar-track"><div class="bar-fill" style="background: var(--red-grad);" data-width="52.6">2.63</div></div>
-                    </div>
-                </div>
-                <div class="ani d4" style="margin-top: 15px; font-size: 1.15rem;">
-                    <p><strong class="text-orange">Paradoks:</strong> Klaim yakin berkontribusi (4.58) & kolaborasi (4.16), tapi sulit merelasikan ke kejuruan (2.63) dan mengajar masih teori (2.78). <strong>Slide selanjutnya: Aksi Konkret!</strong></p>
-                </div>
-            </div>
-        </div>
-
-                <!-- 6. AKSI 1 -->
+        <!-- SLIDE 4: SURVEY KESIAPAN -->
         <div class="s bg-body">
-            <div class="stag">04</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="stag">04</div><div class="otag">Kebijakan #1</div>
             <div class="ct">
-                <span class="label ani d1" style="background: var(--red-grad);">Problem &rarr; Action #1</span>
-                <h2 class="ani d2">Guru Belum Paham <span class="text-red">Filosofi Kejuruan</span></h2>
-                <p class="sub ani d2">Skor relevansi mapel ke kejuruan: 2.63 • Visi belum operasional: 2.69</p>
-                
-                <div class="grid-2 ani d3" style="margin-top: 10px;">
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--red); margin-bottom: 20px;">
-                            <h4 class="text-red">🔴 Problem dari Survey</h4>
-                            <ul style="font-size: 1rem;">
-                                <li>Guru umum yakin mapelnya penting (4.58) tapi tidak bisa menjelaskan relasinya ke kejuruan (2.63)</li>
-                                <li>Visi besar (TEFA, wirausaha) belum diterjemahkan jadi rencana operasional (2.69)</li>
-                                <li>Essay: &plusmn;10 guru menuntut fasilitas, tapi filosofi saja belum dipahami</li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="border-left: 6px solid var(--green);">
-                            <h4 class="text-green">✅ Aksi Mulai TP 2026/2027</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>Setiap guru wajib menyusun Dokumen Relevansi Mapel</strong> — jelaskan MENGAPA mapelnya bermakna bagi siswa SMK</li>
-                                <li><strong>Presentasi di forum guru</strong> — setiap guru menyampaikan relevansi mapelnya dalam 5 menit di forum sekolah</li>
-                                <li><strong>Soal & tugas kontekstual</strong> — setiap BAB minimal 1 tugas berbasis konteks kejuruan</li>
-                                <li><strong>Catatan relevansi di RPP</strong> — setiap RPP menyertakan kolom "Relevansi terhadap Kompetensi Kejuruan"</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--blue); margin-bottom: 20px;">
-                            <h4 class="text-blue">📏 Indikator Keberhasilan</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>100% guru</strong> menyerahkan Dokumen Relevansi Mapel</li>
-                                <li><strong>100% guru</strong> mempresentasikan di forum guru (5 menit)</li>
-                                <li>Setiap RPP memuat kolom relevansi kejuruan — <strong>cek via supervisi</strong></li>
-                                <li>Minimal <strong>1 tugas kontekstual per BAB</strong> — bukti dokumentasi</li>
-                                <li>Survey berikutnya: skor relevansi mapel naik dari <strong>2.63 &rarr; minimal 3.50</strong></li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.2);">
-                            <h4 class="text-orange" style="font-size: 1.1rem; margin-bottom: 8px;">💡 Snapshot Contoh Praktis</h4>
-                            <p style="font-size: 1rem; margin-bottom: 8px;"><strong>UMUM (Matematika):</strong> Menghitung Rencana Anggaran Biaya (RAB) pembuatan gazebo atau margin Unit Produksi.</p>
-                            <p style="font-size: 1rem;"><strong>KEJURUAN (DPIB):</strong> Menerima pesanan desain nyata dari klien lengkap dengan gambar 3D & RAB.</p>
-                            <div style="margin-top: 15px; text-align: center;">
-                                <a href="buku-saku-action1.html" target="_blank" class="badge" style="background: var(--orange-grad); text-decoration: none; padding: 8px 16px; font-size: 1rem;">Lihat Buku Saku Action #1 &rarr;</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 7. AKSI 2 -->
-        <div class="s bg-body">
-            <div class="stag">05</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
-            <div class="ct">
-                <span class="label ani d1" style="background: var(--orange-grad);">Problem &rarr; Action #2</span>
-                <h2 class="ani d2">Pembelajaran Masih <span class="text-orange">Menitikberatkan Teori</span></h2>
-                <p class="sub ani d2">Skor: 2.78 • Guru klaim pakai teknologi (4.16) tapi output tetap teori</p>
-                
-                <div class="grid-2 ani d3" style="margin-top: 10px;">
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--red); margin-bottom: 20px;">
-                            <h4 class="text-red">🔴 Problem dari Survey</h4>
-                            <ul style="font-size: 1rem;">
-                                <li>Pembelajaran masih menitikberatkan penyelesaian materi teori (2.78)</li>
-                                <li>Guru klaim aktif pakai teknologi (4.16) tapi hanya untuk menampilkan slide teori</li>
-                                <li>Penugasan PBL ada (3.95) tapi belum menghasilkan karya/produk nyata</li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="border-left: 6px solid var(--green);">
-                            <h4 class="text-green">✅ Aksi Mulai TP 2026/2027</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>Rasio teori:praktik</strong> — Mapel produktif max 40:60, Mapel umum max 70:30</li>
-                                <li><strong>Setiap semester, siswa menghasilkan minimal 1 karya/produk</strong> dari setiap mapel produktif</li>
-                                <li><strong>Teknologi dipakai SISWA</strong> untuk simulasi & produksi — bukan hanya presentasi guru</li>
-                                <li><strong>PBL wajib menghasilkan output fisik/digital</strong> — bukan sekadar laporan kertas</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--blue); margin-bottom: 20px;">
-                            <h4 class="text-blue">📏 Indikator Keberhasilan</h4>
-                            <ul style="font-size: 1rem;">
-                                <li>Supervisi: <strong>&ge;30% waktu</strong> diisi aktivitas praktik/proyek (mapel umum)</li>
-                                <li>Supervisi: <strong>&ge;60% waktu</strong> untuk mapel produktif</li>
-                                <li><strong>Setiap siswa punya portofolio</strong> karya per semester (min 3 karya produktif)</li>
-                                <li>Setiap PBL punya <strong>output yang bisa dipamerkan</strong></li>
-                                <li>Survey berikutnya: skor "masih teori" turun dari <strong>2.78 &rarr; di bawah 2.00</strong></li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2);">
-                            <h4 class="text-blue" style="font-size: 1.1rem; margin-bottom: 8px;">💡 Teknologi = Alat Produksi</h4>
-                            <p style="font-size: 1rem; margin-bottom: 8px;"><strong>Salah:</strong> Guru pakai laptop untuk tampilkan PowerPoint teori.</p>
-                            <p style="font-size: 1rem; margin-bottom: 8px;"><strong>Benar:</strong> Siswa pakai CAD untuk desain konstruksi, pakai spreadsheet untuk kalkulasi RAB.</p>
-                            <p style="font-size: 0.9rem; color: var(--gray); font-style: italic;">&rarr; Jika teknologi tidak menghasilkan kompetensi siswa, itu bukan pemanfaatan teknologi.</p>
-                            <div style="margin-top: 15px; text-align: center;">
-                                <a href="buku-saku-action2.html" target="_blank" class="badge" style="background: var(--blue-grad); text-decoration: none; padding: 8px 16px; font-size: 1rem;">Lihat Buku Saku Action #2 &rarr;</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 8. AKSI 3 -->
-        <div class="s bg-body">
-            <div class="stag">06</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
-            <div class="ct">
-                <span class="label ani d1" style="background: var(--blue-grad);">Problem &rarr; Action #3</span>
-                <h2 class="ani d2">TEFA & Program Strategis <span class="text-blue">Belum Berdampak</span></h2>
-                <p class="sub ani d2">TeFa belum standar industri: 3.15 • Visi wirausaha belum operasional: 2.69</p>
-                
-                <div class="grid-2 ani d3" style="margin-top: 10px;">
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--red); margin-bottom: 20px;">
-                            <h4 class="text-red">🔴 Problem dari Survey</h4>
-                            <ul style="font-size: 1rem;">
-                                <li>TeFa belum mencerminkan standar industri (3.15)</li>
-                                <li>Visi TEFA/wirausaha belum diterjemahkan jadi rencana operasional (2.69)</li>
-                                <li>Fasilitas bengkel/lab belum sepenuhnya memadai (3.66)</li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="border-left: 6px solid var(--green);">
-                            <h4 class="text-green">✅ Aksi Mulai TP 2026/2027</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>TEFA punya SOP tertulis</strong> — alur produksi, standar kualitas, sistem keuangan</li>
-                                <li><strong>Target produksi per semester</strong> — bukan aktivitas tanpa target</li>
-                                <li><strong>Program tanpa dampak &rarr; dihentikan atau ditransformasi</strong></li>
-                                <li><strong>Unit Produksi:</strong> siswa mengelola keuangan nyata — omzet tercatat</li>
-                                <li><strong>Minimal 2 MOU aktif</strong> dengan industri/DUDI lokal</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--blue); margin-bottom: 20px;">
-                            <h4 class="text-blue">📏 Indikator Keberhasilan</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>SOP TEFA tertulis</strong> dan ditempel di bengkel/lab — diverifikasi</li>
-                                <li>Minimal <strong>2 produk/jasa TEFA per semester</strong> yang dijual ke masyarakat</li>
-                                <li><strong>Omzet Unit Produksi tercatat</strong> dan dilaporkan per bulan</li>
-                                <li><strong>100% siswa kelas XII</strong> punya pengalaman magang/praktik industri</li>
-                                <li>Survey berikutnya: skor TeFa naik dari <strong>3.15 &rarr; minimal 3.80</strong></li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2);">
-                            <h4 class="text-green" style="font-size: 1.1rem; margin-bottom: 8px;">💡 Kriteria Review Program</h4>
-                            <p style="font-size: 1rem; margin-bottom: 5px;">Setiap program (TEFA, UP) diuji:</p>
-                            <ul style="font-size: 1rem; margin: 0; padding-left: 20px;">
-                                <li>Relevansi terhadap visi sekolah kejuruan</li>
-                                <li>Dampak terukur pada kompetensi siswa</li>
-                                <li>Keberlanjutan dan efisiensi sumber daya</li>
-                            </ul>
-                            <div style="margin-top: 15px; text-align: center;">
-                                <a href="buku-saku-action3.html" target="_blank" class="badge" style="background: var(--green-grad); text-decoration: none; padding: 8px 16px; font-size: 1rem;">Lihat Buku Saku Action #3 &rarr;</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 9. AKSI 4 -->
-        <div class="s bg-body">
-            <div class="stag">07</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
-            <div class="ct">
-                <span class="label ani d1" style="background: var(--green-grad);">Problem &rarr; Action #4</span>
-                <h2 class="ani d2">Budaya Kerja & <span class="text-green">Kolaborasi Nyata</span></h2>
-                <p class="sub ani d2">Budaya kerja masih longgar: 2.69 • Kolaborasi klaim tinggi tapi hasil nihil</p>
-                
-                <div class="grid-2 ani d3" style="margin-top: 10px;">
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--red); margin-bottom: 20px;">
-                            <h4 class="text-red">🔴 Problem dari Survey</h4>
-                            <ul style="font-size: 1rem;">
-                                <li>Budaya kerja industri (5R, K3, SOP) masih longgar (2.69)</li>
-                                <li>Guru umum tetap tidak bisa relasikan mapel ke kejuruan (2.63)</li>
-                                <li>Kolaborasi tanpa arah = kolaborasi di atas kertas</li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="border-left: 6px solid var(--green);">
-                            <h4 class="text-green">✅ Aksi Mulai TP 2026/2027</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>5R/5S di setiap ruangan</strong> — kelas, bengkel, lab. Checklist mingguan</li>
-                                <li><strong>SOP masuk bengkel/lab</strong> — APD wajib, briefing K3 sebelum praktik</li>
-                                <li><strong>Team Teaching wajib</strong> — min 1x per semester guru umum & guru kejuruan</li>
-                                <li><strong>Proyek lintas mapel</strong> — min 1 proyek kolaborasi per semester berwujud produk</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--blue); margin-bottom: 20px;">
-                            <h4 class="text-blue">📏 Indikator Keberhasilan</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>Checklist 5R mingguan</strong> ditempel & diverifikasi peruangan</li>
-                                <li><strong>Zero accident</strong> di bengkel/lab selama TP 2026/2027</li>
-                                <li><strong>Minimal 1 bukti team teaching</strong> per guru (RPP bersama + foto)</li>
-                                <li><strong>Minimal 1 produk kolaborasi</strong> per semester yang bisa dipamerkan</li>
-                                <li>Survey berikutnya: skor budaya kerja naik dari <strong>2.69 &rarr; minimal 3.50</strong></li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="background: rgba(14, 165, 233, 0.05); border: 1px solid rgba(14, 165, 233, 0.2);">
-                            <p style="font-size: 1rem;"><strong style="color: var(--blue);">Prinsip:</strong> Kolaborasi diukur bukan dari <em>frekuensi bertemu</em>, tapi dari <strong>output fisik/digital yang dihasilkan bersama</strong> oleh siswa dari perpaduan mapel yang diajarkan.</p>
-                            <div style="margin-top: 15px; text-align: center;">
-                                <a href="buku-saku-action4.html" target="_blank" class="badge" style="background: var(--blue-grad); text-decoration: none; padding: 8px 16px; font-size: 1rem;">Lihat Buku Saku Action #4 &rarr;</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 10. AKSI 5 -->
-        <div class="s bg-body">
-            <div class="stag">08</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
-            <div class="ct">
-                <span class="label ani d1" style="background: var(--yellow-grad);">Problem &rarr; Action #5</span>
-                <h2 class="ani d2">Penguatan <span class="text-yellow">SDM & Penugasan</span></h2>
-                <p class="sub ani d2">Manajemen dinilai baik (4.22) tapi visi tidak berjalan (2.69)</p>
-                
-                <div class="grid-2 ani d3" style="margin-top: 10px;">
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--red); margin-bottom: 20px;">
-                            <h4 class="text-red">🔴 Problem dari Survey</h4>
-                            <ul style="font-size: 1rem;">
-                                <li>Dilibatkan dalam keputusan (4.22) tapi tanpa tanggung jawab eksekusi (2.69)</li>
-                                <li>Essay: beban administrasi berlebihan (&plusmn;8 guru)</li>
-                                <li>Jabatan tambahan tanpa output jelas (&plusmn;9 guru)</li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="border-left: 6px solid var(--green);">
-                            <h4 class="text-green">✅ Aksi Mulai TP 2026/2027</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>Sistem penilaian guru baru</strong> — 4 pilar: Kompetensi, Kontribusi, Kolaborasi, Budaya</li>
-                                <li><strong>Review semua jabatan tambahan</strong> — wajib punya output terukur. Jabatan tanpa nilai tambah dihapus</li>
-                                <li><strong>Administrasi disederhanakan</strong> — cukup yang bermakna untuk pembelajaran</li>
-                                <li><strong>Setiap guru punya "kontrak kinerja"</strong> — target semester bersama Kepsek</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="bx" style="border-left: 6px solid var(--blue); margin-bottom: 20px;">
-                            <h4 class="text-blue">📏 Indikator Keberhasilan</h4>
-                            <ul style="font-size: 1rem;">
-                                <li><strong>Instrumen penilaian guru</strong> selesai disusun dan disosialisasikan</li>
-                                <li><strong>100% jabatan tambahan</strong> punya deskripsi tugas & output jelas</li>
-                                <li><strong>100% guru</strong> menandatangani "kontrak kinerja" semester</li>
-                                <li>Survey berikutnya: skor "visi &rarr; operasional" naik dari <strong>2.69 &rarr; minimal 3.50</strong></li>
-                            </ul>
-                        </div>
-                        <div class="bx" style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2);">
-                            <h4 class="text-red" style="font-size: 1.1rem; margin-bottom: 8px;">⚠️ Konsekuensi — Tegas & Adil</h4>
-                            <p style="font-size: 1rem;">Guru yang <strong>belum mampu</strong> menunjukkan keselarasan pemahaman dan rencana implementasi &rarr; menjadi <strong style="color: var(--red);">perhatian pembinaan</strong> dan <strong style="color: var(--red);">pertimbangan Yayasan</strong> dalam penetapan penugasan jam mengajar.</p>
-                            <div style="margin-top: 15px; text-align: center;">
-                                <a href="buku-saku-action5.html" target="_blank" class="badge" style="background: var(--red-grad); text-decoration: none; padding: 8px 16px; font-size: 1rem;">Lihat Buku Saku Action #5 &rarr;</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- 11. TUGAS & OUTPUT -->
-        <div class="s bg-dark">
-            <div class="stag">09</div><div class="otag" style="color: rgba(255,255,255,0.5);">Yayasan Perguruan Pembda Nias</div>
-            <div class="ct" style="color: var(--white);">
-                <span class="label ani d1" style="background: var(--blue-grad);">Deliverables</span>
-                <h2 class="ani d2" style="color: var(--white);">Tugas & <span class="text-blue">Output Nyata</span></h2>
-                <p class="sub ani d2" style="color: rgba(255,255,255,0.8);">Yang ditagih adalah DOKUMEN FISIK yang diserahkan sesuai jadwal.</p>
-                
+                <span class="label ani d1" style="background: var(--green-grad);">Evaluasi Hasil Survey</span>
+                <h2 class="ani d2">Realita "Vocational Spirit" Kita</h2>
                 <div class="grid-2 ani d3">
-                    <div>
-                        <div style="font-size: 1.1rem; color: var(--blue); font-weight: 800; margin-bottom: 10px; text-transform: uppercase;">🏫 Output Kepala Sekolah</div>
-                        <div class="bx" style="margin-bottom: 15px; border-left: 6px solid var(--yellow);">
-                            <h4 class="text-yellow">1. Sistem Penilaian & Jabatan</h4>
-                            <p>Draft Instrumen Nilai & SK Ketenagaan.</p>
-                            <a href="buku-saku-action5.html" target="_blank" style="display:inline-block; margin-top:10px; color:var(--yellow); font-weight:700;">📄 Lihat Contoh Draft</a>
-                        </div>
-                        <div class="bx" style="border-left: 6px solid var(--green);">
-                            <h4 class="text-green">2. Program TEFA & 5R</h4>
-                            <p>SOP TEFA & Checklist 5R Mingguan.</p>
-                            <a href="buku-saku-action4.html" target="_blank" style="display:inline-block; margin-top:10px; color:var(--green); font-weight:700;">📄 Lihat Contoh SOP & Form</a>
-                        </div>
+                    <div class="problem-box">
+                        <h4 class="text-red" style="font-size: 1.5rem; margin-bottom: 5px;">🔴 Fakta Lapangan</h4>
+                        <p style="font-weight: 600; color: var(--gray); margin-bottom: 15px;">Dari data pengisian Survey 4 Juli 2026:</p>
+                        <ul style="padding-left: 20px;">
+                            <li style="margin-bottom: 10px;">Guru merasa mengajar dengan baik (Skor Persepsi Diri: 4.58/5).</li>
+                            <li style="margin-bottom: 10px;">NAMUN kesulitan merumuskan inovasi riil kejuruan (Skor Inovasi: 2.63/5).</li>
+                            <li style="margin-bottom: 10px;">Visi besar Yayasan (TEFA, wirausaha) belum diterjemahkan menjadi rencana operasional harian (Skor Visi: 2.69/5).</li>
+                        </ul>
                     </div>
-                    <div>
-                        <div style="font-size: 1.1rem; color: var(--orange); font-weight: 800; margin-bottom: 10px; text-transform: uppercase;">👨‍🏫 Output Setiap Guru</div>
-                        <div class="bx" style="margin-bottom: 15px; border-left: 6px solid var(--orange);">
-                            <h4 class="text-orange">3. Dokumen Relevansi Mapel</h4>
-                            <p>Form isian tertulis relevansi & target 1 semester.</p>
-                            <div style="margin-top:10px; display:flex; gap: 15px;">
-                                <a href="format-dokumen-keluaran.html#relevansi" target="_blank" style="color:var(--orange); font-weight:700;">📄 Format Kosong</a>
-                                <a href="buku-saku-action1.html" target="_blank" style="color:var(--blue); font-weight:700;">📘 Panduan Lengkap Mapel</a>
-                            </div>
-                        </div>
-                        <div class="bx" style="border-left: 6px solid var(--blue);">
-                            <h4 class="text-blue">4. RPP Praktik (Ganjil)</h4>
-                            <p>RPP memuat kolom kejuruan & tugas kontekstual.</p>
-                        </div>
+                    <div class="action-box">
+                        <h4 class="text-green" style="font-size: 1.5rem; margin-bottom: 5px;">✅ Action (Tindak Lanjut)</h4>
+                        <p><strong>Kepala Sekolah wajib memegang data pemetaan ini.</strong> Guru yang skor kesiapannya masih "Belum Siap" tidak boleh dibiarkan, harus masuk dalam target <em>Coaching & Mentoring</em> spesifik semester ini.</p>
+                        <button class="btn-link" onclick="window.open('instrumen-kontrol-kepsek.html#kesiapan', '_blank')">Lihat Form Checklist Kesiapan &rarr;</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 12. TIMELINE -->
+        <!-- SLIDE 5: PENILAIAN GURU -->
         <div class="s bg-body">
-            <div class="stag">10</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="stag">05</div><div class="otag">Kebijakan #2</div>
             <div class="ct">
-                <span class="label ani d1" style="background: var(--dark-grad);">Jadwal Waktu</span>
-                <h2 class="ani d2">Timeline <span class="text-blue">Pelaksanaan</span></h2>
-                
-                <div class="bx ani d3" style="width: 100%; margin-top: 20px;">
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 20px;">
-                        <div style="width: 30%;">
-                            <h4 class="text-gray" style="font-size: 1.2rem; margin:0;">2 Juli 2026</h4>
-                            <p style="font-weight: 700; font-size: 1.4rem;">Edaran Yayasan</p>
-                            <p style="font-size:1.1rem; margin-top:5px;">6 poin evaluasi dikirimkan ke sekolah.</p>
-                        </div>
-                        <div style="width: 30%;">
-                            <h4 class="text-gray" style="font-size: 1.2rem; margin:0;">4 Juli 2026</h4>
-                            <p style="font-weight: 700; font-size: 1.4rem;">Survey Guru</p>
-                            <p style="font-size:1.1rem; margin-top:5px;">Pengumpulan data baseline kesiapan 32 guru.</p>
-                        </div>
-                        <div style="width: 30%;">
-                            <h4 class="text-blue" style="font-size: 1.2rem; margin:0;">11 Juli 2026</h4>
-                            <p style="font-weight: 700; font-size: 1.4rem; color:var(--blue);">Rapat RTL Hari Ini</p>
-                            <p style="font-size:1.1rem; margin-top:5px;">Pemetaan masalah dan penetapan output.</p>
-                        </div>
+                <span class="label ani d1" style="background: var(--yellow-grad); color: var(--black);">Sistem Penilaian Guru Baru</span>
+                <h2 class="ani d2">Menilai <span class="text-yellow">Kontribusi</span>, Bukan Absensi</h2>
+                <div class="grid-2 ani d3">
+                    <div class="problem-box">
+                        <h4 class="text-red" style="font-size: 1.5rem; margin-bottom: 5px;">🔴 Problem Lama</h4>
+                        <p>Penilaian guru terjebak pada formalitas. Hadir ke kelas tepat waktu dan menyetor tumpukan RPP fotokopi sudah dianggap sebagai "Guru Berkinerja Baik". Dampaknya, inovasi mandek.</p>
                     </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <div style="width: 45%;">
-                            <h4 class="text-orange" style="font-size: 1.2rem; margin:0;">Ditetapkan Sekolah</h4>
-                            <p style="font-weight: 700; font-size: 1.4rem; color:var(--orange);">Deadline Pengumpulan</p>
-                            <p style="font-size:1.1rem; margin-top:5px;">Guru menyerahkan dokumen relevansi & RPP ke Kepsek. Kepsek serahkan form ke Yayasan.</p>
-                        </div>
-                        <div style="width: 45%;">
-                            <h4 class="text-green" style="font-size: 1.2rem; margin:0;">Sebelum KBM Mulai</h4>
-                            <p style="font-weight: 700; font-size: 1.4rem; color:var(--green);">SK Pengangkatan Yayasan</p>
-                            <p style="font-size:1.1rem; margin-top:5px;">SK dirilis HANYA BAGI GURU yang telah memenuhi output.</p>
-                        </div>
+                    <div class="action-box">
+                        <h4 class="text-green" style="font-size: 1.5rem; margin-bottom: 5px;">✅ Aturan PKG 4 Pilar</h4>
+                        <p>Penilaian kini bergeser. Syarat minimal skor rata-rata adalah <strong>> 3.5</strong> pada 4 Pilar berikut:</p>
+                        <ol style="padding-left: 20px;">
+                            <li>Porsi Praktik Kontekstual (30%)</li>
+                            <li>Kontribusi TEFA / Program (30%)</li>
+                            <li>Kolaborasi Lintas Mapel (20%)</li>
+                            <li>Kepatuhan Budaya 5R & K3 (20%)</li>
+                        </ol>
+                        <button class="btn-link" onclick="window.open('instrumen-kontrol-kepsek.html#penilaian', '_blank')">Lihat Rubrik Penilaian Baru &rarr;</button>
                     </div>
                 </div>
             </div>
         </div>
 
-
-
-        <!-- 14. DASHBOARD INDIKATOR -->
+        <!-- SLIDE 6: TEFA -->
         <div class="s bg-body">
-            <div class="stag">11</div><div class="otag">Yayasan Perguruan Pembda Nias</div>
+            <div class="stag">06</div><div class="otag">Kebijakan #3</div>
             <div class="ct">
-                <span class="label ani d1" style="background: var(--blue-grad);">Summary</span>
-                <h2 class="ani d2">Dashboard <span class="text-blue">Keberhasilan 2026</span></h2>
-                
-                <div class="grid-3 ani d3" style="margin-top: 20px;">
-                    <div class="bx" style="border-top: 6px solid var(--blue); text-align: center;">
-                        <h1 class="text-blue" style="margin-bottom: 5px; font-size: 3.5rem;">100%</h1>
-                        <p style="font-weight: 700; font-size: 1.2rem;">Guru Paham Kejuruan</p>
-                        <p style="font-size: 1rem; margin-top:10px;">Semua RPP memuat tugas kontekstual kejuruan.</p>
+                <span class="label ani d1" style="background: var(--blue-grad);">Program Strategis & TEFA</span>
+                <h2 class="ani d2">Dari "Prakarya" Menjadi <span class="text-blue">Bisnis Riil</span></h2>
+                <div class="grid-2 ani d3">
+                    <div class="problem-box">
+                        <h4 class="text-red" style="font-size: 1.5rem; margin-bottom: 5px;">🔴 Problem Lama</h4>
+                        <p>Budaya menghasilkan karya belum merata. Banyak Unit Produksi (TEFA) yang sekadar program "tempelan" di kertas. Praktik bengkel berhenti di pembuangan barang bekas, bukan menghasilkan jasa/barang bernilai jual.</p>
                     </div>
-                    <div class="bx" style="border-top: 6px solid var(--orange); text-align: center;">
-                        <h1 class="text-orange" style="margin-bottom: 5px; font-size: 3.5rem;">60%</h1>
-                        <p style="font-weight: 700; font-size: 1.2rem;">Rasio Praktik Produktif</p>
-                        <p style="font-size: 1rem; margin-top:10px;">Siswa lebih banyak memegang alat daripada mencatat.</p>
-                    </div>
-                    <div class="bx" style="border-top: 6px solid var(--green); text-align: center;">
-                        <h1 class="text-green" style="margin-bottom: 5px; font-size: 3.5rem;">2</h1>
-                        <p style="font-weight: 700; font-size: 1.2rem;">Produk TEFA / Semester</p>
-                        <p style="font-size: 1rem; margin-top:10px;">Minimal per bengkel/jurusan menghasilkan produk jual.</p>
+                    <div class="action-box">
+                        <h4 class="text-green" style="font-size: 1.5rem; margin-bottom: 5px;">✅ Kewajiban Unit Beromzet</h4>
+                        <p>Mulai TP 2026/2027, <strong>Setiap Jurusan WAJIB memiliki minimal 1 layanan TEFA komersial</strong> (misal: Jasa Cuci Motor Salju, Instalasi CCTV, Jasa Desain IMB). Kajur wajib melaporkan omzet bulanan ke Bendahara Sekolah.</p>
+                        <button class="btn-link" onclick="window.open('instrumen-kontrol-kepsek.html#strategis', '_blank')">Lihat Form Validasi TEFA &rarr;</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 15. PENUTUP -->
+        <!-- SLIDE 7: PENUGASAN TAMBAHAN -->
+        <div class="s bg-body">
+            <div class="stag">07</div><div class="otag">Kebijakan #4</div>
+            <div class="ct">
+                <span class="label ani d1" style="background: var(--orange-grad);">Penataan Jabatan Tambahan</span>
+                <h2 class="ani d2">Hapus Jabatan <span class="text-orange">Tanpa Output</span></h2>
+                <div class="grid-2 ani d3">
+                    <div class="problem-box">
+                        <h4 class="text-red" style="font-size: 1.5rem; margin-bottom: 5px;">🔴 Problem Lama</h4>
+                        <p>Banyak guru memegang SK Jabatan Tambahan (Kepala Lab, Kepala Bengkel, Ketua Bursa Kerja, Pembina Ekstra) hanya untuk kebanggaan status, namun tidak menghasilkan lompatan program apa pun selama setahun.</p>
+                    </div>
+                    <div class="action-box">
+                        <h4 class="text-green" style="font-size: 1.5rem; margin-bottom: 5px;">✅ Sistem Kontrak Kinerja</h4>
+                        <p>SK Jabatan TIDAK diberikan otomatis. Penerima jabatan tambahan WAJIB menandatangani "Kontrak Target Kinerja" di awal semester yang memuat <strong>3 target Output Riil</strong>. Gagal mengeksekusi = Jabatan dicabut secara sepihak oleh evaluasi.</p>
+                        <button class="btn-link" onclick="window.open('instrumen-kontrol-kepsek.html#penugasan', '_blank')">Lihat Kontrak Kinerja &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: RELEVANSI MAPEL -->
+        <div class="s bg-body">
+            <div class="stag">08</div><div class="otag">Kebijakan #5</div>
+            <div class="ct">
+                <span class="label ani d1" style="background: var(--red-grad);">Relevansi Mapel Umum</span>
+                <h2 class="ani d2">Akhiri <span class="text-red">Dikotomi Mapel</span></h2>
+                <div class="grid-2 ani d3">
+                    <div class="problem-box">
+                        <h4 class="text-red" style="font-size: 1.5rem; margin-bottom: 5px;">🔴 Problem Lama</h4>
+                        <p>Guru Agama, Matematika, Bahasa, dan PPKn mengajar seolah-olah berada di SMA biasa ("Textbook"). Akibatnya, siswa kejuruan bosan karena tidak melihat relevansi pelajaran tersebut dengan profesi teknis mereka.</p>
+                    </div>
+                    <div class="action-box">
+                        <h4 class="text-green" style="font-size: 1.5rem; margin-bottom: 5px;">✅ Bukti Relevansi Kontekstual</h4>
+                        <p>Guru Umum WAJIB menyetor "Dokumen Bukti Relevansi". Anda harus menyisipkan <strong>minimal 1 Modul Tugas Kontekstual/PBL</strong> (misal: Guru Bahasa Inggris melatih <em>Pitching</em> presentasi produk ke klien asing).</p>
+                        <button class="btn-link" onclick="window.open('instrumen-kontrol-kepsek.html#relevansi', '_blank')">Lihat Lembar Serah Terima RPP &rarr;</button>
+                        <button class="btn-link" style="margin-left: 10px; background: var(--green);" onclick="window.open('buku-saku-action1.html', '_blank')">Lihat Buku Saku 24 Ide Mapel Umum &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: KESIMPULAN -->
         <div class="s bg-dark">
-            <div class="stag">12</div><div class="otag" style="color: rgba(255,255,255,0.5);">Yayasan Perguruan Pembda Nias</div>
-            <div class="ct" style="align-items: center; text-align: center; color: var(--white);">
-                <h2 class="text-yellow ani d1" style="font-size: 4rem; margin-bottom: 30px;">Keep Moving Forward</h2>
-                <p class="ani d2" style="font-size: 1.8rem; font-weight: 300; max-width: 1000px; margin: 0 auto; line-height: 1.6;">"Kita tidak dibayar untuk memberikan teori,<br>kita hadir untuk <strong>menciptakan manusia karya</strong> yang siap menghadapi masa depan."</p>
-                <div class="ani d3" style="margin-top: 50px;">
-                    <p style="font-size: 1.2rem; color: var(--gray);">Terima Kasih • Yayasan Perguruan Pembda Nias</p>
+            <div class="stag">09</div><div class="otag">Timeline Eksekusi</div>
+            <div class="ct" style="align-items: center; text-align: center;">
+                <h2 class="ani d1 text-yellow">Tenggat Waktu Eksekusi</h2>
+                <p class="ani d2" style="font-size: 1.2rem; max-width: 800px; margin: 0 auto 40px auto;">SK Penugasan Tahun Pelajaran 2026/2027 murni bergantung pada sejauh mana Bapak/Ibu guru menyanggupi dan melaksanakan ke-5 instrumen mutlak di atas.</p>
+                
+                <div class="grid-3 ani d3" style="text-align: left; max-width: 1000px; margin: 0 auto;">
+                    <div class="bx bg-dark" style="border-top: 5px solid var(--blue);">
+                        <div style="color: var(--gray); font-size: 0.9rem; font-weight: 700; text-transform: uppercase;">Aksi Kepala Sekolah</div>
+                        <h4 style="margin: 10px 0; color: var(--blue);">Hari Ini</h4>
+                        <p style="font-size: 0.95rem;">Mencetak <a href="instrumen-kontrol-kepsek.html" target="_blank" style="color:var(--blue);">Buku Kontrol Manajemen</a> dan mendistribusikan formulirnya ke setiap guru/kajur terkait.</p>
+                    </div>
+                    <div class="bx bg-dark" style="border-top: 5px solid var(--orange);">
+                        <div style="color: var(--gray); font-size: 0.9rem; font-weight: 700; text-transform: uppercase;">Aksi Seluruh Guru</div>
+                        <h4 style="margin: 10px 0; color: var(--orange);">Minggu Ini</h4>
+                        <p style="font-size: 0.95rem;">Menandatangani rubrik penilaian, menyetor Bukti RPP Kontekstual, dan mengajukan target unit TEFA.</p>
+                    </div>
+                    <div class="bx bg-dark" style="border-top: 5px solid var(--green);">
+                        <div style="color: var(--gray); font-size: 0.9rem; font-weight: 700; text-transform: uppercase;">Keputusan Yayasan</div>
+                        <h4 style="margin: 10px 0; color: var(--green);">Akhir Bulan</h4>
+                        <p style="font-size: 0.95rem;">Mengevaluasi berkas dan menerbitkan SK Penugasan 2026/2027 berbasis Data Kinerja.</p>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- Navigation -->
     <div class="nav">
-        <button class="btn" id="fullscreenBtn" onclick="toggleFullScreen()" style="background: var(--blue); margin-right: 15px;">⛶ Fullscreen</button>
-        <button class="btn" id="prev" onclick="move(-1)" disabled>← Prev</button>
-        <button class="btn" id="next" onclick="move(1)">Next →</button>
+        <button class="btn" id="prevBtn" onclick="moveSlide(-1)" disabled>&#8592; Prev</button>
+        <button class="btn btn-blue" id="nextBtn" onclick="moveSlide(1)">Next &#8594;</button>
+        <button class="btn" id="fsBtn" onclick="toggleFullScreen()" style="margin-left: 10px; background: rgba(15, 23, 42, 0.4);">[ ]</button>
     </div>
 
     <script>
-        const slider = document.getElementById('slider');
-        const slides = document.querySelectorAll('.s');
-        const prevBtn = document.getElementById('prev');
-        const nextBtn = document.getElementById('next');
-        const progress = document.getElementById('progress');
-        
         let currentSlide = 0;
-        const totalSlides = slides.length;
+        const slides = document.querySelectorAll('.s');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slider = document.getElementById('slider');
+        const progressBar = document.getElementById('progress');
 
-        function updateUI() {
-            // Move slider
-            slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
-            
-            // Manage active class for animations
-            slides.forEach((s, i) => {
-                if (i === currentSlide) s.classList.add('active');
-                else s.classList.remove('active');
-            });
-            
-            // Update buttons
-            prevBtn.disabled = currentSlide === 0;
-            nextBtn.disabled = currentSlide === totalSlides - 1;
-            
-            // Update progress bar
-            progress.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
-
-            // Trigger progress bars animation if on slide 4 (index 4 is survey slide)
-            if (currentSlide === 2) {
-                setTimeout(() => {
-                    document.querySelectorAll('.bar-fill').forEach(bar => {
-                        bar.style.width = bar.getAttribute('data-width') + '%';
-                    });
-                }, 800); // Wait for slide transition
-            } else {
-                document.querySelectorAll('.bar-fill').forEach(bar => {
-                    bar.style.width = '0%';
-                });
-            }
-        }
-
-        function move(dir) {
+        function moveSlide(dir) {
+            slides[currentSlide].classList.remove('active');
             currentSlide += dir;
+            
             if (currentSlide < 0) currentSlide = 0;
-            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
-            updateUI();
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            
+            slider.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            slides[currentSlide].classList.add('active');
+            
+            prevBtn.disabled = currentSlide === 0;
+            if(currentSlide === slides.length - 1) {
+                nextBtn.innerHTML = "Selesai &#10003;";
+                nextBtn.classList.replace("btn-blue", "btn-green");
+            } else {
+                nextBtn.innerHTML = "Next &#8594;";
+            }
+            
+            progressBar.style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
         }
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') move(1);
-            if (e.key === 'ArrowLeft') move(-1);
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentSlide < slides.length - 1) moveSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlide > 0) moveSlide(-1);
+            }
         });
 
-        // Fullscreen Toggle
+        // Fullscreen
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
-                });
+                document.documentElement.requestFullscreen();
             } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 }
             }
         }
-
-        // Initialize first slide animations
-        setTimeout(() => slides[0].classList.add('active'), 100);
-        updateUI();
+        
+        // Initial progress bar
+        progressBar.style.width = `${(1 / slides.length) * 100}%`;
     </script>
 </body>
 </html>

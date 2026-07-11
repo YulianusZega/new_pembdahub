@@ -87,7 +87,7 @@
     /* Day header column */
     .th-day { padding: 10px 12px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border-right: 1px solid rgba(255,255,255,0.15); position:sticky;left:0;z-index:20; white-space:nowrap; background: linear-gradient(135deg,#6d28d9,#a21caf); color:white; }
     .th-time { padding: 10px 8px; text-align:left; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border-right: 1px solid rgba(255,255,255,0.15); width:88px; min-width:88px; background: linear-gradient(135deg,#6d28d9,#a21caf); color:white; }
-    .th-class { padding: 8px 4px; text-align:center; font-size:11px; font-weight:700; border-right: 1px solid rgba(255,255,255,0.15); white-space:nowrap; background: linear-gradient(135deg,#7c3aed,#db2777); color:white; letter-spacing:.03em; }
+    .th-class { padding: 8px 4px; text-align:center; font-size:11px; font-weight:700; border-right: 1px solid rgba(255,255,255,0.15); white-space:nowrap; background: linear-gradient(135deg,#7c3aed,#db2777); color:white; letter-spacing:.03em; min-width: 150px; }
     thead tr { background: linear-gradient(135deg,#6d28d9,#db2777); }
 
     /* Day cell */
@@ -126,7 +126,7 @@
     .day-separator td { border-bottom: 2px solid #c4b5fd !important; }
 
     /* Content cell */
-    .cell-content { padding: 3px; border-right: 1px solid #f0e6ff; height: 60px; vertical-align: middle; }
+    .cell-content { padding: 3px; border-right: 1px solid #f0e6ff; height: 60px; vertical-align: middle; min-width: 150px; }
     .cell-empty { cursor: pointer; background: transparent; transition: background 0.15s; }
     .cell-empty:hover { background: #fdf4ff; }
     .cell-plus {
@@ -157,7 +157,7 @@
 
     /* Info side */
     .scard-info { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding: 3px 4px; min-width:0; }
-    .scard-code { font-size:26px; font-weight:900; line-height:1; letter-spacing:-1.5px; truncate:ellipsis; max-width:100%; overflow:hidden; white-space:nowrap; }
+    .scard-code { font-size:26px; font-weight:900; line-height:1; letter-spacing:-1.5px; truncate:ellipsis; max-width:100%; overflow:hidden; white-space:nowrap; color: #111827 !important; text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
     .scard-jam  { font-size:10px; font-weight:700; color: #374151; background: rgba(255,255,255,0.75); border:1px solid rgba(0,0,0,0.12); border-radius:4px; padding:1px 6px; margin-top:3px; display:inline-block; }
 
     /* Compact Mode */
@@ -259,6 +259,15 @@
                 </select>
             </div>
             @endif
+            <div class="flex-1 min-w-[120px]">
+                <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tingkat</label>
+                <select name="grade_level" class="filter-select">
+                    <option value="">Semua Tingkat</option>
+                    @for($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}" {{ request('grade_level') == $i ? 'selected' : '' }}>Kelas {{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
             <div>
                 <button type="submit" class="toolbar-btn toolbar-btn-primary">
                     <i class="fas fa-sync-alt"></i> Tampilkan

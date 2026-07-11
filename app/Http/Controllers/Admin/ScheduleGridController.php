@@ -46,10 +46,15 @@ class ScheduleGridController extends Controller
         }
         
         // Get classrooms for selected school (optimized with select)
-        $classrooms = Classroom::where('school_id', $selectedSchoolId)
+        $classroomsQuery = Classroom::where('school_id', $selectedSchoolId)
             ->where('academic_year_id', $selectedYearId)
-            ->where('is_active', 1)
-            ->select('id', 'class_name', 'grade_level', 'school_id', 'academic_year_id')
+            ->where('is_active', 1);
+
+        if ($request->filled('grade_level')) {
+            $classroomsQuery->where('grade_level', $request->grade_level);
+        }
+
+        $classrooms = $classroomsQuery->select('id', 'class_name', 'grade_level', 'school_id', 'academic_year_id')
             ->orderBy('grade_level')
             ->orderBy('class_name')
             ->get();

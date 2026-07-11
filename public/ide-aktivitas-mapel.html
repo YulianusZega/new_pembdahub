@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Ide Aktivitas Guru SMK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0a1628;
+            --navy-light: #162a45;
+            --gold: #f0a500;
+            --blue: #2196F3;
+            --emer: #10b981;
+            --red: #ef4444;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --cyan: #06b6d4;
+            --orange: #f97316;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--navy);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 {
+            color: var(--gold);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .info-box {
+            background: rgba(240, 165, 0, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 40px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+        }
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .card {
+            background: var(--navy-light);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.2);
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.4rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .activity {
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--blue);
+        }
+        .activity:last-child {
+            margin-bottom: 0;
+        }
+        .act-title {
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+        }
+        .act-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin: 0 0 10px 0;
+        }
+        .act-meta {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .meta-tkj { background: rgba(33, 150, 243, 0.2); color: #64b5f6; }
+        .meta-dpib { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; }
+        .meta-tsm { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .meta-all { background: rgba(240, 165, 0, 0.2); color: #fcd34d; }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 12px 24px;
+            background: var(--navy-light);
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .back-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="font-size: 0.8rem; letter-spacing: 2px; color: var(--emer); text-transform: uppercase; margin-bottom: 10px; font-weight: 700;">Dokumen Pegangan Kepala Sekolah & Guru</div>
+            <h1>Buku Saku: Bank Ide Aktivitas Guru</h1>
+            <p class="subtitle">Kumpulan skenario aktivitas dan penugasan riil (bukan hafalan teori) untuk setiap Mata Pelajaran Umum agar relevan dengan kompetensi keahlian siswa.</p>
+        </header>
+
+        <div class="info-box">
+            <h4 style="color: var(--gold); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem;">📌 Panduan Penggunaan</h4>
+            <p style="margin: 0; font-size: 0.95rem; line-height: 1.5;">Dokumen ini dirancang khusus untuk mematahkan alasan <i>"Saya buntu dan tidak tahu cara menyambungkan materi mapel saya ke jurusan anak-anak"</i>. Silakan pilih salah satu ide aktivitas di bawah ini, sesuaikan tingkat kesulitannya, dan langsung praktikkan di kelas (PBL).</p>
+        </div>
+
+        <div class="grid">
+            <!-- MATEMATIKA -->
+            <div class="card" style="border-top: 4px solid var(--blue);">
+                <h3 style="color: var(--blue);">1. Matematika</h3>
+                
+                <div class="activity" style="border-color: var(--emer);">
+                    <div class="act-title">Kalkulasi RAB Bangunan (Geometri)</div>
+                    <p class="act-desc">Guru membagikan *blueprint* atau gambar kerja rumah sederhana. Siswa diminta menghitung total volume material (jumlah pasir, semen, batu bata) menggunakan rumus bangun ruang, dan mengalikan dengan harga pasar saat ini.</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+
+                <div class="activity" style="border-color: var(--red);">
+                    <div class="act-title">Perhitungan Margin Usaha TEFA (Aritmetika)</div>
+                    <p class="act-desc">Siswa diberikan studi kasus "Buka Bengkel Servis". Mereka harus menghitung Harga Pokok Penjualan (HPP) oli/sparepart, biaya operasional bulanan, dan menentukan persentase keuntungan agar bengkel mencapai *Break Even Point* (BEP).</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+            </div>
+
+            <!-- BAHASA INDONESIA -->
+            <div class="card" style="border-top: 4px solid var(--gold);">
+                <h3 style="color: var(--gold);">2. Bahasa Indonesia</h3>
+                
+                <div class="activity" style="border-color: var(--blue);">
+                    <div class="act-title">Role-Play Penanganan Komplain (Teks Persuasi)</div>
+                    <p class="act-desc">Guru meminta sepasang siswa maju. Satu siswa menjadi *pelanggan marah* karena jaringan internet lambat atau motor tidak kunjung selesai diservis. Siswa lainnya menjadi *Customer Service* yang harus menenangkan pelanggan dengan kalimat baku, profesional, dan solutif.</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+
+                <div class="activity" style="border-color: var(--gold);">
+                    <div class="act-title">Menyusun Manual Book Berbahaya (Teks Prosedur)</div>
+                    <p class="act-desc">Siswa diminta menulis instruksi SOP penggunaan alat berbahaya di bengkel (seperti mesin bubut / pemotong baja / crimping kabel). Tulisan tidak boleh ambigu; jika salah baca, 'nyawa' taruhannya. Ini melatih kejelasan bahasa instruksional.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+            </div>
+
+            <!-- BAHASA INGGRIS -->
+            <div class="card" style="border-top: 4px solid var(--red);">
+                <h3 style="color: var(--red);">3. Bahasa Inggris</h3>
+                
+                <div class="activity" style="border-color: var(--blue);">
+                    <div class="act-title">Bedah Manual Mesin / Datasheet (Reading)</div>
+                    <p class="act-desc">Guru membagikan *Buku Panduan Servis* asli dari pabrikan (Yamaha/Honda) atau *Datasheet Server Cisco* berbahasa Inggris. Siswa menerjemahkan prosedur perbaikannya dan mempresentasikannya di depan kelas.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+
+                <div class="activity" style="border-color: var(--red);">
+                    <div class="act-title">Pitching Desain Rumah ke Investor (Speaking)</div>
+                    <p class="act-desc">Siswa mempresentasikan hasil gambar rumah 3D mereka, namun audiens (guru/teman) bertindak sebagai *Investor Asing*. Siswa harus menjual/mempromosikan keunggulan arsitekturnya dalam Bahasa Inggris selama 3 menit.</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+            </div>
+
+            <!-- AGAMA -->
+            <div class="card" style="border-top: 4px solid var(--emer);">
+                <h3 style="color: var(--emer);">4. Pendidikan Agama & Budi Pekerti</h3>
+                
+                <div class="activity" style="border-color: var(--emer);">
+                    <div class="act-title">Fiqih Jual Beli di Unit Produksi (Etika)</div>
+                    <p class="act-desc">Membahas tata cara berbisnis yang *halal* di lingkungan TEFA sekolah. Misalnya, dilarang menipu spesifikasi barang (menjual RAM *second* tapi dibilang baru) atau memasang *spare-part* palsu. Simulasi garansi layanan yang adil tanpa riba.</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+
+                <div class="activity" style="border-color: var(--gold);">
+                    <div class="act-title">Studi Kasus "Dosa Jariyah" Konstruksi (Akhlak)</div>
+                    <p class="act-desc">Siswa menganalisis kasus korupsi proyek bangunan, di mana kontraktor mengurangi takaran semen dari 1:4 menjadi 1:8 demi keuntungan pribadi. Apa hukum agamanya jika bangunan tersebut rubuh dan melukai orang?</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+            </div>
+
+            <!-- PPKn -->
+            <div class="card" style="border-top: 4px solid var(--cyan);">
+                <h3 style="color: var(--cyan);">5. PPKn</h3>
+                
+                <div class="activity" style="border-color: var(--cyan);">
+                    <div class="act-title">Hak & Kewajiban Tenaga Kerja (Hukum)</div>
+                    <p class="act-desc">Siswa membedah surat Perjanjian Kerja (Kontrak). Guru membahas hak-hak pekerja seperti aturan UMR, pesangon, jam lembur, dan kewajiban BPJS Ketenagakerjaan berdasarkan undang-undang negara yang berlaku saat ini.</p>
+                    <span class="act-meta meta-all">Target: Semua Jurusan</span>
+                </div>
+
+                <div class="activity" style="border-color: var(--blue);">
+                    <div class="act-title">Debat Regulasi AMDAL & Limba (Kebijakan)</div>
+                    <p class="act-desc">Simulasi "Sidang Desa". Sebagian siswa menjadi pemilik bengkel besar (TSM) yang membuang sisa oli sembarangan, sebagian menjadi aparat pemerintah dan warga. Mereka berdebat berdasarkan aturan konstitusi tata kelola lingkungan.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+            </div>
+
+            <!-- PJOK -->
+            <div class="card" style="border-top: 4px solid var(--orange);">
+                <h3 style="color: var(--orange);">6. PJOK (Olahraga)</h3>
+                
+                <div class="activity" style="border-color: var(--orange);">
+                    <div class="act-title">Senam Ergonomi Pencegah Cedera (Kesehatan)</div>
+                    <p class="act-desc">Jurusan IT (TKJ) dan Arsitektur (DPIB) sangat rentan sakit tulang punggung / mata karena menatap layar >8 jam/hari. Guru PJOK mempraktikkan gerakan spesifik *stretching* di kursi kerja untuk mencegah *Carpal Tunnel Syndrome* dan *Kyphosis*.</p>
+                    <span class="act-meta meta-tkj">Target: TKJ</span> <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+
+                <div class="activity" style="border-color: var(--red);">
+                    <div class="act-title">Teknik Angkat Beban Mesin (K3 Fisik)</div>
+                    <p class="act-desc">Guru mempraktikkan cara tubuh mengangkat benda sangat berat (seperti memindahkan mesin mobil/server) menggunakan tumpuan kekuatan otot paha/kaki (*Squat*), dan BUKAN menggunakan tarikan tulang pinggang belakang agar tidak cedera saraf kejepit.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+            </div>
+
+            <!-- SEJARAH -->
+            <div class="card" style="border-top: 4px solid var(--pink);">
+                <h3 style="color: var(--pink);">7. Sejarah Indonesia</h3>
+                
+                <div class="activity" style="border-color: var(--pink);">
+                    <div class="act-title">Evolusi Arsitektur Lokal Nias (Analisis)</div>
+                    <p class="act-desc">Siswa meneliti struktur rumah adat tradisional (Omo Hada) Nias yang terbukti tahan gempa pada ratusan tahun lampau. Siswa menjabarkan teknologi sistem pasak kayu masa lalu dan membandingkannya dengan konstruksi beton saat ini.</p>
+                    <span class="act-meta meta-dpib">Target: DPIB</span>
+                </div>
+
+                <div class="activity" style="border-color: var(--gold);">
+                    <div class="act-title">Kronologi Mesin & Revolusi 4.0 (Inovasi)</div>
+                    <p class="act-desc">Membuat garis waktu (Timeline) sejarah penemuan mesin uap hingga komputerisasi *Internet of Things* (IoT). Siswa mendiskusikan bagaimana disrupsi masa lalu mematikan banyak profesi, untuk memacu mereka belajar teknologi modern.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span> <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+            </div>
+
+            <!-- SENI BUDAYA -->
+            <div class="card" style="border-top: 4px solid var(--purple);">
+                <h3 style="color: var(--purple);">8. Seni Budaya</h3>
+                
+                <div class="activity" style="border-color: var(--purple);">
+                    <div class="act-title">Estetika UI/UX Aplikasi (Seni Rupa)</div>
+                    <p class="act-desc">Guru Seni mengajarkan teori dasar pewarnaan (*Color Wheel*) dan hirarki tipografi teks. Siswa kemudian langsung mempraktikkan ilmu tersebut untuk mempercantik tampilan desain website atau aplikasi yang sedang mereka buat.</p>
+                    <span class="act-meta meta-tkj">Target: TKJ</span>
+                </div>
+
+                <div class="activity" style="border-color: var(--emer);">
+                    <div class="act-title">Desain Grafis Helm & Body (Kriya Estetik)</div>
+                    <p class="act-desc">Menerapkan prinsip komposisi warna, motif, dan *airbrush* pada media otomotif (body motor atau helm). Hasil karya dinilai oleh guru Seni dari sisi estetika, dan oleh guru TSM dari sisi kepresisian cat.</p>
+                    <span class="act-meta meta-tsm">Target: TSM</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="presentasi-transformasi-smk.html" class="back-btn">&larr; Kembali ke Presentasi Utama</a>
+            <a href="contoh-relevansi-mapel.html" class="back-btn" style="margin-left: 10px; border-color: var(--gold); color: var(--gold);">Lihat Dokumen Relevansi Mapel</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -74,11 +74,20 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('guru.performance_contracts.show', $contract->id) }}" class="btn btn-sm btn-outline-secondary">Lihat Detail</a>
+                                <a href="{{ route('guru.performance_contracts.show', $contract->id) }}" class="btn btn-sm btn-outline-secondary mb-1">Lihat Detail</a>
                                 
+                                @if(in_array($contract->status, ['draft', 'submitted_to_kepsek', 'rejected']))
+                                    <a href="{{ route('guru.performance_contracts.edit', $contract->id) }}" class="btn btn-sm btn-outline-primary mb-1">Edit</a>
+                                    <form action="{{ route('guru.performance_contracts.destroy', $contract->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kontrak ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger mb-1">Hapus</button>
+                                    </form>
+                                @endif
+
                                 @if($contract->status == 'approved_by_yayasan')
                                     <!-- Bar Cetak Kontrak Muncul di Sini -->
-                                    <a href="{{ route('guru.performance_contracts.print', $contract->id) }}" target="_blank" class="btn btn-sm btn-success fw-bold">
+                                    <a href="{{ route('guru.performance_contracts.print', $contract->id) }}" target="_blank" class="btn btn-sm btn-success fw-bold mb-1">
                                         <i class="fas fa-print"></i> Cetak Pakta Integritas
                                     </a>
                                 @endif

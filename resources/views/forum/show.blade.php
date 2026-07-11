@@ -141,13 +141,13 @@
 
                 <!-- Thread Reactions & Actions -->
                 <div class="flex flex-wrap items-center gap-2 mt-2">
-                    <!-- Picker Button -->
-                    <div class="relative">
-                        <button @click="togglePicker('thread')" class="w-8 h-8 rounded-full bg-forum-light-5 hover:bg-forum-light-10 border border-forum-light flex items-center justify-center text-forum-body hover:text-white transition">
-                            <i class="ph-bold ph-smiley"></i>
-                        </button>
-                        <!-- Picker Dropdown -->
-                        <div x-show="pickerOpen === 'thread'" @click.away="pickerOpen = null" class="absolute bottom-full left-0 mb-2 p-2 bg-[#1c1c28] border border-forum-light rounded-xl shadow-2xl flex gap-1 z-50">
+                        <!-- Picker Button -->
+                        <div class="relative">
+                            <button @click="togglePicker('thread')" class="w-8 h-8 rounded-full bg-forum-light-5 hover:bg-forum-light-10 border border-forum-light flex items-center justify-center text-forum-body hover:text-white transition">
+                                <i class="ph-bold ph-smiley"></i>
+                            </button>
+                            <!-- Picker Dropdown -->
+                            <div x-show="pickerOpen === 'thread'" @click.away="pickerOpen = null" class="absolute top-full left-0 mt-1 p-2 bg-[#1c1c28] border border-forum-light rounded-xl shadow-2xl flex gap-1 z-50">
                             @foreach(\App\Models\ForumReaction::EMOJIS as $emoji => $name)
                                 <button @click="reactThread('{{ $emoji }}')" class="w-8 h-8 rounded-lg hover:bg-forum-light-10 flex items-center justify-center text-lg transition-transform hover:scale-125">
                                     {{ $emoji }}
@@ -272,7 +272,7 @@
                                 <button @click="togglePicker('reply-{{ $reply->id }}')" class="w-6 h-6 rounded-full hover:bg-forum-light-10 flex items-center justify-center text-forum-muted hover:text-white transition">
                                     <i class="ph-bold ph-smiley"></i>
                                 </button>
-                                <div x-show="pickerOpen === 'reply-{{ $reply->id }}'" @click.away="pickerOpen = null" class="absolute bottom-full left-0 mb-2 p-2 bg-[#1c1c28] border border-forum-light rounded-xl shadow-2xl flex gap-1 z-50">
+                                <div x-show="pickerOpen === 'reply-{{ $reply->id }}'" @click.away="pickerOpen = null" class="absolute top-full left-0 mt-1 p-2 bg-[#1c1c28] border border-forum-light rounded-xl shadow-2xl flex gap-1 z-50">
                                     @foreach(\App\Models\ForumReaction::EMOJIS as $emoji => $name)
                                         <button @click="reactReply('{{ $reply->id }}', '{{ $emoji }}')" class="w-8 h-8 rounded-lg hover:bg-forum-light-10 flex items-center justify-center text-lg transition-transform hover:scale-125">
                                             {{ $emoji }}

@@ -1,6 +1,6 @@
 @extends(auth()->user()->layout)
 
-@section('title', 'Komunitas PembdaHUB')
+@section('title', 'Pembda Space')
 
 @section('content')
 <!-- Dynamic Google Fonts & Phosphor Icons -->
@@ -47,7 +47,7 @@
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
                     <i class="ph-bold ph-lightning text-white text-xl"></i>
                 </div>
-                <h1 class="forum-hdr text-xl font-bold text-white tracking-tight">PembdaHUB</h1>
+                <h1 class="forum-hdr text-xl font-bold text-white tracking-tight">Pembda Space</h1>
             </div>
             <button @click="mobileSidebarOpen = !mobileSidebarOpen" class="p-2 bg-forum-light-5 rounded-lg text-slate-300 hover:text-white transition">
                 <i class="ph-bold ph-list text-2xl"></i>
@@ -64,8 +64,8 @@
                         <i class="ph-bold ph-lightning text-white text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="forum-hdr text-xl font-bold text-white tracking-tight leading-tight">PembdaHUB</h1>
-                        <span class="text-[10px] text-forum-body font-semibold uppercase tracking-widest">Community</span>
+                        <h1 class="forum-hdr text-xl font-bold text-white tracking-tight leading-tight">Pembda Space</h1>
+                        <span class="text-[10px] text-forum-body font-semibold uppercase tracking-widest">Space</span>
                     </div>
                 </div>
 

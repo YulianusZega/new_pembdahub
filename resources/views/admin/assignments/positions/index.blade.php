@@ -106,7 +106,7 @@
                         <th class="px-4 py-3 text-left text-xs font-semibold">Nama & Kode</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold">Sekolah</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold">Jabatan</th>
-                        @if(!auth()->user()->isAdminSekolah())
+                        @if(auth()->user()->isKetuaYayasan() || auth()->user()->hasRole('bendahara'))
                         <th class="px-4 py-3 text-right text-xs font-semibold">Total Tunjangan</th>
                         @endif
                         <th class="px-4 py-3 text-center text-xs font-semibold w-24 whitespace-nowrap">Aksi</th>
@@ -178,7 +178,7 @@
                                                 </div>
                                             </div>
                                             <div class="text-right flex items-center gap-3">
-                                                @if(!auth()->user()->isAdminSekolah())
+                                                @if(auth()->user()->isKetuaYayasan() || auth()->user()->hasRole('bendahara'))
                                                 <div>
                                                     <div class="text-xs text-gray-500">Tunjangan</div>
                                                     <div class="font-bold text-green-600">
@@ -220,7 +220,7 @@
                                 </div>
                             @endif
                         </td>
-                        @if(!auth()->user()->isAdminSekolah())
+                        @if(auth()->user()->isKetuaYayasan() || auth()->user()->hasRole('bendahara'))
                         <td class="px-4 py-3 text-right">
                             <div class="font-bold text-sm {{ $totalAllowance > 0 ? 'text-green-600' : 'text-gray-400' }}">
                                 Rp {{ number_format($totalAllowance, 0, ',', '.') }}

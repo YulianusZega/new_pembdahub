@@ -118,7 +118,9 @@
                         <th class="px-6 py-4 text-left text-sm font-bold uppercase">Jabatan</th>
                         <th class="px-6 py-4 text-left text-sm font-bold uppercase">Kategori</th>
                         <th class="px-6 py-4 text-left text-sm font-bold uppercase">Sekolah</th>
+                        @if(auth()->user()->isKetuaYayasan() || auth()->user()->hasRole('bendahara'))
                         <th class="px-6 py-4 text-right text-sm font-bold uppercase">Tunjangan/Bulan</th>
+                        @endif
                         <th class="px-6 py-4 text-center text-sm font-bold uppercase">Status</th>
                         <th class="px-6 py-4 text-center text-sm font-bold uppercase">Aksi</th>
                     </tr>
@@ -169,11 +171,13 @@
                                 </span>
                             @endif
                         </td>
+                        @if(auth()->user()->isKetuaYayasan() || auth()->user()->hasRole('bendahara'))
                         <td class="px-6 py-4 text-right">
                             <div class="font-bold text-xl text-green-600">
                                 Rp {{ number_format($position->allowance_amount, 0, ',', '.') }}
                             </div>
                         </td>
+                        @endif
                         <td class="px-6 py-4 text-center">
                             @if($position->is_active)
                                 <span class="px-3 py-1 bg-green-100 text-green-700 text-sm font-bold rounded-full">

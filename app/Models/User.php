@@ -181,7 +181,7 @@ class User extends Authenticatable
      */
     public function isSuperAdmin(): bool
     {
-        return $this->hasRole('superadmin');
+        return $this->hasRole('superadmin') || session('active_role') === 'superadmin';
     }
 
     /**
@@ -189,7 +189,7 @@ class User extends Authenticatable
      */
     public function isAdminSekolah(): bool
     {
-        return $this->hasRole('admin_sekolah');
+        return $this->hasRole('admin_sekolah') || session('active_role') === 'admin_sekolah';
     }
 
     /**
@@ -198,7 +198,7 @@ class User extends Authenticatable
      */
     public function isKepalaSekolah(): bool
     {
-        if ($this->hasRole('kepala_sekolah')) {
+        if ($this->hasRole('kepala_sekolah') || session('active_role') === 'kepala_sekolah') {
             return true;
         }
 
@@ -216,7 +216,7 @@ class User extends Authenticatable
      */
     public function isGuru(): bool
     {
-        return $this->hasRole('guru');
+        return $this->hasRole('guru') || session('active_role') === 'guru';
     }
 
     /**
@@ -224,7 +224,7 @@ class User extends Authenticatable
      */
     public function isSiswa(): bool
     {
-        return $this->hasRole('siswa');
+        return $this->hasRole('siswa') || session('active_role') === 'siswa';
     }
 
     /**
@@ -232,7 +232,7 @@ class User extends Authenticatable
      */
     public function isOrangTua(): bool
     {
-        return $this->hasRole('orang_tua');
+        return $this->hasRole('orang_tua') || session('active_role') === 'orang_tua';
     }
 
     /**
@@ -240,7 +240,7 @@ class User extends Authenticatable
      */
     public function isKetuaYayasan(): bool
     {
-        return $this->hasRole('ketua_yayasan') || $this->username === 'yulzega';
+        return $this->hasRole('ketua_yayasan') || session('active_role') === 'ketua_yayasan' || $this->username === 'yulzega';
     }
 
     /**
@@ -248,7 +248,7 @@ class User extends Authenticatable
      */
     public function isBendahara(): bool
     {
-        return $this->hasRole('bendahara');
+        return $this->hasRole('bendahara') || session('active_role') === 'bendahara';
     }
 
     /**

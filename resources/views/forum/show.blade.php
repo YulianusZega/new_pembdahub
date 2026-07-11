@@ -297,9 +297,9 @@
 
                             <!-- Accept Answer -->
                             @if(!$reply->is_accepted && !$thread->replies->contains('is_accepted', true) && (auth()->id() === $thread->user_id || auth()->user()->isSuperAdmin() || auth()->user()->isGuru()))
-                                <form action="{{ route('forum.reply.accept', $reply) }}" method="POST" class="inline">
+                                <form action="{{ route('forum.reply.accept', $reply) }}" method="POST" class="inline-flex items-center ml-2">
                                     @csrf
-                                    <button type="submit" class="text-[10px] font-bold text-forum-muted hover:text-amber-400 ml-2 transition">
+                                    <button type="submit" class="text-[10px] font-bold text-forum-muted hover:text-amber-400 transition">
                                         TERBAIK
                                     </button>
                                 </form>

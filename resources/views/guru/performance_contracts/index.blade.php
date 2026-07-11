@@ -74,7 +74,7 @@
                                 @endif
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-secondary" onclick="alert('Fitur lihat detail')">Lihat</button>
+                                <a href="{{ route('guru.performance_contracts.show', $contract->id) }}" class="btn btn-sm btn-outline-secondary">Lihat Detail</a>
                                 
                                 @if($contract->status == 'approved_by_yayasan')
                                     <!-- Bar Cetak Kontrak Muncul di Sini -->

@@ -228,6 +228,7 @@ Route::prefix('guru')->name('guru.')->middleware('auth', 'role:guru,kepala_sekol
         Route::get('/create', [App\Http\Controllers\Guru\PerformanceContractController::class, 'create'])->name('create');
         Route::post('/', [App\Http\Controllers\Guru\PerformanceContractController::class, 'store'])->name('store');
         Route::get('/{id}/print', [App\Http\Controllers\Guru\PerformanceContractController::class, 'print'])->name('print');
+        Route::get('/{id}', [App\Http\Controllers\Guru\PerformanceContractController::class, 'show'])->name('show');
     });
 });
 

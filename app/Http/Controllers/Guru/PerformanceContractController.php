@@ -97,4 +97,15 @@ class PerformanceContractController extends Controller
 
         return view('guru.performance_contracts.print', compact('contract'));
     }
+
+    public function show($id)
+    {
+        $user = auth()->user();
+        $contract = PerformanceContract::where('employee_id', $user->teacher->employee_id)
+            ->where('id', $id)
+            ->with(['academicYear', 'position'])
+            ->firstOrFail();
+
+        return view('guru.performance_contracts.show', compact('contract'));
+    }
 }

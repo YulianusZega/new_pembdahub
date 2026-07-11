@@ -340,9 +340,19 @@
             @csrf
             <input type="hidden" name="parent_reply_id" id="parent_reply_id">
             
-            <button type="button" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 flex items-center justify-center text-forum-body hover:text-white transition flex-shrink-0 mb-1">
-                <i class="ph-bold ph-plus text-xl"></i>
-            </button>
+            <!-- Emoji Picker for Input -->
+            <div class="relative flex-shrink-0 mb-1">
+                <button type="button" @click="composeEmojiOpen = !composeEmojiOpen" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 flex items-center justify-center text-forum-body hover:text-white transition">
+                    <i class="ph-bold ph-plus text-xl"></i>
+                </button>
+                <div x-show="composeEmojiOpen" @click.away="composeEmojiOpen = false" class="absolute bottom-full left-0 mb-2 p-2.5 bg-[#1c1c28] border border-forum-light rounded-2xl shadow-2xl grid grid-cols-6 gap-1 z-50 w-56">
+                    <template x-for="emoji in ['😀','😂','😍','👍','🔥','👏','❤️','💡','🤔','🎉','🙏','✨']">
+                        <button type="button" @click="insertEmoji(emoji); composeEmojiOpen = false" class="w-8 h-8 rounded-lg hover:bg-forum-light-10 flex items-center justify-center text-lg transition-transform hover:scale-125">
+                            <span x-text="emoji"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
 
             <div class="flex-1 bg-black/40 border border-forum-light rounded-2xl overflow-hidden focus-within:border-indigo-500 transition-colors">
                 <textarea name="content" rows="1" required placeholder="Ketik pesan..." class="w-full bg-transparent text-white px-4 py-3 outline-none resize-none min-h-[48px] max-h-32 text-sm sm:text-base no-scrollbar" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"></textarea>
@@ -366,6 +376,7 @@
 function forumChat() {
     return {
         pickerOpen: null,
+        composeEmojiOpen: false,
         togglePicker(id) {
             this.pickerOpen = this.pickerOpen === id ? null : id;
         },
@@ -376,6 +387,16 @@ function forumChat() {
         reactReply(replyId, emoji) {
             reactReplyAjax(replyId, emoji);
             this.pickerOpen = null;
+        },
+        insertEmoji(emoji) {
+            const textarea = document.querySelector('textarea[name="content"]');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            textarea.value = text.substring(0, start) + emoji + text.substring(end);
+            textarea.focus();
+            textarea.style.height = '';
+            textarea.style.height = textarea.scrollHeight + 'px';
         }
     }
 }

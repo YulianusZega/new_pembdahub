@@ -69,6 +69,7 @@ try {
         'config:clear' => 'Config Cache',
         'cache:clear' => 'Application Cache',
         'view:clear' => 'View Cache',
+        'storage:link' => 'Storage Link (Fix Audio/Image Uploads 404)',
     ];
     
     foreach ($commands as $cmd => $label) {

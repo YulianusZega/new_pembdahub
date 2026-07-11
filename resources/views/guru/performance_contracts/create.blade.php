@@ -1,23 +1,24 @@
-@extends('layouts.app')
+@extends('layouts.guru')
 
 @section('content')
 <style>
     .document-card {
-        background: #fff;
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(0,0,0,0.05);
     }
     .doc-header {
-        border-bottom: 3px solid #1e293b;
-        padding-bottom: 1rem;
+        border-bottom: 4px solid #4f46e5;
+        padding-bottom: 1.5rem;
         margin-bottom: 2rem;
     }
     .doc-title {
-        font-weight: 800;
+        font-weight: 900;
+        font-size: 2.25rem;
         color: #1e293b;
-        letter-spacing: 0.5px;
-        line-height: 1.4;
+        letter-spacing: 1px;
+        line-height: 1.3;
     }
     .doc-subtitle {
         color: #64748b;
@@ -120,19 +121,29 @@
 
                     <!-- Alert Aturan -->
                     <div id="alertKejuruan" class="alert-doc alert-kejuruan" style="display:none;">
-                        <h6 class="text-warning fw-bold mb-2" style="color: #d97706 !important;">Aturan Ketat SK {{ $currentYear->year }}</h6>
-                        <p class="mb-0">Syarat Guru dapat dipertahankan/diusulkan SK Yayasan adalah meraih SKOR RATA-RATA MINIMAL > 3.5 dari 4 Pilar di bawah ini.</p>
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fas fa-exclamation-triangle fs-3 text-warning" style="color: #d97706 !important;"></i>
+                            <div>
+                                <h6 class="text-warning fw-bold mb-1" style="color: #d97706 !important;">Aturan Ketat SK {{ $currentYear->year }}</h6>
+                                <p class="mb-0 text-dark">Syarat Guru dapat dipertahankan/diusulkan SK Yayasan adalah meraih SKOR RATA-RATA MINIMAL > 3.5 dari 4 Pilar di bawah ini.</p>
+                            </div>
+                        </div>
                     </div>
                     
                     <div id="alertUmum" class="alert-doc alert-umum" style="display:none;">
-                        <h6 class="text-primary fw-bold mb-2">Aturan Khusus Mapel Umum</h6>
-                        <p class="mb-0">Guru Agama, PPKn, Bahasa, Matematika, dll <strong>TIDAK BOLEH</strong> beralasan mapelnya hanya teori. Mereka dinilai dari seberapa relevan mapel mereka diaplikasikan ke praktik kejuruan siswa.</p>
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fas fa-info-circle fs-3 text-primary"></i>
+                            <div>
+                                <h6 class="text-primary fw-bold mb-1">Aturan Khusus Mapel Umum</h6>
+                                <p class="mb-0 text-dark">Guru Agama, PPKn, Bahasa, Matematika, dll <strong>TIDAK BOLEH</strong> beralasan mapelnya hanya teori. Mereka dinilai dari seberapa relevan mapel mereka diaplikasikan ke praktik kejuruan siswa.</p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Pernyataan Resmi & Info Personal -->
                     <div class="mb-5 pb-3 border-bottom">
-                        <p class="mb-3 text-dark text-justify" style="line-height: 1.6;">
-                            Yang bertanda tangan di bawah ini, saya selaku <strong>Pihak yang Dievaluasi</strong>:
+                        <p class="mb-3 text-dark text-justify" style="line-height: 1.6; font-size: 1.05rem;">
+                            Yang bertanda tangan di bawah ini, saya selaku <strong>Pihak yang menyatakan berjanji</strong>:
                         </p>
                         
                         <div class="info-row" id="rowNama">
@@ -151,13 +162,13 @@
                             </div>
                         </div>
                         
-                        <p class="mt-4 text-dark text-justify" style="line-height: 1.6;" id="statementTeks">
+                        <p class="mt-4 text-dark text-justify" style="line-height: 1.6; font-size: 1.05rem;" id="statementTeks">
                             Dengan ini menyatakan <strong>KOMITMEN DAN KESANGGUPAN PENUH</strong> untuk melaksanakan serta mencapai target kinerja riil pada Tahun Pelajaran {{ $currentYear->year }}, sebagaimana tertuang secara rinci pada tabel bukti fisik nyata berikut ini:
                         </p>
                     </div>
 
                     <!-- Tabel Form 2A & 2B -->
-                    <div id="tablePkg" style="display:none;">
+                    <div id="tablePkg" style="display:none;" class="table-responsive">
                         <table class="table-doc">
                             <thead>
                                 <tr>
@@ -196,7 +207,7 @@
                     </div>
 
                     <!-- Tabel Form 4 -->
-                    <div id="tableJabatan" style="display:none;">
+                    <div id="tableJabatan" style="display:none;" class="table-responsive">
                         <table class="table-doc">
                             <thead>
                                 <tr>
@@ -287,19 +298,19 @@ function toggleForm() {
             }
 
             if (type === 'pkg_kejuruan') {
-                document.getElementById('docTitle').innerHTML = 'INSTRUMEN #2A: PENILAIAN KINERJA GURU<br>(PRODUKTIF/KEJURUAN)';
+                document.getElementById('docTitle').innerHTML = 'PENILAIAN KINERJA GURU<br><span class="text-primary">(PRODUKTIF/KEJURUAN)</span>';
                 document.getElementById('alertKejuruan').style.display = 'block';
                 document.getElementById('pilar1_title').innerText = 'Kompetensi Praktik (30%)';
                 document.getElementById('pilar2_title').innerText = 'Kontribusi Program (30%)';
             } else {
-                document.getElementById('docTitle').innerHTML = 'INSTRUMEN #2B: PENILAIAN KINERJA GURU<br>(MAPEL UMUM)';
+                document.getElementById('docTitle').innerHTML = 'PENILAIAN KINERJA GURU<br><span class="text-primary">(MAPEL UMUM)</span>';
                 document.getElementById('alertUmum').style.display = 'block';
                 document.getElementById('pilar1_title').innerText = 'Kompetensi Relevansi Praktik (30%)';
                 document.getElementById('pilar2_title').innerText = 'Kontribusi Program/TEFA (30%)';
             }
         } 
         else if (type === 'jabatan_tambahan') {
-            document.getElementById('docTitle').innerHTML = 'INSTRUMEN #4: KONTRAK KINERJA JABATAN';
+            document.getElementById('docTitle').innerHTML = 'KONTRAK KINERJA JABATAN';
             document.getElementById('tableJabatan').style.display = 'block';
             document.getElementById('rowJabatan').style.display = 'flex';
             document.getElementById('labelNama').innerText = 'Nama Pejabat';

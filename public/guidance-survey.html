@@ -44,108 +44,125 @@
 
     <div class="header">
         <h1>Gaidance Survei & Paradoks Guru</h1>
-        <p>Panduan Kepala Sekolah untuk berdebat berbasis data saat membedah kelemahan mentalitas guru.</p>
+        <p>Panduan Kepala Sekolah. Seluruh skor di bawah ini bernilai sama persis dengan Grafik Presentasi Utama (Slide 4).</p>
     </div>
 
     <h2 style="color: var(--navy); border-bottom: 2px solid var(--border); padding-bottom: 10px;">A. 3 Paradoks Utama (Kontradiksi Sikap)</h2>
     <div class="paradox-grid">
         <div class="p-box" style="border-color: #fda4af;">
             <h3 style="color: var(--red);">Paradoks #1:<br>Bangga Visi, Lemah Eksekusi</h3>
-            <p style="font-size: 0.95rem;">Guru merasa dilibatkan dalam visi inovasi (Skor <strong>4.22</strong>).</p>
+            <p style="font-size: 0.95rem;">Guru merasa bangga dilibatkan dalam visi inovasi sekolah (Skor <strong>4.22</strong>).</p>
             <p style="font-size: 0.95rem; font-weight: 700; color: var(--red);">TETAPI...</p>
-            <p style="font-size: 0.95rem;">Rencana aksi selalu mandek karena birokrasi (Skor <strong>2.69</strong>).</p>
-            <div style="font-size: 0.85rem; color: #881337; font-style: italic; margin-top: 10px;">"Suka ide besar, malas mengeksekusi."</div>
+            <p style="font-size: 0.95rem;">Rencana aksi TEFA selalu mandek karena mereka menyalahkan birokrasi (Skor <strong>2.69</strong>).</p>
+            <div style="font-size: 0.85rem; color: #881337; font-style: italic; margin-top: 10px;">"Suka bermimpi besar, tapi malas mengeksekusi kerumitannya."</div>
         </div>
         <div class="p-box" style="border-color: #fcd34d;">
-            <h3 style="color: var(--orange);">Paradoks #2:<br>Lepas Tanggung Jawab Moral</h3>
-            <p style="font-size: 0.95rem;">Yakin mapel umum melatih logika (Skor <strong>4.58</strong>).</p>
+            <h3 style="color: var(--orange);">Paradoks #2:<br>Tanggung Jawab Semu</h3>
+            <p style="font-size: 0.95rem;">Guru yakin sekali bahwa mapel yang diajarkannya berguna (Skor <strong>4.58</strong>).</p>
             <p style="font-size: 0.95rem; font-weight: 700; color: var(--orange);">TETAPI...</p>
-            <p style="font-size: 0.95rem;">Tugas dianggap selesai asal nilai ijazah bagus, tak peduli siswa nganggur (Skor <strong>2.09</strong>).</p>
-            <div style="font-size: 0.85rem; color: #78350f; font-style: italic; margin-top: 10px;">"Hanya fokus menggugurkan kewajiban mengajar."</div>
+            <p style="font-size: 0.95rem;">Mereka menganggap tanggung jawabnya SELESAI asal siswa lulus (Skor kepedulian karir <strong>2.09</strong>).</p>
+            <div style="font-size: 0.85rem; color: #78350f; font-style: italic; margin-top: 10px;">"Hanya fokus menggugurkan kewajiban mengajar di kelas."</div>
         </div>
         <div class="p-box" style="border-color: #93c5fd;">
             <h3 style="color: var(--blue);">Paradoks #3:<br>Ingin Maju, Takut Risiko</h3>
-            <p style="font-size: 0.95rem;">Mendukung penuh adanya TEFA (Skor <strong>3.88</strong>).</p>
+            <p style="font-size: 0.95rem;">Mendukung penuh kebijakan manajemen terhadap Unit Produksi (Skor <strong>3.88</strong>).</p>
             <p style="font-size: 0.95rem; font-weight: 700; color: var(--blue);">TETAPI...</p>
-            <p style="font-size: 0.95rem;">Tidak membolehkan siswa mencoba inovasi praktik karena takut alat rusak (Skor <strong>2.85</strong>).</p>
-            <div style="font-size: 0.85rem; color: #1e3a8a; font-style: italic; margin-top: 10px;">"Ingin maju tapi tanpa mau keluar biaya risiko."</div>
+            <p style="font-size: 0.95rem;">Sangat melarang siswa mencoba inovasi karena takut alat praktik rusak (Skor <strong>2.85</strong>).</p>
+            <div style="font-size: 0.85rem; color: #1e3a8a; font-style: italic; margin-top: 10px;">"Ingin inovasi canggih tapi tanpa mau keluar biaya risiko."</div>
         </div>
     </div>
 
-    <h2 style="color: var(--navy); border-bottom: 2px solid var(--border); padding-bottom: 10px;">B. Detail Pertanyaan Survei (Dropdown)</h2>
+    <h2 style="color: var(--navy); border-bottom: 2px solid var(--border); padding-bottom: 10px;">B. Detail Komponen Grafik Slide 4 (Dropdown)</h2>
     <div class="accordion">
         
+        <!-- KELOMPOK KELEBIHAN -->
         <div class="acc-item">
             <div class="acc-header" onclick="toggleAcc(this)">
-                <span>1. Tanggung Jawab Mengajar (Skor Kritis)</span>
+                <span>🟢 Motivasi Dasar & Keyakinan Mapel (Skor Rata-rata: 4.46)</span>
                 <span>▼</span>
             </div>
             <div class="acc-body">
-                <div class="q-row bad">
-                    <div class="q-text">"Tanggung jawab profesional dianggap selesai ketika siswa lulus dengan nilai baik (tidak mempedulikan serapan kerja)."</div>
-                    <span class="q-score bad">Skor Rata-rata: 2.09 / 5.0</span>
-                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Kondisi Parah: Mayoritas guru setuju mereka tidak peduli nasib siswa setelah lulus.</div>
+                <div class="q-row good">
+                    <div class="q-text">"Saya meyakini bahwa mata pelajaran umum yang saya ampu memiliki kontribusi langsung dalam melatih logika berpikir."</div>
+                    <span class="q-score good">Skor: 4.58 / 5.0</span>
                 </div>
-                <div class="q-row bad">
-                    <div class="q-text">"Dalam menyusun metode, seberapa sering menitikberatkan pada kurikulum teoritis dibanding praktik?"</div>
-                    <span class="q-score bad">Skor Rata-rata: 2.78 / 5.0</span>
-                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Masih terjebak mengajar ceramah/teori.</div>
+                <div class="q-row good">
+                    <div class="q-text">"Konsisten mendiseminasikan hasil pelatihan/magang industri kepada rekan guru."</div>
+                    <span class="q-score good">Skor: 4.34 / 5.0</span>
                 </div>
             </div>
         </div>
 
         <div class="acc-item">
             <div class="acc-header" onclick="toggleAcc(this)">
-                <span>2. Disiplin & SOP Budaya Industri</span>
+                <span>🟢 Adopsi Teknologi & Keterlibatan (Skor Rata-rata: 4.19)</span>
+                <span>▼</span>
+            </div>
+            <div class="acc-body">
+                <div class="q-row good">
+                    <div class="q-text">"Sering dilibatkan manajemen sekolah dalam pengambilan keputusan terkait kurikulum dan inovasi."</div>
+                    <span class="q-score good">Skor: 4.22 / 5.0</span>
+                </div>
+                <div class="q-row good">
+                    <div class="q-text">"Aktif memanfaatkan teknologi digital terkini (AI, IoT, software simulasi) dalam pembelajaran."</div>
+                    <span class="q-score good">Skor: 4.16 / 5.0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KELOMPOK KEKURANGAN -->
+        <div class="acc-item">
+            <div class="acc-header" onclick="toggleAcc(this)">
+                <span>🔴 Tanggung Jawab Moral & Kedisiplinan (Skor Rata-rata: 2.39)</span>
                 <span>▼</span>
             </div>
             <div class="acc-body">
                 <div class="q-row bad">
-                    <div class="q-text">"Dalam menegakkan aturan budaya kerja industri (seperti SOP dan kedisiplinan), seberapa sering Anda memberikan toleransi / maklum?"</div>
-                    <span class="q-score bad">Skor Rata-rata: 2.69 / 5.0</span>
-                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Guru masih terlalu longgar, membuat siswa kurang tangguh di industri.</div>
+                    <div class="q-text">"Tanggung jawab profesional dianggap selesai sepenuhnya ketika siswa lulus dengan nilai baik (Tidak memikirkan keterserapan kerja)."</div>
+                    <span class="q-score bad">Skor: 2.09 / 5.0</span>
+                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Ini adalah skor terendah di seluruh survei. Bukti guru lepas tangan.</div>
+                </div>
+                <div class="q-row bad">
+                    <div class="q-text">"Dalam menegakkan aturan budaya kerja industri (SOP, Kedisiplinan), seberapa sering Anda memberikan toleransi/maklum?"</div>
+                    <span class="q-score bad">Skor: 2.69 / 5.0</span>
+                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Guru masih terlalu longgar. Siswa SMK dididik seperti anak SMP.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-header" onclick="toggleAcc(this)">
+                <span>🔴 Relevansi Praktik & Pembelajaran (Skor Rata-rata: 2.70)</span>
+                <span>▼</span>
+            </div>
+            <div class="acc-body">
+                <div class="q-row bad">
+                    <div class="q-text">"Saat mengajar mapel umum (Matematika/Bahasa), sering mengalami kesulitan merelasikan materi dengan kejuruan."</div>
+                    <span class="q-score bad">Skor: 2.63 / 5.0</span>
+                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Akar masalah terjadinya Dikotomi Mapel (Guru umum buta arah).</div>
+                </div>
+                <div class="q-row bad">
+                    <div class="q-text">"Dalam menyusun metode, seberapa sering menitikberatkan pada penyelesaian kurikulum teoritis dibanding praktik nyata?"</div>
+                    <span class="q-score bad">Skor: 2.78 / 5.0</span>
+                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Terlalu fokus mengejar buku paket/teori, minim karya proyek.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-header" onclick="toggleAcc(this)">
+                <span>🔴 Eksekusi Inovasi & Risiko TEFA (Skor Rata-rata: 2.77)</span>
+                <span>▼</span>
+            </div>
+            <div class="acc-body">
+                <div class="q-row bad">
+                    <div class="q-text">"Di tengah banyaknya visi besar sekolah, rencana aksi sering terhambat oleh birokrasi."</div>
+                    <span class="q-score bad">Skor: 2.69 / 5.0</span>
                 </div>
                 <div class="q-row bad">
                     <div class="q-text">"Ketika siswa mencoba inovasi yang berisiko merusak alat praktik, seberapa besar dukungan Anda?"</div>
-                    <span class="q-score bad">Skor Rata-rata: 2.85 / 5.0</span>
-                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Guru protektif, takut aset rusak, menghambat kreativitas anak.</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="acc-item">
-            <div class="acc-header" onclick="toggleAcc(this)">
-                <span>3. Eksekusi TEFA & Visi Operasional</span>
-                <span>▼</span>
-            </div>
-            <div class="acc-body">
-                <div class="q-row bad">
-                    <div class="q-text">"Seberapa sering rencana aksi inovasi terhambat oleh birokrasi sekolah yang berbelit?"</div>
-                    <span class="q-score bad">Skor Rata-rata: 2.69 / 5.0</span>
-                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Penyakit eksekusi mandek di urusan administrasi.</div>
-                </div>
-                <div class="q-row neutral">
-                    <div class="q-text">"Apakah pelaksanaan Teaching Factory (TeFa) di unit sekolah kita mencerminkan standar industri riil?"</div>
-                    <span class="q-score neutral">Skor Rata-rata: 3.15 / 5.0</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="acc-item">
-            <div class="acc-header" onclick="toggleAcc(this)">
-                <span>4. Kolaborasi Mapel Umum</span>
-                <span>▼</span>
-            </div>
-            <div class="acc-body">
-                <div class="q-row bad">
-                    <div class="q-text">"Saat mengajar mapel umum, seberapa sering Anda mengalami kesulitan merelasikan materi dengan kompetensi kejuruan?"</div>
-                    <span class="q-score bad">Skor Rata-rata: 2.63 / 5.0</span>
-                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Akar masalah: Guru Mapel Umum tidak tahu cara menyambungkan materinya.</div>
-                </div>
-                <div class="q-row good">
-                    <div class="q-text">"Saya meyakini bahwa mata pelajaran umum yang saya ampu melatih logika berpikir siswa."</div>
-                    <span class="q-score good">Skor Rata-rata: 4.58 / 5.0</span>
-                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Kekuatan: Niat dan keyakinan guru umum sudah sangat tinggi, tinggal diarahkan.</div>
+                    <span class="q-score bad">Skor: 2.85 / 5.0</span>
+                    <div style="font-size: 0.9rem; color: #64748b; margin-top: 5px;">Takut rugi alat rusak sehingga siswa dilarang berinovasi di bengkel.</div>
                 </div>
             </div>
         </div>

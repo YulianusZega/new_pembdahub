@@ -9,13 +9,13 @@
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js" defer></script>
 <style>
     .forum-hdr { font-family: 'Space Grotesk', sans-serif; }
-    body { background-color: #0f0f14; color: #f8fafc; font-family: 'Inter', sans-serif; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     input[type="radio"] { appearance: none; -webkit-appearance: none; }
 </style>
 
-<div class="max-w-[1200px] mx-auto min-h-screen pt-4 pb-20 px-4 sm:px-6" x-data="editPost()">
+<!-- App Window Wrapper -->
+<div class="w-full bg-[#0f0f14] text-[#f8fafc] font-['Inter'] rounded-3xl shadow-2xl border border-white/10 mx-auto pt-4 pb-20 px-4 sm:px-6 relative" style="min-height: 85vh;" x-data="editPost()">
     
     <!-- Header -->
     <div class="flex items-center gap-4 bg-[#16161f]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/5 mb-6 sticky top-4 z-40 shadow-2xl shadow-black/20">

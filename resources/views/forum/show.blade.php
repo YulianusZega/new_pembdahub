@@ -12,14 +12,14 @@
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <style>
     .forum-hdr { font-family: 'Space Grotesk', sans-serif; }
-    body { background-color: #0f0f14; color: #f8fafc; font-family: 'Inter', sans-serif; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     /* Compose bar safe area for iOS */
     .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
 </style>
 
-<div class="max-w-[1200px] mx-auto min-h-screen flex flex-col pt-4 pb-32 px-4 sm:px-6" x-data="forumChat()">
+<!-- App Window Wrapper -->
+<div class="w-full bg-[#0f0f14] text-[#f8fafc] font-['Inter'] rounded-3xl shadow-2xl border border-white/10 mx-auto flex flex-col pt-4 pb-32 px-4 sm:px-6 relative" style="min-height: 85vh;" x-data="forumChat()">
     
     <!-- Top Nav Bar -->
     <div class="flex items-center justify-between bg-[#16161f]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/5 mb-6 sticky top-4 z-40 shadow-2xl shadow-black/20">

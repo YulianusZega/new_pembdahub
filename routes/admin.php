@@ -473,6 +473,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
         Route::put('/attendances/{id}', [App\Http\Controllers\Admin\TefaController::class, 'updateAttendance'])->name('attendances.update');
         Route::delete('/attendances/{id}', [App\Http\Controllers\Admin\TefaController::class, 'destroyAttendance'])->name('attendances.destroy');
     });
+
+    // Validasi Kontrak Kinerja
+    Route::prefix('performance-contracts')->name('performance_contracts.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\PerformanceContractController::class, 'index'])->name('index');
+        Route::get('/{id}', [App\Http\Controllers\Admin\PerformanceContractController::class, 'show'])->name('show');
+        Route::post('/{id}/process', [App\Http\Controllers\Admin\PerformanceContractController::class, 'process'])->name('process');
+    });
 });
 
 // User Management routes with all role permissions (gates are handled by UserPolicy)

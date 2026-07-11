@@ -121,12 +121,17 @@ class ProfileSettingsController extends Controller
             'religion' => $validated['religion'],
         ];
 
-        // Update berdasar peran
-        if ($user->isSiswa() && $user->student) {
+        // Update berdasar relasi profil yang dimiliki (bisa lebih dari satu)
+        $profileUpdated = false;
+
+        if ($user->student) {
             $studentData = $updatedData;
             if ($photoPath) $studentData['photo'] = $photoPath;
             $user->student->update($studentData);
-        } elseif ($user->isGuru() && $user->teacher) {
+            $profileUpdated = true;
+        } 
+        
+        if ($user->teacher) {
             $teacherData = $updatedData;
             if ($photoPath) $teacherData['photo'] = $photoPath;
             $user->teacher->update($teacherData);
@@ -135,11 +140,18 @@ class ProfileSettingsController extends Controller
             if ($user->teacher->employee) {
                 $user->teacher->employee->update($teacherData);
             }
-        } elseif ($user->employee) {
+            $profileUpdated = true;
+        } 
+        
+        if ($user->employee && !$user->teacher) { // Jika hanya employee (bukan guru)
             $employeeData = $updatedData;
             if ($photoPath) $employeeData['photo'] = $photoPath;
             $user->employee->update($employeeData);
-        } else {
+            $profileUpdated = true;
+        }
+        
+        // Super admin murni tanpa relasi guru/pegawai/siswa tidak memiliki tabel profil detail
+        if (!$profileUpdated && !$user->isSuperAdmin() && !$user->isYayasan()) {
             return back()->withErrors(['biodata' => 'Data profil detail tidak ditemukan.']);
         }
 

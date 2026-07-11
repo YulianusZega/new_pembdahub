@@ -715,10 +715,12 @@ class ForumController extends Controller
             'emoji' => 'required|string|in:🔥,❤️,😂,🤔,💡,👏',
         ]);
 
+        $alias = ForumReaction::getAlias($validated['emoji']);
+
         $existing = ForumReaction::where('user_id', $user->id)
             ->where('forum_thread_id', $thread->id)
             ->whereNull('forum_reply_id')
-            ->where('emoji', $validated['emoji'])
+            ->where('emoji', $alias)
             ->first();
 
         if ($existing) {
@@ -729,7 +731,7 @@ class ForumController extends Controller
                 'user_id' => $user->id,
                 'forum_thread_id' => $thread->id,
                 'forum_reply_id' => null,
-                'emoji' => $validated['emoji'],
+                'emoji' => $alias,
             ]);
             $reacted = true;
         }
@@ -752,10 +754,12 @@ class ForumController extends Controller
             'emoji' => 'required|string|in:🔥,❤️,😂,🤔,💡,👏',
         ]);
 
+        $alias = ForumReaction::getAlias($validated['emoji']);
+
         $existing = ForumReaction::where('user_id', $user->id)
             ->where('forum_reply_id', $reply->id)
             ->whereNull('forum_thread_id')
-            ->where('emoji', $validated['emoji'])
+            ->where('emoji', $alias)
             ->first();
 
         if ($existing) {
@@ -766,7 +770,7 @@ class ForumController extends Controller
                 'user_id' => $user->id,
                 'forum_thread_id' => null,
                 'forum_reply_id' => $reply->id,
-                'emoji' => $validated['emoji'],
+                'emoji' => $alias,
             ]);
             $reacted = true;
         }

@@ -25,6 +25,16 @@ class ForumReaction extends Model
         '👏' => 'clap'
     ];
 
+    public static function getAlias(string $emoji): string
+    {
+        return self::EMOJIS[$emoji] ?? $emoji;
+    }
+
+    public static function getEmoji(string $alias): string
+    {
+        return array_search($alias, self::EMOJIS) ?: $alias;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

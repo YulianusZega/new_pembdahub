@@ -104,13 +104,21 @@ class ForumThread extends Model
 
     public function getReactionCounts(): array
     {
-        return $this->reactions()->select('emoji', DB::raw('count(*) as count'))
+        $raw = $this->reactions()->select('emoji', DB::raw('count(*) as count'))
             ->groupBy('emoji')->pluck('count', 'emoji')->toArray();
+
+        $mapped = [];
+        foreach ($raw as $alias => $count) {
+            $emoji = ForumReaction::getEmoji($alias);
+            $mapped[$emoji] = $count;
+        }
+        return $mapped;
     }
 
     public function hasReacted(User $user, string $emoji): bool
     {
-        return $this->reactions()->where('user_id', $user->id)->where('emoji', $emoji)->exists();
+        $alias = ForumReaction::getAlias($emoji);
+        return $this->reactions()->where('user_id', $user->id)->where('emoji', $alias)->exists();
     }
 
     public function reference()

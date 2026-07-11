@@ -129,23 +129,31 @@
                         <p class="mb-0">Guru Agama, PPKn, Bahasa, Matematika, dll <strong>TIDAK BOLEH</strong> beralasan mapelnya hanya teori. Mereka dinilai dari seberapa relevan mapel mereka diaplikasikan ke praktik kejuruan siswa.</p>
                     </div>
 
-                    <!-- Info Personal -->
-                    <div class="mb-4">
+                    <!-- Pernyataan Resmi & Info Personal -->
+                    <div class="mb-5 pb-3 border-bottom">
+                        <p class="mb-3 text-dark text-justify" style="line-height: 1.6;">
+                            Yang bertanda tangan di bawah ini, saya selaku <strong>Pihak yang Dievaluasi</strong>:
+                        </p>
+                        
                         <div class="info-row" id="rowNama">
-                            <div class="info-label" id="labelNama">Nama Guru Dinilai</div>
-                            <div class="info-value text-primary fw-semibold">{{ Auth::user()->name }}</div>
+                            <div class="info-label" id="labelNama">Nama Lengkap</div>
+                            <div class="info-value text-dark fw-bold">{{ Auth::user()->name }}</div>
                         </div>
                         <div class="info-row" id="rowJabatan" style="display:none;">
                             <div class="info-label">Jabatan Tambahan</div>
                             <div class="info-value">
-                                <select name="position_id" id="positionId" class="form-select form-select-sm border-0 bg-transparent text-primary fw-semibold p-0" style="box-shadow: none;">
-                                    <option value="">-- Pilih Jabatan Anda --</option>
+                                <select name="position_id" id="positionId" class="form-select form-select-sm border-0 bg-transparent text-dark fw-bold p-0" style="box-shadow: none;">
+                                    <option value="">-- Silakan Pilih Jabatan Anda --</option>
                                     @foreach($positions as $pos)
                                         <option value="{{ $pos->id }}">{{ $pos->position_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
+                        
+                        <p class="mt-4 text-dark text-justify" style="line-height: 1.6;" id="statementTeks">
+                            Dengan ini menyatakan <strong>KOMITMEN DAN KESANGGUPAN PENUH</strong> untuk melaksanakan serta mencapai target kinerja riil pada Tahun Pelajaran {{ $currentYear->year }}, sebagaimana tertuang secara rinci pada tabel bukti fisik nyata berikut ini:
+                        </p>
                     </div>
 
                     <!-- Tabel Form 2A & 2B -->
@@ -160,28 +168,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
                                     <td class="text-center">1</td>
                                     <td class="fw-bold" id="pilar1_title">Kompetensi Praktik (30%)</td>
-                                    <td><textarea name="target_data[pilar_1]" placeholder="Tuliskan target bukti fisik..." required id="pilar1_input"></textarea></td>
+                                    <td><textarea name="target_data[pilar_1]" placeholder="Uraikan rencana konkret / pencapaian bukti fisik nyata..." required id="pilar1_input"></textarea></td>
                                     <td class="eval-col">Dievaluasi<br>Akhir Sem.</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">2</td>
                                     <td class="fw-bold" id="pilar2_title">Kontribusi Program (30%)</td>
-                                    <td><textarea name="target_data[pilar_2]" placeholder="Tuliskan target bukti fisik..." required id="pilar2_input"></textarea></td>
+                                    <td><textarea name="target_data[pilar_2]" placeholder="Uraikan target kontribusi secara spesifik..." required id="pilar2_input"></textarea></td>
                                     <td class="eval-col">Dievaluasi<br>Akhir Sem.</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">3</td>
                                     <td class="fw-bold">Kolaborasi (20%)</td>
-                                    <td><textarea name="target_data[pilar_3]" placeholder="Tuliskan target kolaborasi..." required id="pilar3_input"></textarea></td>
+                                    <td><textarea name="target_data[pilar_3]" placeholder="Jelaskan bentuk kolaborasi lintas mata pelajaran/unit yang akan dilakukan..." required id="pilar3_input"></textarea></td>
                                     <td class="eval-col">Dievaluasi<br>Akhir Sem.</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">4</td>
                                     <td class="fw-bold">Budaya Industri 5R (20%)</td>
-                                    <td><textarea name="target_data[pilar_4]" placeholder="Tuliskan komitmen budaya 5R..." required id="pilar4_input"></textarea></td>
+                                    <td><textarea name="target_data[pilar_4]" placeholder="Sebutkan langkah tegas penegakan SOP K3 dan Budaya 5R..." required id="pilar4_input"></textarea></td>
                                     <td class="eval-col">Dievaluasi<br>Akhir Sem.</td>
                                 </tr>
                             </tbody>
@@ -190,7 +197,6 @@
 
                     <!-- Tabel Form 4 -->
                     <div id="tableJabatan" style="display:none;">
-                        <p class="fw-bold mb-2">Target Output Riil Semester Ganjil:</p>
                         <table class="table-doc">
                             <thead>
                                 <tr>
@@ -202,27 +208,38 @@
                             <tbody>
                                 <tr>
                                     <td class="text-center">1</td>
-                                    <td><textarea name="target_data[target_1]" placeholder="Target terukur pertama..." required id="jabatan1_input"></textarea></td>
+                                    <td><textarea name="target_data[target_1]" placeholder="Sebutkan sasaran output pekerjaan riil pertama (contoh: Mengadakan 1x Job Fair)..." required id="jabatan1_input"></textarea></td>
                                     <td class="eval-col">Menunggu Evaluasi</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">2</td>
-                                    <td><textarea name="target_data[target_2]" placeholder="Target terukur kedua..." required id="jabatan2_input"></textarea></td>
+                                    <td><textarea name="target_data[target_2]" placeholder="Sebutkan sasaran output pekerjaan riil kedua (contoh: Memastikan 15 Alumni terserap)..." required id="jabatan2_input"></textarea></td>
                                     <td class="eval-col">Menunggu Evaluasi</td>
                                 </tr>
                                 <tr>
                                     <td class="text-center">3</td>
-                                    <td><textarea name="target_data[target_3]" placeholder="Target terukur ketiga..." id="jabatan3_input"></textarea></td>
+                                    <td><textarea name="target_data[target_3]" placeholder="Sebutkan sasaran output pekerjaan riil ketiga (opsional)..." id="jabatan3_input"></textarea></td>
                                     <td class="eval-col">Menunggu Evaluasi</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                    <div class="d-flex justify-content-end mt-5 pt-4 border-top">
-                        <a href="{{ route('guru.performance_contracts.index') }}" class="btn btn-light px-4 py-2 me-3 rounded-3 text-muted fw-semibold">Batal</a>
+                    <!-- Pakta Integritas / Agreement -->
+                    <div class="mt-5 p-4 bg-light border border-secondary rounded" style="border-width: 2px !important; border-style: dashed !important;">
+                        <h6 class="fw-bold mb-3 text-dark text-center"><i class="fas fa-file-signature text-secondary me-2"></i> PERNYATAAN & PAKTA INTEGRITAS</h6>
+                        <div class="form-check d-flex align-items-start gap-3">
+                            <input class="form-check-input mt-1 border-secondary" type="checkbox" value="1" id="agreeCheck" required style="width: 1.5rem; height: 1.5rem; flex-shrink: 0;">
+                            <label class="form-check-label text-dark text-justify" for="agreeCheck" style="line-height: 1.6;">
+                                Demikian Perjanjian Kinerja ini saya buat dengan sadar dan penuh rasa tanggung jawab sebagai komitmen tugas utama saya. Apabila di akhir semester sasaran kinerja dan bukti fisik ini <strong>TIDAK TERCAPAI / TIDAK TERBUKTI</strong>, saya bersedia menerima sanksi administratif berupa peninjauan ulang hingga pencabutan jam mengajar/penonaktifan tugas tambahan oleh Kepala Sekolah dan Yayasan.
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                        <a href="{{ route('guru.performance_contracts.index') }}" class="btn btn-light px-4 py-2 me-3 rounded-3 text-muted fw-semibold">Batalkan</a>
                         <button type="submit" class="btn btn-success px-4 py-2 rounded-3 fw-bold shadow-sm">
-                            <i class="fas fa-check-circle me-2"></i> Ajukan Target Kinerja
+                            <i class="fas fa-pen-nib me-2"></i> Tandatangani & Ajukan Perjanjian
                         </button>
                     </div>
                 </div>

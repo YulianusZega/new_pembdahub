@@ -395,11 +395,16 @@ async function reactThreadAjax(emoji) {
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSR-TOKEN': '{{ csrf_token() }}' },
             body: JSON.stringify({ emoji: emoji })
         });
+        if (!res.ok) {
+            const text = await res.text();
+            alert("React Thread Server Error (" + res.status + "): " + text.substring(0, 500));
+            return;
+        }
         const data = await res.json();
         if (data.success) {
             updateReactionUI('thread-reactions', data.counts, true);
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { alert("React Thread JS Error: " + e.message); }
 }
 
 async function reactReplyAjax(replyId, emoji) {
@@ -409,11 +414,16 @@ async function reactReplyAjax(replyId, emoji) {
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSR-TOKEN': '{{ csrf_token() }}' },
             body: JSON.stringify({ emoji: emoji })
         });
+        if (!res.ok) {
+            const text = await res.text();
+            alert("React Reply Server Error (" + res.status + "): " + text.substring(0, 500));
+            return;
+        }
         const data = await res.json();
         if (data.success) {
             updateReactionUI(`reply-reactions-${replyId}`, data.counts, false, replyId);
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { alert("React Reply JS Error: " + e.message); }
 }
 
 function updateReactionUI(containerId, counts, isThread, replyId = null) {
@@ -439,6 +449,11 @@ async function votePoll(optionId) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSR-TOKEN': '{{ csrf_token() }}' }
         });
+        if (!res.ok) {
+            const text = await res.text();
+            alert("Poll Server Error (" + res.status + "): " + text.substring(0, 500));
+            return;
+        }
         const data = await res.json();
         if (data.success) {
             document.getElementById('poll-total-votes').textContent = 'Total Votes: ' + data.total_votes;
@@ -464,7 +479,7 @@ async function votePoll(optionId) {
                 }
             });
         }
-    } catch (e) { console.error(e); }
+    } catch (e) { alert("Poll JS Error: " + e.message); }
 }
 </script>
 @endsection

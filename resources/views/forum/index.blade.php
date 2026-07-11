@@ -369,6 +369,11 @@ async function toggleLike(btn, url) {
                 'X-CSR-TOKEN': '{{ csrf_token() }}'
             }
         });
+        if (!response.ok) {
+            const text = await response.text();
+            alert("Like Server Error (" + response.status + "): " + text.substring(0, 500));
+            return;
+        }
         const result = await response.json();
         if (result.success) {
             const countSpan = btn.querySelector('.likes-count');
@@ -382,7 +387,7 @@ async function toggleLike(btn, url) {
             }
         }
     } catch (error) {
-        console.error('Error:', error);
+        alert('Like JS Catch Error: ' + error.message);
     } finally {
         btn.disabled = false;
     }

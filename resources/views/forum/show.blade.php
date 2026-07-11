@@ -376,11 +376,11 @@
             <input type="hidden" name="parent_reply_id" id="parent_reply_id">
             
             <!-- Emoji Picker for Input -->
-            <div class="relative flex-shrink-0 mb-1">
-                <button type="button" @click="composeEmojiOpen = !composeEmojiOpen" class="compose-emoji-trigger w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 flex items-center justify-center text-forum-body hover:text-white transition">
+            <div class="relative flex-shrink-0 mb-1" @click.away="composeEmojiOpen = false">
+                <button type="button" @click="composeEmojiOpen = !composeEmojiOpen" class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-forum-light-5 hover:bg-forum-light-10 flex items-center justify-center text-forum-body hover:text-white transition">
                     <i class="ph-bold ph-plus text-xl"></i>
                 </button>
-                <div x-show="composeEmojiOpen" @click.away="if (!$event.target.closest('.compose-emoji-trigger')) composeEmojiOpen = false" class="compose-emoji-picker">
+                <div x-show="composeEmojiOpen" class="compose-emoji-picker">
                     <template x-for="emoji in ['😀','😂','😍','👍','🔥','👏','❤️','💡','🤔','🎉','🙏','✨']">
                         <button type="button" @click="insertEmoji(emoji); composeEmojiOpen = false" class="compose-emoji-btn">
                             <span x-text="emoji"></span>

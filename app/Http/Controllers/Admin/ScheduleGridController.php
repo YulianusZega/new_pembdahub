@@ -59,8 +59,13 @@ class ScheduleGridController extends Controller
             ->where('academic_year_id', $selectedYearId)
             ->where('is_active', 1);
 
-        if ($request->filled('grade_level')) {
-            $classroomsQuery->where('grade_level', $request->grade_level);
+        $selectedGradeLevel = $request->grade_level;
+        if (!$selectedGradeLevel && $availableGrades->isNotEmpty()) {
+            $selectedGradeLevel = $availableGrades->first();
+        }
+
+        if ($selectedGradeLevel) {
+            $classroomsQuery->where('grade_level', $selectedGradeLevel);
         }
 
         $classrooms = $classroomsQuery->select('id', 'class_name', 'grade_level', 'school_id', 'academic_year_id')
@@ -171,7 +176,8 @@ class ScheduleGridController extends Controller
             'selectedYearId',
             'selectedSchoolId',
             'semester',
-            'availableGrades'
+            'availableGrades',
+            'selectedGradeLevel'
         ));
     }
     

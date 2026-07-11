@@ -727,13 +727,28 @@ class ForumController extends Controller
             $existing->delete();
             $reacted = false;
         } else {
-            ForumReaction::create([
-                'user_id' => $user->id,
-                'forum_thread_id' => $thread->id,
-                'forum_reply_id' => null,
-                'emoji' => $alias,
-            ]);
-            $reacted = true;
+            try {
+                ForumReaction::create([
+                    'user_id' => $user->id,
+                    'forum_thread_id' => $thread->id,
+                    'forum_reply_id' => null,
+                    'emoji' => $alias,
+                ]);
+                $reacted = true;
+            } catch (\Illuminate\Database\QueryException $e) {
+                // If it's a unique constraint violation, it means it was created concurrently.
+                // We can safely delete it to toggle it off.
+                if ($e->getCode() == 23000) {
+                    ForumReaction::where('user_id', $user->id)
+                        ->where('forum_thread_id', $thread->id)
+                        ->whereNull('forum_reply_id')
+                        ->where('emoji', $alias)
+                        ->delete();
+                    $reacted = false;
+                } else {
+                    throw $e;
+                }
+            }
         }
 
         return response()->json([
@@ -766,13 +781,26 @@ class ForumController extends Controller
             $existing->delete();
             $reacted = false;
         } else {
-            ForumReaction::create([
-                'user_id' => $user->id,
-                'forum_thread_id' => null,
-                'forum_reply_id' => $reply->id,
-                'emoji' => $alias,
-            ]);
-            $reacted = true;
+            try {
+                ForumReaction::create([
+                    'user_id' => $user->id,
+                    'forum_thread_id' => null,
+                    'forum_reply_id' => $reply->id,
+                    'emoji' => $alias,
+                ]);
+                $reacted = true;
+            } catch (\Illuminate\Database\QueryException $e) {
+                if ($e->getCode() == 23000) {
+                    ForumReaction::where('user_id', $user->id)
+                        ->where('forum_reply_id', $reply->id)
+                        ->whereNull('forum_thread_id')
+                        ->where('emoji', $alias)
+                        ->delete();
+                    $reacted = false;
+                } else {
+                    throw $e;
+                }
+            }
         }
 
         return response()->json([

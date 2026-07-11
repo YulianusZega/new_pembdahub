@@ -399,9 +399,12 @@ function getCsrfToken() {
     }
     return '{{ csrf_token() }}';
 }
+let isReacting = false;
 
 // AJAX Reactions
 async function reactThreadAjax(emoji) {
+    if (isReacting) return;
+    isReacting = true;
     try {
         const res = await fetch("{{ route('forum.react', $thread) }}", {
             method: 'POST',
@@ -418,9 +421,12 @@ async function reactThreadAjax(emoji) {
             updateReactionUI('thread-reactions', data.counts, true);
         }
     } catch (e) { alert("React Thread JS Error: " + e.message); }
+    finally { isReacting = false; }
 }
 
 async function reactReplyAjax(replyId, emoji) {
+    if (isReacting) return;
+    isReacting = true;
     try {
         const res = await fetch(`{{ url('/forum/reply') }}/${replyId}/react`, {
             method: 'POST',
@@ -437,6 +443,7 @@ async function reactReplyAjax(replyId, emoji) {
             updateReactionUI(`reply-reactions-${replyId}`, data.counts, false, replyId);
         }
     } catch (e) { alert("React Reply JS Error: " + e.message); }
+    finally { isReacting = false; }
 }
 
 function updateReactionUI(containerId, counts, isThread, replyId = null) {

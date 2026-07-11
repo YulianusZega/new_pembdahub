@@ -17,9 +17,11 @@ class SurveyParticipantController extends Controller
     private function getRespondentRole()
     {
         $user = auth()->user();
-        if ($user->isGuru()) {
+        $activeRole = session('active_role', $user->role);
+        
+        if ($activeRole === 'guru' || $user->isGuru()) {
             return 'guru';
-        } elseif ($user->isSiswa()) {
+        } elseif ($activeRole === 'siswa' || $user->isSiswa()) {
             return 'siswa';
         }
         

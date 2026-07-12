@@ -1559,15 +1559,13 @@ Route::get('/admin/cek-db-live', function() {
 Route::get('/audio/mars-pembda.mp4', function () {
     $paths = [
         public_path('audio/mars-pembda.mp4'),
-        base_path('../audio/mars-pembda.mp4'),
-        base_path('../pembdahub_lama/public/audio/mars-pembda.mp4'),
-        base_path('../pembdahub_backup/public/audio/mars-pembda.mp4')
+        base_path('../audio/mars-pembda.mp4')
     ];
     
     foreach ($paths as $path) {
         if (file_exists($path)) return response()->file($path);
     }
-    abort(404, 'Audio file not found in any paths');
+    abort(404, 'Audio file not found');
 });
 
 // Route to Seed Landing Page Content from Browser (Safe & Secured with Key)
@@ -1650,10 +1648,7 @@ Route::get('/storage/{folder}/{filename}', function ($folder, $filename) {
         storage_path('app/public/' . $folder . '/' . $filename),
         storage_path('app/' . $folder . '/' . $filename),
         public_path('storage/' . $folder . '/' . $filename),
-        base_path('../storage/' . $folder . '/' . $filename), // public_html/storage
-        base_path('../pembdahub_lama/storage/app/public/' . $folder . '/' . $filename), // old project
-        base_path('../pembdahub_backup/storage/app/public/' . $folder . '/' . $filename), // backup
-        base_path('../pembdahub_backup/storage.5201/app/public/' . $folder . '/' . $filename) // other backup
+        base_path('../storage/' . $folder . '/' . $filename) // public_html/storage
     ];
     
     $foundPath = null;

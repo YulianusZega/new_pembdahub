@@ -19,6 +19,20 @@ class AlumniController extends Controller
         }
 
         if (!$student) {
+            // Cek apakah user mendaftar melalui IKA Alumni (AlumniDirectory)
+            $alumniDir = \App\Models\AlumniDirectory::where('user_id', Auth::id())->first();
+            if ($alumniDir) {
+                return AlumniProfile::firstOrCreate(
+                    ['email' => Auth::user()->email],
+                    [
+                        'school_id' => $alumniDir->school_id,
+                        'full_name' => $alumniDir->full_name,
+                        'graduation_year' => $alumniDir->graduation_year,
+                        'phone' => $alumniDir->phone,
+                    ]
+                );
+            }
+
             // Check if user is already mapped as alumni directly
             $alumni = AlumniProfile::where('email', Auth::user()->email)->first();
             if ($alumni) return $alumni;

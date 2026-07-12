@@ -76,317 +76,300 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px -10px rgba(49, 46, 129, 0.5);
         }
+        
+        /* Custom Scrollbar for Right Side */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
     </style>
 </head>
-<body class="text-slate-800 antialiased font-sans">
+<body class="text-slate-800 antialiased font-sans overflow-x-hidden">
 
-    <div class="min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
+    <!-- Split Layout Container -->
+    <div class="min-h-screen flex flex-col lg:flex-row w-full max-w-[1600px] mx-auto relative">
         
-        <!-- Header -->
-        <div class="text-center mb-8 max-w-3xl mx-auto">
-            <div class="flex justify-center items-center gap-3 mb-4">
-                <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo PEMBDA" class="h-16 w-auto object-contain">
-            </div>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-indigo-900 tracking-tight mb-4">
-                Pelaporan Data & Rembuk Alumni
-            </h1>
-            <p class="text-slate-600 text-lg leading-relaxed mb-6">
-                Waktu berlalu begitu cepat, tak terasa sudah lebih dari 50 tahun Yayasan Perguruan PEMBDA Nias berdiri. Sudah banyak cerita indah, canda tawa, dan kenangan yang dirajut di ruang-ruang kelas kita. Kini, almamater memanggil Anda kembali. Mari berembuk, berbagi cerita perjalanan hidup Anda, memberikan masukan, serta motivasi bagi adik-adik dan almamater tercinta.
-            </p>
-            <a href="{{ route('login') }}" class="inline-flex items-center gap-2 bg-white text-indigo-700 px-6 py-2.5 rounded-full text-sm font-bold shadow-md hover:shadow-lg transition-all border border-indigo-100 hover:bg-indigo-50 hover:-translate-y-0.5">
-                <i class="fa-solid fa-right-to-bracket"></i> Sudah Punya Akun? Login di Sini
-            </a>
-        </div>
-
-        <!-- Smart Report -->
-        <div class="max-w-3xl w-full mx-auto mb-10 p-6 bg-gradient-to-r from-indigo-50 to-white border border-indigo-100 rounded-2xl shadow-sm text-center">
-            <h3 class="text-sm font-bold text-indigo-800 uppercase tracking-wider mb-4"><i class="fas fa-chart-pie mr-2 text-indigo-500"></i> Report Pintar Alumni</h3>
-            <div class="flex flex-wrap justify-center gap-4 md:gap-8">
-                <div class="bg-white px-6 py-4 rounded-xl shadow-sm border border-slate-100 flex-1 min-w-[120px]">
-                    <span class="block text-xs font-semibold text-slate-500 mb-1">Total Pendaftar</span>
-                    <strong class="text-3xl font-extrabold text-indigo-600">{{ $totalRegistered ?? 0 }}</strong>
-                </div>
-                <div class="bg-white px-6 py-4 rounded-xl shadow-sm border border-slate-100 flex-1 min-w-[120px]">
-                    <span class="block text-xs font-semibold text-slate-500 mb-1">Angkatan Tertua</span>
-                    <strong class="text-3xl font-extrabold text-gold">{{ $oldestAlumni ?? '-' }}</strong>
-                </div>
-                <div class="bg-white px-6 py-4 rounded-xl shadow-sm border border-slate-100 flex-1 min-w-[120px]">
-                    <span class="block text-xs font-semibold text-slate-500 mb-1">Angkatan Termuda</span>
-                    <strong class="text-3xl font-extrabold text-emerald-500">{{ $youngestAlumni ?? '-' }}</strong>
-                </div>
-            </div>
-            <p class="text-[11px] text-slate-400 mt-4 font-medium">Jadilah bagian dari sejarah panjang PEMBDA dengan mendaftarkan diri Anda sekarang!</p>
-        </div>
-
-        <!-- Info & Guide Section -->
-        <div class="max-w-5xl w-full mx-auto mb-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Info 1: Tujuan -->
-                <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4">
-                        <i class="fa-solid fa-bullseye text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-indigo-900 mb-2">Mengapa Harus Mendaftar?</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        Kami ingin mendata ulang dan menyatukan seluruh keluarga besar alumni dari berbagai generasi. Platform ini dibangun khusus agar Anda bisa terus memantau dan berkontribusi untuk perkembangan yayasan tercinta kita.
-                    </p>
-                </div>
-                <!-- Info 2: Keuntungan -->
-                <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-gold/20 shadow-sm hover:shadow-md transition relative overflow-hidden">
-                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-gold/10 rounded-full blur-xl"></div>
-                    <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-gold mb-4 relative z-10">
-                        <i class="fa-solid fa-gift text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-indigo-900 mb-2 relative z-10">Fasilitas Eksklusif</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed relative z-10">
-                        Setelah mendaftar, Anda akan mendapatkan <strong>Akun Portal Alumni</strong> secara otomatis! Dengan akun ini, Anda bisa berjejaring di forum <em>Pembda Space</em>, mengisi Tracer Study, dan melihat lowongan karir khusus alumni.
-                    </p>
-                </div>
-                <!-- Info 3: Cara Kerja -->
-                <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500 mb-4">
-                        <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-indigo-900 mb-2">Bagaimana Caranya?</h3>
-                    <p class="text-sm text-slate-600 leading-relaxed">
-                        Sangat mudah! Cukup <strong>isi formulir pelaporan data di bawah</strong> halaman ini. Saat berhasil dikirim, sistem akan langsung memberikan <em>Username</em> dan <em>Password</em> untuk Anda *Login* ke Portal Alumni.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Form Card -->
-        @if(isset($approvedAlumni) && $approvedAlumni->count() > 0)
-        <div class="w-full max-w-6xl mb-12">
-            <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-indigo-900 inline-block relative">
-                    Keluarga Besar yang Telah Berembuk
-                    <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gold rounded-full"></div>
-                </h2>
-            </div>
+        <!-- Left Sidebar: Info & Photos (Sticky on Desktop) -->
+        <div class="w-full lg:w-5/12 xl:w-1/2 p-6 md:p-10 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto custom-scroll flex flex-col justify-center">
             
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                @foreach($approvedAlumni as $alumni)
-                <div class="glass-card overflow-hidden hover:transform hover:scale-105 transition duration-300 group cursor-pointer relative" style="border-radius: 16px;">
-                    <!-- Container dengan aspect ratio 3:4 (133% padding-top) -->
-                    <div class="w-full relative" style="padding-top: 133.33%;">
-                        <img src="{{ $alumni->photo_url }}" class="absolute inset-0 w-full h-full object-cover object-top" alt="{{ $alumni->full_name }}">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity"></div>
-                        <div class="absolute bottom-0 left-0 right-0 p-3 text-white">
-                            <h4 class="font-bold text-sm leading-tight line-clamp-2" title="{{ $alumni->full_name }}">{{ $alumni->alias_name ? $alumni->alias_name : $alumni->full_name }}</h4>
-                            <p class="text-[10px] text-gray-300 mt-1 line-clamp-1"><i class="fas fa-graduation-cap text-gold mr-1"></i>{{ $alumni->school->name ?? 'PEMBDA' }} '{{ $alumni->graduation_year }}</p>
-                            @if($alumni->occupation)
-                            <p class="text-[10px] text-indigo-200 mt-0.5 line-clamp-1"><i class="fas fa-briefcase mr-1"></i>{{ $alumni->occupation }}</p>
-                            @endif
-                        </div>
-                    </div>
-                    @if($alumni->message)
-                    <div class="absolute inset-0 bg-indigo-900/95 p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center items-center text-center">
-                        <i class="fas fa-quote-left text-indigo-400 text-xl mb-2"></i>
-                        <p class="text-xs italic line-clamp-5">{{ $alumni->message }}</p>
-                    </div>
-                    @endif
-                </div>
-                @endforeach
-            </div>
-        </div>
-        @endif
-
-        <div class="w-full max-w-4xl glass-card p-6 md:p-10">
-            
-            @if(session('success'))
-                <div class="mb-8 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex gap-3 items-start">
-                    <i class="fa-solid fa-circle-check text-xl mt-0.5 text-emerald-500"></i>
+            <div class="mb-8">
+                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-indigo-600 font-bold hover:text-indigo-800 transition mb-6 bg-white/50 px-4 py-2 rounded-full shadow-sm border border-indigo-100">
+                    <i class="fa-solid fa-arrow-left"></i> Beranda
+                </a>
+                
+                <div class="flex items-center gap-4 mb-6">
+                    <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo PEMBDA" class="h-16 w-auto object-contain">
                     <div>
-                        <h4 class="font-bold text-emerald-900">Pelaporan Data Berhasil!</h4>
-                        <p class="text-sm mt-1">{!! session('success') !!}</p>
+                        <h1 class="text-2xl lg:text-3xl font-extrabold text-indigo-900 tracking-tight leading-tight">
+                            Portal & Rembuk Alumni
+                        </h1>
+                        <p class="text-sm text-gold font-bold uppercase tracking-widest mt-1">Yayasan Perguruan PEMBDA Nias</p>
                     </div>
                 </div>
+                
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed mb-6">
+                    Mari berembuk, berbagi cerita perjalanan hidup Anda, memberikan masukan, serta motivasi bagi adik-adik dan almamater tercinta. Daftarkan diri Anda dan bergabunglah di <strong class="text-indigo-900">Pembda Space</strong>.
+                </p>
+                
+                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 bg-white text-indigo-700 px-6 py-3 rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all border border-indigo-100 hover:bg-indigo-50">
+                    <i class="fa-solid fa-right-to-bracket"></i> Sudah Punya Akun? Login
+                </a>
+            </div>
+
+            <!-- Smart Report Widget -->
+            <div class="bg-gradient-to-r from-indigo-50 to-white border border-indigo-100 rounded-2xl p-5 shadow-sm mb-8 relative overflow-hidden">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
+                <h3 class="text-xs font-bold text-indigo-800 uppercase tracking-wider mb-4"><i class="fas fa-chart-pie mr-1 text-indigo-500"></i> Statistik Alumni</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 text-center">
+                        <span class="block text-[10px] font-bold text-slate-500 mb-1">Total Terdata</span>
+                        <strong class="text-xl md:text-2xl font-extrabold text-indigo-600">{{ $totalRegistered ?? 0 }}</strong>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 text-center">
+                        <span class="block text-[10px] font-bold text-slate-500 mb-1">Angkatan Tertua</span>
+                        <strong class="text-xl md:text-2xl font-extrabold text-gold">{{ $oldestAlumni ?? '-' }}</strong>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 text-center">
+                        <span class="block text-[10px] font-bold text-slate-500 mb-1">Angkatan Termuda</span>
+                        <strong class="text-xl md:text-2xl font-extrabold text-emerald-500">{{ $youngestAlumni ?? '-' }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alumni Gallery (Limited Preview) -->
+            @if(isset($approvedAlumni) && $approvedAlumni->count() > 0)
+            <div>
+                <h3 class="text-sm font-bold text-indigo-900 mb-4 flex items-center gap-2">
+                    Keluarga yang Telah Bergabung
+                    <span class="text-[10px] bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">Terbaru</span>
+                </h3>
+                
+                <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                    @foreach($approvedAlumni as $alumni)
+                    <div class="group relative rounded-xl overflow-hidden aspect-[3/4] shadow-sm border border-white/50 bg-white">
+                        <img src="{{ $alumni->photo_url }}" class="absolute inset-0 w-full h-full object-cover object-top transition duration-500 group-hover:scale-110" alt="{{ $alumni->full_name }}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-80"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-2 text-white text-center">
+                            <h4 class="font-bold text-[10px] leading-tight line-clamp-2" title="{{ $alumni->full_name }}">{{ $alumni->alias_name ? $alumni->alias_name : $alumni->full_name }}</h4>
+                            <p class="text-[9px] text-gold mt-0.5">'{{ $alumni->graduation_year }}</p>
+                        </div>
+                        @if($alumni->message)
+                        <div class="absolute inset-0 bg-indigo-900/95 p-3 text-white opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center items-center text-center backdrop-blur-sm cursor-pointer">
+                            <i class="fas fa-quote-left text-indigo-400 text-lg mb-1"></i>
+                            <p class="text-[9px] italic line-clamp-4 leading-relaxed">{{ $alumni->message }}</p>
+                        </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+                @if($totalRegistered > 12)
+                <div class="mt-4 text-center">
+                    <p class="text-xs font-semibold text-slate-500">... dan {{ $totalRegistered - 12 }} alumni lainnya.</p>
+                </div>
+                @endif
+            </div>
             @endif
 
-            @if($errors->any())
-                <div class="mb-8 p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl flex gap-3 items-start">
-                    <i class="fa-solid fa-triangle-exclamation text-xl mt-0.5 text-red-500"></i>
-                    <div>
-                        <h4 class="font-bold text-red-900">Mohon periksa kembali isian Anda:</h4>
-                        <ul class="text-sm mt-1 list-disc list-inside">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+        </div>
+        
+        <!-- Right Content: The Form -->
+        <div class="w-full lg:w-7/12 xl:w-1/2 p-4 md:p-8 lg:p-10 flex items-center justify-center">
+            
+            <div class="w-full glass-card p-6 md:p-10 relative overflow-hidden">
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-100 rounded-bl-full opacity-50 pointer-events-none"></div>
+                
+                @if(session('success'))
+                    <div class="mb-8 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex gap-3 items-start relative z-10 shadow-sm">
+                        <i class="fa-solid fa-circle-check text-xl mt-0.5 text-emerald-500"></i>
+                        <div>
+                            <h4 class="font-bold text-emerald-900">Pendaftaran Berhasil!</h4>
+                            <p class="text-sm mt-1">{!! session('success') !!}</p>
+                        </div>
                     </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="mb-8 p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl flex gap-3 items-start relative z-10 shadow-sm">
+                        <i class="fa-solid fa-triangle-exclamation text-xl mt-0.5 text-red-500"></i>
+                        <div>
+                            <h4 class="font-bold text-red-900">Mohon periksa kembali isian Anda:</h4>
+                            <ul class="text-sm mt-1 list-disc list-inside">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="mb-8 border-b border-indigo-100 pb-4 relative z-10">
+                    <h2 class="text-2xl font-bold text-indigo-900">Formulir Pendaftaran</h2>
+                    <p class="text-sm text-slate-500 mt-1">Lengkapi data di bawah ini untuk membuat Akun Portal Alumni Anda.</p>
                 </div>
-            @endif
 
-            <form action="{{ route('ika.register.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
-                @csrf
+                <form action="{{ route('ika.register.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-8 relative z-10">
+                    @csrf
 
-                <!-- Section: Data Pribadi -->
-                <div>
-                    <h3 class="text-xl font-bold text-indigo-900 mb-4 pb-2 border-b border-indigo-100 flex items-center gap-2">
-                        <i class="fa-regular fa-id-badge text-indigo-500"></i> 1. Identitas Pribadi
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="col-span-1 md:col-span-2">
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Lengkap (beserta Gelar) <span class="text-red-500">*</span></label>
-                            <input type="text" name="full_name" value="{{ old('full_name') }}" required class="form-input" placeholder="Cth: Dr. Budi Santoso, M.Kom">
-                        </div>
-
-                        <div class="col-span-1 md:col-span-2">
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Panggilan / Nama Keluarga (Nias: Ama... / Ina...)</label>
-                            <input type="text" name="alias_name" value="{{ old('alias_name') }}" class="form-input" placeholder="Cth: Ama Budi / Ina Wati">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jenis Kelamin <span class="text-red-500">*</span></label>
-                            <select name="gender" required class="form-input">
-                                <option value="">-- Pilih Jenis Kelamin --</option>
-                                <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                                <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Perempuan</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nomor WhatsApp / HP</label>
-                            <input type="text" name="phone" value="{{ old('phone') }}" class="form-input" placeholder="Cth: 08123456789">
-                        </div>
+                    <!-- Section: Data Pribadi -->
+                    <div>
+                        <h3 class="text-sm font-bold text-indigo-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center">1</div> Identitas Diri
+                        </h3>
                         
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Status Pernikahan</label>
-                            <select name="marital_status" class="form-input">
-                                <option value="">-- Pilih Status --</option>
-                                <option value="Belum Menikah" {{ old('marital_status') == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
-                                <option value="Menikah" {{ old('marital_status') == 'Menikah' ? 'selected' : '' }}>Menikah</option>
-                                <option value="Pernah Menikah" {{ old('marital_status') == 'Pernah Menikah' ? 'selected' : '' }}>Pernah Menikah</option>
-                            </select>
-                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="col-span-1 md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap (beserta Gelar) <span class="text-red-500">*</span></label>
+                                <input type="text" name="full_name" value="{{ old('full_name') }}" required class="form-input" placeholder="Cth: Dr. Budi Santoso, M.Kom">
+                            </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jumlah Anak (Jika Ada)</label>
-                            <input type="number" name="children_count" value="{{ old('children_count') }}" min="0" class="form-input" placeholder="0">
-                        </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Panggilan / Alias</label>
+                                <input type="text" name="alias_name" value="{{ old('alias_name') }}" class="form-input" placeholder="Cth: Ama Budi / Ina Wati">
+                            </div>
 
-                        <div class="col-span-1 md:col-span-2 border-t border-slate-100 pt-4 mt-2">
-                            <h4 class="text-sm font-bold text-indigo-800 mb-4">Informasi Pekerjaan</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Profesi / Pekerjaan Saat Ini</label>
-                                    <input type="text" name="occupation" value="{{ old('occupation') }}" class="form-input" placeholder="Cth: Pengusaha / PNS / Wiraswasta">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Perusahaan / Instansi</label>
-                                    <input type="text" name="company_name" value="{{ old('company_name') }}" class="form-input" placeholder="Cth: PT Maju Jaya / Pemda Nias">
-                                </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Jenis Kelamin <span class="text-red-500">*</span></label>
+                                <select name="gender" required class="form-input">
+                                    <option value="">-- Pilih --</option>
+                                    <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor WhatsApp / HP</label>
+                                <input type="text" name="phone" value="{{ old('phone') }}" class="form-input" placeholder="Cth: 08123456789">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Status Pernikahan</label>
+                                <select name="marital_status" class="form-input">
+                                    <option value="">-- Pilih --</option>
+                                    <option value="Belum Menikah" {{ old('marital_status') == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
+                                    <option value="Menikah" {{ old('marital_status') == 'Menikah' ? 'selected' : '' }}>Menikah</option>
+                                    <option value="Pernah Menikah" {{ old('marital_status') == 'Pernah Menikah' ? 'selected' : '' }}>Pernah Menikah</option>
+                                </select>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-span-1 md:col-span-2 border-t border-slate-100 pt-4 mt-2">
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alamat Email Aktif</label>
-                            <input type="email" name="email" value="{{ old('email') }}" class="form-input" placeholder="Cth: budi@email.com">
-                        </div>
-
-                        <div class="col-span-1 md:col-span-2">
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alamat Domisili <span class="text-red-500">*</span></label>
-                            <textarea name="address" rows="2" required class="form-input" placeholder="Tuliskan alamat lengkap domisili Anda saat ini...">{{ old('address') }}</textarea>
+                    <!-- Section: Pekerjaan -->
+                    <div class="bg-slate-50 border border-slate-100 p-5 rounded-2xl">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-4"><i class="fas fa-briefcase mr-1 text-slate-400"></i> Info Karir Saat Ini</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Profesi / Jabatan</label>
+                                <input type="text" name="occupation" value="{{ old('occupation') }}" class="form-input bg-white" placeholder="Cth: PNS / Wirausaha / Manajer">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Instansi / Perusahaan</label>
+                                <input type="text" name="company_name" value="{{ old('company_name') }}" class="form-input bg-white" placeholder="Cth: Pemda Nias / PT ABC">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Section: Data Akademik -->
-                <div>
-                    <h3 class="text-xl font-bold text-indigo-900 mb-4 pb-2 border-b border-indigo-100 flex items-center gap-2">
-                        <i class="fa-solid fa-graduation-cap text-indigo-500"></i> 2. Rekam Akademik di PEMBDA
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alumni Unit Sekolah <span class="text-red-500">*</span></label>
-                            <select id="school-select" name="school_id" required class="form-input">
-                                <option value="">-- Pilih Sekolah --</option>
-                                @foreach($schools as $school)
-                                    <option value="{{ $school->id }}" data-type="{{ $school->type }}" {{ old('school_id') == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
-                                @endforeach
-                            </select>
+                    <!-- Section: Kontak & Alamat -->
+                    <div>
+                        <h3 class="text-sm font-bold text-indigo-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center">2</div> Kontak & Lokasi
+                        </h3>
+                        <div class="grid grid-cols-1 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Alamat Email Aktif <span class="text-slate-400 font-normal">(Digunakan untuk Login)</span></label>
+                                <input type="email" name="email" value="{{ old('email') }}" class="form-input" placeholder="budi@email.com">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Alamat Domisili Sekarang <span class="text-red-500">*</span></label>
+                                <textarea name="address" rows="2" required class="form-input" placeholder="Tuliskan alamat lengkap..."></textarea>
+                            </div>
                         </div>
+                    </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tahun Lulus <span class="text-red-500">*</span></label>
-                            <select name="graduation_year" required class="form-input">
-                                <option value="">-- Pilih Tahun Lulus --</option>
-                                @foreach($years as $year)
-                                    <option value="{{ $year }}" {{ old('graduation_year') == $year ? 'selected' : '' }}>{{ $year }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Kelas Terakhir (opsional)</label>
-                            <input type="text" name="last_class" value="{{ old('last_class') }}" class="form-input" placeholder="Cth: XII IPA 1 / 3 Sos 2">
-                        </div>
+                    <!-- Section: Data Akademik -->
+                    <div>
+                        <h3 class="text-sm font-bold text-indigo-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center">3</div> Rekam Akademik
+                        </h3>
                         
-                        <div id="jurusan-container" style="display: none;">
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jurusan (Khusus SMK) <span class="text-red-500">*</span></label>
-                            <input type="text" id="jurusan-input" name="jurusan" value="{{ old('jurusan') }}" class="form-input" placeholder="Cth: Akuntansi / TKJ / Perkantoran">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Lulusan Dari <span class="text-red-500">*</span></label>
+                                <select id="school-select" name="school_id" required class="form-input">
+                                    <option value="">-- Pilih Sekolah --</option>
+                                    @foreach($schools as $school)
+                                        <option value="{{ $school->id }}" data-type="{{ $school->type }}" {{ old('school_id') == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Tahun Lulus <span class="text-red-500">*</span></label>
+                                <select name="graduation_year" required class="form-input">
+                                    <option value="">-- Pilih Tahun --</option>
+                                    @foreach($years as $year)
+                                        <option value="{{ $year }}" {{ old('graduation_year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div id="jurusan-container" style="display: none;" class="col-span-1 md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Jurusan (Khusus SMK) <span class="text-red-500">*</span></label>
+                                <input type="text" id="jurusan-input" name="jurusan" value="{{ old('jurusan') }}" class="form-input" placeholder="Cth: Akuntansi / TKJ / Perkantoran">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Section: Pesan & Foto -->
-                <div>
-                    <h3 class="text-xl font-bold text-indigo-900 mb-4 pb-2 border-b border-indigo-100 flex items-center gap-2">
-                        <i class="fa-regular fa-image text-indigo-500"></i> 3. Pesan & Foto Profil
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="col-span-1 md:col-span-2">
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pesan, Kesan, atau Ide untuk Almamater</label>
-                            <textarea name="message" rows="4" class="form-input" placeholder="Tuliskan pesan-pesan indah Anda semasa sekolah, atau ide untuk memajukan Yayasan PEMBDA Nias...">{{ old('message') }}</textarea>
-                            <p class="text-xs text-slate-400 mt-1">Pesan ini akan menjadi inspirasi bagi adik-adik kelas yang masih belajar.</p>
-                        </div>
+                    <!-- Section: Pesan & Foto -->
+                    <div>
+                        <h3 class="text-sm font-bold text-indigo-800 uppercase tracking-wider mb-4 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center">4</div> Personal (Opsional)
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Pesan, Kesan, atau Ide untuk Almamater</label>
+                                <textarea name="message" rows="3" class="form-input" placeholder="Tuliskan pesan indah semasa sekolah, atau motivasi untuk adik kelas..."></textarea>
+                            </div>
 
-                        <div class="col-span-1 md:col-span-2">
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Unggah Foto Profil Terbaru (opsional)</label>
-                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-xl bg-slate-50 hover:bg-indigo-50 transition">
-                                <div class="space-y-1 text-center">
-                                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-indigo-400 mb-2"></i>
-                                    <div class="flex text-sm text-slate-600 justify-center">
-                                        <label for="photo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 px-2 py-0.5 shadow-sm border border-slate-200">
-                                            <span>Pilih File Foto</span>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1.5">Unggah Foto Profil Terbaru</label>
+                                <div class="mt-1 flex flex-col sm:flex-row items-center gap-4">
+                                    <!-- Image Preview Area -->
+                                    <div id="image-preview-container" class="hidden shrink-0">
+                                        <div class="relative w-20 h-20 rounded-full overflow-hidden border-2 border-indigo-200 shadow-sm">
+                                            <img id="image-preview" src="#" alt="Preview" class="w-full h-full object-cover">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex-1 w-full border-2 border-slate-200 border-dashed rounded-xl bg-slate-50 hover:bg-indigo-50 transition p-4 text-center">
+                                        <i class="fa-solid fa-cloud-arrow-up text-xl text-indigo-400 mb-2 block"></i>
+                                        <label for="photo" class="cursor-pointer inline-block bg-white rounded-md font-bold text-indigo-600 hover:text-indigo-500 shadow-sm border border-slate-200 px-4 py-1 text-xs">
+                                            <span>Pilih File (Maks 4MB)</span>
                                             <input id="photo" name="photo" type="file" class="sr-only" accept="image/jpeg,image/png,image/jpg" onchange="previewImage(event)">
                                         </label>
                                     </div>
-                                    <p class="text-xs text-slate-500 mt-2">PNG, JPG, JPEG (Maks. 4MB)</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Image Preview Area -->
-                            <div id="image-preview-container" class="mt-4 hidden justify-center">
-                                <div class="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                                    <img id="image-preview" src="#" alt="Preview" class="w-full h-full object-cover">
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Submit Button -->
-                <div class="pt-4 flex justify-between items-center border-t border-slate-200">
-                    <a href="{{ route('home') }}" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition">
-                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Beranda
-                    </a>
-                    <button type="submit" class="btn-primary py-3 px-8 rounded-xl font-bold text-lg inline-flex items-center gap-2">
-                        <i class="fa-solid fa-paper-plane"></i> Kirim Pelaporan Data
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Footer -->
-        <div class="mt-10 text-center text-sm text-slate-500">
-            <p>&copy; {{ date('Y') }} Yayasan Perguruan PEMBDA Nias.</p>
-            <p>Powered by <strong class="text-indigo-900">PembdaHUB</strong></p>
+                    <!-- Submit Button -->
+                    <div class="pt-6 border-t border-slate-200">
+                        <button type="submit" class="w-full btn-primary py-4 px-8 rounded-xl font-bold text-lg shadow-lg flex justify-center items-center gap-2">
+                            Daftar Sekarang <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <p class="text-[10px] text-center text-slate-400 mt-3">Dengan mendaftar, Anda menyetujui kebijakan privasi sekolah untuk mendata profil alumni.</p>
+                    </div>
+                </form>
+            </div>
+            
         </div>
     </div>
 
@@ -398,17 +381,15 @@
 
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                
                 reader.onload = function(e) {
                     previewImage.src = e.target.result;
                     previewContainer.classList.remove('hidden');
-                    previewContainer.classList.add('flex');
+                    previewContainer.classList.add('block');
                 }
-                
                 reader.readAsDataURL(input.files[0]);
             } else {
                 previewContainer.classList.add('hidden');
-                previewContainer.classList.remove('flex');
+                previewContainer.classList.remove('block');
                 previewImage.src = "#";
             }
         }
@@ -428,7 +409,6 @@
             } else {
                 jurusanContainer.style.display = 'none';
                 jurusanInput.removeAttribute('required');
-                // jurusanInput.value = ''; // Opsional: jangan reset value kalau user salah pencet
             }
         }
         
@@ -436,7 +416,7 @@
             const schoolSelect = document.getElementById('school-select');
             if(schoolSelect) {
                 schoolSelect.addEventListener('change', toggleJurusan);
-                toggleJurusan(); // run once on load
+                toggleJurusan(); 
             }
         });
     </script>

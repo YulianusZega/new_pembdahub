@@ -1555,7 +1555,57 @@ Route::get('/admin/cek-db-live', function() {
     echo "</pre>";
 });
 
-// Route wrapper untuk Restore TP agar tidak 404 setelah Git Pull di Hostinger
+// Fallback Route for Mars Audio (Hostinger workaround)
+Route::get('/audio/mars-pembda.mp4', function () {
+    $paths = [
+        public_path('audio/mars-pembda.mp4'),
+        base_path('../audio/mars-pembda.mp4'),
+        base_path('../pembdahub_lama/public/audio/mars-pembda.mp4'),
+        base_path('../pembdahub_backup/public/audio/mars-pembda.mp4')
+    ];
+    
+    foreach ($paths as $path) {
+        if (file_exists($path)) return response()->file($path);
+    }
+    abort(404, 'Audio file not found in any paths');
+});
+
+// Route to Seed Landing Page Content from Browser (Safe & Secured with Key)
+Route::get('/seed-landing-content', function () {
+    $secret = request('key');
+    if ($secret !== 'pembda2026') {
+        return response("Unauthorized. Please provide the correct key.", 403);
+    }
+    
+    try {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', [
+            '--class' => 'LandingPageContentSeeder',
+            '--force' => true
+        ]);
+        return "Landing Page content (News & Gallery) seeded successfully!";
+    } catch (\Exception $e) {
+        return "Error seeding content: " . $e->getMessage();
+    }
+});
+
+// Route to Fix Database Issue with missing "academic_years"
+Route::get('/fix-academic-years', function () {
+    $secret = request('key');
+    if ($secret !== 'pembda2026') return response("Unauthorized", 403);
+
+    try {
+        // Ensure TP 2026/2027 exists
+        $ay = \App\Models\AcademicYear::firstOrCreate(
+            ['name' => '2026/2027'],
+            ['is_active' => true]
+        );
+        return "Academic Year 2026/2027 ensured. ID: " . $ay->id;
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
+
+// Route wrapper for Restore TP
 Route::get('/restore-tp-2026', function () {
     if (request('secret') !== 'pembda99') {
         abort(403, 'Unauthorized.');
@@ -1600,7 +1650,10 @@ Route::get('/storage/{folder}/{filename}', function ($folder, $filename) {
         storage_path('app/public/' . $folder . '/' . $filename),
         storage_path('app/' . $folder . '/' . $filename),
         public_path('storage/' . $folder . '/' . $filename),
-        base_path('../storage/' . $folder . '/' . $filename) // public_html/storage
+        base_path('../storage/' . $folder . '/' . $filename), // public_html/storage
+        base_path('../pembdahub_lama/storage/app/public/' . $folder . '/' . $filename), // old project
+        base_path('../pembdahub_backup/storage/app/public/' . $folder . '/' . $filename), // backup
+        base_path('../pembdahub_backup/storage.5201/app/public/' . $folder . '/' . $filename) // other backup
     ];
     
     $foundPath = null;

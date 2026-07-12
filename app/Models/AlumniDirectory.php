@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+
+class AlumniDirectory extends Model
+{
+    use HasFactory;
+
+    protected $table = 'alumni_directories';
+
+    protected $fillable = [
+        'full_name',
+        'gender',
+        'address',
+        'phone',
+        'email',
+        'occupation',
+        'school_id',
+        'graduation_year',
+        'last_class',
+        'message',
+        'photo_path',
+        'is_approved',
+    ];
+
+    protected $casts = [
+        'is_approved' => 'boolean',
+        'graduation_year' => 'integer',
+    ];
+
+    /**
+     * Relationship: Directory entry belongs to a School (Unit)
+     */
+    public function school()
+    {
+        return $this->belongsTo(School::class);
+    }
+
+    /**
+     * Accessor for full photo URL.
+     */
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->photo_path) {
+            return asset('storage/' . $this->photo_path);
+        }
+        
+        // Default avatar fallback
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->full_name) . '&color=ffffff&background=6366f1';
+    }
+}

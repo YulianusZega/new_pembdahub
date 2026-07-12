@@ -38,6 +38,7 @@
                     <a href="#features">Modul Sistem</a>
                     <a href="{{ route('forum.index') }}"><i class="fa-solid fa-comments" style="color:var(--indigo-light); font-size:12px; margin-right:4px;"></i> Forum Akademik</a>
                     <a href="{{ route('alumni.tracer.form') }}"><i class="fa-solid fa-briefcase" style="color:var(--emerald); font-size:12px; margin-right:4px;"></i> Tracer Study Alumni</a>
+                    <a href="{{ route('ika.register') }}"><i class="fa-solid fa-users" style="color:var(--violet); font-size:12px; margin-right:4px;"></i> Pendaftaran IKA PEMBDA</a>
                     <a href="{{ route('alumni.jobs.index') }}"><i class="fa-solid fa-bullhorn" style="color:var(--cyan); font-size:12px; margin-right:4px;"></i> Lowongan Kerja</a>
                     <a href="{{ route('login') }}"><i class="fa-solid fa-graduation-cap" style="color:var(--violet); font-size:12px; margin-right:4px;"></i> Tugas Akhir Siswa</a>
                     <a href="#pelatihan"><i class="fa-solid fa-book-open" style="color:var(--cyan); font-size:12px; margin-right:4px;"></i> Modul Pelatihan</a>

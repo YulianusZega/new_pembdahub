@@ -1,4 +1,4 @@
-﻿{{--
+{{--
     Admin Layout — extends unified master layout
     Theme: Indigo/Purple
 --}}
@@ -293,6 +293,10 @@
             <a href="{{ route('admin.pkl-alumni.tracer.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.pkl-alumni.tracer.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white"><i class="fas fa-graduation-cap text-[10px]"></i></div>
                 <span>Tracer Study (BMW)</span>
+            </a>
+            <a href="{{ route('admin.alumni-directory.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.alumni-directory.*') ? $ac : $nc }}">
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white"><i class="fas fa-users text-[10px]"></i></div>
+                <span>Direktori Alumni (IKA)</span>
             </a>
             <a href="{{ route('admin.pkl-alumni.jobs.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.pkl-alumni.jobs.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white"><i class="fas fa-list text-[10px]"></i></div>

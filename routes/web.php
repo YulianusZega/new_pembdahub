@@ -753,6 +753,12 @@ Route::prefix('live')->name('live.')->group(function () {
 Route::get('/api/program-keahlian/{schoolId}', [App\Http\Controllers\PublicRegistrationController::class, 'getProgramKeahlian'])->name('api.program');
 Route::get('/api/konsentrasi-keahlian/{programId}', [App\Http\Controllers\PublicRegistrationController::class, 'getKonsentrasiKeahlian'])->name('api.konsentrasi');
 
+// IKA PEMBDA - Public Alumni Registration
+Route::prefix('ika-pembda')->name('ika.')->group(function () {
+    Route::get('/daftar', [App\Http\Controllers\PublicAlumniController::class, 'registerForm'])->name('register');
+    Route::post('/daftar', [App\Http\Controllers\PublicAlumniController::class, 'registerSubmit'])->name('register.submit');
+});
+
 // PSB Testing & Simulation Routes (protected - admin only)
 Route::prefix('psb-test')->name('psb.test.')->middleware('auth', 'role:superadmin,admin_sekolah')->group(function () {
     Route::get('/', [App\Http\Controllers\PSBTestController::class, 'index'])->name('index');

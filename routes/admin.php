@@ -396,6 +396,12 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
         Route::get('jobs/{job}/edit', [App\Http\Controllers\Admin\PklAlumniAdminController::class, 'jobsEdit'])->name('jobs.edit');
         Route::put('jobs/{job}', [App\Http\Controllers\Admin\PklAlumniAdminController::class, 'jobsUpdate'])->name('jobs.update');
         Route::delete('jobs/{job}', [App\Http\Controllers\Admin\PklAlumniAdminController::class, 'jobsDestroy'])->name('jobs.destroy');
+
+        // Direktori Ikatan Alumni (Legacy Alumni)
+        Route::get('alumni-directory', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'index'])->name('alumni-directory.index');
+        Route::get('alumni-directory/{directory}', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'show'])->name('alumni-directory.show');
+        Route::post('alumni-directory/{directory}/toggle-approval', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'toggleApproval'])->name('alumni-directory.toggle-approval');
+        Route::delete('alumni-directory/{directory}', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'destroy'])->name('alumni-directory.destroy');
     });
 
     // Final Projects / Tugas Akhir Admin routes

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Ikatan Alumni (IKA) PEMBDA</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        indigo: {
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            900: '#312e81',
+                        },
+                        gold: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f4f3ff;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,0.03) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,0.03) 0, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 40px -10px rgba(49, 46, 129, 0.1);
+            border-radius: 24px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px rgba(49, 46, 129, 0.5);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased font-sans">
+
+    <div class="min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
+        
+        <!-- Header -->
+        <div class="text-center mb-8 max-w-2xl mx-auto">
+            <div class="flex justify-center items-center gap-3 mb-4">
+                <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo PEMBDA" class="h-16 w-auto object-contain">
+            </div>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-indigo-900 tracking-tight mb-3">
+                Direktori Ikatan Alumni (IKA)
+            </h1>
+            <p class="text-slate-500 text-lg">
+                Mari bergabung merajut kembali silaturahmi. Daftarkan diri Anda ke dalam database Ikatan Alumni Yayasan Perguruan PEMBDA Nias lintas generasi (sejak 1970).
+            </p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="w-full max-w-4xl glass-card p-6 md:p-10">
+            
+            @if(session('success'))
+                <div class="mb-8 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex gap-3 items-start">
+                    <i class="fa-solid fa-circle-check text-xl mt-0.5 text-emerald-500"></i>
+                    <div>
+                        <h4 class="font-bold text-emerald-900">Pendaftaran Berhasil!</h4>
+                        <p class="text-sm mt-1">{{ session('success') }}</p>
+                    </div>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="mb-8 p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl flex gap-3 items-start">
+                    <i class="fa-solid fa-triangle-exclamation text-xl mt-0.5 text-red-500"></i>
+                    <div>
+                        <h4 class="font-bold text-red-900">Mohon periksa kembali isian Anda:</h4>
+                        <ul class="text-sm mt-1 list-disc list-inside">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
+
+            <form action="{{ route('ika.register.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+                @csrf
+
+                <!-- Section: Data Pribadi -->
+                <div>
+                    <h3 class="text-xl font-bold text-indigo-900 mb-4 pb-2 border-b border-indigo-100 flex items-center gap-2">
+                        <i class="fa-regular fa-id-badge text-indigo-500"></i> 1. Identitas Pribadi
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Lengkap (beserta Gelar) <span class="text-red-500">*</span></label>
+                            <input type="text" name="full_name" value="{{ old('full_name') }}" required class="form-input" placeholder="Cth: Dr. Budi Santoso, M.Kom">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jenis Kelamin <span class="text-red-500">*</span></label>
+                            <select name="gender" required class="form-input">
+                                <option value="">-- Pilih Jenis Kelamin --</option>
+                                <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Perempuan</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan / Aktivitas Saat Ini</label>
+                            <input type="text" name="occupation" value="{{ old('occupation') }}" class="form-input" placeholder="Cth: Pengusaha / PNS / Wiraswasta">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nomor WhatsApp / HP</label>
+                            <input type="text" name="phone" value="{{ old('phone') }}" class="form-input" placeholder="Cth: 08123456789">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alamat Email Aktif</label>
+                            <input type="email" name="email" value="{{ old('email') }}" class="form-input" placeholder="Cth: budi@email.com">
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alamat Domisili <span class="text-red-500">*</span></label>
+                            <textarea name="address" rows="2" required class="form-input" placeholder="Tuliskan alamat lengkap domisili Anda saat ini...">{{ old('address') }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Data Akademik -->
+                <div>
+                    <h3 class="text-xl font-bold text-indigo-900 mb-4 pb-2 border-b border-indigo-100 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-indigo-500"></i> 2. Rekam Akademik di PEMBDA
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alumni Unit Sekolah <span class="text-red-500">*</span></label>
+                            <select name="school_id" required class="form-input">
+                                <option value="">-- Pilih Sekolah --</option>
+                                @foreach($schools as $school)
+                                    <option value="{{ $school->id }}" {{ old('school_id') == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Tahun Lulus <span class="text-red-500">*</span></label>
+                            <select name="graduation_year" required class="form-input">
+                                <option value="">-- Pilih Tahun Lulus --</option>
+                                @foreach($years as $year)
+                                    <option value="{{ $year }}" {{ old('graduation_year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Kelas Terakhir (opsional)</label>
+                            <input type="text" name="last_class" value="{{ old('last_class') }}" class="form-input" placeholder="Cth: XII IPA 1 / 3 Sos 2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Pesan & Foto -->
+                <div>
+                    <h3 class="text-xl font-bold text-indigo-900 mb-4 pb-2 border-b border-indigo-100 flex items-center gap-2">
+                        <i class="fa-regular fa-image text-indigo-500"></i> 3. Pesan & Foto Profil
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pesan, Kesan, atau Ide untuk Almamater</label>
+                            <textarea name="message" rows="4" class="form-input" placeholder="Tuliskan pesan-pesan indah Anda semasa sekolah, atau ide untuk memajukan Yayasan PEMBDA Nias...">{{ old('message') }}</textarea>
+                            <p class="text-xs text-slate-400 mt-1">Pesan ini akan menjadi inspirasi bagi adik-adik kelas yang masih belajar.</p>
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Unggah Foto Profil Terbaru (opsional)</label>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-xl bg-slate-50 hover:bg-indigo-50 transition">
+                                <div class="space-y-1 text-center">
+                                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-indigo-400 mb-2"></i>
+                                    <div class="flex text-sm text-slate-600 justify-center">
+                                        <label for="photo" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 px-2 py-0.5 shadow-sm border border-slate-200">
+                                            <span>Pilih File Foto</span>
+                                            <input id="photo" name="photo" type="file" class="sr-only" accept="image/jpeg,image/png,image/jpg" onchange="previewImage(event)">
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-2">PNG, JPG, JPEG (Maks. 2MB)</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Image Preview Area -->
+                            <div id="image-preview-container" class="mt-4 hidden justify-center">
+                                <div class="relative w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                                    <img id="image-preview" src="#" alt="Preview" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4 flex justify-between items-center border-t border-slate-200">
+                    <a href="{{ route('home') }}" class="text-sm font-medium text-slate-500 hover:text-indigo-600 transition">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Beranda
+                    </a>
+                    <button type="submit" class="btn-primary py-3 px-8 rounded-xl font-bold text-lg inline-flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Kirim Data Alumni
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-10 text-center text-sm text-slate-500">
+            <p>&copy; {{ date('Y') }} Yayasan Perguruan PEMBDA Nias.</p>
+            <p>Powered by <strong class="text-indigo-900">PembdaHUB</strong></p>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            const input = event.target;
+            const previewContainer = document.getElementById('image-preview-container');
+            const previewImage = document.getElementById('image-preview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.classList.remove('hidden');
+                    previewContainer.classList.add('flex');
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.classList.add('hidden');
+                previewContainer.classList.remove('flex');
+                previewImage.src = "#";
+            }
+        }
+    </script>
+</body>
+</html>

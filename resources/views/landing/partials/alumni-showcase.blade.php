@@ -58,7 +58,7 @@
         </div>
         
         <div class="text-center mt-12" data-aos="fade-up">
-            <a href="{{ route('ika.register.form') }}" class="inline-flex items-center gap-2 bg-indigo-900 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-800 transition shadow-lg hover:shadow-indigo-900/50">
+            <a href="{{ route('ika.register') }}" class="inline-flex items-center gap-2 bg-indigo-900 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-800 transition shadow-lg hover:shadow-indigo-900/50">
                 <i class="fa-solid fa-users"></i> Ikut Rembuk Alumni Sekarang
             </a>
         </div>

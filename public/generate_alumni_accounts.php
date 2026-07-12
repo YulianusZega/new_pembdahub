@@ -45,19 +45,24 @@ foreach ($alumnis as $alumni) {
     $passwordStr = 'pembda' . date('Y'); // pembda2026
     
     // Generate email dummy
-    $email = $username . '@alumni.pembdahub.com';
+    $dummyEmail = $username . '@alumni.pembdahub.com';
     $counter = 1;
-    while (\App\Models\User::where('email', $email)->exists()) {
-        $email = $username . $counter . '@alumni.pembdahub.com';
+    while (\App\Models\User::where('email', $dummyEmail)->exists()) {
+        $dummyEmail = $username . $counter . '@alumni.pembdahub.com';
         $counter++;
     }
 
+    $finalEmail = $alumni->email;
+    if (empty($finalEmail) || \App\Models\User::where('email', $finalEmail)->exists()) {
+        $finalEmail = $dummyEmail;
+    }
+
     try {
-        \Illuminate\Support\Facades\DB::transaction(function() use ($alumni, $username, $passwordStr, $email) {
+        \Illuminate\Support\Facades\DB::transaction(function() use ($alumni, $username, $passwordStr, $finalEmail) {
             $user = \App\Models\User::create([
                 'name' => $alumni->full_name,
                 'username' => $username,
-                'email' => $alumni->email ?? $email,
+                'email' => $finalEmail,
                 'password' => \Illuminate\Support\Facades\Hash::make($passwordStr),
                 'role' => 'alumni',
                 'is_active' => true,

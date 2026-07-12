@@ -1,5 +1,5 @@
-@extends('layouts.siswa')
-@section('title', 'Tracer Study Alumni - Portal Siswa')
+@extends(auth()->user()->layout)
+@section('title', 'Tracer Study Alumni')
 
 @section('content')
 <div class="space-y-6" x-data="{

@@ -1,5 +1,5 @@
-@extends('layouts.siswa')
-@section('title', 'Lowongan Kerja (Job Board) - Portal Siswa')
+@extends(auth()->user()->layout)
+@section('title', 'Lowongan Kerja (Job Board)')
 
 @section('content')
 <div class="space-y-6">

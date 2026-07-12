@@ -39,6 +39,7 @@ class ForumThread extends Model
     ];
 
     public const CATEGORIES = [
+        // Umum
         'diskusi' => '💬 Lobi Utama',
         'info' => '📢 Pengumuman',
         'tanya_jawab' => '❓ Tanya Jawab',
@@ -51,14 +52,19 @@ class ForumThread extends Model
         'project_idea' => '💡 Ide Proyek',
         'committee' => '👥 Rekrut Panitia',
         'charity' => '❤️ Aksi Sosial',
+        // Khusus Alumni
+        'alumni_lounge' => '☕ Lounge Khusus Alumni',
+        'career_network' => '💼 Karir & Bisnis',
+        'reunion' => '🎉 Reuni & Temu Kangen',
     ];
 
     public const CHANNEL_GROUPS = [
         '💬 OBROLAN' => ['diskusi', 'info'],
+        '🎓 RUANG ALUMNI' => ['alumni_lounge', 'career_network', 'reunion'],
         '📚 AKADEMIK' => ['tanya_jawab', 'sharing'],
+        '🤝 KOLABORASI' => ['project_idea', 'committee', 'charity'],
         '🎨 SHOWCASE' => ['art_gallery', 'talent', 'performance'],
         '🎮 HANGOUT' => ['gaming', 'trending'],
-        '🤝 KOLABORASI' => ['project_idea', 'committee', 'charity'],
     ];
 
     // Relationships

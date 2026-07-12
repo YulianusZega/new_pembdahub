@@ -83,15 +83,15 @@
     <div class="min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
         
         <!-- Header -->
-        <div class="text-center mb-8 max-w-2xl mx-auto">
+        <div class="text-center mb-8 max-w-3xl mx-auto">
             <div class="flex justify-center items-center gap-3 mb-4">
                 <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo PEMBDA" class="h-16 w-auto object-contain">
             </div>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-indigo-900 tracking-tight mb-3">
-                Direktori Ikatan Alumni (IKA)
+            <h1 class="text-3xl md:text-4xl font-extrabold text-indigo-900 tracking-tight mb-4">
+                Pelaporan Data & Rembuk Alumni
             </h1>
-            <p class="text-slate-500 text-lg">
-                Mari bergabung merajut kembali silaturahmi. Daftarkan diri Anda ke dalam database Ikatan Alumni Yayasan Perguruan PEMBDA Nias lintas generasi (sejak 1970).
+            <p class="text-slate-600 text-lg leading-relaxed">
+                Waktu berlalu begitu cepat, tak terasa sudah lebih dari 50 tahun Yayasan Perguruan PEMBDA Nias berdiri. Sudah banyak cerita indah, canda tawa, dan kenangan yang dirajut di ruang-ruang kelas kita. Kini, almamater memanggil Anda kembali. Mari berembuk, berbagi cerita perjalanan hidup Anda, memberikan masukan, serta motivasi bagi adik-adik dan almamater tercinta.
             </p>
         </div>
 
@@ -100,7 +100,7 @@
         <div class="w-full max-w-6xl mb-12">
             <div class="text-center mb-6">
                 <h2 class="text-2xl font-bold text-indigo-900 inline-block relative">
-                    Galeri Alumni yang Terdaftar
+                    Keluarga Besar yang Telah Berembuk
                     <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gold rounded-full"></div>
                 </h2>
             </div>
@@ -137,7 +137,7 @@
                 <div class="mb-8 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex gap-3 items-start">
                     <i class="fa-solid fa-circle-check text-xl mt-0.5 text-emerald-500"></i>
                     <div>
-                        <h4 class="font-bold text-emerald-900">Pendaftaran Berhasil!</h4>
+                        <h4 class="font-bold text-emerald-900">Pelaporan Data Berhasil!</h4>
                         <p class="text-sm mt-1">{{ session('success') }}</p>
                     </div>
                 </div>
@@ -311,7 +311,7 @@
                         <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Beranda
                     </a>
                     <button type="submit" class="btn-primary py-3 px-8 rounded-xl font-bold text-lg inline-flex items-center gap-2">
-                        <i class="fa-solid fa-paper-plane"></i> Kirim Data Alumni
+                        <i class="fa-solid fa-paper-plane"></i> Kirim Pelaporan Data
                     </button>
                 </div>
             </form>

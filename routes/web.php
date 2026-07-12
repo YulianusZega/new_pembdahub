@@ -537,6 +537,13 @@ Route::get('/', function () {
         ? \App\Models\Applicant::where('academic_year_id', $activeAcademicYear->id)->count()
         : 0;
 
+    // Alumni Terbaru
+    $recentAlumnis = \App\Models\AlumniDirectory::with('school')
+        ->whereNotNull('message')
+        ->latest()
+        ->take(3)
+        ->get();
+
     // Pastikan halaman beranda tidak dicache oleh server (LiteSpeed) maupun browser
     // agar status tombol "Login" vs "Dashboard" selalu ter-update secara real-time.
     return response(view('index', compact(
@@ -544,7 +551,8 @@ Route::get('/', function () {
         'totalStudents', 'totalTeachers', 'totalSchools', 'totalAlumni',
         'totalCourses', 'totalExams', 'totalForumThreads',
         'achievements', 'totalAchievements',
-        'schools', 'activeWave', 'totalApplicants'
+        'schools', 'activeWave', 'totalApplicants',
+        'recentAlumnis'
     )))
         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
         ->header('Pragma', 'no-cache')

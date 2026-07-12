@@ -15,13 +15,13 @@ class PublicAlumniController extends Controller
      */
     public function registerForm()
     {
-        $schools = School::orderBy('name')->get();
+        // Exclude yayasan, get all unit schools including historical ones
+        $schools = School::where('type', '!=', 'yayasan')->orderBy('name')->get();
         // Array of years from 1970 to current year
         $years = range(now()->year, 1970);
         
-        // Fetch approved alumni for gallery preview
+        // Fetch alumni for gallery preview (no approval needed)
         $approvedAlumni = AlumniDirectory::with('school')
-                            ->where('is_approved', true)
                             ->latest()
                             ->take(12)
                             ->get();
@@ -75,9 +75,9 @@ class PublicAlumniController extends Controller
             'last_class' => $validated['last_class'] ?? null,
             'message' => $validated['message'] ?? null,
             'photo_path' => $photoPath,
-            'is_approved' => false, // Requires admin approval to show publicly if needed
+            'is_approved' => true, // Auto approved as requested
         ]);
 
-        return redirect()->back()->with('success', 'Terima kasih! Data pendaftaran Anda berhasil dikirim dan akan diverifikasi oleh Admin. Selamat bergabung kembali di Ikatan Alumni Yayasan Perguruan PEMBDA Nias!');
+        return redirect()->back()->with('success', 'Terima kasih! Data Anda telah berhasil dikirim dan ditambahkan ke dalam database Ikatan Alumni Yayasan Perguruan PEMBDA Nias.');
     }
 }

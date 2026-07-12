@@ -38,21 +38,30 @@ class PublicRegistrationController extends Controller
             // Get active academic year for registration
             $academicYear = AcademicYear::where('is_active', true)->orderBy('id', 'desc')->first();
             
+            // Fetch recent alumni for the home page showcase (limit to 5)
+            $recentAlumni = \App\Models\AlumniDirectory::with('school')
+                                ->whereNotNull('message')
+                                ->latest()
+                                ->take(5)
+                                ->get();
+            
             if (!$academicYear) {
                 return view('public.registration', [
                     'schools' => $schools,
                     'programKeahlians' => $programKeahlians ?? collect(),
                     'academicYear' => null,
+                    'recentAlumni' => $recentAlumni,
                 ])->with('error', 'Tidak ada tahun ajaran aktif untuk pendaftaran');
             }
             
-            return view('public.registration', compact('schools', 'programKeahlians', 'academicYear'));
+            return view('public.registration', compact('schools', 'programKeahlians', 'academicYear', 'recentAlumni'));
         } catch (\Exception $e) {
             Log::error('Registration page error: ' . $e->getMessage());
             return view('public.registration', [
                 'schools' => School::where('is_active', true)->schoolsOnly()->get(),
                 'programKeahlians' => ProgramKeahlian::where('is_active', true)->get(),
                 'academicYear' => AcademicYear::where('is_active', true)->first(),
+                'recentAlumni' => collect(),
             ]);
         }
     }

@@ -18,35 +18,41 @@
                     @php
                         // Level styling
                         $levelColors = [
-                            'international' => ['bg' => 'var(--gold-bg)', 'text' => 'var(--gold-bright)', 'label' => 'Internasional'],
-                            'national'      => ['bg' => 'var(--coral-bg)', 'text' => 'var(--coral)', 'label' => 'Nasional'],
-                            'province'      => ['bg' => 'var(--violet-bg)', 'text' => 'var(--violet)', 'label' => 'Provinsi'],
-                            'city'          => ['bg' => 'var(--blue-bg)', 'text' => 'var(--blue)', 'label' => 'Kota'],
-                            'district'      => ['bg' => 'var(--emerald-bg)', 'text' => 'var(--emerald)', 'label' => 'Kecamatan'],
-                            'school'        => ['bg' => 'var(--bg)', 'text' => 'var(--text-secondary)', 'label' => 'Sekolah'],
+                            'internasional' => ['bg' => 'var(--gold-bg)', 'text' => 'var(--gold-bright)', 'label' => 'Internasional'],
+                            'nasional'      => ['bg' => 'var(--coral-bg)', 'text' => 'var(--coral)', 'label' => 'Nasional'],
+                            'propinsi'      => ['bg' => 'var(--violet-bg)', 'text' => 'var(--violet)', 'label' => 'Provinsi'],
+                            'kabupaten'     => ['bg' => 'var(--blue-bg)', 'text' => 'var(--blue)', 'label' => 'Kabupaten'],
+                            'sekolah'       => ['bg' => 'var(--bg)', 'text' => 'var(--text-secondary)', 'label' => 'Sekolah'],
                         ];
                         
-                        $level = $achievement->level ?? 'school';
-                        $levelStyle = $levelColors[$level] ?? $levelColors['school'];
+                        $level = $achievement->achievement_level ?? 'sekolah';
+                        $levelStyle = $levelColors[$level] ?? $levelColors['sekolah'];
                         
                         // Rank formatting
                         $ranks = [
-                            'winner' => 'Juara 1',
-                            'runner_up' => 'Juara 2',
-                            'third_place' => 'Juara 3',
-                            'participant' => 'Peserta/Finalis'
+                            'juara_1' => 'Juara 1',
+                            'juara_2' => 'Juara 2',
+                            'juara_3' => 'Juara 3',
+                            'harapan_1' => 'Harapan 1',
+                            'harapan_2' => 'Harapan 2',
+                            'harapan_3' => 'Harapan 3',
+                            'finalis' => 'Finalis/Top 10',
+                            'peserta' => 'Peserta',
+                            'best_speaker' => 'Best Speaker',
+                            'mvp' => 'MVP'
                         ];
-                        $rankLabel = $ranks[$achievement->rank ?? 'participant'] ?? 'Peserta';
+                        $rankLabel = $ranks[$achievement->ranking ?? 'peserta'] ?? 'Peserta';
                         
                         // Type Icon
                         $typeIcons = [
-                            'academic' => 'fa-book',
-                            'sport' => 'fa-trophy',
-                            'art' => 'fa-palette',
-                            'competition' => 'fa-medal',
-                            'other' => 'fa-star'
+                            'akademik' => 'fa-book',
+                            'olahraga' => 'fa-trophy',
+                            'seni' => 'fa-palette',
+                            'keagamaan' => 'fa-star-and-crescent',
+                            'karir' => 'fa-briefcase',
+                            'lainnya' => 'fa-medal'
                         ];
-                        $icon = $typeIcons[$achievement->type ?? 'other'] ?? 'fa-star';
+                        $icon = $typeIcons[$achievement->category ?? 'lainnya'] ?? 'fa-star';
                         
                         $delay = 100 + ($index * 100);
                     @endphp
@@ -79,7 +85,7 @@
                                 <i class="fa-solid fa-award" style="color:var(--gold);"></i> {{ $rankLabel }}
                             </div>
                             <div style="font-size:12px; color:var(--text-secondary); font-weight:600;">
-                                {{ \Carbon\Carbon::parse($achievement->achievement_date)->translatedFormat('M Y') }}
+                                {{ \Carbon\Carbon::parse($achievement->incident_date)->translatedFormat('M Y') }}
                             </div>
                         </div>
                     </div>

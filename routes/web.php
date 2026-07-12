@@ -515,13 +515,14 @@ Route::get('/', function () {
     $totalForumThreads = \App\Models\ForumThread::count();
 
     // Prestasi siswa (6 terbaik, prioritas level tertinggi)
-    $achievements = \App\Models\StudentAchievement::with(['student.school'])
-        ->orderByRaw("FIELD(level, 'international','national','province','city','district','school') ASC")
-        ->orderByRaw("FIELD(`rank`, 'winner','runner_up','third_place','participant') ASC")
-        ->latest('achievement_date')
+    $achievements = \App\Models\StudentCounselingRecord::where('record_type', 'penghargaan')
+        ->with(['student.school'])
+        ->orderByRaw("FIELD(achievement_level, 'internasional','nasional','propinsi','kabupaten','sekolah') ASC")
+        ->orderByRaw("FIELD(ranking, 'juara_1','juara_2','juara_3','best_speaker','mvp','harapan_1','harapan_2','harapan_3','finalis','peserta') ASC")
+        ->latest('incident_date')
         ->take(6)
         ->get();
-    $totalAchievements = \App\Models\StudentAchievement::count();
+    $totalAchievements = \App\Models\StudentCounselingRecord::where('record_type', 'penghargaan')->count();
 
     // Sekolah dengan statistik
     $schools = \App\Models\School::schoolsOnly()

@@ -388,6 +388,9 @@ class User extends Authenticatable
         if ($this->employee) {
             return $this->employee->photo_url;
         }
+        if ($this->alumniDirectory) {
+            return $this->alumniDirectory->photo_url;
+        }
         return asset('images/default-student.jpg');
     }
 }

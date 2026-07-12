@@ -90,9 +90,12 @@
             <h1 class="text-3xl md:text-4xl font-extrabold text-indigo-900 tracking-tight mb-4">
                 Pelaporan Data & Rembuk Alumni
             </h1>
-            <p class="text-slate-600 text-lg leading-relaxed">
+            <p class="text-slate-600 text-lg leading-relaxed mb-6">
                 Waktu berlalu begitu cepat, tak terasa sudah lebih dari 50 tahun Yayasan Perguruan PEMBDA Nias berdiri. Sudah banyak cerita indah, canda tawa, dan kenangan yang dirajut di ruang-ruang kelas kita. Kini, almamater memanggil Anda kembali. Mari berembuk, berbagi cerita perjalanan hidup Anda, memberikan masukan, serta motivasi bagi adik-adik dan almamater tercinta.
             </p>
+            <a href="{{ route('login') }}" class="inline-flex items-center gap-2 bg-white text-indigo-700 px-6 py-2.5 rounded-full text-sm font-bold shadow-md hover:shadow-lg transition-all border border-indigo-100 hover:bg-indigo-50 hover:-translate-y-0.5">
+                <i class="fa-solid fa-right-to-bracket"></i> Sudah Punya Akun? Login di Sini
+            </a>
         </div>
 
         <!-- Smart Report -->

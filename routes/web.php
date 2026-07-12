@@ -1593,3 +1593,23 @@ Route::get('/restore-tp-2025', function () {
         return "File restore_tp_2025.php tidak ditemukan di: " . $file;
     }
 });
+
+// Hostinger Symlink Fallback Route for Storage Files
+Route::get('/storage/{folder}/{filename}', function ($folder, $filename) {
+    $path = storage_path('app/public/' . $folder . '/' . $filename);
+    
+    if (!file_exists($path)) {
+        // Coba cek jika ada di folder storage root
+        $path2 = storage_path('app/' . $folder . '/' . $filename);
+        if (file_exists($path2)) {
+            $path = $path2;
+        } else {
+            abort(404, 'File not found in storage.');
+        }
+    }
+    
+    // Serve the file directly
+    return response()->file($path, [
+        'Cache-Control' => 'public, max-age=31536000'
+    ]);
+})->where('filename', '.*');

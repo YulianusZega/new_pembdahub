@@ -16,8 +16,9 @@
             @foreach($recentAlumnis as $alumni)
             <div class="glass-card overflow-hidden rounded-3xl hover:transform hover:scale-105 transition-all duration-300 relative group flex flex-col" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}" style="background: white; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);">
                 
-                <div class="w-full relative" style="aspect-ratio: 4/3;">
-                    <img src="{{ $alumni->photo_url }}" class="w-full h-full object-cover object-top" alt="{{ $alumni->full_name }}">
+                <!-- Container dengan aspect ratio 4:3 (75% padding-top) untuk kompatibilitas semua browser -->
+                <div class="w-full relative" style="padding-top: 75%;">
+                    <img src="{{ $alumni->photo_url }}" class="absolute inset-0 w-full h-full object-cover object-top" alt="{{ $alumni->full_name }}">
                     <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/90 via-indigo-900/20 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 p-5 text-white">
                         <h4 class="font-bold text-lg leading-tight">{{ $alumni->full_name }}</h4>

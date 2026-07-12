@@ -108,8 +108,9 @@
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 @foreach($approvedAlumni as $alumni)
                 <div class="glass-card overflow-hidden hover:transform hover:scale-105 transition duration-300 group cursor-pointer relative" style="border-radius: 16px;">
-                    <div class="w-full relative" style="aspect-ratio: 3/4;">
-                        <img src="{{ $alumni->photo_url }}" class="w-full h-full object-cover object-top" alt="{{ $alumni->full_name }}">
+                    <!-- Container dengan aspect ratio 3:4 (133% padding-top) -->
+                    <div class="w-full relative" style="padding-top: 133.33%;">
+                        <img src="{{ $alumni->photo_url }}" class="absolute inset-0 w-full h-full object-cover object-top" alt="{{ $alumni->full_name }}">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity"></div>
                         <div class="absolute bottom-0 left-0 right-0 p-3 text-white">
                             <h4 class="font-bold text-sm leading-tight line-clamp-2" title="{{ $alumni->full_name }}">{{ $alumni->alias_name ? $alumni->alias_name : $alumni->full_name }}</h4>

@@ -20,6 +20,22 @@ class AlumniDashboardController extends Controller
                 ->with('error', 'Profil direktori alumni Anda tidak ditemukan.');
         }
 
-        return view('alumni.dashboard', compact('user', 'alumni'));
+        // Cek status Tracer Study (ambil AlumniProfile yang terhubung dengan email user)
+        $alumniProfile = \App\Models\AlumniProfile::where('email', $user->email)->first();
+        $hasFilledTracer = false;
+        if ($alumniProfile) {
+            $hasFilledTracer = \App\Models\TracerStudy::where('alumni_profile_id', $alumniProfile->id)->exists();
+        }
+
+        // Ambil lowongan kerja terbaru (maksimal 3)
+        $latestJobs = \App\Models\JobPosting::where('is_active', true)->latest()->take(3)->get();
+
+        // Ambil obrolan terbaru di Pembda Space (maksimal 3)
+        $latestThreads = \App\Models\ForumThread::with(['user', 'category'])
+                            ->latest()
+                            ->take(3)
+                            ->get();
+
+        return view('alumni.dashboard', compact('user', 'alumni', 'hasFilledTracer', 'latestJobs', 'latestThreads'));
     }
 }

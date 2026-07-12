@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar - Pembda Hub</title>
+    <title>Daftar - PembdaHUB</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -13,7 +13,7 @@
         <div class="w-full max-w-md">
             <!-- Logo/Header -->
             <div class="text-center mb-8">
-                <h1 class="text-4xl font-bold text-indigo-600 mb-2">Pembda Hub</h1>
+                <h1 class="text-4xl font-bold text-indigo-600 mb-2">PembdaHUB</h1>
                 <p class="text-gray-600">Sistem Manajemen Sekolah Terpadu</p>
             </div>
 
@@ -138,7 +138,7 @@
 
             <!-- Footer -->
             <div class="text-center mt-8 text-gray-600 text-sm">
-                <p>&copy; 2024 Pembda Hub. Semua hak dilindungi.</p>
+                <p>&copy; 2024 PembdaHUB. Semua hak dilindungi.</p>
             </div>
         </div>
     </div>

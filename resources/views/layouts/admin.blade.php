@@ -1,4 +1,4 @@
-{{--
+﻿{{--
     Admin Layout — extends unified master layout
     Theme: Indigo/Purple
 --}}
@@ -6,7 +6,7 @@
     'theme'       => 'indigo',
     'sidebarId'   => 'admin-sidebar',
     'storageKey'  => 'admin_sidebar_collapsed',
-    'portalName'  => 'Pembda Hub',
+    'portalName'  => 'PembdaHUB',
     'portalSub'   => auth()->user()?->isSuperAdmin() ? 'Super Admin Panel' : 'Admin Sekolah',
     'portalIcon'  => 'fas fa-graduation-cap',
 ])

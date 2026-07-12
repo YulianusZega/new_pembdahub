@@ -1,4 +1,4 @@
-{{--
+﻿{{--
     Treasurer Layout — extends unified master layout
     Theme: Emerald/Green (Finance-focused)
 --}}
@@ -7,7 +7,7 @@
     'sidebarId'   => 'treasurer-sidebar',
     'storageKey'  => 'treasurer_sidebar_collapsed',
     'portalName'  => 'Bendahara',
-    'portalSub'   => 'Pembda Hub Finance',
+    'portalSub'   => 'PembdaHUB Finance',
     'portalIcon'  => 'fas fa-wallet',
 ])
 

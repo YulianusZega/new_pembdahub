@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
-@section('title', 'Pengaturan Gaji - Pembda Hub')
+@section('title', 'Pengaturan Gaji - PembdaHUB')
 
 @section('content')
 <div class="max-w-5xl mx-auto">

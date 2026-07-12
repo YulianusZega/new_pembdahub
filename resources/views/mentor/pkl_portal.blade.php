@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Portal Mentor DUDI - Pembda Hub</title>
+    <title>Portal Mentor DUDI - PembdaHUB</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -367,7 +367,7 @@
     <footer class="bg-slate-900 text-slate-500 text-center py-6 text-xs mt-12 border-t border-slate-800">
         <div class="max-w-5xl mx-auto px-4">
             <p class="font-bold text-slate-400 mb-1">SMKS Swasta Pembda Nias</p>
-            <p>&copy; {{ date('Y') }} Pembda Hub. Dikembangkan bersama Yayasan Perguruan PEMBDA Nias.</p>
+            <p>&copy; {{ date('Y') }} PembdaHUB. Dikembangkan bersama Yayasan Perguruan PEMBDA Nias.</p>
         </div>
     </footer>
 

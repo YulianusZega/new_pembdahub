@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -863,7 +863,7 @@
     </div>
 
     <div class="footer">
-        Laporan ini dicetak secara otomatis oleh sistem <strong>Pembda HUB</strong> pada tanggal {{ now()->format('d M Y, H:i') }} WIB.
+        Laporan ini dicetak secara otomatis oleh sistem <strong>PembdaHUB</strong> pada tanggal {{ now()->format('d M Y, H:i') }} WIB.
         Dokumen ini bersifat rahasia dan hanya untuk keperluan evaluasi internal Perguruan PEMBDA.
     </div>
 

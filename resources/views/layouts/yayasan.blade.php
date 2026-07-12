@@ -1,4 +1,4 @@
-{{--
+﻿{{--
     Yayasan Layout — extends unified master layout
     Theme: Violet/Purple
 --}}
@@ -7,7 +7,7 @@
     'sidebarId'   => 'yayasan-sidebar',
     'storageKey'  => 'yayasan_sidebar_collapsed',
     'portalName'  => 'Ketua Yayasan',
-    'portalSub'   => 'Pembda Hub Oversight',
+    'portalSub'   => 'PembdaHUB Oversight',
     'portalIcon'  => 'fas fa-landmark',
 ])
 
@@ -77,7 +77,7 @@
         <div class="menu-group-body mt-1 space-y-0.5" style="max-height:2000px">
             <a href="{{ route('training.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('training.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-400 to-cyan-600 flex items-center justify-center text-white"><i class="fas fa-book-reader text-[10px]"></i></div>
-                <span>Pelatihan PembdaHub</span>
+                <span>Pelatihan PembdaHUB</span>
             </a>
             <a href="{{ route('forum.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('forum.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white"><i class="fas fa-comments text-[10px]"></i></div>

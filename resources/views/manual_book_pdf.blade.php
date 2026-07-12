@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Manual Book PembdaHub</title>
+    <title>Manual Book PembdaHUB</title>
     <style>
         @page {
             size: A4;
@@ -422,7 +422,7 @@
         <div class="cover-content">
             <div class="cover-accent-bar"></div>
             <div class="cover-header">
-                <span class="cover-logo-text">PembdaHub</span>
+                <span class="cover-logo-text">PembdaHUB</span>
             </div>
             <h1 class="cover-title" style="border:none; margin:0; text-transform:none; letter-spacing:normal;">MANUAL BOOK<br>PANDUAN PENGGUNA</h1>
             <div class="cover-subtitle">Sistem Informasi Manajemen Sekolah Terpadu</div>
@@ -447,7 +447,7 @@
                     </tr>
                     <tr>
                         <td class="label">Penulis</td>
-                        <td>Tim Development PembdaHub</td>
+                        <td>Tim Development PembdaHUB</td>
                     </tr>
                 </table>
             </div>
@@ -458,7 +458,7 @@
 
     <!-- Header & Footer (Repeating starting page 2) -->
     <div class="header">
-        PembdaHub - Manual Book Panduan Pengguna
+        PembdaHUB - Manual Book Panduan Pengguna
     </div>
     
     <div class="footer">
@@ -567,7 +567,7 @@
     <div>
         <h1>1. Pendahuluan</h1>
         <p>
-            <strong>PembdaHub</strong> adalah sistem manajemen sekolah terintegrasi berbasis web yang dirancang khusus untuk mengelola operasional akademik, keuangan, kepegawaian, pembelajaran, dan ujian di bawah naungan <strong>Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</strong>.
+            <strong>PembdaHUB</strong> adalah sistem manajemen sekolah terintegrasi berbasis web yang dirancang khusus untuk mengelola operasional akademik, keuangan, kepegawaian, pembelajaran, dan ujian di bawah naungan <strong>Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</strong>.
         </p>
         <p>
             Sistem ini mendukung pengelolaan terintegrasi secara dinamis bagi 3 unit sekolah di bawah yayasan:
@@ -588,7 +588,7 @@
 
         <h2>1.2 Persyaratan Sistem (System Requirements)</h2>
         <p>
-            Untuk memastikan aplikasi PembdaHub berjalan dengan lancar, pastikan perangkat keras dan perangkat lunak Anda memenuhi syarat berikut:
+            Untuk memastikan aplikasi PembdaHUB berjalan dengan lancar, pastikan perangkat keras dan perangkat lunak Anda memenuhi syarat berikut:
         </p>
         <ul>
             <li><strong>Peramban (Browser):</strong> Google Chrome, Mozilla Firefox, Microsoft Edge, atau Safari versi terbaru (direkomendasikan Chrome v100+).</li>
@@ -598,7 +598,7 @@
 
         <div class="alert-box">
             <div class="alert-title">ℹ️ Catatan Sistem Terintegrasi</div>
-            PembdaHub mengadopsi Single Sign-On (SSO) internal, di mana akun pengguna dapat bertransisi dengan mulus bergantung kepada peranan (role) yang telah diatur oleh administrator.
+            PembdaHUB mengadopsi Single Sign-On (SSO) internal, di mana akun pengguna dapat bertransisi dengan mulus bergantung kepada peranan (role) yang telah diatur oleh administrator.
         </div>
     </div>
 
@@ -608,12 +608,12 @@
     <div>
         <h1>2. Memulai Aplikasi (Getting Started)</h1>
         <p>
-            Selamat datang di PembdaHub! Bagian ini dirancang untuk mempermudah pengguna baru dalam mengakses sistem, melakukan login, serta memahami fungsionalitas dasar pertama kali.
+            Selamat datang di PembdaHUB! Bagian ini dirancang untuk mempermudah pengguna baru dalam mengakses sistem, melakukan login, serta memahami fungsionalitas dasar pertama kali.
         </p>
 
         <h2>2.1 Cara Akses &amp; Login Pertama Kali</h2>
         <ol class="step-list">
-            <li>Buka browser Anda dan masukkan alamat website sekolah: <code>http://perguruanpembda.com</code> (atau <code>http://localhost/pembdahub</code> di server lokal).</li>
+            <li>Buka browser Anda dan masukkan alamat website sekolah: <code>http://perguruanpembda.com</code> (atau <code>http://localhost/PembdaHUB</code> di server lokal).</li>
             <li>Klik tombol <strong>Login</strong> pada menu kanan atas halaman utama.</li>
             <li>Masukkan <strong>Username</strong> (atau email) dan <strong>Kata Sandi</strong> default yang diberikan oleh pihak sekolah.</li>
             <li>Tekan tombol <strong>Masuk</strong>.</li>
@@ -635,7 +635,7 @@
 
         <h2>2.3 Memahami Peran Ganda (Switch Role)</h2>
         <p>
-            PembdaHub mendukung peran ganda tanpa perlu logout. Misalnya, seorang <strong>Guru</strong> yang juga bertindak sebagai <strong>Wali Kelas</strong> atau <strong>Kepala Sekolah</strong> dapat beralih peran dengan cepat menggunakan menu <strong>Switch Role</strong>.
+            PembdaHUB mendukung peran ganda tanpa perlu logout. Misalnya, seorang <strong>Guru</strong> yang juga bertindak sebagai <strong>Wali Kelas</strong> atau <strong>Kepala Sekolah</strong> dapat beralih peran dengan cepat menggunakan menu <strong>Switch Role</strong>.
         </p>
         <ol class="step-list">
             <li>Temukan tombol beralih peran pada bagian kiri menu navigasi / sidebar.</li>
@@ -682,7 +682,7 @@
     <div>
         <h1>3. Level &amp; Hak Akses Pengguna</h1>
         <p>
-            Pembda Hub menerapkan kontrol akses berbasis peran (<em>Role-Based Access Control / RBAC</em>) yang ketat. Terdapat <strong>9 level pengguna</strong> dengan rincian tugas dan fungsi masing-masing:
+            PembdaHUB menerapkan kontrol akses berbasis peran (<em>Role-Based Access Control / RBAC</em>) yang ketat. Terdapat <strong>9 level pengguna</strong> dengan rincian tugas dan fungsi masing-masing:
         </p>
 
         <h2>3.1 Perincian Tugas 9 Level Pengguna</h2>
@@ -949,7 +949,7 @@
                             <ul>
                                 <li><strong>Hub Forum &amp; Kolaborasi:</strong> Forum diskusi global, partisipasi kepanitiaan/proyek, dan donasi sosial.</li>
                                 <li><strong>Papan Peringkat:</strong> Monitoring Hall of Fame perolehan poin keaktifan siswa &amp; guru.</li>
-                                <li><strong>Pelatihan PembdaHub:</strong> Modul pelatihan belajar mandiri bagi semua peran.</li>
+                                <li><strong>Pelatihan PembdaHUB:</strong> Modul pelatihan belajar mandiri bagi semua peran.</li>
                                 <li><strong>Yayasan:</strong> Executive Dashboard, kirim Undangan Pelatihan, monitoring unit pendidikan, sirkulasi keuangan, payroll, &amp; beban kerja.</li>
                             </ul>
                         </div>
@@ -965,7 +965,7 @@
     <div>
         <h1>5. Integrasi Alur Kerja Utama Sistem</h1>
         <p>
-            PembdaHub menyatukan berbagai modul operasional sekolah untuk menciptakan ekosistem manajemen pendidikan tanpa kertas (<em>paperless</em>) yang terpadu.
+            PembdaHUB menyatukan berbagai modul operasional sekolah untuk menciptakan ekosistem manajemen pendidikan tanpa kertas (<em>paperless</em>) yang terpadu.
         </p>
 
         <div class="diagram-container">
@@ -997,7 +997,7 @@
 
         <h2>5.1 Rincian Alur Kerja Terintegrasi</h2>
         <p>
-            Berikut adalah detail alur operasional beserta bagan alir (flowchart) antar modul yang saling terhubung di dalam sistem PembdaHub:
+            Berikut adalah detail alur operasional beserta bagan alir (flowchart) antar modul yang saling terhubung di dalam sistem PembdaHUB:
         </p>
 
         <table class="grid-table">
@@ -1247,7 +1247,7 @@
     <div>
         <h1>6. Panduan Operasional Langkah Demi Langkah</h1>
         <p>
-            Bagian ini memberikan panduan operasional klik-demi-klik untuk melakukan tugas-tugas utama harian di aplikasi PembdaHub berdasarkan masing-masing peran pengguna.
+            Bagian ini memberikan panduan operasional klik-demi-klik untuk melakukan tugas-tugas utama harian di aplikasi PembdaHUB berdasarkan masing-masing peran pengguna.
         </p>
 
         <h2>6.1 Panduan untuk Administrator &amp; Admin Sekolah</h2>
@@ -1759,7 +1759,7 @@
                         <div class="card-title">F. Portal Alumni &amp; Tracer Study (BMW)</div>
                         <div class="card-body">
                             <ol class="step-list">
-                                <li>Bagi alumni yang sudah lulus: login ke portal PembdaHub (akses dibatasi hanya untuk alumni, siswa aktif akan menerima 403).</li>
+                                <li>Bagi alumni yang sudah lulus: login ke portal PembdaHUB (akses dibatasi hanya untuk alumni, siswa aktif akan menerima 403).</li>
                                 <li>Buka menu <strong>Alumni</strong> &rarr; <strong>Tracer Study</strong>.</li>
                                 <li>Isi kuesioner pelacakan karir (Bekerja / Melanjutkan Kuliah / Wirausaha / Mencari Kerja) beserta detail instansi kerja, rentang gaji, dan relevansi kurikulum sekolah. Klik <strong>Simpan</strong>.</li>
                                 <li>Buka menu <strong>Lowongan Kerja</strong> untuk melamar info lowongan mitra DUDI sekolah.</li>
@@ -1863,10 +1863,10 @@
             <tr>
                 <td colspan="2">
                     <div class="card" style="border-left-color: #2563eb;">
-                        <div class="card-title">C. Pelatihan PembdaHub: Modul Belajar &amp; Progres Belajar</div>
+                        <div class="card-title">C. Pelatihan PembdaHUB: Modul Belajar &amp; Progres Belajar</div>
                         <div class="card-body">
                             <ol class="step-list">
-                                <li>Masuk ke menu <strong>Pelatihan PembdaHub</strong>.</li>
+                                <li>Masuk ke menu <strong>Pelatihan PembdaHUB</strong>.</li>
                                 <li>Pilih modul pelatihan yang ingin dipelajari (misal: "Panduan Kurikulum Merdeka").</li>
                                 <li>Baca materi pelajaran online, atau klik <strong>Download PDF Materi</strong> untuk belajar secara offline.</li>
                                 <li>Setiap penyelesaian modul akan terekam di sistem sebagai bagian dari progres peningkatan kompetensi SDM guru dan pegawai yayasan.</li>
@@ -2059,7 +2059,7 @@
     <div>
         <h1>8. Data Simulasi &amp; Pengujian Platform (Seeder)</h1>
         <p>
-            Untuk mempermudah proses evaluasi dan presentasi sistem tanpa harus menginput data dari nol, Pembda Hub dilengkapi dengan generator data simulasi otomatis (<strong>Comprehensive Simulation Seeder</strong>).
+            Untuk mempermudah proses evaluasi dan presentasi sistem tanpa harus menginput data dari nol, PembdaHUB dilengkapi dengan generator data simulasi otomatis (<strong>Comprehensive Simulation Seeder</strong>).
         </p>
 
         <h2>8.1 Tujuan Data Simulasi</h2>
@@ -2110,7 +2110,7 @@
             <tbody>
                 <tr>
                     <td style="font-weight: bold;">Super Admin</td>
-                    <td><code>superadmin@pembdahub.com</code></td>
+                    <td><code>superadmin@PembdaHUB.com</code></td>
                     <td><code>Superadmin@2026!</code></td>
                     <td>Dashboard yayasan, pengaturan user global, &amp; tahun ajaran.</td>
                 </tr>
@@ -2155,7 +2155,7 @@
 
         <h2>8.4 Cara Mengosongkan Data Simulasi (Go-Live)</h2>
         <p>
-            Jika sistem Pembda Hub sudah siap digunakan secara resmi dengan data ril sekolah, Anda dapat menghapus semua data simulasi ini secara instan dan mengembalikan database ke kondisi bersih dengan menjalankan perintah di terminal:
+            Jika sistem PembdaHUB sudah siap digunakan secara resmi dengan data ril sekolah, Anda dapat menghapus semua data simulasi ini secara instan dan mengembalikan database ke kondisi bersih dengan menjalankan perintah di terminal:
         </p>
         <pre style="background: #f1f5f9; padding: 10px; border-radius: 4px; font-family: monospace;">php artisan migrate:fresh --seed</pre>
         <p>
@@ -2168,7 +2168,7 @@
     <div>
         <h1>9. Sistem Reputasi &amp; Poin Keaktifan Terintegrasi</h1>
         <p>
-            Pembda Hub menerapkan <strong>Sistem Reputasi</strong> berbasis gamifikasi untuk meningkatkan kepatuhan dan keaktifan akademik bagi Siswa dan Guru di bawah naungan Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA). Setiap aktivitas produktif di dalam sistem akan memberikan penghargaan berupa <strong>Poin Reputasi</strong>, sedangkan pelanggaran presensi atau pembatalan data akan memicu denda pengurangan poin.
+            PembdaHUB menerapkan <strong>Sistem Reputasi</strong> berbasis gamifikasi untuk meningkatkan kepatuhan dan keaktifan akademik bagi Siswa dan Guru di bawah naungan Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA). Setiap aktivitas produktif di dalam sistem akan memberikan penghargaan berupa <strong>Poin Reputasi</strong>, sedangkan pelanggaran presensi atau pembatalan data akan memicu denda pengurangan poin.
         </p>
 
         <h2>9.1 Sumber Perolehan Poin Siswa &amp; Guru</h2>
@@ -2312,7 +2312,7 @@
         </div>
 
         <p>
-            Untuk menjaga integritas data dan mencegah manipulasi perolehan poin, Pembda Hub dilengkapi dengan fitur <strong>Rollback Poin Otomatis</strong> pada level database:
+            Untuk menjaga integritas data dan mencegah manipulasi perolehan poin, PembdaHUB dilengkapi dengan fitur <strong>Rollback Poin Otomatis</strong> pada level database:
         </p>
         <ul>
             <li><strong>Pengubahan Presensi:</strong> Jika status kehadiran siswa diubah dari <em>Hadir</em> menjadi <em>Alpha</em>, sistem akan membatalkan perolehan +10 poin sebelumnya dan menerapkan denda pengurangan -10 poin secara real-time.</li>
@@ -2331,7 +2331,7 @@
     <div>
         <h1>10. Glosarium &amp; Daftar Istilah</h1>
         <p>
-            Berikut adalah penjelasan singkat untuk istilah, singkatan, dan akronim teknis maupun akademis yang digunakan di dalam aplikasi PembdaHub:
+            Berikut adalah penjelasan singkat untuk istilah, singkatan, dan akronim teknis maupun akademis yang digunakan di dalam aplikasi PembdaHUB:
         </p>
         <table style="font-size: 9pt; margin-top: 10px;">
             <thead>
@@ -2355,7 +2355,7 @@
                 </tr>
                 <tr>
                     <td style="font-weight: bold;">RFID</td>
-                    <td><strong>Radio Frequency Identification:</strong> Teknologi nirkabel pengenal berbasis gelombang radio. Di PembdaHub, kartu RFID digunakan oleh siswa/pegawai untuk melakukan absen tempel secara instan pada mesin kiosk sekolah.</td>
+                    <td><strong>Radio Frequency Identification:</strong> Teknologi nirkabel pengenal berbasis gelombang radio. Di PembdaHUB, kartu RFID digunakan oleh siswa/pegawai untuk melakukan absen tempel secara instan pada mesin kiosk sekolah.</td>
                 </tr>
                 <tr>
                     <td style="font-weight: bold;">CBT</td>

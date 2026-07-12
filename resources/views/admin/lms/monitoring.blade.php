@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
-@section('title', 'Monitoring LMS - Pembda Hub')
+@section('title', 'Monitoring LMS - PembdaHUB')
 
 @section('content')
 <div class="mb-6 flex items-center justify-between">

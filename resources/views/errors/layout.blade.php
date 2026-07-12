@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') - Pembda Hub</title>
+    <title>@yield('title') - PembdaHUB</title>
     @vite(['resources/css/app.css'])
     <style>
         body {
@@ -57,7 +57,7 @@
 
         {{-- Footer --}}
         <p class="mt-12 text-xs text-gray-400">
-            &copy; {{ date('Y') }} Pembda Hub — Sistem Manajemen Sekolah Terpadu
+            &copy; {{ date('Y') }} PembdaHUB — Sistem Manajemen Sekolah Terpadu
         </p>
     </div>
 </body>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -147,9 +147,9 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>PEMBDA HUB</h1>
+        <h1>PembdaHUB</h1>
         <h2>KWITANSI PEMBAYARAN</h2>
-        <p>Jl. Pendidikan No. 123, Jakarta | Tel: (021) 1234567 | Email: info@pembdahub.sch.id</p>
+        <p>Jl. Pendidikan No. 123, Jakarta | Tel: (021) 1234567 | Email: info@PembdaHUB.sch.id</p>
     </div>
 
     <!-- Receipt Info -->
@@ -283,7 +283,7 @@
     <div class="footer">
         <p><strong>Kwitansi ini adalah bukti pembayaran yang sah.</strong></p>
         <p>Dicetak pada: {{ now()->format('d F Y, H:i:s') }} WIB</p>
-        <p>Sistem Informasi PEMBDA Hub - Terverifikasi Otomatis</p>
+        <p>Sistem Informasi PembdaHUB - Terverifikasi Otomatis</p>
     </div>
 </body>
 </html>

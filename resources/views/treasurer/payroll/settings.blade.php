@@ -1,6 +1,6 @@
-@extends('layouts.treasurer')
+﻿@extends('layouts.treasurer')
 
-@section('title', 'Pengaturan Gaji - Pembda Hub')
+@section('title', 'Pengaturan Gaji - PembdaHUB')
 
 @section('content')
 <div class="max-w-5xl mx-auto">

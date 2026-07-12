@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -335,7 +335,7 @@
     <div class="footer">
         <p><strong>Kwitansi ini adalah bukti pembayaran yang sah.</strong></p>
         <p>Dicetak pada: {{ now()->format('d F Y, H:i:s') }} WIB</p>
-        <p>Sistem Informasi PEMBDA Hub - Diproses oleh Bendahara</p>
+        <p>Sistem Informasi PembdaHUB - Diproses oleh Bendahara</p>
     </div>
 </body>
 </html>

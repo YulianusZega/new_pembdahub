@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', $portalTitle ?? 'Pembda Hub')</title>
+    <title>@yield('title', $portalTitle ?? 'PembdaHUB')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
         $theme       = $theme ?? 'indigo';
         $sidebarId   = $sidebarId ?? 'app-sidebar';
         $storageKey  = $storageKey ?? 'sidebar_collapsed';
-        $portalName  = $portalName ?? 'Pembda Hub';
+        $portalName  = $portalName ?? 'PembdaHUB';
         $portalSub   = $portalSub ?? '';
         $portalEmoji = $portalEmoji ?? '🎓';
         $portalIcon  = $portalIcon ?? 'fas fa-graduation-cap';
@@ -299,7 +299,7 @@
     <!-- ═══════ FOOTER ═══════ -->
     @if(!request()->has('embed'))
     <footer class="bg-gray-800 text-gray-400 text-center py-3 text-xs">
-        &copy; {{ date('Y') }} Pembda Hub &mdash; Yayasan Perguruan PEMBDA Nias
+        &copy; {{ date('Y') }} PembdaHUB &mdash; Yayasan Perguruan PEMBDA Nias
     </footer>
     @endif
 

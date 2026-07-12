@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Sekolah - Pembda Hub</title>
+    <title>Dashboard Sekolah - PembdaHUB</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -13,7 +13,7 @@
     <nav class="bg-blue-600 text-white shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
-                <div class="text-2xl font-bold">Pembda Hub - Admin Sekolah</div>
+                <div class="text-2xl font-bold">PembdaHUB - Admin Sekolah</div>
                 <div class="flex items-center space-x-4">
                     <span>{{ Auth::user()->name }}</span>
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">

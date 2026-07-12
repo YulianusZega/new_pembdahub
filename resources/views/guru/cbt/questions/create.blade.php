@@ -1,4 +1,4 @@
-@extends('layouts.guru')
+﻿@extends('layouts.guru')
 @section('title', 'Tambah Soal - ' . $bank->bank_name)
 
 @push('styles')
@@ -226,7 +226,7 @@
     </form>
 
     <div class="py-10 text-center">
-        <p class="text-base font-semibold text-gray-500 uppercase tracking-wider">&copy; 2026 Pembda Hub &bull; Education System</p>
+        <p class="text-base font-semibold text-gray-500 uppercase tracking-wider">&copy; 2026 PembdaHUB &bull; Education System</p>
     </div>
 </div>
 @endsection

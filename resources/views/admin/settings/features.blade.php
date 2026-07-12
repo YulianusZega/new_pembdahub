@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
-@section('title', 'Otorisasi & Kontrol Fitur - Pembda Hub')
+@section('title', 'Otorisasi & Kontrol Fitur - PembdaHUB')
 
 @section('content')
 <div class="space-y-6">

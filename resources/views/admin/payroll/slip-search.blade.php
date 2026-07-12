@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
-@section('title', 'Slip Gaji - Pembda Hub')
+@section('title', 'Slip Gaji - PembdaHUB')
 
 @section('content')
 <div class="max-w-6xl mx-auto">

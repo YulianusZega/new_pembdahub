@@ -1,4 +1,4 @@
-{{--
+﻿{{--
     Siswa Layout — extends unified master layout
     Theme: Amber/Orange
 --}}
@@ -7,7 +7,7 @@
     'sidebarId'   => 'siswa-sidebar',
     'storageKey'  => 'siswa_sidebar_collapsed',
     'portalName'  => 'Portal Siswa',
-    'portalSub'   => 'Pembda Hub Education System',
+    'portalSub'   => 'PembdaHUB Education System',
     'portalIcon'  => 'fas fa-user-graduate',
 ])
 
@@ -122,7 +122,7 @@
 
     <a href="{{ route('training.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('training.*') ? $ac : $nc }}">
         <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-400 to-cyan-600 flex items-center justify-center text-white"><i class="fas fa-book-reader text-[10px]"></i></div>
-        <span>Pelatihan PembdaHub</span>
+        <span>Pelatihan PembdaHUB</span>
     </a>
 
     <!-- Survey Kepuasan -->

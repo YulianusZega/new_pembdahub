@@ -63,6 +63,7 @@ foreach ($oldStorages as $oldDir) {
 $oldAudioPaths = [
     $basePath . '/pembdahub_lama/public/audio/mars-pembda.mp4',
     $basePath . '/pembdahub_backup/public/audio/mars-pembda.mp4',
+    $basePath . '/pembdahub_backup/public.2616/audio/mars-pembda.mp4', // The hidden location!
     $basePath . '/audio/mars-pembda.mp4' // Jika ditaruh di public_html
 ];
 

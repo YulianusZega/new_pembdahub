@@ -95,6 +95,26 @@
             </p>
         </div>
 
+        <!-- Smart Report -->
+        <div class="max-w-3xl w-full mx-auto mb-10 p-6 bg-gradient-to-r from-indigo-50 to-white border border-indigo-100 rounded-2xl shadow-sm text-center">
+            <h3 class="text-sm font-bold text-indigo-800 uppercase tracking-wider mb-4"><i class="fas fa-chart-pie mr-2 text-indigo-500"></i> Report Pintar Alumni</h3>
+            <div class="flex flex-wrap justify-center gap-4 md:gap-8">
+                <div class="bg-white px-6 py-4 rounded-xl shadow-sm border border-slate-100 flex-1 min-w-[120px]">
+                    <span class="block text-xs font-semibold text-slate-500 mb-1">Total Pendaftar</span>
+                    <strong class="text-3xl font-extrabold text-indigo-600">{{ $totalRegistered ?? 0 }}</strong>
+                </div>
+                <div class="bg-white px-6 py-4 rounded-xl shadow-sm border border-slate-100 flex-1 min-w-[120px]">
+                    <span class="block text-xs font-semibold text-slate-500 mb-1">Angkatan Tertua</span>
+                    <strong class="text-3xl font-extrabold text-gold">{{ $oldestAlumni ?? '-' }}</strong>
+                </div>
+                <div class="bg-white px-6 py-4 rounded-xl shadow-sm border border-slate-100 flex-1 min-w-[120px]">
+                    <span class="block text-xs font-semibold text-slate-500 mb-1">Angkatan Termuda</span>
+                    <strong class="text-3xl font-extrabold text-emerald-500">{{ $youngestAlumni ?? '-' }}</strong>
+                </div>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-4 font-medium">Jadilah bagian dari sejarah panjang PEMBDA dengan mendaftarkan diri Anda sekarang!</p>
+        </div>
+
         <!-- Form Card -->
         @if(isset($approvedAlumni) && $approvedAlumni->count() > 0)
         <div class="w-full max-w-6xl mb-12">
@@ -243,10 +263,10 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alumni Unit Sekolah <span class="text-red-500">*</span></label>
-                            <select name="school_id" required class="form-input">
+                            <select id="school-select" name="school_id" required class="form-input">
                                 <option value="">-- Pilih Sekolah --</option>
                                 @foreach($schools as $school)
-                                    <option value="{{ $school->id }}" {{ old('school_id') == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
+                                    <option value="{{ $school->id }}" data-type="{{ $school->type }}" {{ old('school_id') == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -264,6 +284,11 @@
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Kelas Terakhir (opsional)</label>
                             <input type="text" name="last_class" value="{{ old('last_class') }}" class="form-input" placeholder="Cth: XII IPA 1 / 3 Sos 2">
+                        </div>
+                        
+                        <div id="jurusan-container" style="display: none;">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jurusan (Khusus SMK) <span class="text-red-500">*</span></label>
+                            <input type="text" id="jurusan-input" name="jurusan" value="{{ old('jurusan') }}" class="form-input" placeholder="Cth: Akuntansi / TKJ / Perkantoran">
                         </div>
                     </div>
                 </div>
@@ -347,6 +372,33 @@
                 previewImage.src = "#";
             }
         }
+        function toggleJurusan() {
+            const schoolSelect = document.getElementById('school-select');
+            if(!schoolSelect) return;
+            
+            const selectedOption = schoolSelect.options[schoolSelect.selectedIndex];
+            const type = selectedOption ? selectedOption.getAttribute('data-type') : null;
+            
+            const jurusanContainer = document.getElementById('jurusan-container');
+            const jurusanInput = document.getElementById('jurusan-input');
+            
+            if (type && type.toUpperCase().includes('SMK')) {
+                jurusanContainer.style.display = 'block';
+                jurusanInput.setAttribute('required', 'required');
+            } else {
+                jurusanContainer.style.display = 'none';
+                jurusanInput.removeAttribute('required');
+                // jurusanInput.value = ''; // Opsional: jangan reset value kalau user salah pencet
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const schoolSelect = document.getElementById('school-select');
+            if(schoolSelect) {
+                schoolSelect.addEventListener('change', toggleJurusan);
+                toggleJurusan(); // run once on load
+            }
+        });
     </script>
 </body>
 </html>

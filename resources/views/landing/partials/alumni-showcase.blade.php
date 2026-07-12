@@ -1,68 +1,111 @@
 @if(isset($recentAlumnis) && $recentAlumnis->count() > 0)
-<section class="py-20 relative overflow-hidden bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<style>
+.alumni-section { padding: 5rem 1rem; background: linear-gradient(135deg, #f8fafc, #ffffff, #eef2ff); position: relative; overflow: hidden; }
+.alumni-bg-blob1 { position: absolute; top: -10rem; right: -10rem; width: 30rem; height: 30rem; border-radius: 50%; background: #e0e7ff; filter: blur(3rem); opacity: 0.5; z-index: 0; pointer-events: none;}
+.alumni-bg-blob2 { position: absolute; top: 10rem; left: -5rem; width: 20rem; height: 20rem; border-radius: 50%; background: #ede9fe; filter: blur(3rem); opacity: 0.5; z-index: 0; pointer-events: none;}
+.alumni-container { max-width: 80rem; margin: 0 auto; position: relative; z-index: 10; padding: 0 1rem; }
+.alumni-header-text { text-align: center; margin-bottom: 4rem; }
+.alumni-subtitle { color: #4f46e5; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.875rem; display: block; margin-bottom: 0.5rem; }
+.alumni-title { font-size: 2.5rem; font-weight: 800; color: #0f172a; margin: 0 0 1rem 0; line-height: 1.2; }
+.alumni-title span { background: linear-gradient(to right, #4f46e5, #7c3aed); -webkit-background-clip: text; color: transparent; }
+.alumni-desc { color: #475569; max-width: 42rem; margin: 0 auto; font-size: 1.125rem; line-height: 1.7; }
+.alumni-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; }
+.alumni-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); border-radius: 2rem; padding: 2rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03); transition: all 0.3s ease; display: flex; flex-direction: column; position: relative; overflow: hidden; z-index: 1;}
+.alumni-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.08), 0 8px 10px -6px rgba(79, 70, 229, 0.05); }
+.alumni-quote-icon { position: absolute; top: -1.5rem; right: -1rem; font-size: 8rem; color: #eef2ff; transition: all 0.5s ease; z-index: 0; opacity: 0.7;}
+.alumni-card:hover .alumni-quote-icon { color: #e0e7ff; transform: rotate(12deg) scale(1.1); }
+.alumni-card-content { position: relative; z-index: 10; display: flex; flex-direction: column; height: 100%;}
+.alumni-profile { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
+.alumni-avatar-wrapper { position: relative; flex-shrink: 0; width: 80px; height: 80px; min-width: 80px; max-width: 80px; border-radius: 50%; padding: 4px; background: #fff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0; transition: border-color 0.3s ease;}
+.alumni-card:hover .alumni-avatar-wrapper { border-color: #c7d2fe; background: #eef2ff;}
+.alumni-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: top; }
+.alumni-badge { position: absolute; bottom: 0; right: 0; width: 24px; height: 24px; background: #fbbf24; border-radius: 50%; border: 3px solid #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.15);}
+.alumni-badge i { font-size: 10px; color: #fff; }
+.alumni-name { font-weight: 800; font-size: 1.125rem; color: #0f172a; margin: 0; line-height: 1.3; transition: color 0.3s ease;}
+.alumni-card:hover .alumni-name { color: #4f46e5; }
+.alumni-school { display: inline-block; margin-top: 0.35rem; padding: 0.25rem 0.75rem; background: #f8fafc; color: #6366f1; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #e2e8f0;}
+.alumni-message { color: #4338ca; font-style: italic; font-weight: 500; font-size: 1.25rem; flex-grow: 1; margin-bottom: 1.5rem; line-height: 1.6; letter-spacing: -0.01em;}
+.alumni-footer { margin-top: auto; border-top: 1px solid #f1f5f9; padding-top: 1.25rem; font-size: 0.75rem; color: #64748b; line-height: 1.6;}
+.alumni-footer strong { color: #334155; font-weight: 600;}
+.alumni-btn-container { text-align: center; margin-top: 4rem; }
+.alumni-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; background: linear-gradient(to right, #4f46e5, #7c3aed); color: #fff; font-weight: 700; padding: 1rem 2.5rem; border-radius: 9999px; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); transition: all 0.3s ease; text-decoration: none; font-size: 1.05rem;}
+.alumni-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -5px rgba(79, 70, 229, 0.4); }
+.alumni-btn i { transition: transform 0.3s ease; }
+.alumni-btn:hover i { transform: translateX(4px) translateY(-4px); }
+@media (max-width: 768px) { .alumni-title { font-size: 2rem; } .alumni-grid { grid-template-columns: 1fr; } }
+</style>
+
+<section class="alumni-section" data-aos="fade-up">
+    <!-- Dekorasi Latar Belakang -->
+    <div class="alumni-bg-blob1"></div>
+    <div class="alumni-bg-blob2"></div>
+
+    <div class="alumni-container">
         
-        <div class="text-center mb-12" data-aos="fade-up">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-indigo-900 mb-4 inline-block relative">
-                Suara Alumni PEMBDA Nias
-                <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1.5 bg-gold rounded-full"></div>
-            </h2>
-            <p class="text-slate-600 max-w-2xl mx-auto mt-4 text-lg">
+        <div class="alumni-header-text" data-aos="fade-up">
+            <span class="alumni-subtitle">Suara Alumni</span>
+            <h2 class="alumni-title">Rembuk Alumni <span>PEMBDA</span></h2>
+            <p class="alumni-desc">
                 Lintas generasi, merajut kembali kisah dan kenangan indah. Inilah cerita dan dukungan dari mereka yang pernah mengenyam pendidikan di almamater tercinta.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="alumni-grid">
             @foreach($recentAlumnis as $alumni)
-            <div class="glass-card p-6 md:p-8 rounded-3xl hover:transform hover:scale-105 transition-all duration-300 relative group flex flex-col" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}" style="background: white; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);">
+            <div class="alumni-card" data-aos="fade-up" data-aos-delay="{{ $loop->iteration * 100 }}">
                 
-                <i class="fa-solid fa-quote-right absolute top-6 right-6 text-4xl text-indigo-100 group-hover:text-gold transition-colors opacity-50"></i>
+                <i class="fa-solid fa-quote-right alumni-quote-icon"></i>
                 
-                <div class="flex items-center gap-4 mb-6">
-                    <!-- Memaksa ukuran foto secara absolut agar tidak pernah membesar -->
-                    <div style="width: 110px; height: 110px; min-width: 110px; max-width: 110px; overflow: hidden; border-radius: 50%; border: 3px solid #fbbf24; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                        <img src="{{ $alumni->photo_url }}" style="width: 100%; height: 100%; object-fit: cover; object-position: top;" alt="{{ $alumni->full_name }}">
+                <div class="alumni-card-content">
+                    <div class="alumni-profile">
+                        <div class="alumni-avatar-wrapper">
+                            <img src="{{ $alumni->photo_url }}" class="alumni-avatar" alt="{{ $alumni->full_name }}">
+                            <div class="alumni-badge">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="alumni-name">{{ $alumni->full_name }}</h4>
+                            <div class="alumni-school">
+                                Lulusan {{ $alumni->school->name ?? 'PEMBDA' }} '{{ $alumni->graduation_year }}
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-indigo-900 text-lg leading-tight">{{ $alumni->full_name }}</h4>
-                        <p class="text-xs text-indigo-500 mt-1">Lulusan {{ $alumni->school->name ?? 'PEMBDA' }} '{{ $alumni->graduation_year }}</p>
-                    </div>
-                </div>
-                
-                @php
-                        $alias = $alumni->alias_name ? "sekarang dikenal dengan nama <strong>{$alumni->alias_name}</strong>, " : "";
-                        $anak = $alumni->children_count ? "dengan {$alumni->children_count} orang anak, " : "";
+                    
+                    @php
+                        $alias = $alumni->alias_name ? "dikenal <strong>{$alumni->alias_name}</strong>, " : "";
+                        $anak = $alumni->children_count ? "dengan {$alumni->children_count} anak, " : "";
                         $status = $alumni->marital_status ? "berstatus {$alumni->marital_status}, " : "";
                         
                         $kerja = "";
                         if($alumni->occupation && $alumni->company_name) {
-                            $kerja = "sehari-hari bekerja sebagai {$alumni->occupation} di {$alumni->company_name}";
+                            $kerja = "bekerja sebagai {$alumni->occupation} di {$alumni->company_name}";
                         } elseif($alumni->occupation) {
-                            $kerja = "sehari-hari bekerja sebagai {$alumni->occupation}";
+                            $kerja = "bekerja sebagai {$alumni->occupation}";
                         } elseif($alumni->company_name) {
-                            $kerja = "sehari-hari bekerja di {$alumni->company_name}";
+                            $kerja = "bekerja di {$alumni->company_name}";
                         }
                         
                         $narrative = trim("{$alias} {$status} {$anak} {$kerja}", ", ");
                     @endphp
                     
-                    <div class="text-sm text-slate-600 italic flex-grow mb-4 relative z-10">
+                    <div class="alumni-message">
                         "{{ $alumni->message }}"
                     </div>
                     
                     @if($narrative)
-                    <div class="text-[11px] text-slate-500 mt-auto bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed">
+                    <div class="alumni-footer">
                         <strong>{{ $alumni->full_name }}</strong> {!! $narrative !!}.
                     </div>
                     @endif
-                
+                </div>
             </div>
             @endforeach
         </div>
         
-        <div class="text-center mt-12" data-aos="fade-up">
-            <a href="{{ route('ika.register') }}" class="inline-flex items-center gap-2 bg-indigo-900 text-white font-bold py-3 px-8 rounded-full hover:bg-indigo-800 transition shadow-lg hover:shadow-indigo-900/50">
-                <i class="fa-solid fa-users"></i> Ikut Rembuk Alumni Sekarang
+        <div class="alumni-btn-container" data-aos="fade-up">
+            <a href="{{ route('ika.register') }}" class="alumni-btn">
+                <i class="fa-solid fa-paper-plane"></i> Ikut Rembuk Alumni Sekarang
             </a>
         </div>
         

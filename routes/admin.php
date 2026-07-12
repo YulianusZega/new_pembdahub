@@ -397,9 +397,16 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
         Route::put('jobs/{job}', [App\Http\Controllers\Admin\PklAlumniAdminController::class, 'jobsUpdate'])->name('jobs.update');
         Route::delete('jobs/{job}', [App\Http\Controllers\Admin\PklAlumniAdminController::class, 'jobsDestroy'])->name('jobs.destroy');
 
-        // Direktori Ikatan Alumni (Legacy Alumni)
+    });
+
+    // Direktori Ikatan Alumni (Legacy Alumni) - moved outside pkl-alumni. name group so it resolves to admin.alumni-directory.*
+    Route::prefix('pkl-alumni')->group(function () {
         Route::get('alumni-directory', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'index'])->name('alumni-directory.index');
+        Route::get('alumni-directory/create', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'create'])->name('alumni-directory.create');
+        Route::post('alumni-directory', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'store'])->name('alumni-directory.store');
         Route::get('alumni-directory/{directory}', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'show'])->name('alumni-directory.show');
+        Route::get('alumni-directory/{directory}/edit', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'edit'])->name('alumni-directory.edit');
+        Route::put('alumni-directory/{directory}', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'update'])->name('alumni-directory.update');
         Route::post('alumni-directory/{directory}/toggle-approval', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'toggleApproval'])->name('alumni-directory.toggle-approval');
         Route::delete('alumni-directory/{directory}', [App\Http\Controllers\Admin\AlumniDirectoryController::class, 'destroy'])->name('alumni-directory.destroy');
     });

@@ -8,6 +8,11 @@
             <h1 class="text-2xl font-bold text-gray-900">Direktori Ikatan Alumni</h1>
             <p class="text-sm text-gray-500 mt-1">Kelola data alumni yang mendaftar melalui portal IKA PEMBDA</p>
         </div>
+        <div>
+            <a href="{{ route('admin.alumni-directory.create') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition font-medium">
+                <i class="fas fa-plus"></i> Tambah Data Alumni
+            </a>
+        </div>
     </div>
 
     @if(session('success'))
@@ -43,6 +48,9 @@
                         <td class="px-6 py-4">
                             <p class="text-gray-900 font-medium">{{ $dir->school->name ?? '-' }}</p>
                             <p class="text-xs text-gray-500">Lulus: {{ $dir->graduation_year }}</p>
+                            @if($dir->jurusan)
+                            <p class="text-xs text-indigo-500 font-medium mt-0.5">{{ $dir->jurusan }}</p>
+                            @endif
                         </td>
                         <td class="px-6 py-4">
                             <p class="text-gray-900 font-medium">{{ $dir->occupation ?? '-' }}</p>
@@ -61,11 +69,14 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 text-right space-x-2">
+                        <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
                             <a href="{{ route('admin.alumni-directory.show', $dir) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition" title="Lihat Detail">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <form action="{{ route('admin.alumni-directory.toggle-approval', $dir) }}" method="POST" class="inline">
+                            <a href="{{ route('admin.alumni-directory.edit', $dir) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('admin.alumni-directory.toggle-approval', $dir) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin {{ $dir->is_approved ? 'membatalkan persetujuan' : 'menyetujui' }} data alumni ini untuk tampil di publik?');">
                                 @csrf
                                 <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg {{ $dir->is_approved ? 'bg-orange-50 text-orange-600 hover:bg-orange-100' : 'bg-green-50 text-green-600 hover:bg-green-100' }} transition" title="{{ $dir->is_approved ? 'Batalkan Persetujuan' : 'Setujui' }}">
                                     <i class="fas {{ $dir->is_approved ? 'fa-times-circle' : 'fa-check-circle' }}"></i>

@@ -24,6 +24,7 @@ class AlumniDirectory extends Model
         'occupation',
         'company_name',
         'school_id',
+        'jurusan',
         'graduation_year',
         'last_class',
         'message',

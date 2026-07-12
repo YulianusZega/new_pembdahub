@@ -25,8 +25,13 @@ class PublicAlumniController extends Controller
                             ->latest()
                             ->take(12)
                             ->get();
+                            
+        // Smart Report Data
+        $oldestAlumni = AlumniDirectory::min('graduation_year');
+        $youngestAlumni = AlumniDirectory::max('graduation_year');
+        $totalRegistered = AlumniDirectory::count();
         
-        return view('landing.alumni_register', compact('schools', 'years', 'approvedAlumni'));
+        return view('landing.alumni_register', compact('schools', 'years', 'approvedAlumni', 'oldestAlumni', 'youngestAlumni', 'totalRegistered'));
     }
 
     /**
@@ -46,6 +51,7 @@ class PublicAlumniController extends Controller
             'occupation' => 'nullable|string|max:255',
             'company_name' => 'nullable|string|max:255',
             'school_id' => 'required|exists:schools,id',
+            'jurusan' => 'nullable|string|max:255',
             'graduation_year' => 'required|integer|min:1970|max:' . now()->year,
             'last_class' => 'nullable|string|max:255',
             'message' => 'nullable|string|max:2000',
@@ -71,6 +77,7 @@ class PublicAlumniController extends Controller
             'occupation' => $validated['occupation'] ?? null,
             'company_name' => $validated['company_name'] ?? null,
             'school_id' => $validated['school_id'],
+            'jurusan' => $validated['jurusan'] ?? null,
             'graduation_year' => $validated['graduation_year'],
             'last_class' => $validated['last_class'] ?? null,
             'message' => $validated['message'] ?? null,

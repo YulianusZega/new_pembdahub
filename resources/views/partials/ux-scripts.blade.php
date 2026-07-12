@@ -15,7 +15,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Skip forms that opt out, AJAX forms, or search/filter forms
         if (form.dataset.noLoading || form.method === 'get' || form.method === 'GET') return;
 
-        form.addEventListener('submit', function() {
+        form.addEventListener('submit', function(e) {
+            // Check if another script (like inline onsubmit="return confirm()") already prevented the submission
+            if (e.defaultPrevented) return;
+
             const buttons = form.querySelectorAll('button[type="submit"], input[type="submit"]');
             buttons.forEach(function(btn) {
                 if (btn.disabled) return;

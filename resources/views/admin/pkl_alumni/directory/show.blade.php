@@ -36,6 +36,11 @@
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium">
                         <i class="fas fa-calendar-alt"></i> Lulus Tahun {{ $directory->graduation_year }}
                     </span>
+                    @if($directory->jurusan)
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-purple-700 text-sm font-medium">
+                        <i class="fas fa-book"></i> {{ $directory->jurusan }}
+                    </span>
+                    @endif
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full {{ $directory->is_approved ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }} text-sm font-medium">
                         <i class="fas {{ $directory->is_approved ? 'fa-check-circle' : 'fa-clock' }}"></i> 
                         {{ $directory->is_approved ? 'Disetujui Publik' : 'Menunggu Persetujuan' }}

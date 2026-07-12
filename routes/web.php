@@ -1596,20 +1596,60 @@ Route::get('/restore-tp-2025', function () {
 
 // Hostinger Symlink Fallback Route for Storage Files
 Route::get('/storage/{folder}/{filename}', function ($folder, $filename) {
-    $path = storage_path('app/public/' . $folder . '/' . $filename);
+    $paths = [
+        storage_path('app/public/' . $folder . '/' . $filename),
+        storage_path('app/' . $folder . '/' . $filename),
+        public_path('storage/' . $folder . '/' . $filename),
+        base_path('../storage/' . $folder . '/' . $filename) // public_html/storage
+    ];
     
-    if (!file_exists($path)) {
-        // Coba cek jika ada di folder storage root
-        $path2 = storage_path('app/' . $folder . '/' . $filename);
-        if (file_exists($path2)) {
-            $path = $path2;
-        } else {
-            abort(404, 'File not found in storage.');
+    $foundPath = null;
+    foreach ($paths as $p) {
+        if (file_exists($p)) {
+            $foundPath = $p;
+            break;
         }
     }
     
-    // Serve the file directly
-    return response()->file($path, [
+    if (!$foundPath) {
+        // Return 404 image placeholder or abort
+        abort(404, 'File not found in any storage path.');
+    }
+    
+    return response()->file($foundPath, [
         'Cache-Control' => 'public, max-age=31536000'
     ]);
 })->where('filename', '.*');
+
+Route::get('/debug-gallery', function () {
+    if (request('secret') !== 'pembda99') return 'Unauthorized';
+    
+    $dirs = [
+        'storage_path' => storage_path('app/public/gallery'),
+        'public_path' => public_path('storage/gallery'),
+        'public_html' => base_path('../storage/gallery'),
+        'public_html_pembdahub' => base_path('../pembdahub/storage/app/public/gallery')
+    ];
+    
+    $html = "<h3>Debug Gallery Paths</h3><ul>";
+    foreach ($dirs as $label => $dir) {
+        $html .= "<li><b>{$label}</b>: {$dir} <br>";
+        if (is_dir($dir)) {
+            $files = array_diff(scandir($dir), ['.', '..']);
+            $html .= "<span style='color:green'>Found " . count($files) . " files.</span><br>";
+            $html .= "<pre>" . print_r(array_slice($files, 0, 5), true) . "</pre>";
+        } else {
+            $html .= "<span style='color:red'>Directory does not exist!</span>";
+        }
+        $html .= "</li><br>";
+    }
+    $html .= "</ul>";
+    
+    // Cek satu file spesifik
+    $testFile = '7V2TTAX1m1uoluNgntLXokl5CsImtXLoAGcYHwuc.jpg';
+    $html .= "<h3>Mencari file: $testFile</h3>";
+    $output = shell_exec("find " . base_path('../') . " -name '$testFile' 2>&1");
+    $html .= "<pre>$output</pre>";
+    
+    return $html;
+});

@@ -104,11 +104,11 @@
 
             {{-- Main Title --}}
             <h1 class="display" style="margin-bottom:16px; color:#ffffff;">
-                Pembda<span style="background:linear-gradient(135deg,#fbbf24,#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">HUB</span>
+                Pembda<span style="color:#ef4444; -webkit-text-fill-color:#ef4444;">HUB</span>
             </h1>
 
-            {{-- Gold underline decoration --}}
-            <div style="width:120px; height:4px; background:linear-gradient(90deg, #f59e0b, #fbbf24, #f59e0b); border-radius:2px; margin: 0 auto 28px; opacity:0.9;"></div>
+            {{-- Red underline decoration --}}
+            <div style="width:120px; height:4px; background:linear-gradient(90deg, #ef4444, #f87171, #ef4444); border-radius:2px; margin: 0 auto 28px; opacity:0.9;"></div>
 
             <p class="body-lg" style="max-width:720px; margin:0 auto 14px; font-size:22px; color:rgba(255,255,255,0.92); min-height: 66px; line-height: 1.4;">
                 Dimana Teknologi Bertemu Pendidikan Berkualitas:<br>

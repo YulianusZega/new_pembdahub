@@ -238,7 +238,7 @@
         .nav-brand-name {
             font-size: 16px; font-weight: 800; letter-spacing: -0.02em; color: #fff; line-height: 1.1;
         }
-        .nav-brand-name span { color: var(--gold-bright); }
+        .nav-brand-name span { color: #ef4444; }
         .nav-brand-sub { font-size: 10px; color: rgba(255,255,255,0.45); font-weight: 500; }
         .nav-logo {
             width: 40px; height: 40px; border-radius: 12px;

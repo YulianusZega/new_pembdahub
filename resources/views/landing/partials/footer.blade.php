@@ -126,7 +126,7 @@
         color: #f1f5f9;
     }
     .footer-brand-name span {
-        color: #fbbf24;
+        color: #ef4444;
     }
     .footer-brand-sub {
         font-size: 11px;

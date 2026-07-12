@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -57,7 +57,7 @@
 
         {{-- Footer --}}
         <p class="mt-12 text-xs text-gray-400">
-            &copy; {{ date('Y') }} PembdaHUB — Sistem Manajemen Sekolah Terpadu
+            &copy; {{ date('Y') }} Pembda<span style="color:#ef4444">HUB</span> — Sistem Manajemen Sekolah Terpadu
         </p>
     </div>
 </body>

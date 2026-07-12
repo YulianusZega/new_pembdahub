@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -168,7 +168,7 @@
                         <i class="{{ $portalIcon }} text-sm"></i>
                     </span>
                     <div>
-                        <h1 class="text-lg font-bold leading-tight">{{ $portalName }}</h1>
+                        <h1 class="text-lg font-bold leading-tight">{!! str_replace('HUB', '<span class="text-red-400">HUB</span>', $portalName) !!}</h1>
                         @if($portalSub)
                             <p class="text-[10px] text-white/70 leading-none">{{ $portalSub }}</p>
                         @endif
@@ -299,7 +299,7 @@
     <!-- ═══════ FOOTER ═══════ -->
     @if(!request()->has('embed'))
     <footer class="bg-gray-800 text-gray-400 text-center py-3 text-xs">
-        &copy; {{ date('Y') }} PembdaHUB &mdash; Yayasan Perguruan PEMBDA Nias
+        &copy; {{ date('Y') }} Pembda<span class="text-red-400">HUB</span> &mdash; Yayasan Perguruan PEMBDA Nias
     </footer>
     @endif
 

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -13,7 +13,7 @@
         <div class="w-full max-w-md">
             <!-- Logo/Header -->
             <div class="text-center mb-8">
-                <h1 class="text-4xl font-bold text-indigo-600 mb-2">PembdaHUB</h1>
+                <h1 class="text-4xl font-bold mb-2"><span class="text-gray-800">Pembda</span><span class="text-red-600">HUB</span></h1>
                 <p class="text-gray-600">Sistem Manajemen Sekolah Terpadu</p>
             </div>
 

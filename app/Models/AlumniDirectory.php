@@ -13,6 +13,7 @@ class AlumniDirectory extends Model
     protected $table = 'alumni_directories';
 
     protected $fillable = [
+        'user_id',
         'full_name',
         'alias_name',
         'gender',
@@ -36,6 +37,14 @@ class AlumniDirectory extends Model
         'is_approved' => 'boolean',
         'graduation_year' => 'integer',
     ];
+
+    /**
+     * Relationship: Directory entry belongs to a User (Login Account)
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Relationship: Directory entry belongs to a School (Unit)

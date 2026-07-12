@@ -332,6 +332,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is Alumni
+     */
+    public function isAlumni(): bool
+    {
+        return $this->hasRole('alumni') || session('active_role') === 'alumni';
+    }
+
+    /**
      * Get layout name based on user role
      */
     public function getLayoutAttribute(): string
@@ -345,6 +353,7 @@ class User extends Authenticatable
             'orang_tua' => 'layouts.orangtua',
             'bendahara' => 'layouts.treasurer',
             'ketua_yayasan' => 'layouts.yayasan',
+            'alumni' => 'layouts.alumni',
             default => 'layouts.app',
         };
     }
@@ -355,6 +364,14 @@ class User extends Authenticatable
     public function employee()
     {
         return $this->hasOne(Employee::class);
+    }
+
+    /**
+     * Relationship: User has one AlumniDirectory profile
+     */
+    public function alumniDirectory()
+    {
+        return $this->hasOne(AlumniDirectory::class);
     }
 
     /**

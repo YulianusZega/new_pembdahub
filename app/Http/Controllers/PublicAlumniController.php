@@ -65,7 +65,42 @@ class PublicAlumniController extends Controller
             $photoPath = $file->storeAs('alumni_photos', $filename, 'public');
         }
 
+        // Create User account for alumni
+        $email = $validated['email'] ?? null;
+        // Check if email exists in users table to prevent unique constraint violation
+        if ($email && \App\Models\User::where('email', $email)->exists()) {
+            $email = 'alumni_' . uniqid() . '@pembda.local';
+        } elseif (!$email) {
+            $email = 'alumni_' . uniqid() . '@pembda.local';
+        }
+
+        // Generate username: alumni_firstname
+        $firstName = strtolower(explode(' ', $validated['full_name'])[0]);
+        $baseUsername = preg_replace('/[^a-z0-9]/', '', $firstName);
+        if (empty($baseUsername)) {
+            $baseUsername = 'user';
+        }
+        $username = 'alumni_' . $baseUsername;
+        $counter = 1;
+        while (\App\Models\User::where('username', $username)->exists()) {
+            $username = 'alumni_' . $baseUsername . $counter;
+            $counter++;
+        }
+
+        $defaultPassword = 'pembda' . now()->year;
+
+        $user = \App\Models\User::create([
+            'name' => $validated['full_name'],
+            'username' => $username,
+            'email' => $email,
+            'password' => \Illuminate\Support\Facades\Hash::make($defaultPassword),
+            'role' => 'alumni',
+            'school_id' => $validated['school_id'],
+            'is_active' => true,
+        ]);
+
         AlumniDirectory::create([
+            'user_id' => $user->id,
             'full_name' => $validated['full_name'],
             'alias_name' => $validated['alias_name'] ?? null,
             'gender' => $validated['gender'],
@@ -85,6 +120,6 @@ class PublicAlumniController extends Controller
             'is_approved' => true, // Auto approved as requested
         ]);
 
-        return redirect()->back()->with('success', 'Terima kasih! Data Anda telah berhasil dikirim dan ditambahkan ke dalam database Ikatan Alumni Yayasan Perguruan PEMBDA Nias.');
+        return redirect()->back()->with('success', 'Terima kasih! Data Anda telah ditambahkan ke Direktori Alumni. Sistem telah membuatkan akun untuk Anda mengakses Pembda Space. Username Anda: <strong>' . $username . '</strong> dan Password: <strong>' . $defaultPassword . '</strong>. Silakan catat dan gunakan untuk Login.');
     }
 }

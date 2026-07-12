@@ -246,6 +246,7 @@ class AuthController extends Controller
             'guru' => route('guru.dashboard'),
             'siswa' => route('siswa.dashboard'),
             'orang_tua' => route('orangtua.dashboard'),
+            'alumni' => route('alumni.dashboard'),
             default => url('/'),
         };
         

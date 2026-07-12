@@ -159,7 +159,7 @@
                     <i class="fa-solid fa-circle-check text-xl mt-0.5 text-emerald-500"></i>
                     <div>
                         <h4 class="font-bold text-emerald-900">Pelaporan Data Berhasil!</h4>
-                        <p class="text-sm mt-1">{{ session('success') }}</p>
+                        <p class="text-sm mt-1">{!! session('success') !!}</p>
                     </div>
                 </div>
             @endif

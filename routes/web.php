@@ -788,6 +788,7 @@ Route::get('/dashboard', function () {
             'guru' => route('guru.dashboard'),
             'siswa' => route('siswa.dashboard'),
             'orang_tua' => route('orangtua.dashboard'),
+            'alumni' => route('alumni.dashboard'),
             default => url('/'),
         };
 
@@ -831,6 +832,11 @@ Route::middleware('auth')->group(function () {
             // Redirect admin_sekolah ke /admin/dashboard (shared route dengan filtering)
             return redirect()->route('admin.dashboard');
         })->name('dashboard');
+    });
+
+    // Alumni Routes
+    Route::prefix('alumni-portal')->name('alumni.')->middleware('role:alumni')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\AlumniDashboardController::class, 'index'])->name('dashboard');
     });
 
     // Reputation & Hall of Fame

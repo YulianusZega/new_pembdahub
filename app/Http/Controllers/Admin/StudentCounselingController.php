@@ -145,8 +145,70 @@ class StudentCounselingController extends Controller
 
         $schools = \App\Models\School::orderBy('name')->get();
         $preselectedStudent = $request->filled('student_id') ? Student::find($request->student_id) : null;
+        
+        // Cukup kirim preselected student jika ada, atau empty collection jika tidak
+        // Data siswa akan dimuat via AJAX
+        $students = $preselectedStudent ? collect([$preselectedStudent]) : collect();
 
         return compact('students', 'academicYear', 'semester', 'preselectedStudent', 'counselors', 'schools');
+    }
+
+    /**
+     * AJAX: Search students for select2
+     */
+    public function searchStudents(Request $request)
+    {
+        $search = $request->get('q');
+        $user = auth()->user();
+        $schoolId = $request->get('school_id');
+
+        $query = Student::whereIn('status', ['aktif', 'calon'])
+            ->with(['currentClassroom.homeroomTeacher.user', 'school']);
+
+        if ($user->role !== 'superadmin') {
+            $query->where('school_id', $user->school_id);
+        } elseif ($schoolId) {
+            $query->where('school_id', $schoolId);
+        }
+
+        if ($search) {
+            $query->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('nisn', 'like', "%{$search}%");
+        }
+
+        $students = $query->orderBy('full_name')->take(20)->get();
+
+        // Get all counselors for these schools to determine BK
+        $counselorQuery = User::whereIn('role', ['guru', 'admin_sekolah']);
+        if ($user->role !== 'superadmin') {
+            $counselorQuery->where('school_id', $user->school_id);
+        }
+        $counselors = $counselorQuery->get();
+
+        $results = $students->map(function ($s) use ($counselors) {
+            // Determine Wali Kelas
+            $homeroom = $s->currentClassroom->first()?->homeroomTeacher;
+            $homeroomUserId = $homeroom?->user_id ?? '';
+            $homeroomName = $homeroom ? ($homeroom->teacher?->full_name ?? $homeroom->name) : 'Wali Kelas Belum Ditentukan';
+
+            // Determine BK
+            $bk = $counselors->where('school_id', $s->school_id)->filter(function($u) {
+                return $u->role === 'guru_bk' || $u->role === 'pks' || $u->hasSpecialDuty(['BK', 'KESISWAAN', 'PKS', 'BKK']);
+            })->first() ?? $counselors->where('school_id', $s->school_id)->first();
+            $bkId = $bk?->id ?? '';
+            $bkName = $bk ? $bk->display_name : 'Tim PKS / BK Sekolah';
+
+            return [
+                'id' => $s->id,
+                'text' => $s->full_name . ' (' . ($s->currentClassroom->first()?->name ?? 'Belum ada kelas') . ')',
+                'homeroom_id' => $homeroomUserId,
+                'homeroom_name' => $homeroomName,
+                'bk_id' => $bkId,
+                'bk_name' => $bkName
+            ];
+        });
+
+        return response()->json(['results' => $results]);
     }
 
     /**

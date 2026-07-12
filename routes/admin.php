@@ -292,6 +292,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
     // Student Counseling (Bimbingan Konseling)
     Route::prefix('counseling')->name('counseling.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\StudentCounselingController::class, 'index'])->name('index');
+        Route::get('/search-students', [App\Http\Controllers\Admin\StudentCounselingController::class, 'searchStudents'])->name('search-students');
         Route::get('/create', [App\Http\Controllers\Admin\StudentCounselingController::class, 'create'])->name('create');
         Route::get('/create-prestasi', [App\Http\Controllers\Admin\StudentCounselingController::class, 'createPrestasi'])->name('create-prestasi');
         Route::get('/create-pembinaan', [App\Http\Controllers\Admin\StudentCounselingController::class, 'createPembinaan'])->name('create-pembinaan');

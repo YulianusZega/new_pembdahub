@@ -393,56 +393,52 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    const studentHomerooms = {
-        @foreach($students as $s)
-            @php
-                $homeroom = $s->currentClassroom->first()?->homeroomTeacher;
-                $homeroomUserId = $homeroom?->user_id ?? '';
-                $homeroomName = $homeroom ? ($homeroom->teacher?->full_name ?? $homeroom->name) : 'Wali Kelas Belum Ditentukan';
-            @endphp
-            "{{ $s->id }}": { id: "{{ $homeroomUserId }}", name: "{!! addslashes($homeroomName) !!}" },
-        @endforeach
-    };
-
-    const studentBks = {
-        @foreach($students as $s)
-            @php
-                $bk = $counselors->where('school_id', $s->school_id)->filter(function($u) {
-                    return $u->role === 'guru_bk' || $u->role === 'pks' || $u->hasSpecialDuty(['BK', 'KESISWAAN', 'PKS', 'BKK']);
-                })->first() ?? $counselors->where('school_id', $s->school_id)->first();
-                $bkId = $bk?->id ?? '';
-                $bkName = $bk ? $bk->display_name : 'Tim PKS / BK Sekolah';
-            @endphp
-            "{{ $s->id }}": { id: "{{ $bkId }}", name: "{!! addslashes($bkName) !!}" },
-        @endforeach
-    };
-
     $(document).ready(function() {
-        $('#studentSelect').select2({ placeholder: 'Cari siswa...' });
+        $('#studentSelect').select2({
+            placeholder: 'Ketik nama atau NISN siswa...',
+            minimumInputLength: 1,
+            ajax: {
+                url: '{{ route('admin.counseling.search-students') }}',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        q: params.term, // search term
+                        school_id: '{{ request('school_id') }}'
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            }
+        });
 
-        $('#studentSelect').on('change', function() {
-            const studentId = $(this).val();
-            if (studentId && studentHomerooms[studentId]) {
-                const wk = studentHomerooms[studentId];
-                if (wk.id) {
-                    $('#walikelas-name-display').text(wk.name).removeClass('text-slate-900 text-rose-600 text-amber-500').addClass('text-slate-950');
-                    $('#walikelas-user-id').val(wk.id);
+        $('#studentSelect').on('select2:select', function(e) {
+            const data = e.params.data;
+            if (data) {
+                if (data.homeroom_id) {
+                    $('#walikelas-name-display').text(data.homeroom_name).removeClass('text-slate-900 text-rose-600 text-amber-500').addClass('text-slate-950');
+                    $('#walikelas-user-id').val(data.homeroom_id);
                 } else {
                     $('#walikelas-name-display').text('Belum Ditentukan').removeClass('text-slate-950 text-slate-900').addClass('text-rose-600');
                     $('#walikelas-user-id').val('');
                 }
                 
-                const bk = studentBks[studentId];
-                if (bk && bk.id) {
-                    $('#pks-name-display').text(bk.name).removeClass('text-slate-900').addClass('text-slate-950');
-                    $('#pks-user-id').val(bk.id);
+                if (data.bk_id) {
+                    $('#pks-name-display').text(data.bk_name).removeClass('text-slate-900').addClass('text-slate-950');
+                    $('#pks-user-id').val(data.bk_id);
                 }
-            } else {
-                $('#walikelas-name-display').text('-- Pilih Siswa Di Atas --').removeClass('text-slate-950 text-rose-600 text-amber-500').addClass('text-slate-900');
-                $('#walikelas-user-id').val('');
-                $('#pks-name-display').text('Tim PKS / BK Sekolah').removeClass('text-slate-900').addClass('text-slate-950');
-                $('#pks-user-id').val('');
             }
+        });
+
+        $('#studentSelect').on('select2:clear', function(e) {
+            $('#walikelas-name-display').text('-- Pilih Siswa Di Atas --').removeClass('text-slate-950 text-rose-600 text-amber-500').addClass('text-slate-900');
+            $('#walikelas-user-id').val('');
+            $('#pks-name-display').text('Tim PKS / BK Sekolah').removeClass('text-slate-900').addClass('text-slate-950');
+            $('#pks-user-id').val('');
         });
 
         if ($('#studentSelect').val()) {

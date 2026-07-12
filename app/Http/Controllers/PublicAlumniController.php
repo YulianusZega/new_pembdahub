@@ -49,7 +49,7 @@ class PublicAlumniController extends Controller
             'graduation_year' => 'required|integer|min:1970|max:' . now()->year,
             'last_class' => 'nullable|string|max:255',
             'message' => 'nullable|string|max:2000',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // max 2MB
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:4096', // max 4MB
         ]);
 
         $photoPath = null;

@@ -291,7 +291,7 @@
                                             <input id="photo" name="photo" type="file" class="sr-only" accept="image/jpeg,image/png,image/jpg" onchange="previewImage(event)">
                                         </label>
                                     </div>
-                                    <p class="text-xs text-slate-500 mt-2">PNG, JPG, JPEG (Maks. 2MB)</p>
+                                    <p class="text-xs text-slate-500 mt-2">PNG, JPG, JPEG (Maks. 4MB)</p>
                                 </div>
                             </div>
                             

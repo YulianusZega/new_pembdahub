@@ -118,6 +118,43 @@
             <p class="text-[11px] text-slate-400 mt-4 font-medium">Jadilah bagian dari sejarah panjang PEMBDA dengan mendaftarkan diri Anda sekarang!</p>
         </div>
 
+        <!-- Info & Guide Section -->
+        <div class="max-w-5xl w-full mx-auto mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Info 1: Tujuan -->
+                <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600 mb-4">
+                        <i class="fa-solid fa-bullseye text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-indigo-900 mb-2">Mengapa Harus Mendaftar?</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Kami ingin mendata ulang dan menyatukan seluruh keluarga besar alumni dari berbagai generasi. Platform ini dibangun khusus agar Anda bisa terus memantau dan berkontribusi untuk perkembangan yayasan tercinta kita.
+                    </p>
+                </div>
+                <!-- Info 2: Keuntungan -->
+                <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-gold/20 shadow-sm hover:shadow-md transition relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-20 h-20 bg-gold/10 rounded-full blur-xl"></div>
+                    <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-gold mb-4 relative z-10">
+                        <i class="fa-solid fa-gift text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-indigo-900 mb-2 relative z-10">Fasilitas Eksklusif</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed relative z-10">
+                        Setelah mendaftar, Anda akan mendapatkan <strong>Akun Portal Alumni</strong> secara otomatis! Dengan akun ini, Anda bisa berjejaring di forum <em>Pembda Space</em>, mengisi Tracer Study, dan melihat lowongan karir khusus alumni.
+                    </p>
+                </div>
+                <!-- Info 3: Cara Kerja -->
+                <div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-emerald-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500 mb-4">
+                        <i class="fa-solid fa-wand-magic-sparkles text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-indigo-900 mb-2">Bagaimana Caranya?</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Sangat mudah! Cukup <strong>isi formulir pelaporan data di bawah</strong> halaman ini. Saat berhasil dikirim, sistem akan langsung memberikan <em>Username</em> dan <em>Password</em> untuk Anda *Login* ke Portal Alumni.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- Form Card -->
         @if(isset($approvedAlumni) && $approvedAlumni->count() > 0)
         <div class="w-full max-w-6xl mb-12">

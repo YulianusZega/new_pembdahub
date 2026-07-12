@@ -554,7 +554,15 @@ Route::get('/', function () {
 // Public Download Route for offline learning
 Route::get('/pelatihan/{trainingModule}/download', [App\Http\Controllers\TrainingController::class, 'download'])->name('training.download');
 
-
+// Fallback Route for Mars Audio (Hostinger workaround)
+Route::get('/audio/mars-pembda.mp4', function () {
+    $path1 = public_path('audio/mars-pembda.mp4');
+    $path2 = base_path('../audio/mars-pembda.mp4'); // if placed in public_html/audio/
+    
+    if (file_exists($path1)) return response()->file($path1);
+    if (file_exists($path2)) return response()->file($path2);
+    abort(404, 'Audio file not found in either public_html/audio or pembdahub/public/audio');
+});
 
 // Route to Seed Landing Page Content from Browser (Safe & Secured with Key)
 Route::get('/seed-landing-content', function () {

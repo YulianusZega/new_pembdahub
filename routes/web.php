@@ -1694,10 +1694,10 @@ Route::get('/debug-gallery', function () {
     $html .= "</ul>";
     
     // Cek satu file spesifik
-    $testFile = '7V2TTAX1m1uoluNgntLXokl5CsImtXLoAGcYHwuc.jpg';
+    $testFile = request('file', 'mars-pembda.mp4');
     $html .= "<h3>Mencari file: $testFile</h3>";
-    $output = shell_exec("find " . base_path('../') . " -name '$testFile' 2>&1");
-    $html .= "<pre>$output</pre>";
+    $output = shell_exec("find " . escapeshellarg(base_path('../')) . " -iname " . escapeshellarg($testFile) . " 2>&1");
+    $html .= "<pre>" . htmlspecialchars($output) . "</pre>";
     
     return $html;
 });

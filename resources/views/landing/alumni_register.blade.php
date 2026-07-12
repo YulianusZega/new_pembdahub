@@ -96,6 +96,41 @@
         </div>
 
         <!-- Form Card -->
+        @if(isset($approvedAlumni) && $approvedAlumni->count() > 0)
+        <div class="w-full max-w-6xl mb-12">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-indigo-900 inline-block relative">
+                    Galeri Alumni yang Terdaftar
+                    <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-gold rounded-full"></div>
+                </h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                @foreach($approvedAlumni as $alumni)
+                <div class="glass-card overflow-hidden hover:transform hover:scale-105 transition duration-300 group cursor-pointer relative" style="border-radius: 16px;">
+                    <div class="aspect-[3/4] w-full relative">
+                        <img src="{{ $alumni->photo_url }}" class="w-full h-full object-cover" alt="{{ $alumni->full_name }}">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 transition-opacity"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-3 text-white">
+                            <h4 class="font-bold text-sm leading-tight line-clamp-2" title="{{ $alumni->full_name }}">{{ $alumni->alias_name ? $alumni->alias_name : $alumni->full_name }}</h4>
+                            <p class="text-[10px] text-gray-300 mt-1 line-clamp-1"><i class="fas fa-graduation-cap text-gold mr-1"></i>{{ $alumni->school->name ?? 'PEMBDA' }} '{{ $alumni->graduation_year }}</p>
+                            @if($alumni->occupation)
+                            <p class="text-[10px] text-indigo-200 mt-0.5 line-clamp-1"><i class="fas fa-briefcase mr-1"></i>{{ $alumni->occupation }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    @if($alumni->message)
+                    <div class="absolute inset-0 bg-indigo-900/95 p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-center items-center text-center">
+                        <i class="fas fa-quote-left text-indigo-400 text-xl mb-2"></i>
+                        <p class="text-xs italic line-clamp-5">{{ $alumni->message }}</p>
+                    </div>
+                    @endif
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         <div class="w-full max-w-4xl glass-card p-6 md:p-10">
             
             @if(session('success'))
@@ -137,6 +172,11 @@
                             <input type="text" name="full_name" value="{{ old('full_name') }}" required class="form-input" placeholder="Cth: Dr. Budi Santoso, M.Kom">
                         </div>
 
+                        <div class="col-span-1 md:col-span-2">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Panggilan / Nama Keluarga (Nias: Ama... / Ina...)</label>
+                            <input type="text" name="alias_name" value="{{ old('alias_name') }}" class="form-input" placeholder="Cth: Ama Budi / Ina Wati">
+                        </div>
+
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jenis Kelamin <span class="text-red-500">*</span></label>
                             <select name="gender" required class="form-input">
@@ -147,16 +187,41 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pekerjaan / Aktivitas Saat Ini</label>
-                            <input type="text" name="occupation" value="{{ old('occupation') }}" class="form-input" placeholder="Cth: Pengusaha / PNS / Wiraswasta">
-                        </div>
-
-                        <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nomor WhatsApp / HP</label>
                             <input type="text" name="phone" value="{{ old('phone') }}" class="form-input" placeholder="Cth: 08123456789">
                         </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Status Pernikahan</label>
+                            <select name="marital_status" class="form-input">
+                                <option value="">-- Pilih Status --</option>
+                                <option value="Belum Menikah" {{ old('marital_status') == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
+                                <option value="Menikah" {{ old('marital_status') == 'Menikah' ? 'selected' : '' }}>Menikah</option>
+                                <option value="Pernah Menikah" {{ old('marital_status') == 'Pernah Menikah' ? 'selected' : '' }}>Pernah Menikah</option>
+                            </select>
+                        </div>
 
                         <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Jumlah Anak (Jika Ada)</label>
+                            <input type="number" name="children_count" value="{{ old('children_count') }}" min="0" class="form-input" placeholder="0">
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2 border-t border-slate-100 pt-4 mt-2">
+                            <h4 class="text-sm font-bold text-indigo-800 mb-4">Informasi Pekerjaan</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Profesi / Pekerjaan Saat Ini</label>
+                                    <input type="text" name="occupation" value="{{ old('occupation') }}" class="form-input" placeholder="Cth: Pengusaha / PNS / Wiraswasta">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nama Perusahaan / Instansi</label>
+                                    <input type="text" name="company_name" value="{{ old('company_name') }}" class="form-input" placeholder="Cth: PT Maju Jaya / Pemda Nias">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 md:col-span-2 border-t border-slate-100 pt-4 mt-2">
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">Alamat Email Aktif</label>
                             <input type="email" name="email" value="{{ old('email') }}" class="form-input" placeholder="Cth: budi@email.com">
                         </div>

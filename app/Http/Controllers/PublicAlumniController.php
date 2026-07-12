@@ -19,7 +19,14 @@ class PublicAlumniController extends Controller
         // Array of years from 1970 to current year
         $years = range(now()->year, 1970);
         
-        return view('landing.alumni_register', compact('schools', 'years'));
+        // Fetch approved alumni for gallery preview
+        $approvedAlumni = AlumniDirectory::with('school')
+                            ->where('is_approved', true)
+                            ->latest()
+                            ->take(12)
+                            ->get();
+        
+        return view('landing.alumni_register', compact('schools', 'years', 'approvedAlumni'));
     }
 
     /**
@@ -29,11 +36,15 @@ class PublicAlumniController extends Controller
     {
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
+            'alias_name' => 'nullable|string|max:255',
             'gender' => 'required|in:L,P',
+            'marital_status' => 'nullable|string|max:50',
+            'children_count' => 'nullable|integer|min:0',
             'address' => 'required|string|max:500',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'occupation' => 'nullable|string|max:255',
+            'company_name' => 'nullable|string|max:255',
             'school_id' => 'required|exists:schools,id',
             'graduation_year' => 'required|integer|min:1970|max:' . now()->year,
             'last_class' => 'nullable|string|max:255',
@@ -50,11 +61,15 @@ class PublicAlumniController extends Controller
 
         AlumniDirectory::create([
             'full_name' => $validated['full_name'],
+            'alias_name' => $validated['alias_name'] ?? null,
             'gender' => $validated['gender'],
+            'marital_status' => $validated['marital_status'] ?? null,
+            'children_count' => $validated['children_count'] ?? null,
             'address' => $validated['address'],
             'phone' => $validated['phone'] ?? null,
             'email' => $validated['email'] ?? null,
             'occupation' => $validated['occupation'] ?? null,
+            'company_name' => $validated['company_name'] ?? null,
             'school_id' => $validated['school_id'],
             'graduation_year' => $validated['graduation_year'],
             'last_class' => $validated['last_class'] ?? null,

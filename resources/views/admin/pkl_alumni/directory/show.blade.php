@@ -49,13 +49,29 @@
                 <h3 class="text-lg font-bold text-gray-900 border-b pb-2 border-gray-100">Informasi Pribadi & Kontak</h3>
                 
                 <div class="grid grid-cols-2 gap-y-4">
+                    <div class="col-span-2">
+                        <p class="text-sm text-gray-500">Nama Alias / Panggilan</p>
+                        <p class="font-medium text-gray-900">{{ $directory->alias_name ?? '-' }}</p>
+                    </div>
                     <div>
                         <p class="text-sm text-gray-500">Jenis Kelamin</p>
                         <p class="font-medium text-gray-900">{{ $directory->gender == 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
                     </div>
                     <div>
+                        <p class="text-sm text-gray-500">Status Pernikahan</p>
+                        <p class="font-medium text-gray-900">{{ $directory->marital_status ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Jumlah Anak</p>
+                        <p class="font-medium text-gray-900">{{ $directory->children_count ?? '0' }}</p>
+                    </div>
+                    <div>
                         <p class="text-sm text-gray-500">Pekerjaan</p>
                         <p class="font-medium text-gray-900">{{ $directory->occupation ?? '-' }}</p>
+                    </div>
+                    <div class="col-span-2">
+                        <p class="text-sm text-gray-500">Nama Perusahaan / Instansi</p>
+                        <p class="font-medium text-gray-900">{{ $directory->company_name ?? '-' }}</p>
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">No. WhatsApp/HP</p>

@@ -35,7 +35,7 @@
                             <div class="flex items-center gap-3">
                                 <img src="{{ $dir->photo_url }}" class="w-10 h-10 rounded-full object-cover border border-gray-200" alt="{{ $dir->full_name }}">
                                 <div>
-                                    <p class="font-bold text-gray-900">{{ $dir->full_name }}</p>
+                                    <p class="font-bold text-gray-900">{{ $dir->full_name }} {{ $dir->alias_name ? "({$dir->alias_name})" : '' }}</p>
                                     <p class="text-xs text-gray-500">{{ $dir->gender == 'L' ? 'Laki-laki' : 'Perempuan' }} • {{ $dir->phone ?? '-' }}</p>
                                 </div>
                             </div>
@@ -45,7 +45,10 @@
                             <p class="text-xs text-gray-500">Lulus: {{ $dir->graduation_year }}</p>
                         </td>
                         <td class="px-6 py-4">
-                            <p class="text-gray-900">{{ $dir->occupation ?? '-' }}</p>
+                            <p class="text-gray-900 font-medium">{{ $dir->occupation ?? '-' }}</p>
+                            @if($dir->company_name)
+                            <p class="text-xs text-gray-500">{{ $dir->company_name }}</p>
+                            @endif
                         </td>
                         <td class="px-6 py-4 text-center">
                             @if($dir->is_approved)

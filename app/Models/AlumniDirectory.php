@@ -14,11 +14,15 @@ class AlumniDirectory extends Model
 
     protected $fillable = [
         'full_name',
+        'alias_name',
         'gender',
+        'marital_status',
+        'children_count',
         'address',
         'phone',
         'email',
         'occupation',
+        'company_name',
         'school_id',
         'graduation_year',
         'last_class',

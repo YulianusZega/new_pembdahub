@@ -20,7 +20,7 @@
                 
                 <div class="flex items-center gap-4 mb-6">
                     <!-- Memaksa ukuran foto secara absolut agar tidak pernah membesar -->
-                    <div style="width: 80px; height: 80px; min-width: 80px; max-width: 80px; overflow: hidden; border-radius: 50%; border: 3px solid #fbbf24; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <div style="width: 110px; height: 110px; min-width: 110px; max-width: 110px; overflow: hidden; border-radius: 50%; border: 3px solid #fbbf24; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
                         <img src="{{ $alumni->photo_url }}" style="width: 100%; height: 100%; object-fit: cover; object-position: top;" alt="{{ $alumni->full_name }}">
                     </div>
                     <div>
@@ -55,7 +55,6 @@
                         <strong>{{ $alumni->full_name }}</strong> {!! $narrative !!}.
                     </div>
                     @endif
-                </div>
                 
             </div>
             @endforeach

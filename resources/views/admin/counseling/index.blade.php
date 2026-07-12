@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Perkembangan & Prestasi Siswa - Pembda Elite')
+@section('title', 'Perkembangan & Prestasi Siswa - PembdaHUB')
 
 @section('content')
 <div class="space-y-8 pb-12">
@@ -10,13 +10,18 @@
                 <i class="fas fa-chart-line text-2xl"></i>
             </div>
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Pusat Perkembangan</h1>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Pusat Perkembangan Siswa</h1>
                 <p class="text-slate-500 font-medium">Monitoring prestasi dan pembinaan karakter siswa</p>
             </div>
         </div>
-        <a href="{{ route('admin.counseling.create') }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl font-semibold text-sm shadow-lg shadow-blue-200 hover:shadow-blue-400 hover:-translate-y-0.5 transition duration-300">
-            <i class="fas fa-plus-circle mr-2 text-lg"></i> Tambah Catatan Baru
-        </a>
+        <div class="flex gap-3">
+            <a href="{{ route('admin.counseling.create-prestasi') }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl font-semibold text-sm shadow-lg shadow-blue-200 hover:shadow-blue-400 hover:-translate-y-0.5 transition duration-300">
+                <i class="fas fa-trophy mr-2"></i> Input Prestasi
+            </a>
+            <a href="{{ route('admin.counseling.create-pembinaan') }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-rose-600 to-rose-700 text-white rounded-xl font-semibold text-sm shadow-lg shadow-rose-200 hover:shadow-rose-400 hover:-translate-y-0.5 transition duration-300">
+                <i class="fas fa-shield-halved mr-2"></i> Input Pembinaan
+            </a>
+        </div>
     </div>
 
     {{-- Highlights Dashboard: "Menghunjuk Siswa" --}}

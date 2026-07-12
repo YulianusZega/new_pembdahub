@@ -84,9 +84,9 @@ class StudentCounselingController extends Controller
     }
 
     /**
-     * Create form
+     * Helper: Get common form data for create views
      */
-    public function create(Request $request)
+    private function getFormData(Request $request)
     {
         $user = auth()->user();
         $schoolId = $request->get('school_id');
@@ -98,10 +98,8 @@ class StudentCounselingController extends Controller
             ->orderBy('full_name');
 
         if ($user->role !== 'superadmin') {
-            // Admin Sekolah/Guru hanya lihat siswa sekolahnya
             $studentQuery->where('school_id', $user->school_id);
         } elseif ($schoolId) {
-            // Superadmin filter by selected school
             $studentQuery->where('school_id', $schoolId);
         }
 
@@ -114,10 +112,8 @@ class StudentCounselingController extends Controller
         $counselorQuery = User::whereIn('role', ['guru', 'admin_sekolah']);
         
         if ($user->role !== 'superadmin') {
-            // Admin Sekolah/Guru hanya lihat staff sekolahnya
             $counselorQuery->where('school_id', $user->school_id);
         } elseif ($schoolId) {
-            // Superadmin jika pilih sekolah, filter staff sekolah tsb
             $counselorQuery->where('school_id', $schoolId);
         }
         
@@ -129,17 +125,14 @@ class StudentCounselingController extends Controller
 
         $counselors = $counselorQuery->with(['teacher'])
             ->get()
-            // Filter unique by ID (karena orWhere bisa buat duplikat)
             ->unique('id')
             ->filter(function($u) {
                 return !empty($u->name) && $u->name !== 'Guru';
             })
             ->map(function($u) {
-                 // Gunakan nama dari tabel teacher jika ada
                 $name = $u->teacher ? $u->teacher->full_name : $u->name;
                 $roleLabel = ucfirst(str_replace('_', ' ', $u->role));
                 
-                // Tambahkan info sekolah jika Superadmin melihat semua (tanpa filter sekolah)
                 $schoolInfo = '';
                 if (auth()->user()->role === 'superadmin' && !request('school_id') && $u->school) {
                     $schoolInfo = " - {$u->school->name}";
@@ -150,14 +143,37 @@ class StudentCounselingController extends Controller
             })
             ->sortBy('display_name');
 
-        // Untuk Super Admin Dropdown Sekolah
         $schools = \App\Models\School::orderBy('name')->get();
-
         $preselectedStudent = $request->filled('student_id') ? Student::find($request->student_id) : null;
 
-        return view('admin.counseling.create', compact(
-            'students', 'academicYear', 'semester', 'preselectedStudent', 'counselors', 'schools'
-        ));
+        return compact('students', 'academicYear', 'semester', 'preselectedStudent', 'counselors', 'schools');
+    }
+
+    /**
+     * Create form (legacy — redirect to pilih mode)
+     */
+    public function create(Request $request)
+    {
+        $data = $this->getFormData($request);
+        return view('admin.counseling.create', $data);
+    }
+
+    /**
+     * Create form — Mode Prestasi
+     */
+    public function createPrestasi(Request $request)
+    {
+        $data = $this->getFormData($request);
+        return view('admin.counseling.create-prestasi', $data);
+    }
+
+    /**
+     * Create form — Mode Pembinaan
+     */
+    public function createPembinaan(Request $request)
+    {
+        $data = $this->getFormData($request);
+        return view('admin.counseling.create-pembinaan', $data);
     }
 
     /**
@@ -167,15 +183,23 @@ class StudentCounselingController extends Controller
     {
         $validated = $request->validate([
             'student_id' => 'required|exists:students,id',
-            'counselor_id' => 'nullable|exists:users,id', // Add validation for counselor
+            'counselor_id' => 'nullable|exists:users,id',
             'record_type' => 'required|in:konseling,pembinaan,pelanggaran,penghargaan,home_visit',
             'category' => 'required|in:akademik,perilaku,sosial,karir,pribadi,lainnya,kedisiplinan,absensi,olahraga,seni,keagamaan',
             'severity' => 'nullable|in:ringan,sedang,berat',
             'achievement_level' => 'nullable|in:sekolah,kabupaten,propinsi,nasional,internasional',
+            // Field baru Prestasi
+            'competition_name' => 'nullable|string|max:255',
+            'organizer' => 'nullable|string|max:255',
+            'ranking' => 'nullable|string|max:100',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'background' => 'nullable|string',
             'action_taken' => 'nullable|string',
+            // Field baru Pembinaan
+            'sanction' => 'nullable|string',
+            'sanction_type' => 'nullable|string|max:100',
+            'sanction_duration_days' => 'nullable|integer|min:1',
             'result' => 'nullable|string',
             'follow_up' => 'nullable|string',
             'incident_date' => 'required|date',
@@ -183,11 +207,12 @@ class StudentCounselingController extends Controller
             'parent_notified' => 'boolean',
             'parent_notified_date' => 'nullable|date',
             'parent_response' => 'nullable|string',
+            'status' => 'nullable|in:open,in_progress,resolved,closed',
             'is_confidential' => 'boolean',
             'participants' => 'nullable|array',
             'participants.*.user_id' => 'nullable|exists:users,id',
             'participants.*.role' => 'in:guru_bk,wali_kelas,pks,kepala_sekolah,guru_mapel,orang_tua,lainnya',
-            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240', // Max 10MB
+            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
         ]);
 
         if ($request->hasFile('attachment')) {
@@ -201,12 +226,17 @@ class StudentCounselingController extends Controller
         $academicYear = AcademicYear::where('is_active', true)->firstOrFail();
         $semester = Semester::where('is_active', true)->firstOrFail();
 
+        // Tentukan status berdasarkan tipe
+        $isPrestasi = $validated['record_type'] === 'penghargaan';
+        $status = $isPrestasi ? 'resolved' : ($validated['status'] ?? 'open');
+
         $record = StudentCounselingRecord::create(array_merge($validated, [
             'school_id' => $student->school_id,
             'academic_year_id' => $academicYear->id,
             'semester_id' => $semester->id,
-            'counselor_id' => $request->filled('counselor_id') ? $request->counselor_id : auth()->id(), // Use selected counselor or current user
-            'status' => 'open',
+            'counselor_id' => $request->filled('counselor_id') ? $request->counselor_id : auth()->id(),
+            'status' => $status,
+            'resolved_date' => $isPrestasi ? now() : null,
         ]));
 
         // Add participants
@@ -225,12 +255,12 @@ class StudentCounselingController extends Controller
 
         // Reputation Hooks
         try {
-            // 1. For Student
             if ($student->user_id) {
-                $points = 10; // Default for normal counseling
+                $points = 0; // Default: netral untuk konseling/pembinaan biasa
                 $type = 'character';
                 
                 if ($record->record_type === 'penghargaan') {
+                    // Prestasi: poin POSITIF berdasarkan level
                     $levels = [
                         'sekolah' => 50,
                         'kabupaten' => 100,
@@ -239,8 +269,9 @@ class StudentCounselingController extends Controller
                         'internasional' => 250
                     ];
                     $points = $levels[$record->achievement_level] ?? 50;
-                    $type = 'academic'; // Awards usually counted here or separate 'achievement'
+                    $type = 'achievement';
                 } elseif ($record->record_type === 'pelanggaran') {
+                    // Pelanggaran: poin NEGATIF berdasarkan severity
                     $severities = [
                         'ringan' => -20,
                         'sedang' => -50,
@@ -248,29 +279,34 @@ class StudentCounselingController extends Controller
                     ];
                     $points = $severities[$record->severity] ?? -20;
                     $type = 'violation';
-                } elseif ($record->record_type === 'home_visit') {
-                    $points = 20;
                 }
+                // konseling, pembinaan, home_visit = 0 poin (netral, hanya dokumentasi)
 
-                \App\Models\ReputationLog::log($student->user_id, $points, $type, $record->title, $record);
+                if ($points !== 0) {
+                    \App\Models\ReputationLog::log($student->user_id, $points, $type, $record->title, $record);
+                }
             }
 
-            // 2. For Counselor (Teacher/Admin)
+            // Poin untuk Counselor/Pencatat (dokumentasi)
             $counselorId = $record->counselor_id ?? auth()->id();
             if ($counselorId) {
-                $cPoints = 10; // Basic documentation point
+                $cPoints = 5; // Poin kecil untuk dokumentasi
                 if ($record->record_type === 'home_visit') {
-                    $cPoints = 50; // Extra points for home visit
+                    $cPoints = 25; // Extra untuk home visit (effort lebih)
                 }
                 
-                \App\Models\ReputationLog::log($counselorId, $cPoints, 'counseling_action', "Dokumentasi Konseling: " . $record->title, $record);
+                \App\Models\ReputationLog::log($counselorId, $cPoints, 'counseling_action', "Dokumentasi: " . $record->title, $record);
             }
         } catch (\Exception $e) {
             \Log::warning('Reputation logging failed for counseling: ' . $e->getMessage());
         }
 
+        $successMsg = $isPrestasi 
+            ? 'Prestasi siswa berhasil dicatat! Poin reputasi telah ditambahkan.'
+            : 'Catatan pembinaan berhasil disimpan.';
+
         return redirect()->route('admin.counseling.show', $record)
-            ->with('success', 'Catatan konseling berhasil disimpan.');
+            ->with('success', $successMsg);
     }
 
     /**
@@ -395,10 +431,18 @@ class StudentCounselingController extends Controller
             'category' => 'required|in:akademik,perilaku,sosial,karir,pribadi,lainnya,kedisiplinan,absensi,olahraga,seni,keagamaan',
             'severity' => 'nullable|in:ringan,sedang,berat',
             'achievement_level' => 'nullable|in:sekolah,kabupaten,propinsi,nasional,internasional',
+            // Field baru Prestasi
+            'competition_name' => 'nullable|string|max:255',
+            'organizer' => 'nullable|string|max:255',
+            'ranking' => 'nullable|string|max:100',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'background' => 'nullable|string',
             'action_taken' => 'nullable|string',
+            // Field baru Pembinaan
+            'sanction' => 'nullable|string',
+            'sanction_type' => 'nullable|string|max:100',
+            'sanction_duration_days' => 'nullable|integer|min:1',
             'result' => 'nullable|string',
             'follow_up' => 'nullable|string',
             'status' => 'in:open,in_progress,resolved,closed',

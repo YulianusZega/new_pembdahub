@@ -31,7 +31,7 @@ class AlumniDashboardController extends Controller
         $latestJobs = \App\Models\JobPosting::where('is_active', true)->latest()->take(3)->get();
 
         // Ambil obrolan terbaru di Pembda Space (maksimal 3)
-        $latestThreads = \App\Models\ForumThread::with(['user', 'category'])
+        $latestThreads = \App\Models\ForumThread::with(['user'])
                             ->latest()
                             ->take(3)
                             ->get();

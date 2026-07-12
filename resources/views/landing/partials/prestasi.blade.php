@@ -72,15 +72,15 @@
                         <div style="margin-bottom:16px; padding:12px; background:var(--bg); border-radius:10px; border:1px solid var(--border);">
                             <div style="display:flex; align-items:center; gap:12px;">
                                 <div style="width:40px; height:40px; border-radius:50%; overflow:hidden; border:2px solid var(--border); flex-shrink:0;">
-                                    <img src="{{ $achievement->student->photo_url ?? asset('assets/img/default-avatar.png') }}" style="width:100%; height:100%; object-fit:cover;" alt="{{ $achievement->student->full_name ?? 'Siswa' }}" onerror="this.src='{{ asset('assets/img/default-avatar.png') }}'">
+                                    <img src="{{ $achievement->student?->photo_url ?? asset('assets/img/default-avatar.png') }}" style="width:100%; height:100%; object-fit:cover;" alt="{{ $achievement->student?->full_name ?? 'Siswa' }}" onerror="this.src='{{ asset('assets/img/default-avatar.png') }}'">
                                 </div>
                                 <div>
                                     <div style="font-weight:700; font-size:14px; color:var(--text-primary); margin-bottom:2px;">
-                                        {{ $achievement->student->full_name ?? 'Siswa/i Pembda' }}
+                                        {{ $achievement->student?->full_name ?? 'Siswa/i Pembda' }}
                                     </div>
                                     <div style="font-size:12px; color:var(--text-secondary);">
                                         <i class="fa-solid fa-school" style="color:var(--text-muted); margin-right:4px;"></i>
-                                        {{ $achievement->student->school->name ?? 'Perguruan PEMBDA Nias' }}
+                                        {{ $achievement->student?->school?->name ?? 'Perguruan PEMBDA Nias' }}
                                     </div>
                                 </div>
                             </div>

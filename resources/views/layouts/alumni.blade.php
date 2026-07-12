@@ -40,7 +40,7 @@
         <p class="px-4 text-xs font-bold tracking-wider text-gray-400 uppercase">Pengaturan</p>
     </div>
 
-    <a href="{{ route('profile.edit') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('profile.edit') ? $ac : $nc }}">
+    <a href="{{ route('profile.settings') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('profile.settings') ? $ac : $nc }}">
         <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white"><i class="fas fa-user text-[10px]"></i></div>
         <span>Profil Akun</span>
     </a>

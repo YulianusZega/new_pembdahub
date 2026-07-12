@@ -837,6 +837,18 @@ Route::middleware('auth')->group(function () {
     // Alumni Routes
     Route::prefix('alumni-portal')->name('alumni.')->middleware('role:alumni')->group(function () {
         Route::get('/dashboard', [App\Http\Controllers\AlumniDashboardController::class, 'index'])->name('dashboard');
+
+        // Forum Alumni Khusus Unit Sekolah
+        Route::get('/forum', [App\Http\Controllers\AlumniForumController::class, 'index'])->name('forum.index');
+        Route::get('/forum/create', [App\Http\Controllers\AlumniForumController::class, 'create'])->name('forum.create');
+        Route::post('/forum', [App\Http\Controllers\AlumniForumController::class, 'store'])->name('forum.store');
+        Route::get('/forum/{forum}', [App\Http\Controllers\AlumniForumController::class, 'show'])->name('forum.show');
+        Route::post('/forum/{forum}/reply', [App\Http\Controllers\AlumniForumController::class, 'reply'])->name('forum.reply');
+
+        // Chat / Pesan Alumni
+        Route::get('/chat', [App\Http\Controllers\AlumniMessageController::class, 'index'])->name('chat.index');
+        Route::get('/chat/{contact}', [App\Http\Controllers\AlumniMessageController::class, 'show'])->name('chat.show');
+        Route::post('/chat/{contact}', [App\Http\Controllers\AlumniMessageController::class, 'store'])->name('chat.store');
     });
 
     // Reputation & Hall of Fame

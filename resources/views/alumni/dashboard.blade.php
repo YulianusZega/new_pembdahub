@@ -18,8 +18,8 @@
                 Ini adalah rumah digital Anda. Temukan teman seangkatan, kembangkan karir Anda, dan mari bersama-sama berkontribusi untuk almamater tercinta.
             </p>
             <div class="flex flex-wrap gap-3">
-                <a href="{{ route('forum.index') }}" class="bg-white text-indigo-700 hover:bg-indigo-50 font-bold px-6 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 transform hover:-translate-y-0.5">
-                    <i class="fas fa-comments"></i> Menuju Pembda Space
+                <a href="{{ route('alumni.forum.index') }}" class="bg-white text-indigo-700 hover:bg-indigo-50 font-bold px-6 py-2.5 rounded-xl shadow-lg transition flex items-center gap-2 transform hover:-translate-y-0.5">
+                    <i class="fas fa-comments"></i> Menuju Forum Alumni
                 </a>
                 <a href="{{ route('alumni.jobs.index') }}" class="bg-indigo-500/30 hover:bg-indigo-500/50 border border-indigo-400/50 text-white font-bold px-6 py-2.5 rounded-xl transition flex items-center gap-2 backdrop-blur-sm">
                     <i class="fas fa-briefcase"></i> Lihat Lowongan Kerja
@@ -66,18 +66,16 @@
             
             <!-- Quick Info Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition group relative overflow-hidden">
+                <a href="{{ route('alumni.forum.index') }}" class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition group relative overflow-hidden">
                     <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-50 rounded-full group-hover:scale-150 transition duration-500 ease-in-out"></div>
-                    <div class="relative z-10 flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                    <div class="relative z-10">
+                        <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600 mb-3 w-fit">
                             <i class="fas fa-users text-xl"></i>
                         </div>
-                        <div>
-                            <h4 class="font-bold text-gray-900 mb-1">Jejaring Lintas Angkatan</h4>
-                            <p class="text-xs text-gray-500 leading-relaxed">Berkomunikasi bebas dengan alumni lain, berdiskusi proyek, dan nostalgia di forum Pembda Space.</p>
-                        </div>
+                        <h3 class="font-bold text-gray-800 mb-1">Forum Eksklusif</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">Berkomunikasi bebas dengan alumni lain, berdiskusi proyek, dan nostalgia di forum alumni unit sekolah Anda.</p>
                     </div>
-                </div>
+                </a>
                 
                 <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition group relative overflow-hidden">
                     <div class="absolute -right-4 -top-4 w-16 h-16 bg-emerald-50 rounded-full group-hover:scale-150 transition duration-500 ease-in-out"></div>
@@ -128,11 +126,11 @@
 
             <!-- Recent Forum Discussions Widget -->
             <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                <div class="p-5 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
-                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                        <i class="fas fa-comments text-indigo-500"></i> Obrolan Terhangat Pembda Space
+                <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-2xl">
+                    <h3 class="font-bold text-gray-800 flex items-center gap-2 text-sm">
+                        <i class="fas fa-users text-indigo-500"></i> Topik Forum Alumni Terkini
                     </h3>
-                    <a href="{{ route('forum.index') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800">Buka Forum →</a>
+                    <a href="{{ route('alumni.forum.index') }}" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">Lihat Semua &rarr;</a>
                 </div>
                 <div class="p-5">
                     @if($latestThreads->count() > 0)
@@ -207,13 +205,16 @@
                             <p class="text-[10px] text-gray-500 mt-0.5">Isi Tracer Study secara berkala agar sekolah tahu perkembangan karir Anda.</p>
                         </div>
                     </li>
-                    <li class="flex items-start gap-3">
-                        <div class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
-                        <div>
-                            <h4 class="text-xs font-bold text-gray-900">Aktif di Forum</h4>
-                            <p class="text-[10px] text-gray-500 mt-0.5">Bantu jawab pertanyaan siswa (adik kelas) di Pembda Space atau buat topik kolaborasi.</p>
+                    <a href="{{ route('alumni.forum.index') }}" class="flex items-center justify-between">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">2</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800 text-sm">Masuk Forum Alumni</h4>
+                                <p class="text-[10px] text-gray-500 mt-0.5">Berkomunikasi dengan rekan-rekan satu almamater.</p>
+                            </div>
                         </div>
-                    </li>
+                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                    </a>
                     <li class="flex items-start gap-3">
                         <div class="w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">3</div>
                         <div>

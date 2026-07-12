@@ -26,9 +26,14 @@
         <p class="px-4 text-xs font-bold tracking-wider text-gray-400 uppercase">Aktivitas</p>
     </div>
 
-    <a href="{{ route('forum.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('forum.*') ? $ac : $nc }}">
-        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white"><i class="fas fa-comments text-[10px]"></i></div>
-        <span>Pembda Space</span>
+    <a href="{{ route('alumni.forum.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('alumni.forum.*') ? $ac : $nc }}">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white"><i class="fas fa-users text-[10px]"></i></div>
+        <span>Forum Alumni</span>
+    </a>
+
+    <a href="{{ route('alumni.chat.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('alumni.chat.*') ? $ac : $nc }}">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white"><i class="fas fa-comment-dots text-[10px]"></i></div>
+        <span>Pesan Pribadi</span>
     </a>
 
     <a href="{{ route('alumni.tracer.form') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('alumni.tracer.*') ? $ac : $nc }}">

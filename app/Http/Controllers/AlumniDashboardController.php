@@ -30,9 +30,10 @@ class AlumniDashboardController extends Controller
         // Ambil lowongan kerja terbaru (maksimal 3)
         $latestJobs = \App\Models\JobPosting::where('is_active', true)->latest()->take(3)->get();
 
-        // Ambil obrolan terbaru di Pembda Space (khusus kanal alumni)
-        $latestThreads = \App\Models\ForumThread::with(['user'])
-                            ->whereIn('category', ['alumni_lounge', 'career_network', 'reunion'])
+        // Ambil obrolan terbaru di Forum Alumni (khusus unit sekolah)
+        $schoolId = $alumni->school_id ?? null;
+        $latestThreads = \App\Models\AlumniForum::with(['user'])
+                            ->where('school_id', $schoolId)
                             ->latest()
                             ->take(3)
                             ->get();

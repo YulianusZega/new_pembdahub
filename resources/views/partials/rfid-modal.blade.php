@@ -142,14 +142,12 @@
     function checkUidOwnership(uid) {
         if (!uid || uid.length < 4) {
             hideOwnerStatus();
-            enableSubmitButton();
             return;
         }
 
         // Jika UID sama dengan UID yang sudah dimiliki orang ini → skip cek
         if (rfidCurrentEntityRfid && uid === rfidCurrentEntityRfid) {
             showOwnerStatus('self');
-            enableSubmitButton();
             return;
         }
 
@@ -166,21 +164,17 @@
                     // Cek apakah pemilik = orang yang sedang dibuka modalnya
                     if (data.owner_name === rfidCurrentEntityName) {
                         showOwnerStatus('self');
-                        enableSubmitButton();
                     } else {
                         // UID sudah dimiliki orang LAIN
                         showOwnerStatus('owned', data.owner_name, data.owner_type);
-                        disableSubmitButton();
                     }
                 } else {
                     // UID tersedia
                     showOwnerStatus('available');
-                    enableSubmitButton();
                 }
             } catch (e) {
                 console.error('Check UID error:', e);
                 hideOwnerStatus();
-                enableSubmitButton();
             }
         }, 500);
     }
@@ -463,22 +457,57 @@
         form.addEventListener('submit', handleRfidFormSubmit);
     }
 
-    function handleRfidFormSubmit(e) {
+    async function handleRfidFormSubmit(e) {
+        e.preventDefault(); // Selalu cegah submit dulu, kita cek manual
+
         const input = document.getElementById('rfid_uid_input');
         const rawValue = input.value.trim();
 
-        if (!rawValue) return; // Biarkan validasi HTML5 required yang handle
+        if (!rawValue) {
+            input.reportValidity();
+            return;
+        }
 
         // Konversi final sebelum submit
         const processedUid = processRfidInput(rawValue);
         input.value = processedUid;
 
-        // Double-check: jika tombol submit disabled (karena UID milik orang lain), blokir
-        const btn = document.getElementById('rfid_submit_btn');
-        if (btn.disabled) {
-            e.preventDefault();
-            alert('⛔ Kartu ini sudah terdaftar milik orang lain. Gunakan kartu yang berbeda.');
-            return false;
+        // Cek apakah ini kartu yang sama dengan milik orang ini sendiri → boleh submit
+        if (rfidCurrentEntityRfid && processedUid === rfidCurrentEntityRfid) {
+            document.getElementById('rfidForm').submit();
+            return;
+        }
+
+        // Cek kepemilikan SEGAR ke API (tidak pakai cache/state lama)
+        try {
+            const btn = document.getElementById('rfid_submit_btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengecek...';
+
+            const res = await fetch('{{ url("/api/rfid/check-uid") }}?uid=' + encodeURIComponent(processedUid));
+            const data = await res.json();
+
+            if (data.owned) {
+                // Cek apakah pemilik = orang yang sedang dibuka modalnya
+                if (data.owner_name === rfidCurrentEntityName) {
+                    // Milik orang ini sendiri → boleh submit
+                    document.getElementById('rfidForm').submit();
+                    return;
+                }
+                // Milik orang LAIN → BLOKIR
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save mr-2 mt-0.5"></i> Simpan RFID';
+                showOwnerStatus('owned', data.owner_name, data.owner_type);
+                return;
+            }
+
+            // UID tersedia → submit form
+            document.getElementById('rfidForm').submit();
+
+        } catch (err) {
+            console.error('Submit check error:', err);
+            // Jika API gagal, tetap izinkan submit (backend punya validasi sendiri)
+            document.getElementById('rfidForm').submit();
         }
     }
 </script>

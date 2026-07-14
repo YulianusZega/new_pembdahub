@@ -35,7 +35,7 @@
                             <input type="text" name="rfid_uid" id="rfid_uid_input" required
                                 class="w-full pl-10 pr-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-mono text-lg cursor-text"
                                 placeholder="👆 Klik di sini, lalu scan kartu..." autocomplete="off"
-                                onfocus="onRfidInputFocus()"
+                                onfocus="onRfidInputFocus(this)"
                                 onblur="onRfidInputBlur()">
                         </div>
                         <p class="text-xs text-gray-500 mt-1">💡 Jika UID tidak muncul otomatis, klik kotak ini terlebih dahulu lalu tap kartu RFID</p>
@@ -212,7 +212,15 @@
     //  INPUT FOCUS / BLUR INDICATORS
     // ================================================================
 
-    function onRfidInputFocus() {
+    function onRfidInputFocus(el) {
+        // Select all text so that a new scan overwrites the existing value
+        if (el && typeof el.select === 'function') {
+            el.select();
+        } else {
+            const input = document.getElementById('rfid_uid_input');
+            if (input) input.select();
+        }
+
         const statusBox = document.getElementById('rfid_focus_status');
         const dot = document.getElementById('rfid_focus_dot');
         const text = document.getElementById('rfid_focus_text');
@@ -259,7 +267,11 @@
 
     function focusRfidInput() {
         const input = document.getElementById('rfid_uid_input');
-        if (input) input.focus();
+        if (input) {
+            input.focus();
+            // Gunakan timeout kecil untuk memastikan select terjadi setelah focus event selesai
+            setTimeout(() => input.select(), 50);
+        }
     }
 
     // ================================================================

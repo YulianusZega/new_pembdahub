@@ -27,6 +27,50 @@ Route::post('/rfid/scan-buffer', function (Request $request) {
     return response()->json(['status' => 'success', 'uid' => $uid]);
 });
 
+// ==== CEK KEPEMILIKAN UID (untuk validasi di modal RFID sebelum simpan) ====
+Route::get('/rfid/check-uid', function (Request $request) {
+    $uid = strtoupper(trim($request->input('uid', '')));
+    if (empty($uid)) {
+        return response()->json(['owned' => false]);
+    }
+
+    // Cek di Students
+    $student = \App\Models\Student::where('rfid_uid', $uid)->first();
+    if ($student) {
+        return response()->json([
+            'owned' => true,
+            'owner_name' => $student->full_name,
+            'owner_type' => 'Siswa',
+            'owner_id' => $student->id,
+        ]);
+    }
+
+    // Cek di Employees (Guru/Pegawai)
+    $employee = \App\Models\Employee::where('rfid_uid', $uid)->first();
+    if ($employee) {
+        $type = $employee->isTeacher() ? 'Guru' : 'Pegawai';
+        return response()->json([
+            'owned' => true,
+            'owner_name' => $employee->full_name,
+            'owner_type' => $type,
+            'owner_id' => $employee->id,
+        ]);
+    }
+
+    // Cek di TefaEmployees
+    $tefaEmployee = \App\Models\TefaEmployee::where('rfid_uid', $uid)->first();
+    if ($tefaEmployee) {
+        return response()->json([
+            'owned' => true,
+            'owner_name' => $tefaEmployee->name,
+            'owner_type' => 'Karyawan TEFA',
+            'owner_id' => $tefaEmployee->id,
+        ]);
+    }
+
+    return response()->json(['owned' => false]);
+});
+
 Route::get('/rfid/scan-buffer', function (Request $request) {
     $bufferFile = storage_path('app/rfid_scan_buffer.json');
     if (!file_exists($bufferFile)) {

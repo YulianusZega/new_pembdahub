@@ -40,10 +40,31 @@
                         </div>
                         <p class="text-xs text-gray-500 mt-1">💡 Jika UID tidak muncul otomatis, klik kotak ini terlebih dahulu lalu tap kartu RFID</p>
                     </div>
+
+                    {{-- Info Konversi (muncul saat USB Reader mengirim format desimal) --}}
+                    <div id="rfid_convert_info" class="hidden px-4 py-3 rounded-xl bg-blue-50 border border-blue-200">
+                        <div class="flex items-start gap-2">
+                            <i class="fas fa-exchange-alt text-blue-500 mt-0.5"></i>
+                            <div class="text-sm">
+                                <p class="font-semibold text-blue-800">Konversi Otomatis (USB Reader)</p>
+                                <p class="text-blue-600 mt-1">
+                                    Input asli: <code id="rfid_original_decimal" class="bg-blue-100 px-1 rounded font-mono">-</code>
+                                </p>
+                                <p class="text-blue-600">
+                                    Dikonversi ke HEX: <code id="rfid_converted_hex" class="bg-blue-100 px-1 rounded font-mono font-bold">-</code>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Status Kepemilikan UID (cek real-time) --}}
+                    <div id="rfid_owner_status" class="hidden">
+                        {{-- Diisi via JavaScript --}}
+                    </div>
                 </div>
 
                 <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-xl border border-transparent px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto sm:text-sm transition-all shadow-purple-500/30">
+                    <button type="submit" id="rfid_submit_btn" class="w-full inline-flex justify-center rounded-xl border border-transparent px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-base font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:w-auto sm:text-sm transition-all shadow-purple-500/30">
                         <i class="fas fa-save mr-2 mt-0.5"></i> Simpan RFID
                     </button>
                     <button type="button" onclick="closeRfidModal()" class="mt-3 w-full inline-flex justify-center rounded-xl border border-gray-300 px-6 py-3 bg-white text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm transition-all">
@@ -58,6 +79,174 @@
 @push('scripts')
 <script>
     let rfidPollInterval = null;
+    let rfidCheckTimeout = null;
+    let rfidCurrentEntityName = ''; // Nama orang yang sedang dibuka modalnya
+    let rfidCurrentEntityRfid = ''; // RFID UID yang sudah dimiliki orang ini (jika ada)
+
+    // ================================================================
+    //  KONVERSI DESIMAL → HEX (untuk USB Reader)
+    //  USB Reader mengeluarkan UID dalam format desimal (contoh: 0035974332)
+    //  ESP32+MFRC522 menggunakan format HEX uppercase (contoh: 02255ABC)
+    //  Fungsi ini mendeteksi & mengkonversi agar UID yang disimpan konsisten
+    // ================================================================
+
+    function isDecimalUid(str) {
+        // Desimal: hanya digit 0-9, panjang 8-12 karakter
+        // HEX dari ESP32: hex chars (0-9, A-F), panjang 8 chars (4-byte) atau 14 chars (7-byte)
+        if (!/^\d+$/.test(str)) return false;
+        if (str.length < 6 || str.length > 12) return false;
+        // Jika string punya huruf A-F → bukan desimal murni (sudah ditangani di atas)
+        // Cek apakah nilainya masuk akal sebagai 4-byte (max 4294967295) atau 7-byte UID
+        const num = parseInt(str, 10);
+        if (isNaN(num)) return false;
+        // 4-byte UID max = 0xFFFFFFFF = 4294967295
+        // 7-byte UID max = sangat besar, tapi USB reader umumnya baca 4-byte
+        return num > 0 && num <= 4294967295;
+    }
+
+    function decimalToHex(decimalStr) {
+        const num = parseInt(decimalStr, 10);
+        if (isNaN(num) || num <= 0) return decimalStr;
+        // Pad ke 8 karakter (4 bytes) jika hasilnya kurang
+        let hex = num.toString(16).toUpperCase();
+        while (hex.length < 8) hex = '0' + hex;
+        return hex;
+    }
+
+    function processRfidInput(inputValue) {
+        const trimmed = inputValue.trim();
+        if (!trimmed) return trimmed;
+
+        const convertInfo = document.getElementById('rfid_convert_info');
+
+        // Cek apakah input dari USB Reader (format desimal)
+        if (isDecimalUid(trimmed)) {
+            const hexUid = decimalToHex(trimmed);
+            // Tampilkan info konversi
+            convertInfo.classList.remove('hidden');
+            document.getElementById('rfid_original_decimal').textContent = trimmed;
+            document.getElementById('rfid_converted_hex').textContent = hexUid;
+            return hexUid;
+        }
+
+        // Bukan desimal → sembunyikan info konversi, kembalikan uppercase
+        convertInfo.classList.add('hidden');
+        return trimmed.toUpperCase().replace(/\s+/g, '');
+    }
+
+    // ================================================================
+    //  CEK KEPEMILIKAN UID (REAL-TIME)
+    //  Mencegah UID yang sudah dimiliki seseorang disimpan ke orang lain
+    // ================================================================
+
+    function checkUidOwnership(uid) {
+        if (!uid || uid.length < 4) {
+            hideOwnerStatus();
+            enableSubmitButton();
+            return;
+        }
+
+        // Jika UID sama dengan UID yang sudah dimiliki orang ini → skip cek
+        if (rfidCurrentEntityRfid && uid === rfidCurrentEntityRfid) {
+            showOwnerStatus('self');
+            enableSubmitButton();
+            return;
+        }
+
+        showOwnerStatus('checking');
+
+        // Debounce: tunggu 500ms setelah input terakhir
+        if (rfidCheckTimeout) clearTimeout(rfidCheckTimeout);
+        rfidCheckTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch('{{ url("/api/rfid/check-uid") }}?uid=' + encodeURIComponent(uid));
+                const data = await res.json();
+
+                if (data.owned) {
+                    // Cek apakah pemilik = orang yang sedang dibuka modalnya
+                    if (data.owner_name === rfidCurrentEntityName) {
+                        showOwnerStatus('self');
+                        enableSubmitButton();
+                    } else {
+                        // UID sudah dimiliki orang LAIN
+                        showOwnerStatus('owned', data.owner_name, data.owner_type);
+                        disableSubmitButton();
+                    }
+                } else {
+                    // UID tersedia
+                    showOwnerStatus('available');
+                    enableSubmitButton();
+                }
+            } catch (e) {
+                console.error('Check UID error:', e);
+                hideOwnerStatus();
+                enableSubmitButton();
+            }
+        }, 500);
+    }
+
+    function showOwnerStatus(status, ownerName, ownerType) {
+        const container = document.getElementById('rfid_owner_status');
+        container.classList.remove('hidden');
+
+        if (status === 'checking') {
+            container.innerHTML = `
+                <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200">
+                    <i class="fas fa-spinner fa-spin text-gray-400"></i>
+                    <p class="text-sm text-gray-500">Mengecek kepemilikan kartu...</p>
+                </div>
+            `;
+        } else if (status === 'owned') {
+            container.innerHTML = `
+                <div class="flex items-start gap-3 px-4 py-3 rounded-xl bg-red-50 border-2 border-red-300">
+                    <i class="fas fa-exclamation-triangle text-red-500 mt-0.5 text-lg"></i>
+                    <div>
+                        <p class="font-bold text-red-800 text-sm">⛔ KARTU SUDAH TERDAFTAR!</p>
+                        <p class="text-red-700 text-sm mt-1">Kartu ini milik <strong>${ownerName}</strong> (${ownerType})</p>
+                        <p class="text-red-600 text-xs mt-1">Tidak bisa menyimpan kartu ini ke orang lain. Gunakan kartu yang berbeda.</p>
+                    </div>
+                </div>
+            `;
+        } else if (status === 'self') {
+            container.innerHTML = `
+                <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-50 border border-blue-200">
+                    <i class="fas fa-user-check text-blue-500"></i>
+                    <p class="text-sm font-medium text-blue-700">ℹ️ Kartu ini sudah terdaftar untuk orang ini — bisa di-update</p>
+                </div>
+            `;
+        } else if (status === 'available') {
+            container.innerHTML = `
+                <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-green-50 border border-green-300">
+                    <i class="fas fa-check-circle text-green-500"></i>
+                    <p class="text-sm font-medium text-green-700">✅ Kartu tersedia — belum dimiliki siapapun</p>
+                </div>
+            `;
+        }
+    }
+
+    function hideOwnerStatus() {
+        const container = document.getElementById('rfid_owner_status');
+        container.classList.add('hidden');
+        container.innerHTML = '';
+    }
+
+    function enableSubmitButton() {
+        const btn = document.getElementById('rfid_submit_btn');
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed', 'from-gray-400', 'to-gray-500');
+        btn.classList.add('from-purple-600', 'to-indigo-600', 'hover:from-purple-700', 'hover:to-indigo-700');
+    }
+
+    function disableSubmitButton() {
+        const btn = document.getElementById('rfid_submit_btn');
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed', 'from-gray-400', 'to-gray-500');
+        btn.classList.remove('from-purple-600', 'to-indigo-600', 'hover:from-purple-700', 'hover:to-indigo-700');
+    }
+
+    // ================================================================
+    //  INPUT FOCUS / BLUR INDICATORS
+    // ================================================================
 
     function onRfidInputFocus() {
         const statusBox = document.getElementById('rfid_focus_status');
@@ -92,12 +281,24 @@
         if (input) input.focus();
     }
 
+    // ================================================================
+    //  MODAL OPEN / CLOSE
+    // ================================================================
+
     function openRfidModal(name, currentRfid, actionUrl, labelName = 'Nama') {
+        rfidCurrentEntityName = name;
+        rfidCurrentEntityRfid = (currentRfid || '').toUpperCase().trim();
+
         document.getElementById('rfidModal').classList.remove('hidden');
         document.getElementById('rfid_label_name').textContent = labelName;
         document.getElementById('rfid_entity_name').value = name;
         document.getElementById('rfid_uid_input').value = currentRfid || '';
         document.getElementById('rfidForm').action = actionUrl;
+
+        // Reset status
+        hideOwnerStatus();
+        enableSubmitButton();
+        document.getElementById('rfid_convert_info').classList.add('hidden');
 
         // Klik di dalam modal (selain tombol) = refocus ke input
         document.getElementById('rfidModal').addEventListener('click', function(e) {
@@ -111,8 +312,14 @@
         // Focus dengan delay lebih panjang agar modal selesai render
         setTimeout(() => focusRfidInput(), 300);
 
-        // Start polling scan buffer (untuk alat yang pakai mode API)
+        // Start polling scan buffer (untuk alat yang pakai mode API / ESP32 Station)
         startRfidPolling();
+
+        // Setup listener untuk input dari USB Reader (keyboard emulator)
+        setupUsbReaderListener();
+
+        // Setup form submit handler (pastikan konversi sebelum submit)
+        setupFormSubmitHandler();
     }
 
     function closeRfidModal() {
@@ -120,7 +327,93 @@
         document.getElementById('rfidForm').reset();
         onRfidInputBlur(); // Reset indikator
         stopRfidPolling();
+        hideOwnerStatus();
+        enableSubmitButton();
+        document.getElementById('rfid_convert_info').classList.add('hidden');
+        rfidCurrentEntityName = '';
+        rfidCurrentEntityRfid = '';
     }
+
+    // ================================================================
+    //  USB READER LISTENER
+    //  USB Reader bekerja sebagai keyboard emulator - mengetikkan UID
+    //  dan biasanya diakhiri dengan Enter.
+    //  Kita tangkap event input & keydown untuk:
+    //  1. Deteksi format desimal → konversi ke HEX
+    //  2. Cek kepemilikan UID secara real-time
+    //  3. Mencegah form submit otomatis dari Enter key USB Reader
+    //     sebelum pengecekan kepemilikan selesai
+    // ================================================================
+
+    function setupUsbReaderListener() {
+        const input = document.getElementById('rfid_uid_input');
+        
+        // Hapus listener lama (mencegah duplikasi)
+        input.removeEventListener('input', handleRfidInputChange);
+        input.removeEventListener('keydown', handleRfidKeyDown);
+        
+        // Pasang listener baru
+        input.addEventListener('input', handleRfidInputChange);
+        input.addEventListener('keydown', handleRfidKeyDown);
+    }
+
+    function handleRfidInputChange(e) {
+        const input = e.target;
+        const rawValue = input.value.trim();
+        
+        if (!rawValue) {
+            hideOwnerStatus();
+            enableSubmitButton();
+            document.getElementById('rfid_convert_info').classList.add('hidden');
+            return;
+        }
+
+        // Proses konversi (desimal → hex jika perlu)
+        const processedUid = processRfidInput(rawValue);
+        
+        // Jika ada konversi, update nilai input secara silent
+        // (tanpa trigger event lagi)
+        if (processedUid !== rawValue) {
+            // Simpan posisi cursor
+            input.value = processedUid;
+        }
+
+        // Cek kepemilikan UID
+        checkUidOwnership(processedUid);
+    }
+
+    function handleRfidKeyDown(e) {
+        // USB Reader biasanya mengirim Enter setelah UID
+        if (e.key === 'Enter') {
+            e.preventDefault(); // Cegah submit form otomatis
+
+            const input = e.target;
+            const rawValue = input.value.trim();
+            
+            if (!rawValue) return;
+
+            // Proses konversi final
+            const processedUid = processRfidInput(rawValue);
+            input.value = processedUid;
+
+            // Cek kepemilikan sebelum mengizinkan submit
+            checkUidOwnership(processedUid);
+
+            // Flash hijau untuk feedback bahwa scan berhasil diterima
+            input.classList.add('border-green-500', 'bg-green-50');
+            onRfidInputFocus();
+            // Beep feedback
+            try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgir+8o3dMPFCKtLSibk5JaIG0r4xoTjpklLq0l3FNP1uIr7KdeFBIX4a2s5hvTTtgka+0l3BLPlyHr7adjk1BWoK4t5l0UEFjj7WwknBMQFeItLSeek5HY4u3s5hzTkBai7OzmHNPQ1uNubWXdE5CXIq4tJh0TkJckLi2k3FJPV2OubaVc01AXoy4tJdxTD9ejbu1lXJNP12NurWXc009Xoy4tZdyTUBdjru1l3NNP16MuLWXck1AXY27tZdzTT9ejLi1l3JNQF2Nu7WXc00/Xoy4tZdyTUBdjbu1l3NNQA==').play(); } catch(err) {}
+            setTimeout(() => {
+                input.classList.remove('border-green-500', 'bg-green-50');
+            }, 2000);
+        }
+    }
+
+    // ================================================================
+    //  POLLING SCAN BUFFER (untuk ESP32 Station via API)
+    //  Tidak berubah - tetap berfungsi seperti sebelumnya
+    // ================================================================
 
     function startRfidPolling() {
         stopRfidPolling();
@@ -139,6 +432,9 @@
                     setTimeout(() => {
                         input.classList.remove('border-green-500', 'bg-green-50');
                     }, 2000);
+
+                    // Juga cek kepemilikan UID yang datang dari ESP32
+                    checkUidOwnership(data.uid);
                 }
             } catch (e) {
                 console.error('RFID poll error:', e);
@@ -150,6 +446,39 @@
         if (rfidPollInterval) {
             clearInterval(rfidPollInterval);
             rfidPollInterval = null;
+        }
+    }
+
+    // ================================================================
+    //  FORM SUBMIT HANDLER
+    //  Memastikan konversi desimal→HEX terjadi sebelum form dikirim
+    //  Ini adalah "safety net" terakhir sebelum data masuk ke server
+    // ================================================================
+
+    function setupFormSubmitHandler() {
+        const form = document.getElementById('rfidForm');
+
+        // Hapus handler lama
+        form.removeEventListener('submit', handleRfidFormSubmit);
+        form.addEventListener('submit', handleRfidFormSubmit);
+    }
+
+    function handleRfidFormSubmit(e) {
+        const input = document.getElementById('rfid_uid_input');
+        const rawValue = input.value.trim();
+
+        if (!rawValue) return; // Biarkan validasi HTML5 required yang handle
+
+        // Konversi final sebelum submit
+        const processedUid = processRfidInput(rawValue);
+        input.value = processedUid;
+
+        // Double-check: jika tombol submit disabled (karena UID milik orang lain), blokir
+        const btn = document.getElementById('rfid_submit_btn');
+        if (btn.disabled) {
+            e.preventDefault();
+            alert('⛔ Kartu ini sudah terdaftar milik orang lain. Gunakan kartu yang berbeda.');
+            return false;
         }
     }
 </script>

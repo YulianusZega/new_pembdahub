@@ -28,15 +28,24 @@ Route::post('/rfid/scan-buffer', function (Request $request) {
 });
 
 // ==== CEK KEPEMILIKAN UID (untuk validasi di modal RFID sebelum simpan) ====
+// Parameter opsional: exclude_type (student|employee|tefa_employee) + exclude_id
+// Jika UID dimiliki entitas yang di-exclude → dianggap "self" (bukan milik orang lain)
 Route::get('/rfid/check-uid', function (Request $request) {
     $uid = strtoupper(trim($request->input('uid', '')));
     if (empty($uid)) {
-        return response()->json(['owned' => false]);
+        return response()->json(['owned' => false, 'is_self' => false]);
     }
+
+    $excludeType = $request->input('exclude_type', '');
+    $excludeId = $request->input('exclude_id', '');
 
     // Cek di Students
     $student = \App\Models\Student::where('rfid_uid', $uid)->first();
     if ($student) {
+        // Cek apakah ini entitas yang sama (self)
+        if ($excludeType === 'student' && $excludeId == $student->id) {
+            return response()->json(['owned' => false, 'is_self' => true]);
+        }
         return response()->json([
             'owned' => true,
             'owner_name' => $student->full_name,
@@ -48,6 +57,9 @@ Route::get('/rfid/check-uid', function (Request $request) {
     // Cek di Employees (Guru/Pegawai)
     $employee = \App\Models\Employee::where('rfid_uid', $uid)->first();
     if ($employee) {
+        if ($excludeType === 'employee' && $excludeId == $employee->id) {
+            return response()->json(['owned' => false, 'is_self' => true]);
+        }
         $type = $employee->isTeacher() ? 'Guru' : 'Pegawai';
         return response()->json([
             'owned' => true,
@@ -60,6 +72,9 @@ Route::get('/rfid/check-uid', function (Request $request) {
     // Cek di TefaEmployees
     $tefaEmployee = \App\Models\TefaEmployee::where('rfid_uid', $uid)->first();
     if ($tefaEmployee) {
+        if ($excludeType === 'tefa_employee' && $excludeId == $tefaEmployee->id) {
+            return response()->json(['owned' => false, 'is_self' => true]);
+        }
         return response()->json([
             'owned' => true,
             'owner_name' => $tefaEmployee->name,
@@ -68,7 +83,7 @@ Route::get('/rfid/check-uid', function (Request $request) {
         ]);
     }
 
-    return response()->json(['owned' => false]);
+    return response()->json(['owned' => false, 'is_self' => false]);
 });
 
 Route::get('/rfid/scan-buffer', function (Request $request) {

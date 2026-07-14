@@ -164,13 +164,13 @@
                                 <span class="px-3 py-1 rounded-xl bg-purple-50 text-purple-700 font-mono text-xs font-bold border border-purple-200 flex items-center gap-1.5 shadow-sm">
                                     <i class="fas fa-wifi text-purple-500"></i> {{ $emp->rfid_uid }}
                                 </span>
-                                <button type="button" onclick="openRfidModal('{{ addslashes($emp->name) }}', '{{ $emp->rfid_uid }}', '{{ route('admin.tefa.employees.register-rfid', $emp->id) }}', 'Karyawan TEFA')"
+                                <button type="button" onclick="openRfidModal('{{ addslashes($emp->name) }}', '{{ $emp->rfid_uid }}', '{{ route('admin.tefa.employees.register-rfid', $emp->id) }}', 'Karyawan TEFA', 'tefa_employee', '{{ $emp->id }}')"
                                     class="text-gray-400 hover:text-purple-600 p-1.5 rounded-lg hover:bg-purple-50 transition-all" title="Ganti Kartu RFID">
                                     <i class="fas fa-sync-alt text-xs"></i>
                                 </button>
                             </div>
                             @else
-                            <button type="button" onclick="openRfidModal('{{ addslashes($emp->name) }}', '', '{{ route('admin.tefa.employees.register-rfid', $emp->id) }}', 'Karyawan TEFA')"
+                            <button type="button" onclick="openRfidModal('{{ addslashes($emp->name) }}', '', '{{ route('admin.tefa.employees.register-rfid', $emp->id) }}', 'Karyawan TEFA', 'tefa_employee', '{{ $emp->id }}')"
                                 class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-sm shadow-purple-500/20 transition-all animate-pulse">
                                 <i class="fas fa-wifi"></i> Scan / Daftarkan RFID
                             </button>

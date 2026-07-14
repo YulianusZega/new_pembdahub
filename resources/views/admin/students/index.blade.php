@@ -263,7 +263,7 @@
                                     <i class="fas fa-qrcode text-sm"></i>
                                 </button>
                                 <button type="button" 
-                                    onclick="openRfidModal('{{ $s->full_name }}', '{{ $s->rfid_uid }}', '{{ route('admin.students.update-rfid', $s->id) }}', 'Siswa')"
+                                    onclick="openRfidModal('{{ $s->full_name }}', '{{ $s->rfid_uid }}', '{{ route('admin.students.update-rfid', $s->id) }}', 'Siswa', 'student', '{{ $s->id }}')"
                                     class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-purple-50 text-purple-600 hover:bg-purple-100 hover:scale-110 transition-all duration-200 group"
                                     title="Daftarkan RFID">
                                     <i class="fas fa-id-card text-sm"></i>

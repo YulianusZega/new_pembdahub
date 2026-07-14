@@ -151,15 +151,19 @@
             .then(data => {
                 if (data.owned) {
                     showOwnerStatus('owned', data.owner_name, data.owner_type);
+                    disableSubmitButton();
                 } else if (data.is_self) {
                     showOwnerStatus('self');
+                    enableSubmitButton();
                 } else {
                     showOwnerStatus('available');
+                    enableSubmitButton();
                 }
             })
             .catch(err => {
                 console.error('Check UID error:', err);
                 hideOwnerStatus();
+                enableSubmitButton();
             });
     }
 
@@ -206,6 +210,24 @@
         const container = document.getElementById('rfid_owner_status');
         container.classList.add('hidden');
         container.innerHTML = '';
+    }
+
+    function enableSubmitButton() {
+        const btn = document.getElementById('rfid_submit_btn');
+        if(btn) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed', 'from-gray-400', 'to-gray-500');
+            btn.classList.add('from-purple-600', 'to-indigo-600', 'hover:from-purple-700', 'hover:to-indigo-700');
+        }
+    }
+
+    function disableSubmitButton() {
+        const btn = document.getElementById('rfid_submit_btn');
+        if(btn) {
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed', 'from-gray-400', 'to-gray-500');
+            btn.classList.remove('from-purple-600', 'to-indigo-600', 'hover:from-purple-700', 'hover:to-indigo-700');
+        }
     }
 
     // ================================================================
@@ -296,6 +318,7 @@
 
         // Reset status
         hideOwnerStatus();
+        enableSubmitButton();
         document.getElementById('rfid_convert_info').classList.add('hidden');
 
         // Klik di dalam modal (selain tombol) = refocus ke input
@@ -326,6 +349,7 @@
         onRfidInputBlur();
         stopRfidPolling();
         hideOwnerStatus();
+        enableSubmitButton();
         document.getElementById('rfid_convert_info').classList.add('hidden');
         rfidCurrentEntityName = '';
         rfidCurrentEntityRfid = '';
@@ -356,6 +380,7 @@
         if (!rawValue) {
             hideOwnerStatus();
             document.getElementById('rfid_convert_info').classList.add('hidden');
+            enableSubmitButton();
             return;
         }
 

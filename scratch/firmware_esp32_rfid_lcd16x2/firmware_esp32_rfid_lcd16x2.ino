@@ -1,6 +1,6 @@
 // ============================================================
 //  FIRMWARE ESP32 - PEMBDAHUB ATTENDANCE STATION
-//  ESP32 + RC522 (RFID) + LCD 16x2 I2C + Buzzer + LED
+//  ESP32 + RC522 (RFID) + LCD 16x2 I2C + Buzzer + LED + MP3
 //  Tanpa QR Scanner, Tanpa Tombol Mode
 //
 //  LOGIKA KERJA:
@@ -25,9 +25,34 @@
 //  │ Buzzer (+) │ GPIO 2   │ Buzzer aktif HIGH            │
 //  │ LED Green  │ GPIO 15  │ LED Hijau (berhasil)         │
 //  │ LED Red    │ GPIO 13  │ LED Merah (gagal)            │
+//  │ MP3 RX     │ GPIO 17  │ TX2 ESP32 → RX DFPlayer      │
+//  │ MP3 TX     │ GPIO 16  │ RX2 ESP32 → TX DFPlayer (opt)│
 //  │ VCC        │ 3.3V     │ RFID & LCD = 3.3V!           │
+//  │ MP3 VCC    │ 5V       │ DFPlayer Mini pakai 5V!      │
 //  │ GND        │ GND      │ Common ground semua          │
 //  └────────────┴──────────┴──────────────────────────────┘
+//
+//  WIRING MP3 PLAYER (DFPlayer Mini):
+//  ┌──────────────────────────────────────────────────────┐
+//  │  ESP32 GPIO17 (TX2) ──[1KΩ]──→ DFPlayer RX          │
+//  │  ESP32 GPIO16 (RX2) ←──────── DFPlayer TX (opsional)│
+//  │  ESP32 5V ────────────────────→ DFPlayer VCC         │
+//  │  ESP32 GND ───────────────────→ DFPlayer GND         │
+//  │  DFPlayer SPK_1 ──────────────→ Speaker (+)          │
+//  │  DFPlayer SPK_2 ──────────────→ Speaker (-)          │
+//  └──────────────────────────────────────────────────────┘
+//  CATATAN: Resistor 1KΩ antara TX2 dan DFPlayer RX
+//           untuk proteksi level (3.3V → 5V tolerant).
+//
+//  FILE MP3 DI SD CARD:
+//  SD Card/
+//  └── 01/              ← Folder 01
+//      ├── 001.mp3      → "Selamat Pagi Silahkan Absen"
+//      ├── 002.mp3      → "Akses Diterima Selamat Belajar"
+//      ├── 003.mp3      → "Absen Pulang Sampai Jumpa Besok Pagi"
+//      ├── 004.mp3      → "Absen Sudah Tercatat Terima Kasih"
+//      ├── 005.mp3      → "Kartu Tidak Dikenali Hubungi Admin"
+//      └── 006.mp3      → "Sistem Ada Gangguan Hubungi Admin"
 //
 //  BOARD SETTING DI ARDUINO IDE:
 //  - Board         : "ESP32 Dev Module"
@@ -52,6 +77,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include <WiFiClientSecure.h>
+#include <HardwareSerial.h>
 
 // ============================================================
 //  KONFIGURASI - Sesuaikan untuk setiap station!
@@ -101,6 +127,13 @@ const char* DEVICE_ID         = "KIOSK-ESP32-01";
 #define LCD_COLS       16
 #define LCD_ROWS       2
 
+// MP3 Player (DFPlayer Mini) via Hardware Serial2
+// ESP32 punya 3 UART hardware: Serial(0), Serial1, Serial2
+// Serial2 default: RX2=GPIO16, TX2=GPIO17
+#define MP3_TX_PIN     17   // GPIO 17 - TX2 → hubungkan ke RX DFPlayer via R 1KΩ
+#define MP3_RX_PIN     16   // GPIO 16 - RX2 ← hubungkan ke TX DFPlayer (opsional)
+#define MP3_VOLUME     22   // Tingkat volume MP3 (0 s.d 30)
+
 // ============================================================
 //  TIMEOUTS & COOLDOWNS
 // ============================================================
@@ -122,6 +155,7 @@ int           currentWifi   = 0;  // 0 = utama, 1 = alternatif
 // ============================================================
 MFRC522           rfid(RFID_SS_PIN, RFID_RST_PIN);
 LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLS, LCD_ROWS);
+HardwareSerial    mp3Serial(2);  // UART2 ESP32 untuk MP3 Player
 
 // ============================================================
 //  SETUP
@@ -187,6 +221,21 @@ void setup() {
   // Koneksi WiFi
   connectWiFi();
   isOnline = (WiFi.status() == WL_CONNECTED);
+
+  // ── INISIALISASI MP3 PLAYER (DFPlayer Mini) ──
+  // ESP32 Serial2: RX2=GPIO16, TX2=GPIO17
+  mp3Serial.begin(9600, SERIAL_8N1, MP3_RX_PIN, MP3_TX_PIN);
+  delay(500);  // DFPlayer butuh ~300ms untuk boot
+  // Buang noise awal
+  while (mp3Serial.available()) mp3Serial.read();
+
+  // Set volume MP3
+  setMp3Volume(MP3_VOLUME);
+  delay(100);
+
+  // Putar lagu pembuka 001.mp3 ("Selamat Pagi Silahkan Absen")
+  playAudio(1, 1);
+  Serial.println(F("MP3 Player OK. Volume: 22/30"));
 
   Serial.print(F("Free Heap setelah init: ")); Serial.println(ESP.getFreeHeap());
   Serial.println(F("System Ready. Silakan scan kartu RFID."));
@@ -275,6 +324,7 @@ void sendToServer(String uid, String type) {
   Serial.print(F("Free Heap sebelum HTTPS: ")); Serial.println(ESP.getFreeHeap());
 
   if (WiFi.status() != WL_CONNECTED) {
+    playAudio(1, 7); // 007.MP3 : "Sistem Ada Gangguan Hubungi Admin"
     showError("Tidak ada WiFi!");
     return;
   }
@@ -307,10 +357,13 @@ void sendToServer(String uid, String type) {
     Serial.println("Server Response: " + payload);
     parseAndDisplay(payload, uid);
   } else if (code == 401) {
+    playAudio(1, 7); // 007.MP3 : "Sistem Ada Gangguan Hubungi Admin"
     showError("API Key Salah!");
   } else if (code == 404) {
+    playAudio(1, 6); // 006.MP3 : "Kartu Tidak Dikenali Hubungi Admin"
     showError("Kartu Tdk Drftrkn");
   } else if (code > 0) {
+    playAudio(1, 7); // 007.MP3 : "Sistem Ada Gangguan Hubungi Admin"
     showError("Server: " + String(code));
   } else {
     String errMsg = http.errorToString(code);
@@ -321,6 +374,7 @@ void sendToServer(String uid, String type) {
       Serial.println("Response walau error: " + payload);
       parseAndDisplay(payload, uid);
     } else {
+      playAudio(1, 7); // 007.MP3 : "Sistem Ada Gangguan Hubungi Admin"
       showError("Koneksi Gagal");
     }
   }
@@ -391,6 +445,12 @@ void parseAndDisplay(String json, String uid) {
       lcd.clear();
       lcd.setCursor(0, 0); lcd.print(namaDisplay);
       lcd.setCursor(0, 1); lcd.print("MASUK: " + waktu.substring(0, 8));
+      // Bedakan audio: Guru/Staf → 005, Siswa → 002
+      if (kelasDisplay.indexOf("Guru") >= 0 || kelasDisplay.indexOf("Staf") >= 0) {
+        playAudio(1, 5); // 005.MP3 : "Selamat Pagi Selamat Bekerja"
+      } else {
+        playAudio(1, 2); // 002.MP3 : "Akses Diterima Selamat Belajar"
+      }
       indicatorCheckIn();
     }
     else if (action_code == "CHECK_OUT") {
@@ -399,6 +459,7 @@ void parseAndDisplay(String json, String uid) {
       lcd.clear();
       lcd.setCursor(0, 0); lcd.print(namaDisplay);
       lcd.setCursor(0, 1); lcd.print("PULANG: " + waktu.substring(0, 7));
+      playAudio(1, 3); // 003.MP3 : "Absen Pulang Sampai Jumpa Besok Pagi"
       indicatorCheckOut();
     }
     else if (action_code == "COOLDOWN") {
@@ -411,6 +472,7 @@ void parseAndDisplay(String json, String uid) {
       } else {
         lcd.setCursor(0, 1); lcd.print(message.substring(0, 16));
       }
+      playAudio(1, 4); // 004.MP3 : "Absen Sudah Tercatat Terima Kasih"
       indicatorCooldown();
     }
     else if (action_code == "NEW_CARD") {
@@ -421,6 +483,7 @@ void parseAndDisplay(String json, String uid) {
       lcd.clear();
       lcd.setCursor(0, 0); lcd.print(F("** KARTU BARU **"));
       lcd.setCursor(0, 1); lcd.print(F("Daftar di Admin!"));
+      playAudio(1, 6); // 006.MP3 : "Kartu Tidak Dikenali Hubungi Admin"
       indicatorNewCard();
     }
     else {
@@ -428,6 +491,7 @@ void parseAndDisplay(String json, String uid) {
       lcd.clear();
       lcd.setCursor(0, 0); lcd.print(namaDisplay);
       lcd.setCursor(0, 1); lcd.print(message.substring(0, 16));
+      playAudio(1, 2); // Default = pola check-in
       indicatorCheckIn();
     }
 
@@ -436,8 +500,10 @@ void parseAndDisplay(String json, String uid) {
     String errMsg;
     if (action_code == "ALREADY_ATTENDED") {
       errMsg = "Sudah Absen!";
+      playAudio(1, 4); // 004.MP3 : "Absen Sudah Tercatat Terima Kasih"
     } else {
       errMsg = message.substring(0, 16);
+      playAudio(1, 7); // 007.MP3 : "Sistem Ada Gangguan Hubungi Admin"
     }
     showError(errMsg);
   }
@@ -610,6 +676,44 @@ void beep(int count, int duration) {
     digitalWrite(BUZZER_PIN, LOW);
     if (i < count - 1) delay(100);
   }
+}
+
+// ============================================================
+//  FUNGSI MP3 PLAYER (DFPlayer Mini) via Hardware Serial2
+//
+//  Menggunakan protokol serial DFPlayer Mini:
+//  [0x7E][0xFF][0x06][CMD][0x00][PAR1][PAR2][0xEF]
+//
+//  Daftar Audio:
+//  ┌───────┬──────────────────────────────────────────────┐
+//  │ Track │ Isi Audio                                    │
+//  ├───────┼──────────────────────────────────────────────┤
+//  │ 001   │ "Selamat Pagi Silahkan Absen"                │
+//  │ 002   │ "Akses Diterima Selamat Belajar"             │
+//  │ 003   │ "Absen Pulang Sampai Jumpa Besok Pagi"       │
+//  │ 004   │ "Absen Sudah Tercatat Terima Kasih"          │
+//  │ 005   │ "Kartu Tidak Dikenali Hubungi Admin"         │
+//  │ 006   │ "Sistem Ada Gangguan Hubungi Admin"          │
+//  └───────┴──────────────────────────────────────────────┘
+// ============================================================
+
+// Kirim perintah raw byte ke DFPlayer Mini via Serial2
+void sendMp3Command(uint8_t cmd, uint8_t para1, uint8_t para2) {
+  uint8_t cmdBuffer[8] = { 0x7E, 0xFF, 0x06, cmd, 0x00, para1, para2, 0xEF };
+  mp3Serial.write(cmdBuffer, 8);
+  delay(100); // Jeda aman pemrosesan chip DFPlayer (clone butuh lebih lama)
+}
+
+// Putar track tertentu di folder tertentu (1-indexed)
+// Contoh: playAudio(1, 2) = putar folder 01, file 002.mp3
+void playAudio(uint8_t folder, uint8_t track) {
+  sendMp3Command(0x0F, folder, track);
+}
+
+// Atur volume (0-30)
+void setMp3Volume(uint8_t vol) {
+  if (vol > 30) vol = 30;
+  sendMp3Command(0x06, 0x00, vol);
 }
 
 // ============================================================

@@ -1,4 +1,4 @@
-﻿{{--
+{{--
     Guru Layout — extends unified master layout
     Theme: Emerald/Teal
 --}}
@@ -265,7 +265,7 @@
     </a>
     @endif
     @if($isPanitiaProyek)
-    <a href="{{ route('admin.final-projects.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.final-projects.*') ? $ac : $nc }}">
+    <a href="{{ route('admin.final-projects.proposals.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.final-projects.*') ? $ac : $nc }}">
         <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center text-white"><i class="fas fa-tasks text-[10px]"></i></div>
         <span>Admin Panitia Tugas Akhir</span>
     </a>

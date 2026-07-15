@@ -156,6 +156,8 @@
                 <a href="{{ route('admin.students.index') }}" class="flex-1 lg:flex-none px-4 py-2.5 bg-white border border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-xl text-sm font-semibold transition-all flex items-center justify-center">
                     Reset
                 </a>
+                @endif
+                
                 @if(request('classroom_id') || request('school_id'))
                 <a href="{{ route('admin.students.print-accounts', request()->all()) }}" target="_blank" class="flex-1 lg:flex-none px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap" title="Cetak Daftar Akun">
                     <i class="fas fa-print text-xs"></i> Cetak Daftar Akun

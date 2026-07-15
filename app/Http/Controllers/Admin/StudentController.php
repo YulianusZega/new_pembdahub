@@ -261,4 +261,92 @@ class StudentController extends Controller
     {
         return Excel::download(new StudentSampleExport, 'sample_students.xlsx');
     }
+
+    /**
+     * Print login accounts for students in a specific classroom or school
+     */
+    public function printAccounts(Request $request)
+    {
+        $this->authorize('viewAny', Student::class);
+
+        $classroomId = $request->get('classroom_id');
+        $schoolId = $request->get('school_id');
+        
+        if (!$classroomId && !$schoolId) {
+            return back()->with('error', 'Pilih kelas atau unit sekolah terlebih dahulu untuk mencetak daftar akun.');
+        }
+
+        $query = Student::with('user')->orderBy('full_name');
+        
+        if ($classroomId) {
+            $query->whereHas('studentClasses', function($q) use ($classroomId) {
+                $q->where('classroom_id', $classroomId);
+            });
+            $title = "Daftar Akun Siswa - Kelas " . \App\Models\Classroom::find($classroomId)?->class_name;
+        } else {
+            $query->where('school_id', $schoolId);
+            $title = "Daftar Akun Siswa - Unit " . \App\Models\School::find($schoolId)?->name;
+        }
+        
+        $students = $query->get();
+
+        return view('admin.students.print_accounts', compact('students', 'title'));
+    }
+
+    /**
+     * Export login accounts to Excel
+     */
+    public function exportAccounts(Request $request)
+    {
+        $this->authorize('viewAny', Student::class);
+        $classroomId = $request->get('classroom_id');
+        $schoolId = $request->get('school_id');
+        
+        if (!$classroomId && !$schoolId) {
+            return back()->with('error', 'Pilih kelas atau unit sekolah terlebih dahulu untuk export.');
+        }
+        
+        return Excel::download(new \App\Exports\StudentAccountsExport($classroomId, $schoolId), 'akun_siswa.xlsx');
+    }
+
+    /**
+     * Reset passwords for students in a specific classroom or school to a standard pattern
+     */
+    public function resetPasswords(Request $request)
+    {
+        $this->authorize('update', Student::class);
+
+        $classroomId = $request->get('classroom_id');
+        $schoolId = $request->get('school_id');
+        
+        if (!$classroomId && !$schoolId) {
+            return back()->with('error', 'Pilih kelas atau unit sekolah terlebih dahulu untuk mereset password.');
+        }
+
+        $query = Student::with('user');
+        if ($classroomId) {
+            $query->whereHas('studentClasses', function($q) use ($classroomId) {
+                $q->where('classroom_id', $classroomId);
+            });
+        } else {
+            $query->where('school_id', $schoolId);
+        }
+        
+        $students = $query->get();
+
+        $count = 0;
+        foreach ($students as $student) {
+            if ($student->user) {
+                // Pola: Pembda + NISN
+                $newPassword = 'Pembda' . $student->nisn;
+                $student->user->update([
+                    'password' => \Illuminate\Support\Facades\Hash::make($newPassword)
+                ]);
+                $count++;
+            }
+        }
+
+        return back()->with('success', "Berhasil mereset password {$count} siswa menjadi pola standar (Pembda+NISN).");
+    }
 }
+

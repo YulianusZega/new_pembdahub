@@ -158,6 +158,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
     Route::resource('schedules', App\Http\Controllers\Admin\ScheduleController::class);
     
     // Teachers (Guru)
+    Route::get('teachers/print-accounts', [App\Http\Controllers\Admin\TeacherController::class, 'printAccounts'])->name('teachers.print-accounts');
+    Route::get('teachers/export-accounts', [App\Http\Controllers\Admin\TeacherController::class, 'exportAccounts'])->name('teachers.export-accounts');
+    Route::post('teachers/reset-passwords', [App\Http\Controllers\Admin\TeacherController::class, 'resetPasswords'])->name('teachers.reset-passwords');
     Route::post('teachers/{teacher}/update-rfid', [App\Http\Controllers\Admin\TeacherController::class, 'updateRfid'])->name('teachers.update-rfid');
     Route::resource('teachers', App\Http\Controllers\Admin\TeacherController::class);
     
@@ -445,6 +448,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
     Route::get('students/{student}/payments', [App\Http\Controllers\Admin\StudentController::class, 'paymentHistory'])->name('students.payments');
 
     // Student import routes (MUST be before resource to avoid {student} catching 'import')
+    Route::get('students/print-accounts', [App\Http\Controllers\Admin\StudentController::class, 'printAccounts'])->name('students.print-accounts');
+    Route::get('students/export-accounts', [App\Http\Controllers\Admin\StudentController::class, 'exportAccounts'])->name('students.export-accounts');
+    Route::post('students/reset-passwords', [App\Http\Controllers\Admin\StudentController::class, 'resetPasswords'])->name('students.reset-passwords');
     Route::get('students/import', [App\Http\Controllers\Admin\StudentController::class, 'importForm'])->name('students.import.form');
     Route::post('students/import', [App\Http\Controllers\Admin\StudentController::class, 'import'])->name('students.import');
     Route::get('students/import/sample', [App\Http\Controllers\Admin\StudentController::class, 'downloadSampleExcel'])->name('students.import.sample');

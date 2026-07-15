@@ -156,10 +156,28 @@
                 <a href="{{ route('admin.students.index') }}" class="flex-1 lg:flex-none px-4 py-2.5 bg-white border border-gray-200 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-xl text-sm font-semibold transition-all flex items-center justify-center">
                     Reset
                 </a>
+                @if(request('classroom_id') || request('school_id'))
+                <a href="{{ route('admin.students.print-accounts', request()->all()) }}" target="_blank" class="flex-1 lg:flex-none px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap" title="Cetak Daftar Akun">
+                    <i class="fas fa-print text-xs"></i> Cetak Daftar Akun
+                </a>
+                <a href="{{ route('admin.students.export-accounts', request()->all()) }}" class="flex-1 lg:flex-none px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap" title="Export Excel Akun">
+                    <i class="fas fa-file-excel text-xs"></i> Export Excel
+                </a>
+                <button type="button" onclick="if(confirm('PERINGATAN! Semua password siswa yang terpilih akan direset menjadi pola: Pembda + NISN.\n\nContoh: Pembda123456789\n\nLanjutkan?')) document.getElementById('reset-pwd-form').submit();" class="flex-1 lg:flex-none px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap" title="Reset Password Massal">
+                    <i class="fas fa-key text-xs"></i> Reset Password
+                </button>
                 @endif
             </div>
         </form>
     </div>
+
+    @if(request('classroom_id') || request('school_id'))
+    <form id="reset-pwd-form" action="{{ route('admin.students.reset-passwords') }}" method="POST" class="hidden">
+        @csrf
+        <input type="hidden" name="classroom_id" value="{{ request('classroom_id') }}">
+        <input type="hidden" name="school_id" value="{{ request('school_id') }}">
+    </form>
+    @endif
 
     <!-- Table -->
     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">

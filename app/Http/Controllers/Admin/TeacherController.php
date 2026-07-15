@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TeacherController extends Controller
 {
@@ -336,5 +337,66 @@ class TeacherController extends Controller
 
         return redirect()->back()->with('success', "RFID UID berhasil didaftarkan untuk guru {$teacher->full_name}.");
     }
-}
 
+    /**
+     * Print login accounts for teachers in a specific school
+     */
+    public function printAccounts(Request $request)
+    {
+        $schoolId = $request->get('school_id');
+        
+        if (!$schoolId) {
+            return back()->with('error', 'Pilih unit sekolah terlebih dahulu untuk mencetak daftar akun guru.');
+        }
+
+        $query = Teacher::with('user')->orderBy('full_name')->where('school_id', $schoolId);
+        $title = "Daftar Akun Guru - Unit " . \App\Models\School::find($schoolId)?->name;
+        $teachers = $query->get();
+
+        return view('admin.teachers.print_accounts', compact('teachers', 'title'));
+    }
+
+    /**
+     * Export login accounts to Excel for teachers
+     */
+    public function exportAccounts(Request $request)
+    {
+        $schoolId = $request->get('school_id');
+        
+        if (!$schoolId) {
+            return back()->with('error', 'Pilih unit sekolah terlebih dahulu untuk export akun guru.');
+        }
+        
+        return Excel::download(new \App\Exports\TeacherAccountsExport($schoolId), 'akun_guru.xlsx');
+    }
+
+    /**
+     * Reset passwords for teachers in a specific school to a standard pattern
+     */
+    public function resetPasswords(Request $request)
+    {
+        $schoolId = $request->get('school_id');
+        
+        if (!$schoolId) {
+            return back()->with('error', 'Pilih unit sekolah terlebih dahulu untuk mereset password guru.');
+        }
+
+        $teachers = Teacher::with('user')->where('school_id', $schoolId)->get();
+
+        $count = 0;
+        foreach ($teachers as $teacher) {
+            if ($teacher->user) {
+                // Pola: Pembda + Kode Guru atau NIK
+                // For simplicity, we use Pembda + teacher_code (or id if null)
+                $code = $teacher->teacher_code ?: $teacher->id;
+                $newPassword = 'Pembda' . $code;
+                $teacher->user->update([
+                    'password' => \Illuminate\Support\Facades\Hash::make($newPassword)
+                ]);
+                $count++;
+            }
+        }
+
+        return back()->with('success', "Berhasil mereset password {$count} guru menjadi pola standar (Pembda + Kode Guru).");
+    }
+}

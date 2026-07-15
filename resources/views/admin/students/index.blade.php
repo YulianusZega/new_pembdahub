@@ -52,7 +52,7 @@
 
     <!-- Filter Form -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-        <form method="GET" class="flex flex-col lg:flex-row items-end gap-4">
+        <form method="GET" class="flex flex-col lg:flex-row lg:flex-wrap items-end gap-4">
             <div class="w-full lg:flex-1 min-w-[200px]">
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Cari Siswa</label>
                 <div class="relative group">
@@ -147,7 +147,7 @@
                 </div>
             </div>
 
-            <div class="flex gap-2 w-full lg:w-auto">
+            <div class="flex gap-2 w-full lg:w-auto mt-2 lg:mt-0">
                 <button type="submit" class="flex-1 lg:flex-none px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2">
                     <i class="fas fa-filter text-xs"></i>
                     <span>Filter</span>
@@ -157,20 +157,23 @@
                     Reset
                 </a>
                 @endif
-                
-                @if(request('classroom_id') || request('school_id'))
-                <a href="{{ route('admin.students.print-accounts', request()->all()) }}" target="_blank" class="flex-1 lg:flex-none px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap" title="Cetak Daftar Akun">
-                    <i class="fas fa-print text-xs"></i> Cetak Daftar Akun
-                </a>
-                <a href="{{ route('admin.students.export-accounts', request()->all()) }}" class="flex-1 lg:flex-none px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap" title="Export Excel Akun">
-                    <i class="fas fa-file-excel text-xs"></i> Export Excel
-                </a>
-                <button type="button" onclick="if(confirm('PERINGATAN! Semua password siswa yang terpilih akan direset menjadi pola: Pembda + NISN.\n\nContoh: Pembda123456789\n\nLanjutkan?')) document.getElementById('reset-pwd-form').submit();" class="flex-1 lg:flex-none px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap" title="Reset Password Massal">
-                    <i class="fas fa-key text-xs"></i> Reset Password
-                </button>
-                @endif
             </div>
         </form>
+
+        @if(request('classroom_id') || request('school_id'))
+        <div class="mt-5 pt-5 border-t border-gray-100 flex flex-wrap gap-3 justify-end items-center">
+            <span class="text-sm text-gray-500 mr-auto font-medium">Aksi Massal:</span>
+            <a href="{{ route('admin.students.print-accounts', request()->all()) }}" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2" title="Cetak Daftar Akun">
+                <i class="fas fa-print"></i> Cetak Daftar Akun
+            </a>
+            <a href="{{ route('admin.students.export-accounts', request()->all()) }}" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2" title="Export Excel Akun">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </a>
+            <button type="button" onclick="if(confirm('PERINGATAN! Semua password siswa yang terpilih akan direset menjadi pola: Pembda + NISN.\n\nContoh: Pembda123456789\n\nLanjutkan?')) document.getElementById('reset-pwd-form').submit();" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2" title="Reset Password Massal">
+                <i class="fas fa-key"></i> Reset Password
+            </button>
+        </div>
+        @endif
     </div>
 
     @if(request('classroom_id') || request('school_id'))

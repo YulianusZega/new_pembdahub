@@ -17,6 +17,7 @@
                     <p class="text-gray-600 mt-1">Manajemen data pegawai non-kependidikan</p>
                 </div>
             </div>
+            @if(auth()->user()->canManageEmploymentData())
             <a href="{{ route('admin.employees.create') }}" 
                 class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,6 +25,7 @@
                 </svg>
                 Tambah Pegawai
             </a>
+            @endif
         </div>
     </div>
 
@@ -245,6 +247,7 @@
                                     title="Profil Lengkap">
                                     <i class="fas fa-id-card-clip text-xs"></i>
                                 </a>
+                                @if(auth()->user()->canManageEmploymentData())
                                 <a href="{{ route('admin.employees.edit', $employee) }}" 
                                     class="group flex items-center justify-center w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-lg hover:scale-110 hover:rotate-3 transition-all duration-300 shadow-md"
                                     title="Edit">
@@ -252,6 +255,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                 </a>
+                                @endif
                                 <button type="button" 
                                     onclick="openQrModal('{{ $employee->full_name }}', '{{ $employee->employee_code }}', '{{ $employee->photo_url }}', 'Staff Pegawai', '{{ $employee->school?->name ?? 'Sekolah' }}', 'Pegawai', '{{ addslashes($employee->birth_place ?? '-') }}, {{ $employee->birth_date ? $employee->birth_date->format('d-m-Y') : '-' }}')"
                                     class="group flex items-center justify-center w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-600 text-white rounded-lg hover:scale-110 hover:rotate-3 transition-all duration-300 shadow-md"
@@ -265,6 +269,7 @@
                                     <i class="fas fa-id-card text-xs group-hover:scale-110 transition-transform"></i>
                                 </button>
 
+                                @if(auth()->user()->canManageEmploymentData())
                                 <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" 
                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus pegawai ini?')" class="inline">
                                     @csrf
@@ -276,6 +281,7 @@
                                         </svg>
                                     </button>
                                 </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

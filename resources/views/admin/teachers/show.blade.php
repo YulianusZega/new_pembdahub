@@ -110,6 +110,7 @@
                         </div>
                     </div>
 
+                    @if(auth()->user()->canManageEmploymentData())
                     <div>
                         <label class="text-sm font-semibold text-gray-600">Status Kepegawaian</label>
                         <p class="mt-1">
@@ -128,8 +129,9 @@
                             @endif
                         </p>
                     </div>
+                    @endif
 
-                    @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdminSekolah() || auth()->user()->isKetuaYayasan() || auth()->user()->isBendahara())
+                    @if(auth()->user()->canManageBasicSalary())
                     <div>
                         <label class="text-sm font-semibold text-gray-600">Gaji Pokok (Bulan)</label>
                         <p class="mt-1 text-gray-900 font-bold text-xl text-emerald-600">

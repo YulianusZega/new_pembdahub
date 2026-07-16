@@ -85,8 +85,17 @@ class EmployeeController extends Controller
         return view('admin.employees.index', compact('employees', 'schools'));
     }
 
+    private function checkEmploymentPermission(): void
+    {
+        if (!auth()->user()->canManageEmploymentData()) {
+            abort(403, 'Unauthorized. Hanya Super Admin dan Admin Sekolah yang dapat mengelola data kepegawaian.');
+        }
+    }
+
     public function create()
     {
+        $this->checkEmploymentPermission();
+
         $schools = School::where('is_active', 1)->schoolsOnly()->get();
         
         return view('admin.employees.create', compact('schools'));
@@ -94,7 +103,13 @@ class EmployeeController extends Controller
 
     public function store(StoreEmployeeRequest $request)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validated();
+
+        if (!auth()->user()->canManageBasicSalary()) {
+            $validated['basic_salary'] = 0;
+        }
 
         try {
             return DB::transaction(function () use ($request, $validated) {
@@ -169,13 +184,15 @@ class EmployeeController extends Controller
 
     public function show(Employee $employee)
     {
-        $employee->load('school', 'user');
+        $employee->load(['school', 'user', 'activePositions', 'educations', 'trainings', 'documents', 'familyMembers', 'contracts']);
         
         return view('admin.employees.show', compact('employee'));
     }
 
     public function edit(Employee $employee)
     {
+        $this->checkEmploymentPermission();
+
         $schools = School::where('is_active', 1)->schoolsOnly()->get();
         
         return view('admin.employees.edit', compact('employee', 'schools'));
@@ -183,7 +200,13 @@ class EmployeeController extends Controller
 
     public function update(UpdateEmployeeRequest $request, Employee $employee)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validated();
+
+        if (!auth()->user()->canManageBasicSalary()) {
+            $validated['basic_salary'] = $employee->basic_salary ?? 0;
+        }
 
         try {
             // Handle photo removal
@@ -234,6 +257,8 @@ class EmployeeController extends Controller
 
     public function destroy(Employee $employee)
     {
+        $this->checkEmploymentPermission();
+
         // Prevent deleting teachers
         if ($employee->employee_type === 'guru') {
             return redirect()->route('admin.employees.index')
@@ -362,6 +387,8 @@ class EmployeeController extends Controller
 
     public function storeEducation(Request $request, Employee $employee)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validate([
             'education_level' => 'required|in:SD,SMP,SMA,D1,D2,D3,D4,S1,S2,S3',
             'institution_name' => 'required|string|max:255',
@@ -382,6 +409,8 @@ class EmployeeController extends Controller
 
     public function destroyEducation(EmployeeEducation $education)
     {
+        $this->checkEmploymentPermission();
+
         if ($education->certificate_file) {
             Storage::disk('public')->delete($education->certificate_file);
         }
@@ -393,6 +422,8 @@ class EmployeeController extends Controller
 
     public function storeTraining(Request $request, Employee $employee)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validate([
             'training_name' => 'required|string|max:255',
             'organizer' => 'nullable|string|max:255',
@@ -414,6 +445,8 @@ class EmployeeController extends Controller
 
     public function destroyTraining(EmployeeTraining $training)
     {
+        $this->checkEmploymentPermission();
+
         if ($training->certificate_file) {
             Storage::disk('public')->delete($training->certificate_file);
         }
@@ -425,6 +458,8 @@ class EmployeeController extends Controller
 
     public function storeDocument(Request $request, Employee $employee)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validate([
             'document_type' => 'required|in:ktp,npwp,kk,sk_pengangkatan,sk_jabatan,ijazah,sertifikat,nuptk,kontrak,lainnya',
             'document_name' => 'required|string|max:255',
@@ -442,6 +477,8 @@ class EmployeeController extends Controller
 
     public function destroyDocument(EmployeeDocument $document)
     {
+        $this->checkEmploymentPermission();
+
         Storage::disk('public')->delete($document->file_path);
         $document->delete();
         return back()->with('success', 'Dokumen berhasil dihapus.');
@@ -451,6 +488,8 @@ class EmployeeController extends Controller
 
     public function storeFamily(Request $request, Employee $employee)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validate([
             'relation' => 'required|in:suami,istri,anak,ayah,ibu',
             'full_name' => 'required|string|max:255',
@@ -467,6 +506,8 @@ class EmployeeController extends Controller
 
     public function updateFamily(Request $request, EmployeeFamilyMember $member)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validate([
             'relation' => 'required|in:suami,istri,anak,ayah,ibu',
             'full_name' => 'required|string|max:255',
@@ -483,6 +524,8 @@ class EmployeeController extends Controller
 
     public function destroyFamily(EmployeeFamilyMember $member)
     {
+        $this->checkEmploymentPermission();
+
         $member->delete();
         return back()->with('success', 'Data keluarga berhasil dihapus.');
     }
@@ -491,6 +534,8 @@ class EmployeeController extends Controller
 
     public function storeContract(Request $request, Employee $employee)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validate([
             'contract_number' => 'required|string|max:255',
             'contract_type' => 'required|in:tetap_yayasan,honorer,kontrak,pns',
@@ -500,6 +545,10 @@ class EmployeeController extends Controller
             'file' => 'nullable|file|mimes:pdf|max:10240',
             'notes' => 'nullable|string|max:500',
         ]);
+
+        if (!auth()->user()->canManageBasicSalary()) {
+            unset($validated['basic_salary']);
+        }
 
         if ($request->hasFile('file')) {
             $validated['file_path'] = $request->file('file')->store('employee_contracts', 'public');
@@ -517,6 +566,8 @@ class EmployeeController extends Controller
 
     public function updateContract(Request $request, EmployeeContract $contract)
     {
+        $this->checkEmploymentPermission();
+
         $validated = $request->validate([
             'is_active' => 'required|boolean',
             'notes' => 'nullable|string|max:500',

@@ -91,6 +91,10 @@ class TeacherController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->canManageEmploymentData()) {
+            abort(403, 'Unauthorized. Hanya Super Admin dan Admin Sekolah yang dapat mengelola data guru.');
+        }
+
         $schools = School::where('is_active', 1)->schoolsOnly()->get();
         $subjects = Subject::where('is_active', 1)->get();
         
@@ -99,7 +103,15 @@ class TeacherController extends Controller
 
     public function store(StoreTeacherRequest $request)
     {
+        if (!auth()->user()->canManageEmploymentData()) {
+            abort(403, 'Unauthorized. Hanya Super Admin dan Admin Sekolah yang dapat mengelola data guru.');
+        }
+
         $validated = $request->validated();
+
+        if (!auth()->user()->canManageBasicSalary()) {
+            $validated['basic_salary'] = 0;
+        }
 
         // Handle photo upload
         if ($request->hasFile('photo')) {
@@ -123,8 +135,8 @@ class TeacherController extends Controller
                     $userId = $user->id;
                 }
 
-                // Create Employee first
-                $employee = \App\Models\Employee::create([
+                // Create Employee
+                $employee = Employee::create([
                     'school_id' => $validated['school_id'],
                     'user_id' => $userId,
                     'employee_code' => $validated['teacher_code'],
@@ -175,7 +187,7 @@ class TeacherController extends Controller
                 Storage::disk('public')->delete($validated['photo']);
             }
             Log::error('Gagal menambahkan guru: ' . $e->getMessage());
-            return back()->withInput()->with('error', 'Gagal menambahkan guru. Silakan coba lagi.');
+            return back()->withInput()->with('error', 'Gagal menambahkan data guru. Silakan coba lagi.');
         }
     }
 
@@ -194,6 +206,10 @@ class TeacherController extends Controller
 
     public function edit(Teacher $teacher, Request $request)
     {
+        if (!auth()->user()->canManageEmploymentData()) {
+            abort(403, 'Unauthorized. Hanya Super Admin dan Admin Sekolah yang dapat mengelola data guru.');
+        }
+
         $schools = School::where('is_active', 1)->schoolsOnly()->get();
         $subjects = Subject::where('is_active', 1)->get();
         
@@ -206,7 +222,15 @@ class TeacherController extends Controller
 
     public function update(UpdateTeacherRequest $request, Teacher $teacher)
     {
+        if (!auth()->user()->canManageEmploymentData()) {
+            abort(403, 'Unauthorized. Hanya Super Admin dan Admin Sekolah yang dapat mengelola data guru.');
+        }
+
         $validated = $request->validated();
+
+        if (!auth()->user()->canManageBasicSalary()) {
+            $validated['basic_salary'] = $teacher->employee ? ($teacher->employee->basic_salary ?? 0) : 0;
+        }
 
         // Handle photo removal
         if ($request->remove_photo && $teacher->photo) {
@@ -289,6 +313,10 @@ class TeacherController extends Controller
 
     public function destroy(Teacher $teacher)
     {
+        if (!auth()->user()->canManageEmploymentData()) {
+            abort(403, 'Unauthorized. Hanya Super Admin dan Admin Sekolah yang dapat menghapus data guru.');
+        }
+
         try {
             return DB::transaction(function () use ($teacher) {
                 // Delete photo

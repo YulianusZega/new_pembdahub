@@ -240,6 +240,7 @@
                         <p class="mt-1 text-xs text-gray-500">Masa kerja: {{ $teacher->employee->getWorkingYears() ?? 0 }} tahun</p>
                     </div>
 
+                    @if(auth()->user()->canManageBasicSalary())
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-money-bill-wave mr-1"></i> Gaji Pokok (Nominal)</label>
                         <div class="relative">
@@ -250,6 +251,7 @@
                         </div>
                         @error('basic_salary')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
+                    @endif
                 </div>
 
                 <div>

@@ -252,6 +252,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user can manage/view general employment data (Status Kepegawaian, TMT, Jenis Pegawai)
+     */
+    public function canManageEmploymentData(): bool
+    {
+        return $this->isSuperAdmin() || $this->isAdminSekolah();
+    }
+
+    /**
+     * Check if user can manage/view basic salary (Gaji Pokok)
+     */
+    public function canManageBasicSalary(): bool
+    {
+        return $this->isSuperAdmin() || $this->isKetuaYayasan();
+    }
+
+    /**
      * Check if user is a homeroom teacher (wali kelas)
      */
     public function isHomeroomTeacher(): bool

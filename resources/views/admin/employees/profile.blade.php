@@ -104,10 +104,13 @@
             <div class="bg-white rounded-2xl shadow-sm border border-blue-100 p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest">Data Keluarga</h3>
+                    @if(auth()->user()->canManageEmploymentData())
                     <button onclick="document.getElementById('add-family-form').classList.toggle('hidden')"
                         class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-200 transition-all"><i class="fas fa-plus mr-1"></i> Tambah</button>
+                    @endif
                 </div>
                 <!-- Add Form -->
+                @if(auth()->user()->canManageEmploymentData())
                 <div id="add-family-form" class="hidden mb-6 p-4 bg-indigo-50 rounded-xl">
                     <form action="{{ route('admin.employees.family.store', $employee) }}" method="POST" class="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
                         @csrf
@@ -136,6 +139,7 @@
                         </div>
                     </form>
                 </div>
+                @endif
                 <!-- List -->
                 @forelse($employee->familyMembers as $fm)
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl mb-2">
@@ -144,10 +148,12 @@
                         <span class="font-semibold text-gray-800">{{ $fm->full_name }}</span>
                         <span class="text-xs text-gray-500">{{ $fm->gender === 'L' ? '♂' : '♀' }} · {{ $fm->birth_date?->format('d/m/Y') ?? '-' }}</span>
                     </div>
+                    @if(auth()->user()->canManageEmploymentData())
                     <form action="{{ route('admin.employees.family.destroy', $fm) }}" method="POST" onsubmit="return confirm('Hapus?')">
                         @csrf @method('DELETE')
                         <button class="p-1.5 text-red-400 hover:text-red-600 transition-colors"><i class="fas fa-trash text-xs"></i></button>
                     </form>
+                    @endif
                 </div>
                 @empty
                 <p class="text-gray-400 text-sm text-center py-4">Belum ada data keluarga</p>
@@ -207,9 +213,12 @@
         <div x-show="tab === 'pendidikan'" class="bg-white rounded-2xl shadow-sm border border-blue-100 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest">Riwayat Pendidikan</h3>
+                @if(auth()->user()->canManageEmploymentData())
                 <button onclick="document.getElementById('add-edu-form').classList.toggle('hidden')"
                     class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-200 transition-all"><i class="fas fa-plus mr-1"></i> Tambah</button>
+                @endif
             </div>
+            @if(auth()->user()->canManageEmploymentData())
             <div id="add-edu-form" class="hidden mb-6 p-4 bg-indigo-50 rounded-xl">
                 <form action="{{ route('admin.employees.educations.store', $employee) }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
                     @csrf
@@ -236,6 +245,7 @@
                     </div>
                 </form>
             </div>
+            @endif
             @forelse($employee->educations as $edu)
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl mb-2">
                 <div class="flex items-center gap-3">
@@ -246,10 +256,12 @@
                     </div>
                     @if($edu->graduation_year) <span class="text-xs text-gray-400">({{ $edu->graduation_year }})</span> @endif
                 </div>
+                @if(auth()->user()->canManageEmploymentData())
                 <form action="{{ route('admin.employees.educations.destroy', $edu) }}" method="POST" onsubmit="return confirm('Hapus?')">
                     @csrf @method('DELETE')
                     <button class="p-1.5 text-red-400 hover:text-red-600"><i class="fas fa-trash text-xs"></i></button>
                 </form>
+                @endif
             </div>
             @empty
             <p class="text-gray-400 text-sm text-center py-4">Belum ada data pendidikan</p>
@@ -260,9 +272,12 @@
         <div x-show="tab === 'pelatihan'" class="bg-white rounded-2xl shadow-sm border border-blue-100 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest">Riwayat Pelatihan</h3>
+                @if(auth()->user()->canManageEmploymentData())
                 <button onclick="document.getElementById('add-training-form').classList.toggle('hidden')"
                     class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-200 transition-all"><i class="fas fa-plus mr-1"></i> Tambah</button>
+                @endif
             </div>
+            @if(auth()->user()->canManageEmploymentData())
             <div id="add-training-form" class="hidden mb-6 p-4 bg-indigo-50 rounded-xl">
                 <form action="{{ route('admin.employees.trainings.store', $employee) }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
                     @csrf
@@ -297,6 +312,7 @@
                     </div>
                 </form>
             </div>
+            @endif
             @forelse($employee->trainings as $tr)
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl mb-2">
                 <div class="flex items-center gap-3">
@@ -307,10 +323,12 @@
                     </div>
                     <span class="text-xs text-gray-400">{{ $tr->start_date->format('M Y') }} @if($tr->hours)· {{ $tr->hours }}j @endif</span>
                 </div>
+                @if(auth()->user()->canManageEmploymentData())
                 <form action="{{ route('admin.employees.trainings.destroy', $tr) }}" method="POST" onsubmit="return confirm('Hapus?')">
                     @csrf @method('DELETE')
                     <button class="p-1.5 text-red-400 hover:text-red-600"><i class="fas fa-trash text-xs"></i></button>
                 </form>
+                @endif
             </div>
             @empty
             <p class="text-gray-400 text-sm text-center py-4">Belum ada data pelatihan</p>
@@ -321,9 +339,12 @@
         <div x-show="tab === 'dokumen'" class="bg-white rounded-2xl shadow-sm border border-blue-100 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest">Dokumen Pegawai</h3>
+                @if(auth()->user()->canManageEmploymentData())
                 <button onclick="document.getElementById('add-doc-form').classList.toggle('hidden')"
                     class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-200 transition-all"><i class="fas fa-upload mr-1"></i> Upload</button>
+                @endif
             </div>
+            @if(auth()->user()->canManageEmploymentData())
             <div id="add-doc-form" class="hidden mb-6 p-4 bg-indigo-50 rounded-xl">
                 <form action="{{ route('admin.employees.documents.store', $employee) }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-4 gap-3 items-end">
                     @csrf
@@ -346,6 +367,7 @@
                     </div>
                 </form>
             </div>
+            @endif
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 @forelse($employee->documents as $doc)
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
@@ -358,10 +380,12 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ asset('storage/' . $doc->file_path) }}" target="_blank" class="p-1.5 text-blue-500 hover:text-blue-700"><i class="fas fa-download text-sm"></i></a>
+                        @if(auth()->user()->canManageEmploymentData())
                         <form action="{{ route('admin.employees.documents.destroy', $doc) }}" method="POST" onsubmit="return confirm('Hapus?')">
                             @csrf @method('DELETE')
                             <button class="p-1.5 text-red-400 hover:text-red-600"><i class="fas fa-trash text-xs"></i></button>
                         </form>
+                        @endif
                     </div>
                 </div>
                 @empty
@@ -374,11 +398,14 @@
         <div x-show="tab === 'kontrak'" class="bg-white rounded-2xl shadow-sm border border-blue-100 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest">Kontrak Kerja</h3>
+                @if(auth()->user()->canManageEmploymentData())
                 <button onclick="document.getElementById('add-contract-form').classList.toggle('hidden')"
                     class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-xl text-sm font-semibold hover:bg-indigo-200 transition-all"><i class="fas fa-plus mr-1"></i> Tambah</button>
+                @endif
             </div>
+            @if(auth()->user()->canManageEmploymentData())
             <div id="add-contract-form" class="hidden mb-6 p-4 bg-indigo-50 rounded-xl">
-                <form action="{{ route('admin.employees.contracts.store', $employee) }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                <form action="{{ route('admin.employees.contracts.store', $employee) }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
                     @csrf
                     <div>
                         <label class="text-xs text-gray-500 font-bold">No. Kontrak</label>
@@ -398,11 +425,18 @@
                         <label class="text-xs text-gray-500 font-bold">Berakhir</label>
                         <input type="date" name="end_date" class="w-full mt-1 px-3 py-2 bg-white border-none rounded-lg text-sm">
                     </div>
+                    @if(auth()->user()->canManageBasicSalary())
+                    <div>
+                        <label class="text-xs text-gray-500 font-bold">Gaji Pokok</label>
+                        <input type="number" name="basic_salary" class="w-full mt-1 px-3 py-2 bg-white border-none rounded-lg text-sm" placeholder="Nominal Rp">
+                    </div>
+                    @endif
                     <div>
                         <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700">Simpan</button>
                     </div>
                 </form>
             </div>
+            @endif
             @forelse($employee->contracts as $ct)
             <div class="flex items-center justify-between p-4 {{ $ct->is_active ? 'bg-green-50 border border-green-200' : 'bg-gray-50' }} rounded-xl mb-2">
                 <div class="flex items-center gap-3">
@@ -413,6 +447,9 @@
                         <span class="text-xs text-gray-500 ml-2">{{ $ct->type_label }}</span>
                     </div>
                     <span class="text-xs text-gray-400">{{ $ct->start_date->format('d/m/Y') }} - {{ $ct->end_date?->format('d/m/Y') ?? '∞' }}</span>
+                    @if(auth()->user()->canManageBasicSalary() && $ct->basic_salary)
+                    <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg">Rp {{ number_format($ct->basic_salary, 0, ',', '.') }}</span>
+                    @endif
                     @if($ct->isExpiringSoon()) <span class="px-2 py-1 bg-red-100 text-red-700 text-[10px] font-bold rounded-full animate-pulse">SEGERA BERAKHIR</span> @endif
                 </div>
             </div>

@@ -87,6 +87,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @if(auth()->user()->canManageEmploymentData() || auth()->user()->canManageBasicSalary())
                     <div>
                         <label class="text-sm font-semibold text-gray-600">Jenis Pegawai</label>
                         <p class="mt-1">
@@ -128,8 +129,9 @@
                         <label class="text-sm font-semibold text-gray-600">TMT (Tanggal Mulai Tugas)</label>
                         <p class="mt-1 text-gray-900">{{ $employee->tmt_date?->format('d M Y') ?? '-' }}</p>
                     </div>
+                    @endif
 
-                    @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdminSekolah() || auth()->user()->isKetuaYayasan() || auth()->user()->isBendahara())
+                    @if(auth()->user()->canManageBasicSalary())
                     <div>
                         <label class="text-sm font-semibold text-gray-600">Gaji Pokok (Bulan)</label>
                         <p class="mt-1 text-gray-900 font-bold text-xl text-emerald-600">

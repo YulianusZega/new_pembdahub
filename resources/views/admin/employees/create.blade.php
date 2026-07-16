@@ -237,7 +237,7 @@
                     </div>
                 </div>
 
-                @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdminSekolah() || auth()->user()->isKetuaYayasan() || auth()->user()->isBendahara())
+                @if(auth()->user()->canManageBasicSalary())
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-money-bill-wave mr-1"></i> Gaji Pokok</label>
                     <div class="relative">

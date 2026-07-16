@@ -188,7 +188,10 @@ class PositionAssignmentController extends Controller
                 $currentClassroom = Classroom::find($pivotClassroomId);
             }
             if (!$currentClassroom && $selectedEmployee->teacher) {
-                $currentClassroom = Classroom::where('homeroom_teacher_id', $selectedEmployee->teacher->id)->orderBy('id', 'desc')->first();
+                $currentClassroom = Classroom::where('homeroom_teacher_id', $selectedEmployee->teacher->id)
+                    ->where('academic_year_id', $currentYear->id)
+                    ->orderBy('id', 'desc')
+                    ->first();
             }
         }
         
@@ -361,8 +364,11 @@ class PositionAssignmentController extends Controller
         if ($pivotClassroomId) {
             $currentClassroom = Classroom::find($pivotClassroomId);
         }
-        if (!$currentClassroom && $employee->teacher) {
-            $currentClassroom = Classroom::where('homeroom_teacher_id', $employee->teacher->id)->orderBy('id', 'desc')->first();
+        if (!$currentClassroom && $employee->teacher && $currentYear) {
+            $currentClassroom = Classroom::where('homeroom_teacher_id', $employee->teacher->id)
+                ->where('academic_year_id', $currentYear->id)
+                ->orderBy('id', 'desc')
+                ->first();
         }
         
         return view('admin.assignments.positions.edit', compact(
@@ -490,6 +496,7 @@ class PositionAssignmentController extends Controller
         // If Wali Kelas is NOT kept, clear this teacher from any classrooms immediately
         if (!$hasWaliKelas && $employee->teacher) {
             Classroom::where('homeroom_teacher_id', $employee->teacher->id)
+                ->where('academic_year_id', $validated['academic_year_id'])
                 ->update(['homeroom_teacher_id' => null]);
         }
 
@@ -616,8 +623,9 @@ class PositionAssignmentController extends Controller
                     $teacherId = $teacher->id;
                 }
                 if ($teacherId) {
-                    // CRITICAL CLEANUP: Clear homeroom_teacher_id from ANY other classroom that had this teacher!
+                    // CRITICAL CLEANUP: Clear homeroom_teacher_id from ANY other classroom in THIS ACADEMIC YEAR that had this teacher!
                     Classroom::where('homeroom_teacher_id', $teacherId)
+                        ->where('academic_year_id', $validated['academic_year_id'])
                         ->where('id', '!=', $validated['classroom_id'])
                         ->update(['homeroom_teacher_id' => null]);
 

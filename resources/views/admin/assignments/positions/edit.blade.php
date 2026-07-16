@@ -279,18 +279,26 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     // Initial primary position from server
-    const initialPrimaryId = '{{ old("primary_position_id") ?? (isset($currentAssignment) ? $employee->employeePositions()->where("academic_year_id", $currentYear->id ?? 0)->whereNull("end_date")->where("is_primary", 1)->value("position_id") : "") }}';
+    const initialPrimaryId = String('{{ old("primary_position_id") ?? (isset($currentAssignment) ? $employee->employeePositions()->where("academic_year_id", $currentYear->id ?? 0)->whereNull("end_date")->where("is_primary", 1)->value("position_id") : "") }}');
     
     function updatePrimaryPositionOptions() {
-        const checkedPositions = Array.from(positionCheckboxes)
-            .filter(cb => cb.checked)
-            .map(cb => ({
-                id: cb.value,
-                name: cb.closest('label').querySelector('span.font-semibold').textContent.trim()
-            }));
+        // Use live query to always get current state of ALL checkboxes
+        const allCheckboxes = document.querySelectorAll('input.position-checkbox[type="checkbox"]');
+        
+        const checkedPositions = [];
+        allCheckboxes.forEach(cb => {
+            if (cb.checked) {
+                const label = cb.closest('label');
+                const nameSpan = label ? label.querySelector('span.font-semibold') : null;
+                checkedPositions.push({
+                    id: String(cb.value),
+                    name: nameSpan ? nameSpan.textContent.trim() : ('Jabatan #' + cb.value)
+                });
+            }
+        });
         
         // Preserve selected option if possible
-        const currentPrimaryId = primaryPositionSelect.value || initialPrimaryId;
+        const currentPrimaryId = String(primaryPositionSelect.value || initialPrimaryId);
 
         // Clear and rebuild primary position dropdown
         primaryPositionSelect.innerHTML = '<option value="">-- Pilih Jabatan Utama --</option>';

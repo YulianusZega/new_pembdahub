@@ -311,19 +311,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Initial primary position from server
-    const initialPrimaryId = '{{ old("primary_position_id") ?? "" }}';
+    const initialPrimaryId = String('{{ old("primary_position_id") ?? "" }}');
 
     // Update primary position options when checkboxes change
     function updatePrimaryOptions() {
-        const selectedPositions = Array.from(positionCheckboxes)
-            .filter(cb => cb.checked)
-            .map(cb => ({
-                id: cb.value,
-                name: cb.closest('label').querySelector('.font-semibold').textContent.trim()
-            }));
+        // Use live query to always get current state of ALL checkboxes
+        const allCheckboxes = document.querySelectorAll('input.position-checkbox[type="checkbox"]');
+        
+        const selectedPositions = [];
+        allCheckboxes.forEach(cb => {
+            if (cb.checked) {
+                const label = cb.closest('label');
+                const nameSpan = label ? label.querySelector('.font-semibold') : null;
+                selectedPositions.push({
+                    id: String(cb.value),
+                    name: nameSpan ? nameSpan.textContent.trim() : ('Jabatan #' + cb.value)
+                });
+            }
+        });
         
         // Preserve selected option if possible
-        const currentPrimaryId = primarySelect.value || initialPrimaryId;
+        const currentPrimaryId = String(primarySelect.value || initialPrimaryId);
 
         primarySelect.innerHTML = '<option value="">-- Pilih Jabatan Utama --</option>';
         

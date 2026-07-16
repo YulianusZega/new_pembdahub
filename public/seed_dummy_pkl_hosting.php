@@ -130,6 +130,7 @@ try {
                 'shift' => 'Shift A',
                 'start_date' => now()->format('Y-m-d'),
                 'end_date' => now()->addMonths(4)->format('Y-m-d'),
+                'signed_token' => Str::random(32),
                 'is_perangkat_ready' => true,
                 'perangkat_file_path' => $pdfPath
             ]

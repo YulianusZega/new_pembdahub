@@ -180,13 +180,15 @@ class PositionAssignmentController extends Controller
                 ->where('academic_year_id', $currentYear->id)
                 ->whereNull('end_date')
                 ->whereNotNull('classroom_id')
+                ->orderBy('updated_at', 'desc')
+                ->orderBy('id', 'desc')
                 ->value('classroom_id');
 
             if ($pivotClassroomId) {
                 $currentClassroom = Classroom::find($pivotClassroomId);
             }
             if (!$currentClassroom && $selectedEmployee->teacher) {
-                $currentClassroom = Classroom::where('homeroom_teacher_id', $selectedEmployee->teacher->id)->first();
+                $currentClassroom = Classroom::where('homeroom_teacher_id', $selectedEmployee->teacher->id)->orderBy('id', 'desc')->first();
             }
         }
         
@@ -352,13 +354,15 @@ class PositionAssignmentController extends Controller
             ->where('academic_year_id', $currentYear->id ?? 0)
             ->whereNull('end_date')
             ->whereNotNull('classroom_id')
+            ->orderBy('updated_at', 'desc')
+            ->orderBy('id', 'desc')
             ->value('classroom_id');
 
         if ($pivotClassroomId) {
             $currentClassroom = Classroom::find($pivotClassroomId);
         }
         if (!$currentClassroom && $employee->teacher) {
-            $currentClassroom = Classroom::where('homeroom_teacher_id', $employee->teacher->id)->first();
+            $currentClassroom = Classroom::where('homeroom_teacher_id', $employee->teacher->id)->orderBy('id', 'desc')->first();
         }
         
         return view('admin.assignments.positions.edit', compact(
@@ -479,6 +483,16 @@ class PositionAssignmentController extends Controller
             ->whereNull('end_date')
             ->update(['end_date' => now(), 'updated_at' => now()]);
 
+        // Check if Wali Kelas is in the new selection
+        $waliKelasPosition = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
+        $hasWaliKelas = $waliKelasPosition && in_array($waliKelasPosition->id, $newPositionIds);
+
+        // If Wali Kelas is NOT kept, clear this teacher from any classrooms immediately
+        if (!$hasWaliKelas && $employee->teacher) {
+            Classroom::where('homeroom_teacher_id', $employee->teacher->id)
+                ->update(['homeroom_teacher_id' => null]);
+        }
+
         // 2. Loop through each selected position and either update existing or attach
         foreach ($newPositionIds as $positionId) {
             $position = Position::find($positionId);
@@ -489,8 +503,9 @@ class PositionAssignmentController extends Controller
             $classroomId = ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null;
             $isPrimary = ($positionId == $validated['primary_position_id']);
 
+            $activeRecordId = null;
+
             // Priority A: Check if a record exists for this EXACT (position_id, start_date) for this employee
-            // This prevents unique(['employee_id', 'position_id', 'start_date']) collision!
             $existingExactDate = $employee->employeePositions()
                 ->where('position_id', $positionId)
                 ->where('start_date', $validated['position_start_date'])
@@ -507,6 +522,7 @@ class PositionAssignmentController extends Controller
                     'classroom_id' => $classroomId,
                     'updated_at' => now(),
                 ]);
+                $activeRecordId = $existingExactDate->id;
             } else {
                 // Priority B: Check if there is an existing record for this academic_year_id & position_id
                 $existingYearRecord = $employee->employeePositions()
@@ -525,11 +541,13 @@ class PositionAssignmentController extends Controller
                         'classroom_id' => $classroomId,
                         'updated_at' => now(),
                     ]);
+                    $activeRecordId = $existingYearRecord->id;
                 } else {
                     // Priority C: Check if there is any active position_id without end_date that we can reuse
                     $existingActive = $employee->employeePositions()
                         ->where('position_id', $positionId)
                         ->whereNull('end_date')
+                        ->orderBy('id', 'desc')
                         ->first();
 
                     if ($existingActive) {
@@ -543,6 +561,7 @@ class PositionAssignmentController extends Controller
                             'classroom_id' => $classroomId,
                             'updated_at' => now(),
                         ]);
+                        $activeRecordId = $existingActive->id;
                     } else {
                         // Attach brand new record
                         $employee->positions()->attach($positionId, [
@@ -557,33 +576,53 @@ class PositionAssignmentController extends Controller
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]);
+                        // Get the ID of newly attached record
+                        $activeRecordId = $employee->employeePositions()
+                            ->where('position_id', $positionId)
+                            ->where('start_date', $validated['position_start_date'])
+                            ->whereNull('end_date')
+                            ->orderBy('id', 'desc')
+                            ->value('id');
                     }
                 }
+            }
+
+            // CRITICAL CLEANUP: Close any OTHER active records for this position_id that are NOT the active one!
+            // This prevents old/duplicate active rows (e.g. old X TSM 1 row) from lingering and overriding queries.
+            if ($activeRecordId) {
+                $employee->employeePositions()
+                    ->where('position_id', $positionId)
+                    ->whereNull('end_date')
+                    ->where('id', '!=', $activeRecordId)
+                    ->update(['end_date' => now(), 'updated_at' => now()]);
             }
         }
 
         // 3. Check if wali kelas position is assigned, and update classroom's homeroom_teacher_id
-        $waliKelasPosition = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
-        if ($waliKelasPosition && in_array($waliKelasPosition->id, $newPositionIds)) {
-            if ($request->filled('classroom_id')) {
-                $classroom = Classroom::find($validated['classroom_id']);
-                if ($classroom && $classroom->school_id == $employee->school_id) {
-                    $teacherId = $employee->teacher->id ?? null;
-                    if (!$teacherId && $employee->employee_type === 'guru') {
-                        $teacher = \App\Models\Teacher::firstOrCreate(
-                            ['employee_id' => $employee->id],
-                            [
-                                'school_id' => $employee->school_id,
-                                'teacher_code' => $employee->employee_code ?? 'TCH-' . $employee->id,
-                                'full_name' => $employee->full_name,
-                                'is_active' => 1,
-                            ]
-                        );
-                        $teacherId = $teacher->id;
-                    }
-                    if ($teacherId) {
-                        $classroom->update(['homeroom_teacher_id' => $teacherId]);
-                    }
+        if ($hasWaliKelas && $request->filled('classroom_id')) {
+            $classroom = Classroom::find($validated['classroom_id']);
+            if ($classroom && $classroom->school_id == $employee->school_id) {
+                $teacherId = $employee->teacher->id ?? null;
+                if (!$teacherId && $employee->employee_type === 'guru') {
+                    $teacher = \App\Models\Teacher::firstOrCreate(
+                        ['employee_id' => $employee->id],
+                        [
+                            'school_id' => $employee->school_id,
+                            'teacher_code' => $employee->employee_code ?? 'TCH-' . $employee->id,
+                            'full_name' => $employee->full_name,
+                            'is_active' => 1,
+                        ]
+                    );
+                    $teacherId = $teacher->id;
+                }
+                if ($teacherId) {
+                    // CRITICAL CLEANUP: Clear homeroom_teacher_id from ANY other classroom that had this teacher!
+                    Classroom::where('homeroom_teacher_id', $teacherId)
+                        ->where('id', '!=', $validated['classroom_id'])
+                        ->update(['homeroom_teacher_id' => null]);
+
+                    // Assign teacher to the chosen classroom
+                    $classroom->update(['homeroom_teacher_id' => $teacherId]);
                 }
             }
         }

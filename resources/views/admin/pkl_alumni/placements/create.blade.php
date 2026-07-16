@@ -53,6 +53,16 @@
                             <p class="text-[10px] text-gray-400 mt-1">Belum ada di daftar? <a href="{{ route('admin.pkl-alumni.dudis.create') }}" class="text-indigo-500 underline" target="_blank">Tambah Master DUDI Baru</a></p>
                         </div>
 
+                        {{-- Shift --}}
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Periode Shift PKL</label>
+                            <select name="shift" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:bg-white transition" required>
+                                <option value="">-- Pilih Shift PKL --</option>
+                                <option value="Shift A (Juli - Oktober)" {{ old('shift') == 'Shift A (Juli - Oktober)' ? 'selected' : '' }}>Shift A (Juli - Oktober)</option>
+                                <option value="Shift B (Oktober - Februari)" {{ old('shift') == 'Shift B (Oktober - Februari)' ? 'selected' : '' }}>Shift B (Oktober - Februari)</option>
+                            </select>
+                        </div>
+
                         {{-- Teacher --}}
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Guru Pembimbing Internal</label>

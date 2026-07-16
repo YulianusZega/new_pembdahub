@@ -290,6 +290,10 @@
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white"><i class="fas fa-briefcase text-[10px]"></i></div>
                 <span>Penempatan PKL</span>
             </a>
+            <a href="{{ route('admin.pkl-alumni.monitorings.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.pkl-alumni.monitorings.*') ? $ac : $nc }}">
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-white"><i class="fas fa-file-invoice text-[10px]"></i></div>
+                <span>Monitoring (Guru)</span>
+            </a>
             <a href="{{ route('admin.pkl-alumni.tracer.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.pkl-alumni.tracer.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white"><i class="fas fa-graduation-cap text-[10px]"></i></div>
                 <span>Tracer Study (BMW)</span>

@@ -1,0 +1,122 @@
+<?php
+
+namespace App\Http\Controllers\Guru;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use App\Models\PklPlacement;
+use App\Models\PklMonitoring;
+use App\Models\Teacher;
+use App\Models\Dudi;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+
+class PklMonitoringController extends Controller
+{
+    private function getTeacher(): Teacher
+    {
+        return Teacher::where('user_id', Auth::id())->firstOrFail();
+    }
+
+    public function index()
+    {
+        $teacher = $this->getTeacher();
+        
+        $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
+        
+        // Group placements by DUDI and Shift
+        $query = PklPlacement::with('dudi')
+            ->where('teacher_id', $teacher->id);
+            
+        if ($activeYear) {
+            $query->where('academic_year_id', $activeYear->id);
+        }
+            
+        $groups = $query->select('dudi_id', 'shift', DB::raw('count(*) as total_students'), DB::raw('MAX(is_perangkat_ready) as is_perangkat_ready'))
+            ->groupBy('dudi_id', 'shift')
+            ->get();
+
+        return view('guru.pkl_monitorings.index', compact('teacher', 'groups', 'activeYear'));
+    }
+
+    public function show($dudi_id, $shift = null)
+    {
+        if ($shift === 'null') $shift = null;
+        
+        $teacher = $this->getTeacher();
+        $dudi = Dudi::findOrFail($dudi_id);
+        $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
+        
+        // Verify teacher owns these placements
+        $placementsQuery = PklPlacement::with(['student.user', 'logs' => function($q) {
+                $q->orderByDesc('log_date')->take(5); // Show latest 5 logs per student for quick preview
+            }])
+            ->where('teacher_id', $teacher->id)
+            ->where('dudi_id', $dudi_id)
+            ->where('shift', $shift);
+            
+        if ($activeYear) {
+            $placementsQuery->where('academic_year_id', $activeYear->id);
+        }
+            
+        $placements = $placementsQuery->get();
+
+        if ($placements->isEmpty()) {
+            abort(403, 'Anda bukan pembimbing di DUDI ini.');
+        }
+
+        $isPerangkatReady = $placements->first()->is_perangkat_ready;
+
+        $monitorings = PklMonitoring::where('teacher_id', $teacher->id)
+            ->where('dudi_id', $dudi_id)
+            ->where('shift', $shift)
+            ->orderByDesc('monitoring_date')
+            ->get();
+
+        return view('guru.pkl_monitorings.show', compact('teacher', 'dudi', 'shift', 'placements', 'monitorings', 'isPerangkatReady'));
+    }
+
+    public function updatePerangkat(Request $request, $dudi_id, $shift = null)
+    {
+        if ($shift === 'null') $shift = null;
+        $teacher = $this->getTeacher();
+        
+        PklPlacement::where('teacher_id', $teacher->id)
+            ->where('dudi_id', $dudi_id)
+            ->where('shift', $shift)
+            ->update(['is_perangkat_ready' => $request->has('is_perangkat_ready')]);
+
+        return back()->with('success', 'Status perangkat PKL berhasil diperbarui.');
+    }
+
+    public function store(Request $request, $dudi_id, $shift = null)
+    {
+        if ($shift === 'null') $shift = null;
+        $teacher = $this->getTeacher();
+        
+        $request->validate([
+            'monitoring_date' => 'required|date',
+            'notes' => 'nullable|string',
+            'assignment_letter' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'photo' => 'required|image|mimes:jpg,jpeg,png|max:5120',
+        ]);
+
+        $letterPath = $request->file('assignment_letter')->store('pkl/monitoring_letters', 'public');
+        $photoPath = $request->file('photo')->store('pkl/monitoring_photos', 'public');
+
+        PklMonitoring::create([
+            'teacher_id' => $teacher->id,
+            'dudi_id' => $dudi_id,
+            'shift' => $shift,
+            'monitoring_date' => $request->monitoring_date,
+            'assignment_letter_path' => $letterPath,
+            'photo_path' => $photoPath,
+            'notes' => $request->notes,
+            'status' => 'submitted',
+        ]);
+
+        return back()->with('success', 'Laporan monitoring mingguan berhasil dikirim.');
+    }
+}

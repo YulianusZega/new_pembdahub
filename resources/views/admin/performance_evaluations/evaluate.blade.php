@@ -1,4 +1,4 @@
-@extends(auth()->user()->isYayasan() ? 'layouts.yayasan' : 'layouts.admin')
+@extends(auth()->user()->isKetuaYayasan() ? 'layouts.yayasan' : 'layouts.admin')
 
 @section('title', 'Form Evaluasi Kinerja')
 
@@ -7,7 +7,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
             <div class="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                <a href="{{ route((auth()->user()->isYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.index') }}" class="hover:text-indigo-600 transition-colors">Evaluasi Kinerja</a>
+                <a href="{{ route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.index') }}" class="hover:text-indigo-600 transition-colors">Evaluasi Kinerja</a>
                 <i class="fas fa-chevron-right text-xs"></i>
                 <span class="text-gray-900 font-medium">Penilaian</span>
             </div>
@@ -119,14 +119,14 @@
         <!-- Form Penilaian -->
         <div class="lg:col-span-2">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <form action="{{ route((auth()->user()->isYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.store', [$contract->id, $semester->id]) }}" method="POST">
+                <form action="{{ route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.store', [$contract->id, $semester->id]) }}" method="POST">
                     @csrf
                     
                     @php
                         $isReadOnly = false;
-                        if (auth()->user()->isYayasan() && $evaluation->status === 'approved_by_yayasan') {
+                        if (auth()->user()->isKetuaYayasan() && $evaluation->status === 'approved_by_yayasan') {
                             $isReadOnly = false; // Yayasan bisa revisi meskipun sudah final (opsional, tergantung rules)
-                        } elseif (!auth()->user()->isYayasan() && in_array($evaluation->status, ['submitted_to_yayasan', 'approved_by_yayasan'])) {
+                        } elseif (!auth()->user()->isKetuaYayasan() && in_array($evaluation->status, ['submitted_to_yayasan', 'approved_by_yayasan'])) {
                             $isReadOnly = true; // Kepsek/Admin tidak bisa ubah jika sudah di-submit ke yayasan
                         }
                     @endphp
@@ -174,12 +174,12 @@
                     </div>
 
                     <div class="px-6 py-4 border-t border-gray-200 bg-white flex items-center justify-between">
-                        <a href="{{ route((auth()->user()->isYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">
+                        <a href="{{ route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">
                             Batal & Kembali
                         </a>
                         <div class="flex gap-3">
                             @if(!$isReadOnly)
-                                @if(auth()->user()->isYayasan())
+                                @if(auth()->user()->isKetuaYayasan())
                                     <button type="submit" name="action" value="draft" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
                                         Simpan Draft
                                     </button>

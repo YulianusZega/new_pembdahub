@@ -400,6 +400,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
         Route::put('jobs/{job}', [App\Http\Controllers\Admin\PklAlumniAdminController::class, 'jobsUpdate'])->name('jobs.update');
         Route::delete('jobs/{job}', [App\Http\Controllers\Admin\PklAlumniAdminController::class, 'jobsDestroy'])->name('jobs.destroy');
 
+        // PKL Monitoring Reports (Admin/Kepsek)
+        Route::get('monitorings', [App\Http\Controllers\Admin\PklMonitoringReportController::class, 'index'])->name('monitorings.index');
+        Route::get('monitorings/{teacher}', [App\Http\Controllers\Admin\PklMonitoringReportController::class, 'show'])->name('monitorings.show');
     });
 
     // Direktori Ikatan Alumni (Legacy Alumni) - moved outside pkl-alumni. name group so it resolves to admin.alumni-directory.*

@@ -1,0 +1,110 @@
+@extends(auth()->user()->isKetuaYayasan() ? 'layouts.yayasan' : 'layouts.admin')
+
+@section('title', 'Detail Monitoring Guru')
+@section('page_title', 'Detail Laporan Monitoring - ' . $teacher->full_name)
+
+@section('content')
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800">{{ $teacher->full_name }}</h2>
+            <p class="text-sm text-slate-500 mt-1">Pembimbing PKL</p>
+        </div>
+        @php
+            $indexRoute = auth()->user()->isKetuaYayasan() ? route('yayasan.pkl_monitorings.index') : route('admin.pkl-alumni.monitorings.index');
+        @endphp
+        <a href="{{ $indexRoute }}" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i> Kembali ke Daftar Guru
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Kolom Kiri: Daftar Lokasi DUDI -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800"><i class="fas fa-building text-indigo-500 mr-2"></i> Lokasi Bimbingan</h3>
+                    <span class="px-2.5 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">{{ count($placements) }}</span>
+                </div>
+                <div class="divide-y divide-slate-100">
+                    @forelse($placements as $place)
+                        <div class="p-4 hover:bg-slate-50 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-slate-800 line-clamp-1">{{ $place->dudi->name ?? 'Unknown DUDI' }}</h4>
+                            </div>
+                            <div class="mt-2 text-xs text-slate-600 space-y-1">
+                                <p><i class="fas fa-clock w-4 text-slate-400"></i> Shift: {{ $place->shift ?: '-' }}</p>
+                                <p><i class="fas fa-users w-4 text-slate-400"></i> {{ $place->total_students }} Siswa</p>
+                                <p>
+                                    @if($place->is_perangkat_ready)
+                                        <span class="text-emerald-600"><i class="fas fa-check-circle w-4"></i> Perangkat Siap</span>
+                                    @else
+                                        <span class="text-amber-600"><i class="fas fa-exclamation-triangle w-4"></i> Perangkat Belum Siap</span>
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-6 text-center text-slate-500 text-sm">
+                            Tidak ada data penempatan.
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom Kanan: Riwayat Laporan -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800"><i class="fas fa-file-invoice text-indigo-500 mr-2"></i> Riwayat Laporan Monitoring</h3>
+                    <span class="px-2.5 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">{{ $monitorings->total() }}</span>
+                </div>
+                
+                <div class="divide-y divide-slate-100">
+                    @forelse($monitorings as $mon)
+                        <div class="p-5 hover:bg-slate-50 transition-colors">
+                            <div class="flex flex-col sm:flex-row justify-between gap-4">
+                                <div>
+                                    <h4 class="font-bold text-slate-800">{{ $mon->monitoring_date->format('l, d F Y') }}</h4>
+                                    <p class="text-xs text-indigo-600 font-semibold mt-1"><i class="fas fa-building mr-1"></i> {{ $mon->dudi->name ?? 'Unknown' }} (Shift: {{ $mon->shift ?: '-' }})</p>
+                                    <p class="text-sm text-slate-600 mt-3">{{ $mon->notes ?? 'Tidak ada catatan monitoring.' }}</p>
+                                </div>
+                                <div class="flex gap-2 shrink-0">
+                                    @if($mon->photo_path)
+                                        <a href="{{ Storage::url($mon->photo_path) }}" target="_blank" class="flex flex-col items-center justify-center w-16 h-16 bg-blue-50 border border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm" title="Lihat Foto">
+                                            <i class="fas fa-image text-xl mb-1"></i>
+                                            <span class="text-[10px] font-bold uppercase">Foto</span>
+                                        </a>
+                                    @endif
+                                    @if($mon->assignment_letter_path)
+                                        <a href="{{ Storage::url($mon->assignment_letter_path) }}" target="_blank" class="flex flex-col items-center justify-center w-16 h-16 bg-emerald-50 border border-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm" title="Lihat Surat">
+                                            <i class="fas fa-file-pdf text-xl mb-1"></i>
+                                            <span class="text-[10px] font-bold uppercase">Surat</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-12 text-center">
+                            <div class="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 border border-slate-200 border-dashed">
+                                <i class="fas fa-folder-open"></i>
+                            </div>
+                            <p class="text-slate-500 font-medium">Guru ini belum mengirimkan laporan monitoring satupun.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                @if($monitorings->hasPages())
+                    <div class="p-4 border-t border-slate-100 bg-slate-50">
+                        {{ $monitorings->links() }}
+                    </div>
+                @endif
+            </div>
+        </div>
+
+    </div>
+</div>
+@endsection

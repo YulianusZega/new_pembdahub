@@ -1,4 +1,4 @@
-@extends(auth()->user()->isYayasan() ? 'layouts.yayasan' : 'layouts.admin')
+@extends(auth()->user()->isKetuaYayasan() ? 'layouts.yayasan' : 'layouts.admin')
 
 @section('title', 'Evaluasi Perjanjian Kinerja')
 
@@ -13,7 +13,7 @@
 
     <!-- Filters -->
     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-        <form method="GET" action="{{ route((auth()->user()->isYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <form method="GET" action="{{ route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Pelajaran (Target)</label>
                 <select name="academic_year_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
@@ -111,7 +111,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right text-sm font-medium">
-                                <a href="{{ route((auth()->user()->isYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.evaluate', [$contract->id, $selectedSemesterId]) }}" 
+                                <a href="{{ route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.evaluate', [$contract->id, $selectedSemesterId]) }}" 
                                    class="inline-flex items-center gap-1 text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors">
                                     <i class="fas fa-edit text-xs"></i> Nilai
                                 </a>

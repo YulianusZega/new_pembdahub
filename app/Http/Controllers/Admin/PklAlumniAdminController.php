@@ -59,11 +59,20 @@ class PklAlumniAdminController extends Controller
                   });
             });
         }
+        
+        // Filter by academic year (default to active year)
+        $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
+        if ($request->filled('academic_year_id')) {
+            $query->where('academic_year_id', $request->academic_year_id);
+        } elseif ($activeYear) {
+            $query->where('academic_year_id', $activeYear->id);
+        }
 
         $placements = $query->latest()->paginate(15)->withQueryString();
         $schools = School::where('type', 'SMK')->get();
+        $academicYears = \App\Models\AcademicYear::orderByDesc('start_date')->get();
 
-        return view('admin.pkl_alumni.placements.index', compact('placements', 'schools', 'isSA'));
+        return view('admin.pkl_alumni.placements.index', compact('placements', 'schools', 'academicYears', 'isSA', 'activeYear'));
     }
 
     public function placementsCreate()
@@ -71,39 +80,23 @@ class PklAlumniAdminController extends Controller
         $isSA = $this->isSuperAdmin();
         $schoolId = $this->getSchoolId();
 
-        // Placements are for SMK only
-        $smkSchoolIds = School::where('type', 'SMK')->pluck('id');
-
-        $studentsQuery = Student::where('status', 'aktif')
-            ->whereHas('currentClassroom', function ($q) {
-                $q->where('grade_level', 12);
-            });
-            
-        $teachersQuery = Teacher::with('user');
-
+        $studentsQuery = Student::where('status', 'aktif')->with('school', 'classroom');
+        $teachersQuery = \App\Models\Teacher::with('user');
+        
         if (!$isSA) {
             $studentsQuery->where('school_id', $schoolId);
             $teachersQuery->where('school_id', $schoolId);
-        } else {
-            $studentsQuery->whereIn('school_id', $smkSchoolIds);
-            $teachersQuery->whereIn('school_id', $smkSchoolIds);
         }
+        
+        // Hanya siswa SMK tingkat 11/12 yang biasanya PKL
+        $students = $studentsQuery->whereHas('school', function($q) {
+            $q->where('type', 'SMK');
+        })->get();
 
-        // Only students who don't have an active placement
-        $activePlacements = PklPlacement::where('status', 'active')->pluck('student_id');
-        $students = $studentsQuery->whereNotIn('id', $activePlacements)->orderBy('full_name')->get();
         $teachers = $teachersQuery->get();
-
-        $academicYears = AcademicYear::all();
-        $activeYear = AcademicYear::where('is_active', true)->first() ?? AcademicYear::first();
-
-        $dudisQuery = \App\Models\Dudi::query();
-        if (!$isSA) {
-            $dudisQuery->where(function($q) use ($schoolId) {
-                $q->whereNull('school_id')->orWhere('school_id', $schoolId);
-            });
-        }
-        $dudis = $dudisQuery->orderBy('name')->get();
+        $academicYears = \App\Models\AcademicYear::orderByDesc('start_date')->get();
+        $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
+        $dudis = \App\Models\Dudi::orderBy('name')->get();
 
         return view('admin.pkl_alumni.placements.create', compact('students', 'teachers', 'academicYears', 'activeYear', 'dudis'));
     }
@@ -115,6 +108,7 @@ class PklAlumniAdminController extends Controller
             'student_ids.*' => 'exists:students,id',
             'academic_year_id' => 'required|exists:academic_years,id',
             'dudi_id' => 'required|exists:dudis,id',
+            'shift' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'teacher_id' => 'required|exists:teachers,id',
@@ -134,6 +128,7 @@ class PklAlumniAdminController extends Controller
                 'academic_year_id' => $validated['academic_year_id'],
                 'dudi_id' => $dudi->id,
                 'company_name' => $dudi->name, // Keep historical data sync
+                'shift' => $validated['shift'],
                 'company_address' => $dudi->address,
                 'mentor_name' => $dudi->mentor_name,
                 'mentor_phone' => $dudi->mentor_phone,
@@ -169,24 +164,20 @@ class PklAlumniAdminController extends Controller
         $isSA = $this->isSuperAdmin();
         $schoolId = $this->getSchoolId();
 
-        $placement = PklPlacement::with('student')->findOrFail($id);
-
+        $placement = PklPlacement::findOrFail($id);
+        
         if (!$isSA && $placement->student->school_id !== $schoolId) {
             abort(403);
         }
 
-        $teachersQuery = Teacher::with('user');
-        $dudisQuery = \App\Models\Dudi::query();
+        $teachers = \App\Models\Teacher::with('user');
         if (!$isSA) {
-            $teachersQuery->where('school_id', $schoolId);
-            $dudisQuery->where(function($q) use ($schoolId) {
-                $q->whereNull('school_id')->orWhere('school_id', $schoolId);
-            });
+            $teachers->where('school_id', $schoolId);
         }
-        $teachers = $teachersQuery->get();
-        $dudis = $dudisQuery->orderBy('name')->get();
-
-        $academicYears = AcademicYear::all();
+        $teachers = $teachers->get();
+        
+        $academicYears = \App\Models\AcademicYear::orderByDesc('start_date')->get();
+        $dudis = \App\Models\Dudi::orderBy('name')->get();
 
         return view('admin.pkl_alumni.placements.edit', compact('placement', 'teachers', 'academicYears', 'dudis'));
     }
@@ -196,14 +187,15 @@ class PklAlumniAdminController extends Controller
         $validated = $request->validate([
             'academic_year_id' => 'required|exists:academic_years,id',
             'dudi_id' => 'required|exists:dudis,id',
+            'shift' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'teacher_id' => 'required|exists:teachers,id',
             'status' => 'required|in:active,completed,cancelled',
         ]);
 
-        $placement = PklPlacement::with('student')->findOrFail($id);
-
+        $placement = PklPlacement::findOrFail($id);
+        
         if (!$this->isSuperAdmin() && $placement->student->school_id !== $this->getSchoolId()) {
             abort(403);
         }
@@ -214,6 +206,7 @@ class PklAlumniAdminController extends Controller
             'academic_year_id' => $validated['academic_year_id'],
             'dudi_id' => $dudi->id,
             'company_name' => $dudi->name,
+            'shift' => $validated['shift'],
             'company_address' => $dudi->address,
             'mentor_name' => $dudi->mentor_name,
             'mentor_phone' => $dudi->mentor_phone,

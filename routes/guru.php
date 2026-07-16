@@ -186,6 +186,13 @@ Route::prefix('guru')->name('guru.')->middleware('auth', 'role:guru,kepala_sekol
         Route::get('/{placement}', [App\Http\Controllers\Guru\PklTeacherController::class, 'show'])->name('show');
     });
 
+    Route::prefix('pkl-monitorings')->name('pkl_monitorings.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Guru\PklMonitoringController::class, 'index'])->name('index');
+        Route::get('/{dudi_id}/{shift?}', [App\Http\Controllers\Guru\PklMonitoringController::class, 'show'])->name('show');
+        Route::post('/{dudi_id}/{shift?}', [App\Http\Controllers\Guru\PklMonitoringController::class, 'store'])->name('store');
+        Route::post('/{dudi_id}/{shift?}/perangkat', [App\Http\Controllers\Guru\PklMonitoringController::class, 'updatePerangkat'])->name('update-perangkat');
+    });
+
     // Final Project / Tugas Akhir Bimbingan & Ujian Routes (Guru)
     Route::prefix('final-projects')->name('final-projects.')->group(function () {
         Route::get('/bimbingan', [App\Http\Controllers\Guru\FinalProjectTeacherController::class, 'bimbinganIndex'])->name('bimbingan.index');

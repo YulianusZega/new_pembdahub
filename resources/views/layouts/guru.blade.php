@@ -180,7 +180,11 @@
     @if($hasPkl)
     <a href="{{ route('guru.pkl.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('guru.pkl.*') ? $ac : $nc }}">
         <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white"><i class="fas fa-briefcase text-[10px]"></i></div>
-        <span>Monitoring PKL</span>
+        <span>Bimbingan PKL (Siswa)</span>
+    </a>
+    <a href="{{ route('guru.pkl_monitorings.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('guru.pkl_monitorings.*') ? $ac : $nc }}">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white"><i class="fas fa-file-invoice text-[10px]"></i></div>
+        <span>Laporan Monitoring PKL</span>
     </a>
     @endif
 

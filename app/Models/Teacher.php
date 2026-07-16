@@ -178,5 +178,21 @@ class Teacher extends Model
     {
         return $this->employee?->getTotalAllowance() ?? 0;
     }
+
+    /**
+     * Relationship: Guru memiliki banyak Penempatan PKL
+     */
+    public function pklPlacements(): HasMany
+    {
+        return $this->hasMany(PklPlacement::class, 'teacher_id');
+    }
+
+    /**
+     * Relationship: Guru memiliki banyak Laporan Monitoring PKL
+     */
+    public function pklMonitorings(): HasMany
+    {
+        return $this->hasMany(PklMonitoring::class, 'teacher_id');
+    }
 }
 

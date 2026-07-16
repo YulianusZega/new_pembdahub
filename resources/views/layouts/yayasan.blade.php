@@ -1,4 +1,4 @@
-﻿{{--
+{{--
     Yayasan Layout — extends unified master layout
     Theme: Violet/Purple
 --}}
@@ -45,6 +45,12 @@
     <a href="{{ route('yayasan.performance_evaluations.index') }}" class="menu-item flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('yayasan.performance_evaluations.*') ? $ac : 'text-gray-700 hover:bg-gray-50' }}">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-400 to-blue-600 flex items-center justify-center text-white shadow"><i class="fas fa-star-half-alt text-xs"></i></div>
         <span class="text-sm flex-1 font-semibold">ACC Evaluasi Kinerja</span>
+    </a>
+
+    <!-- Laporan Monitoring PKL -->
+    <a href="{{ route('yayasan.pkl_monitorings.index') }}" class="menu-item flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('yayasan.pkl_monitorings.*') ? $ac : 'text-gray-700 hover:bg-gray-50' }}">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white shadow"><i class="fas fa-file-invoice text-xs"></i></div>
+        <span class="text-sm flex-1 font-semibold">Monitoring PKL (Guru)</span>
     </a>
 
     <!-- ════════════════ GROUP: UNIT PENDIDIKAN ════════════════ -->

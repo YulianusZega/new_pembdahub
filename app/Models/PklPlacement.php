@@ -16,6 +16,8 @@ class PklPlacement extends Model
         'academic_year_id',
         'dudi_id',
         'company_name',
+        'shift',
+        'is_perangkat_ready',
         'company_address',
         'mentor_name',
         'mentor_phone',
@@ -29,6 +31,7 @@ class PklPlacement extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'is_perangkat_ready' => 'boolean',
     ];
 
     public function dudi()

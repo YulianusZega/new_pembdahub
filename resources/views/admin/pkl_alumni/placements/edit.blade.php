@@ -80,6 +80,16 @@
                     </select>
                 </div>
 
+                {{-- Shift --}}
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Periode Shift PKL</label>
+                    <select name="shift" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:bg-white transition" required>
+                        <option value="">-- Pilih Shift PKL --</option>
+                        <option value="Shift A (Juli - Oktober)" {{ old('shift', $placement->shift) == 'Shift A (Juli - Oktober)' ? 'selected' : '' }}>Shift A (Juli - Oktober)</option>
+                        <option value="Shift B (Oktober - Februari)" {{ old('shift', $placement->shift) == 'Shift B (Oktober - Februari)' ? 'selected' : '' }}>Shift B (Oktober - Februari)</option>
+                    </select>
+                </div>
+
                 {{-- Start Date --}}
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase mb-1.5">Tanggal Mulai Magang</label>

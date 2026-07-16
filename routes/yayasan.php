@@ -34,4 +34,10 @@ Route::prefix('yayasan')->name('yayasan.')->middleware('auth', 'yayasan')->group
     Route::get('/performance-evaluations', [App\Http\Controllers\Admin\PerformanceEvaluationController::class, 'index'])->name('performance_evaluations.index');
     Route::get('/performance-evaluations/{contractId}/{semesterId}/evaluate', [App\Http\Controllers\Admin\PerformanceEvaluationController::class, 'evaluate'])->name('performance_evaluations.evaluate');
     Route::post('/performance-evaluations/{contractId}/{semesterId}', [App\Http\Controllers\Admin\PerformanceEvaluationController::class, 'store'])->name('performance_evaluations.store');
+
+    // PKL Monitoring Reports (Yayasan uses Admin controller)
+    Route::prefix('pkl-monitorings')->name('pkl_monitorings.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\PklMonitoringReportController::class, 'index'])->name('index');
+        Route::get('/{teacher}', [App\Http\Controllers\Admin\PklMonitoringReportController::class, 'show'])->name('show');
+    });
 });

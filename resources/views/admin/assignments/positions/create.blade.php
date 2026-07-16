@@ -15,7 +15,7 @@
                 </div>
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Tambah Penugasan Jabatan</h1>
-                    <p class="text-gray-600 mt-1">Tetapkan jabatan untuk guru pada tahun ajaran tertentu</p>
+                    <p class="text-gray-600 mt-1">Tetapkan jabatan untuk guru dan pegawai pada tahun ajaran tertentu</p>
                 </div>
             </div>
             <a href="{{ route('admin.assignments.positions.index') }}" 
@@ -54,22 +54,22 @@
             <div class="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-600">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white font-bold">1</div>
-                    <h2 class="text-xl font-bold text-white">Pilih Guru & Tahun Ajaran</h2>
+                    <h2 class="text-xl font-bold text-white">Pilih Guru / Pegawai & Tahun Ajaran</h2>
                 </div>
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div class="lg:col-span-2">
                         <label for="employee_id" class="block text-sm font-bold text-gray-700 mb-2">
-                            <i class="fas fa-chalkboard-teacher mr-1"></i> Pilih Guru <span class="text-red-500">*</span>
+                            <i class="fas fa-users mr-1"></i> Pilih Guru / Pegawai <span class="text-red-500">*</span>
                         </label>
                         <select name="employee_id" id="employee_id" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 @error('employee_id') border-red-500 @enderror" required>
-                            <option value="">-- Pilih Guru --</option>
+                            <option value="">-- Pilih Guru / Pegawai --</option>
                             @foreach($teachers as $teacher)
                                 <option value="{{ $teacher->id }}" 
                                         data-school="{{ $teacher->school->name ?? '' }}"
                                         {{ old('employee_id', $selectedEmployee->id ?? '') == $teacher->id ? 'selected' : '' }}>
-                                    {{ $teacher->employee_code }} - {{ $teacher->full_name }}
+                                    [{{ $teacher->employee_type === 'guru' ? 'Guru' : 'Staff' }}] {{ $teacher->employee_code }} - {{ $teacher->full_name }}
                                     @if($teacher->school) ({{ $teacher->school->name }}) @endif
                                 </option>
                             @endforeach
@@ -113,7 +113,7 @@
                     <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="font-semibold">Pilih satu atau lebih jabatan untuk guru ini</span>
+                    <span class="font-semibold">Pilih satu atau lebih jabatan untuk guru / pegawai ini</span>
                 </p>
 
                 @if(isset($isSMK) && $isSMK)

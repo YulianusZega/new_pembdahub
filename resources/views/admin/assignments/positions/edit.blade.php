@@ -49,19 +49,20 @@
         @method('PUT')
         <input type="hidden" name="employee_id" value="{{ $employee->id }}">
         
-        <!-- Section 1: Informasi Guru & Tahun Ajaran -->
+        <!-- Section 1: Informasi Guru / Pegawai & Tahun Ajaran -->
         <div class="bg-white rounded-2xl shadow-lg mb-6 overflow-hidden">
             <div class="bg-gradient-to-r from-purple-500 to-pink-600 px-6 py-4">
                 <h2 class="text-xl font-bold text-white flex items-center gap-3">
                     <span class="flex items-center justify-center w-8 h-8 rounded-lg bg-white bg-opacity-20 text-white font-bold">1</span>
-                    Informasi Guru & Tahun Ajaran
+                    Informasi Guru / Pegawai & Tahun Ajaran
                 </h2>
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                     <div class="md:col-span-8">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-user mr-1"></i> Guru</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-user mr-1"></i> Guru / Pegawai</label>
                         <div class="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl">
+                            <span class="px-2 py-0.5 {{ $employee->employee_type === 'guru' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700' }} text-xs font-bold rounded mr-1">{{ $employee->employee_type === 'guru' ? 'Guru' : 'Staff' }}</span>
                             <strong class="text-gray-900">{{ $employee->employee_code }}</strong> - {{ $employee->full_name }}
                             @if($employee->school)
                                 <span class="text-sm text-gray-500">({{ $employee->school->school_name }})</span>

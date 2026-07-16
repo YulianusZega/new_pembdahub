@@ -30,14 +30,24 @@ class PositionAssignmentController extends Controller
         // Semester is fixed to full_year for position assignments
         $semester = 'full_year';
         
-        // Base query - only teachers (employee_type = 'guru')
+        // Base query - all active employees (guru and staff/pegawai)
         $query = Employee::with(['school', 'employeePositions' => function ($q) use ($selectedYearId) {
             $q->where('academic_year_id', $selectedYearId);
             $q->whereNull('end_date'); // Only show active positions
             $q->with('position');
             $q->orderBy('is_primary', 'desc')->orderBy('start_date', 'desc')->orderBy('id', 'desc');
-        }])
-        ->where('employee_type', 'guru');
+        }]);
+
+        // Filter by employee category if specified
+        if ($request->filled('employee_type') && $request->employee_type !== 'all' && $request->employee_type !== '') {
+            if ($request->employee_type === 'guru') {
+                $query->where('employee_type', 'guru');
+            } elseif ($request->employee_type === 'staff') {
+                $query->where('employee_type', '!=', 'guru');
+            } else {
+                $query->where('employee_type', $request->employee_type);
+            }
+        }
         
         // Auto-filter by school for non-superadmin
         if (!$user->isSuperAdmin()) {
@@ -94,20 +104,12 @@ class PositionAssignmentController extends Controller
             }
         }
         
-        // Get teachers based on user role
-        if ($user->isSuperAdmin()) {
-            $teachers = Employee::where('employee_type', 'guru')
-                ->where('is_active', 1)
-                ->with('school')
-                ->orderBy('full_name')
-                ->get();
-        } else {
-            $teachers = Employee::where('employee_type', 'guru')
-                ->where('school_id', $user->school_id)
-                ->where('is_active', 1)
-                ->orderBy('full_name')
-                ->get();
+        // Get all active employees (teachers and staff) based on user role
+        $employeeQuery = Employee::where('is_active', 1)->with('school');
+        if (!$user->isSuperAdmin()) {
+            $employeeQuery->where('school_id', $user->school_id);
         }
+        $teachers = $employeeQuery->orderBy('employee_type', 'asc')->orderBy('full_name', 'asc')->get();
         
         // Get positions grouped by category
         $positionsQuery = Position::where('is_active', 1);
@@ -670,7 +672,7 @@ class PositionAssignmentController extends Controller
             $classroom = Classroom::find($validated['classroom_id']);
             if ($classroom && $classroom->school_id == $employee->school_id) {
                 $teacherId = $employee->teacher->id ?? null;
-                if (!$teacherId && $employee->employee_type === 'guru') {
+                if (!$teacherId && ($employee->employee_type === 'guru' || $hasWaliKelas)) {
                     $teacher = \App\Models\Teacher::firstOrCreate(
                         ['employee_id' => $employee->id],
                         [

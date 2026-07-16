@@ -14,7 +14,7 @@
                 </div>
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Penugasan Jabatan</h1>
-                    <p class="text-gray-600 mt-1">Kelola penugasan jabatan guru per tahun ajaran</p>
+                    <p class="text-gray-600 mt-1">Kelola penugasan jabatan guru dan pegawai per tahun ajaran</p>
                 </div>
             </div>
             <a href="{{ route('admin.assignments.positions.create') }}" 
@@ -51,7 +51,7 @@
 
     <!-- Filter Form -->
     <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-        <form method="GET" action="{{ route('admin.assignments.positions.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <form method="GET" action="{{ route('admin.assignments.positions.index') }}" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-calendar-alt mr-1"></i> Tahun Ajaran</label>
                 <select name="academic_year_id" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500">
@@ -80,8 +80,17 @@
             @endif
 
             <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-users mr-1"></i> Kategori</label>
+                <select name="employee_type" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500">
+                    <option value="">Semua (Guru & Staff)</option>
+                    <option value="guru" {{ request('employee_type') === 'guru' ? 'selected' : '' }}>Khusus Guru</option>
+                    <option value="staff" {{ request('employee_type') === 'staff' ? 'selected' : '' }}>Khusus Staff / Pegawai</option>
+                </select>
+            </div>
+
+            <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2"><i class="fas fa-search mr-1"></i> Cari</label>
-                <input type="text" name="search" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500" placeholder="Nama/Kode Guru..." value="{{ request('search') }}">
+                <input type="text" name="search" class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500" placeholder="Nama/Kode Guru/Pegawai..." value="{{ request('search') }}">
             </div>
 
             <div class="flex items-end gap-2">
@@ -136,6 +145,9 @@
                                 <div class="flex items-center gap-2 mt-1">
                                     <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-bold rounded">
                                         {{ $employee->employee_code }}
+                                    </span>
+                                    <span class="px-2 py-0.5 {{ $employee->employee_type === 'guru' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700' }} text-xs font-bold rounded">
+                                        {{ $employee->employee_type === 'guru' ? 'Guru' : 'Staff (' . str_replace('_', ' ', strtoupper($employee->employee_type)) . ')' }}
                                     </span>
                                     <span class="text-xs text-gray-500">
                                         {{ $employee->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}

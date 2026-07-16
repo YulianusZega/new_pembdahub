@@ -16,7 +16,7 @@ class PositionController extends Controller
         $user = auth()->user();
         
         // Base query
-        $query = Position::with('school');
+        $query = Position::with(['school', 'activeEmployees']);
         
         // Filter by school for non-superadmin
         if (!$user->isSuperAdmin()) {

@@ -188,17 +188,15 @@
                                                 @endif
                                                 <form action="{{ route('admin.assignments.positions.destroy-single', [$employee->id, $empPos->position_id]) }}" 
                                                       method="POST" 
-                                                      class="opacity-0 group-hover:opacity-100 transition-opacity"
-                                                      onsubmit="return confirm('Yakin ingin menghapus jabatan {{ $empPos->position->display_name }} dari {{ $employee->full_name }}?')">
+                                                      class="inline-block"
+                                                      onsubmit="return confirm('Yakin ingin menghapus KHUSUS jabatan [{{ $empPos->position->display_name ?? '-' }}] dari {{ $employee->full_name }}?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <input type="hidden" name="academic_year_id" value="{{ $selectedYearId }}">
                                                     <button type="submit" 
-                                                            class="p-1.5 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors" 
-                                                            title="Hapus jabatan ini">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                                        </svg>
+                                                            class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-md transition-colors text-xs font-semibold flex items-center gap-1 shadow-sm" 
+                                                            title="Hapus khusus jabatan {{ $empPos->position->display_name ?? '-' }} ini saja">
+                                                        <i class="fas fa-times text-xs"></i> Hapus
                                                     </button>
                                                 </form>
                                             </div>
@@ -246,13 +244,13 @@
                                     <form action="{{ route('admin.assignments.positions.destroy', $employee->id) }}" 
                                           method="POST" 
                                           class="inline"
-                                          onsubmit="return confirm('PERHATIAN! Anda akan menghapus SEMUA jabatan ({{ $positions->count() }} jabatan) dari {{ $employee->full_name }} untuk tahun ajaran dan semester ini. Yakin ingin melanjutkan?')">
+                                          onsubmit="return confirm('PERHATIAN! Anda akan menghapus SEMUA jabatan ({{ $positions->count() }} jabatan sekaligus) dari {{ $employee->full_name }} untuk tahun ajaran dan semester ini. Yakin ingin melanjutkan?')">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="academic_year_id" value="{{ $selectedYearId }}">
                                         <button type="submit" 
                                                 class="w-8 h-8 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg flex items-center justify-center transition-colors" 
-                                                title="Hapus Semua Penugasan">
+                                                title="Hapus SEMUA Penugasan ({{ $positions->count() }} Jabatan Sekaligus)">
                                             <i class="fas fa-trash text-xs"></i>
                                         </button>
                                     </form>

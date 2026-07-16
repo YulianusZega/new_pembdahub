@@ -446,6 +446,13 @@ class PositionAssignmentController extends Controller
             ->where('academic_year_id', $validated['academic_year_id'])
             ->whereNull('end_date')
             ->update(['end_date' => now()]);
+            
+        // Clear from classrooms table if teacher assigned
+        if ($employee->teacher) {
+            Classroom::where('homeroom_teacher_id', $employee->teacher->id)
+                ->where('academic_year_id', $validated['academic_year_id'])
+                ->update(['homeroom_teacher_id' => null]);
+        }
         
         return back()->with('success', 'Semua penugasan jabatan berhasil dihapus.');
     }
@@ -464,12 +471,42 @@ class PositionAssignmentController extends Controller
             'academic_year_id' => 'required|exists:academic_years,id',
         ]);
         
+        $position = Position::find($positionId);
+        $isWaliKelas = $position && (
+            stripos($position->position_name, 'wali kelas') !== false ||
+            stripos($position->position_code, 'WAKEL') !== false ||
+            stripos($position->position_code, 'WALIKELAS') !== false ||
+            stripos($position->position_code, 'WK') !== false
+        );
+        
         // Close specific position for this academic year
         $deleted = $employee->employeePositions()
             ->where('position_id', $positionId)
             ->where('academic_year_id', $validated['academic_year_id'])
             ->whereNull('end_date')
             ->update(['end_date' => now()]);
+            
+        if ($deleted && $isWaliKelas && $employee->teacher) {
+            // Check if teacher still has any active Wali Kelas position left in this academic year
+            $remainingWaliKelas = DB::table('employee_positions as ep')
+                ->join('positions as p', 'ep.position_id', '=', 'p.id')
+                ->where('ep.employee_id', $employee->id)
+                ->where('ep.academic_year_id', $validated['academic_year_id'])
+                ->whereNull('ep.end_date')
+                ->where(function ($q) {
+                    $q->where('p.position_name', 'like', '%wali kelas%')
+                      ->orWhere('p.position_code', 'like', '%WAKEL%')
+                      ->orWhere('p.position_code', 'like', '%WALIKELAS%')
+                      ->orWhere('p.position_code', 'like', '%WK%');
+                })
+                ->exists();
+                
+            if (!$remainingWaliKelas) {
+                Classroom::where('homeroom_teacher_id', $employee->teacher->id)
+                    ->where('academic_year_id', $validated['academic_year_id'])
+                    ->update(['homeroom_teacher_id' => null]);
+            }
+        }
         
         if ($deleted) {
             return back()->with('success', 'Jabatan berhasil dihapus.');

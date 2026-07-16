@@ -310,6 +310,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Initial primary position from server
+    const initialPrimaryId = '{{ old("primary_position_id") ?? "" }}';
+
     // Update primary position options when checkboxes change
     function updatePrimaryOptions() {
         const selectedPositions = Array.from(positionCheckboxes)
@@ -319,12 +322,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: cb.closest('label').querySelector('.font-semibold').textContent.trim()
             }));
         
+        // Preserve selected option if possible
+        const currentPrimaryId = primarySelect.value || initialPrimaryId;
+
         primarySelect.innerHTML = '<option value="">-- Pilih Jabatan Utama --</option>';
         
         selectedPositions.forEach(pos => {
             const option = document.createElement('option');
             option.value = pos.id;
             option.textContent = pos.name;
+            if (pos.id === currentPrimaryId) {
+                option.selected = true;
+            }
             primarySelect.appendChild(option);
         });
 

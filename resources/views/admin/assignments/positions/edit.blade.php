@@ -278,6 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
         @endforeach
     };
     
+    // Initial primary position from server
+    const initialPrimaryId = '{{ old("primary_position_id") ?? (isset($currentAssignment) ? $employee->employeePositions()->where("academic_year_id", $currentYear->id ?? 0)->whereNull("end_date")->where("is_primary", 1)->value("position_id") : "") }}';
+    
     function updatePrimaryPositionOptions() {
         const checkedPositions = Array.from(positionCheckboxes)
             .filter(cb => cb.checked)
@@ -286,12 +289,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: cb.closest('label').querySelector('span.font-semibold').textContent.trim()
             }));
         
+        // Preserve selected option if possible
+        const currentPrimaryId = primaryPositionSelect.value || initialPrimaryId;
+
         // Clear and rebuild primary position dropdown
         primaryPositionSelect.innerHTML = '<option value="">-- Pilih Jabatan Utama --</option>';
         checkedPositions.forEach(pos => {
             const option = document.createElement('option');
             option.value = pos.id;
             option.textContent = pos.name;
+            if (pos.id === currentPrimaryId) {
+                option.selected = true;
+            }
             primaryPositionSelect.appendChild(option);
         });
         

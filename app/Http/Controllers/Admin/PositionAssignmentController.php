@@ -489,9 +489,20 @@ class PositionAssignmentController extends Controller
             ->whereNull('end_date')
             ->update(['end_date' => now(), 'updated_at' => now()]);
 
-        // Check if Wali Kelas is in the new selection
-        $waliKelasPosition = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
-        $hasWaliKelas = $waliKelasPosition && in_array($waliKelasPosition->id, $newPositionIds);
+        // Check if ANY selected position is Wali Kelas (checking both name and code)
+        $hasWaliKelas = false;
+        foreach ($newPositionIds as $posId) {
+            $pos = Position::find($posId);
+            if ($pos && (
+                stripos($pos->position_name, 'wali kelas') !== false ||
+                stripos($pos->position_code, 'WAKEL') !== false ||
+                stripos($pos->position_code, 'WALIKELAS') !== false ||
+                stripos($pos->position_code, 'WK') !== false
+            )) {
+                $hasWaliKelas = true;
+                break;
+            }
+        }
 
         // If Wali Kelas is NOT kept, clear this teacher from any classrooms immediately
         if (!$hasWaliKelas && $employee->teacher) {
@@ -504,8 +515,10 @@ class PositionAssignmentController extends Controller
         foreach ($newPositionIds as $positionId) {
             $position = Position::find($positionId);
             $isWaliKelas = $position && (
+                stripos($position->position_name, 'wali kelas') !== false ||
                 stripos($position->position_code, 'WAKEL') !== false || 
-                stripos($position->position_code, 'WALIKELAS') !== false
+                stripos($position->position_code, 'WALIKELAS') !== false ||
+                stripos($position->position_code, 'WK') !== false
             );
             $classroomId = ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null;
             $isPrimary = ($positionId == $validated['primary_position_id']);

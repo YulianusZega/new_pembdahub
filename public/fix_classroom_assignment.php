@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\DB;
 
 $currentYear = AcademicYear::where('is_active', 1)->first();
 $yearId = $currentYear ? $currentYear->id : 0;
-$yearName = $currentYear ? $currentYear->name : 'Unknown';
+$yearName = $currentYear ? $currentYear->year : 'Unknown';
 
 $action = $request->query('action', 'show');
 $targetEmployeeId = $request->query('employee_id');
@@ -52,9 +52,9 @@ if ($action === 'fix_markus' || $action === 'clean_all') {
         echo "<div class='card' style='background: #ecfdf5; border-left: 4px solid #10b981;'>";
         echo "<h3>Menjalankan Pembersihan...</h3><ul>";
 
-        // Find Markus Zebua specifically or all Wali Kelas
-        $waliKelasPos = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
-        if (!$waliKelasPos) {
+        // Find all Wali Kelas position IDs
+        $waliKelasPosIds = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->pluck('id')->toArray();
+        if (empty($waliKelasPosIds)) {
             throw new Exception("Jabatan Wali Kelas tidak ditemukan di tabel positions.");
         }
 
@@ -67,7 +67,7 @@ if ($action === 'fix_markus' || $action === 'clean_all') {
         foreach ($employees as $emp) {
             $activePivotRows = DB::table('employee_positions')
                 ->where('employee_id', $emp->id)
-                ->where('position_id', $waliKelasPos->id)
+                ->whereIn('position_id', $waliKelasPosIds)
                 ->where('academic_year_id', $yearId)
                 ->whereNull('end_date')
                 ->orderBy('updated_at', 'desc')
@@ -81,7 +81,7 @@ if ($action === 'fix_markus' || $action === 'clean_all') {
 
                 DB::table('employee_positions')
                     ->where('employee_id', $emp->id)
-                    ->where('position_id', $waliKelasPos->id)
+                    ->whereIn('position_id', $waliKelasPosIds)
                     ->where('academic_year_id', $yearId)
                     ->whereNull('end_date')
                     ->where('id', '!=', $keptRow->id)
@@ -92,7 +92,7 @@ if ($action === 'fix_markus' || $action === 'clean_all') {
             if ($emp->teacher) {
                 $latestClassroomId = DB::table('employee_positions')
                     ->where('employee_id', $emp->id)
-                    ->where('position_id', $waliKelasPos->id)
+                    ->whereIn('position_id', $waliKelasPosIds)
                     ->where('academic_year_id', $yearId)
                     ->whereNull('end_date')
                     ->orderBy('updated_at', 'desc')

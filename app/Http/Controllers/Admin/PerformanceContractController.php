@@ -92,6 +92,26 @@ class PerformanceContractController extends Controller
 
         $contract->save();
 
-        return redirect()->route('admin.performance_contracts.index')->with('success', $msg);
+        return redirect()->route($user->isSuperAdmin() ? 'yayasan.performance_contracts.index' : 'admin.performance_contracts.index')
+            ->with('success', $msg);
+    }
+
+    /**
+     * Hapus kontrak kinerja
+     */
+    public function destroy($id)
+    {
+        $user = auth()->user();
+        $contract = PerformanceContract::findOrFail($id);
+
+        if (!$user->isSuperAdmin() && $contract->school_id !== $user->school_id) {
+            abort(403, 'Akses Ditolak.');
+        }
+
+        $contract->items()->delete();
+        $contract->delete();
+
+        return redirect()->route($user->isSuperAdmin() ? 'yayasan.performance_contracts.index' : 'admin.performance_contracts.index')
+            ->with('success', 'Perjanjian Kinerja berhasil dihapus.');
     }
 }

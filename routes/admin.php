@@ -504,6 +504,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
         Route::get('/', [App\Http\Controllers\Admin\PerformanceContractController::class, 'index'])->name('index');
         Route::get('/{id}', [App\Http\Controllers\Admin\PerformanceContractController::class, 'show'])->name('show');
         Route::post('/{id}/process', [App\Http\Controllers\Admin\PerformanceContractController::class, 'process'])->name('process');
+        Route::delete('/{id}', [App\Http\Controllers\Admin\PerformanceContractController::class, 'destroy'])->name('destroy');
     });
 
     // Evaluasi Perjanjian Kinerja Akhir Semester

@@ -75,9 +75,17 @@
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-2">
-                                <a href="{{ route('admin.performance_contracts.show', $contract->id) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 hover:border-indigo-600 transition-colors font-semibold text-xs shadow-sm">
+                                @php $routePrefix = auth()->user()->isSuperAdmin() ? 'yayasan.' : 'admin.'; @endphp
+                                <a href="{{ route($routePrefix . 'performance_contracts.show', $contract->id) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 hover:border-indigo-600 transition-colors font-semibold text-xs shadow-sm">
                                     <i class="fas fa-search"></i> Periksa
                                 </a>
+                                <form action="{{ route($routePrefix . 'performance_contracts.destroy', $contract->id) }}" method="POST" class="m-0 p-0 inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kontrak kinerja ini secara permanen?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 transition-colors font-semibold text-xs shadow-sm">
+                                        <i class="fas fa-trash-alt"></i> Hapus
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

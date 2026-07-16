@@ -14,11 +14,17 @@ class PositionController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        
+        $currentYear = \App\Models\AcademicYear::where('is_active', 1)->first();
+
         // Base query
-        $query = Position::with(['school', 'activeEmployees']);
-        
-        // Filter by school for non-superadmin
+        $query = Position::with(['school', 'activeEmployees' => function ($q) use ($currentYear) {
+            if ($currentYear) {
+                $q->where(function($sub) use ($currentYear) {
+                    $sub->where('employee_positions.academic_year_id', $currentYear->id)
+                        ->orWhereNull('employee_positions.academic_year_id');
+                });
+            }
+        }]);
         if (!$user->isSuperAdmin()) {
             $query->where(function($q) use ($user) {
                 $q->where('school_id', $user->school_id)

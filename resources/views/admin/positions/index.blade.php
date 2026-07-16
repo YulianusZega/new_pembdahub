@@ -181,21 +181,13 @@
                         @endif
                         <td class="px-6 py-4 text-center">
                             @if($position->activeEmployees->count() > 0)
-                                <div class="group relative inline-block cursor-help">
-                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-bold rounded-full border border-blue-200">
+                                @php
+                                    $names = $position->activeEmployees->pluck('full_name')->filter()->join(', ');
+                                @endphp
+                                <div class="inline-block tooltip" title="{{ $names }}">
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-bold rounded-full border border-blue-200 cursor-help">
                                         {{ $position->activeEmployees->count() }} Orang
                                     </span>
-                                    <!-- Tooltip with names -->
-                                    <div class="opacity-0 w-max invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-gray-800 text-white text-xs rounded-xl shadow-xl">
-                                        <div class="font-bold border-b border-gray-600 pb-1 mb-1">Daftar Penjabat:</div>
-                                        <ul class="text-left space-y-1">
-                                            @foreach($position->activeEmployees as $emp)
-                                                <li>• {{ $emp->full_name ?? '-' }}</li>
-                                            @endforeach
-                                        </ul>
-                                        <!-- Arrow -->
-                                        <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                                    </div>
                                 </div>
                             @else
                                 <span class="px-3 py-1 bg-gray-100 text-gray-500 text-sm font-medium rounded-full">

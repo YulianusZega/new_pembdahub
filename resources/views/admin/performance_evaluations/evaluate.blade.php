@@ -261,16 +261,16 @@
                         <div class="flex gap-3">
                             @if(auth()->user()->isKetuaYayasan())
                                 @if($showAccButton)
-                                    <button type="submit" onclick="document.getElementById('form_action_input').value='approve_yayasan'" class="px-6 py-2.5 border border-transparent text-sm font-bold rounded-xl shadow-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all flex items-center gap-2">
+                                    <button type="submit" onclick="document.getElementById('form_action_input').value='approve_yayasan'" class="px-6 py-2.5 border border-transparent text-sm font-bold rounded-xl shadow-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all flex items-center gap-2" style="background-color: #059669 !important; color: #ffffff !important;">
                                         <i class="fas fa-check-double"></i> Setujui & ACC Hasil Penilaian Kepala Sekolah
                                     </button>
                                 @endif
                             @else
                                 @if(!$isReadOnly)
-                                    <button type="submit" onclick="document.getElementById('form_action_input').value='draft'" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+                                    <button type="submit" onclick="document.getElementById('form_action_input').value='draft'" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50" style="background-color: #ffffff !important; color: #374151 !important;">
                                         Simpan Draft
                                     </button>
-                                    <button type="submit" onclick="document.getElementById('form_action_input').value='submit_yayasan'" class="px-6 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <button type="submit" onclick="document.getElementById('form_action_input').value='submit_yayasan'" class="px-6 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" style="background-color: #4f46e5 !important; color: #ffffff !important;">
                                         <i class="fas fa-paper-plane mr-1"></i> Ajukan ke Yayasan
                                     </button>
                                 @endif

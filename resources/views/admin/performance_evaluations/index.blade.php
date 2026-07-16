@@ -52,14 +52,14 @@
     <!-- Data Table -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full whitespace-nowrap">
+            <table class="w-full">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-200">
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Guru</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tipe Kontrak</th>
-                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Nilai (1-5)</th>
-                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Status Evaluasi</th>
-                        <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-1/4">Guru</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-1/6">Tipe Kontrak</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-2/5">Hasil Penilaian & Analisis Pilar</th>
+                        <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-1/12">Status</th>
+                        <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider w-1/12">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -68,7 +68,7 @@
                             $evaluation = $contract->evaluations->first();
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 align-top">
                                 <div class="flex items-center">
                                     <div class="h-10 w-10 flex-shrink-0 bg-indigo-100 rounded-full flex items-center justify-center">
                                         <span class="text-indigo-600 font-bold text-sm">{{ substr($contract->employee->full_name, 0, 2) }}</span>
@@ -79,10 +79,11 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="text-sm text-gray-900 font-medium">
+                            <td class="px-6 py-4 align-top">
+                                <span class="text-sm text-gray-900 font-medium block">
                                     @if($contract->contract_type === 'jabatan_tambahan')
-                                        Jabatan Tambahan ({{ $contract->position->position_name ?? 'Tidak diketahui' }})
+                                        Jabatan Tambahan
+                                        <span class="block text-xs text-indigo-600 font-semibold">{{ $contract->position->position_name ?? 'Tidak diketahui' }}</span>
                                     @elseif($contract->contract_type === 'pkg_kejuruan')
                                         Tugas Utama (Kejuruan/Produktif)
                                     @else
@@ -90,10 +91,105 @@
                                     @endif
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-6 py-4 align-top">
                                 @if($evaluation && $evaluation->score > 0)
-                                    <div class="inline-flex items-center justify-center px-3 py-1 bg-green-100 text-green-700 font-bold rounded-full">
-                                        <i class="fas fa-star text-yellow-400 mr-1 text-xs"></i> {{ number_format($evaluation->score, 2) }}
+                                    <div class="space-y-2.5 max-w-xl">
+                                        <!-- Score Header & Category Tag -->
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-600 text-white font-black text-sm rounded-lg shadow-sm">
+                                                <i class="fas fa-star text-yellow-300"></i> {{ number_format($evaluation->score, 2) }}
+                                            </span>
+                                            @php
+                                                $score = $evaluation->score;
+                                                if ($score >= 4.5) {
+                                                    $statusBadge = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                                                    $statusText = 'Sangat Baik (Melampaui Target)';
+                                                    $icon = 'fa-check-double text-emerald-600';
+                                                } elseif ($score >= 3.5) {
+                                                    $statusBadge = 'bg-blue-100 text-blue-800 border-blue-200';
+                                                    $statusText = 'Baik (Memenuhi Syarat SK > 3.5)';
+                                                    $icon = 'fa-check text-blue-600';
+                                                } elseif ($score >= 2.5) {
+                                                    $statusBadge = 'bg-amber-100 text-amber-800 border-amber-200';
+                                                    $statusText = 'Cukup (Perlu Pembinaan)';
+                                                    $icon = 'fa-exclamation-triangle text-amber-600';
+                                                } else {
+                                                    $statusBadge = 'bg-rose-100 text-rose-800 border-rose-200';
+                                                    $statusText = 'Kurang (Di Bawah Kriteria)';
+                                                    $icon = 'fa-times-circle text-rose-600';
+                                                }
+                                            @endphp
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $statusBadge }}">
+                                                <i class="fas {{ $icon }}"></i> {{ $statusText }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Pillars Breakdown Grid -->
+                                        @if(is_array($evaluation->evaluation_data) && !empty($evaluation->evaluation_data))
+                                            <div class="grid grid-cols-2 gap-1.5 text-xs">
+                                                @foreach($evaluation->evaluation_data as $key => $val)
+                                                    @php
+                                                        if ($key === 'pilar_1') $label = 'Pilar 1: Kompetensi Praktik';
+                                                        elseif ($key === 'pilar_2') $label = 'Pilar 2: Kontribusi Program';
+                                                        elseif ($key === 'pilar_3') $label = 'Pilar 3: Kolaborasi';
+                                                        elseif ($key === 'pilar_4') $label = 'Pilar 4: Budaya 5R / K3';
+                                                        elseif (str_starts_with($key, 'target_')) $label = 'Target Pekerjaan ' . substr($key, 7);
+                                                        else $label = ucwords(str_replace('_', ' ', $key));
+
+                                                        $pilarColor = $val >= 4 ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80' : ($val >= 3 ? 'bg-blue-50 text-blue-700 border-blue-200/80' : 'bg-amber-50 text-amber-700 border-amber-200/80');
+                                                    @endphp
+                                                    <div class="flex items-center justify-between px-2.5 py-1 rounded border {{ $pilarColor }} font-medium">
+                                                        <span class="truncate mr-1.5" title="{{ $label }}">{{ $label }}</span>
+                                                        <span class="font-bold shrink-0">{{ $val }}/5</span>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                            <!-- Descriptive Analysis Statement -->
+                                            @php
+                                                $evalData = $evaluation->evaluation_data;
+                                                $minScore = !empty($evalData) ? min($evalData) : 0;
+                                                $maxScore = !empty($evalData) ? max($evalData) : 0;
+                                                
+                                                $lowestKeys = array_keys($evalData, $minScore);
+                                                $highestKeys = array_keys($evalData, $maxScore);
+                                                
+                                                $getKeyLabel = function($k) {
+                                                    if ($k === 'pilar_1') return 'Kompetensi Praktik';
+                                                    if ($k === 'pilar_2') return 'Kontribusi Program';
+                                                    if ($k === 'pilar_3') return 'Kolaborasi';
+                                                    if ($k === 'pilar_4') return 'Budaya 5R / K3';
+                                                    if (str_starts_with($k, 'target_')) return 'Target ' . substr($k, 7);
+                                                    return ucwords(str_replace('_', ' ', $k));
+                                                };
+                                                
+                                                $lowestLabel = $getKeyLabel($lowestKeys[0] ?? '');
+                                                $highestLabel = $getKeyLabel($highestKeys[0] ?? '');
+
+                                                if ($score >= 4.0) {
+                                                    $analisa = "Kinerja sangat konsisten dan unggul. Keunggulan utama pada aspek {$highestLabel} ({$maxScore}/5). Layak dipertahankan sebagai rol model.";
+                                                } elseif ($score >= 3.5) {
+                                                    if ($minScore < 3.0) {
+                                                        $analisa = "Memenuhi syarat rata-rata SK (> 3.5), namun perlu perhatian khusus pada peningkatan aspek {$lowestLabel} ({$minScore}/5).";
+                                                    } else {
+                                                        $analisa = "Kinerja stabil dan memenuhi target di seluruh pilar. Paling menonjol pada aspek {$highestLabel} ({$maxScore}/5).";
+                                                    }
+                                                } elseif ($score >= 2.5) {
+                                                    $analisa = "Kinerja dalam tahap cukup. Diperlukan pembinaan dan pendampingan intensif khususnya pada aspek {$lowestLabel} ({$minScore}/5).";
+                                                } else {
+                                                    $analisa = "Kinerja berada di bawah target yang disepakati. Evaluasi menyeluruh dan evaluasi pembinaan diperlukan pada aspek {$lowestLabel}.";
+                                                }
+                                            @endphp
+                                            <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 leading-relaxed">
+                                                <div class="font-bold text-slate-900 mb-0.5"><i class="fas fa-chart-line text-indigo-500 mr-1"></i> Analisis Deskriptif Pilar:</div>
+                                                <div>{{ $analisa }}</div>
+                                                @if(!empty($evaluation->notes))
+                                                    <div class="mt-1.5 pt-1.5 border-t border-slate-200/80 text-slate-600 italic">
+                                                        <span class="font-semibold text-slate-700">Catatan Evaluator:</span> "{{ $evaluation->notes }}"
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
                                     </div>
                                 @else
                                     <span class="text-gray-400 italic text-sm">-</span>

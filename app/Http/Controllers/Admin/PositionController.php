@@ -19,10 +19,7 @@ class PositionController extends Controller
         // Base query
         $query = Position::with(['school', 'activeEmployees' => function ($q) use ($currentYear) {
             if ($currentYear) {
-                $q->where(function($sub) use ($currentYear) {
-                    $sub->where('employee_positions.academic_year_id', $currentYear->id)
-                        ->orWhereNull('employee_positions.academic_year_id');
-                });
+                $q->where('employee_positions.academic_year_id', $currentYear->id);
             }
         }]);
         if (!$user->isSuperAdmin()) {

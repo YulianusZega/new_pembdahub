@@ -106,15 +106,24 @@
             </div>
         </form>
 
-        @if(request('school_id'))
+        @if(request('school_id') || !auth()->user()->isSuperAdmin())
         <div class="mt-5 pt-5 border-t border-emerald-100 flex flex-wrap gap-3 justify-end items-center">
             <span class="text-sm text-gray-500 mr-auto font-medium">Aksi Massal:</span>
-            <a href="{{ route('admin.teachers.print-accounts', request()->all()) }}" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2" title="Cetak Daftar Akun">
-                <i class="fas fa-print"></i> Cetak Daftar Akun
-            </a>
-            <a href="{{ route('admin.teachers.export-accounts', request()->all()) }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2" title="Export Excel Akun">
-                <i class="fas fa-file-excel"></i> Export Excel
-            </a>
+            @if($isPasswordReset)
+                <a href="{{ route('admin.teachers.print-accounts', request()->all()) }}" target="_blank" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2" title="Cetak Daftar Akun">
+                    <i class="fas fa-print"></i> Cetak Daftar Akun
+                </a>
+                <a href="{{ route('admin.teachers.export-accounts', request()->all()) }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2" title="Export Excel Akun">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </a>
+            @else
+                <button type="button" onclick="alert('Silakan klik tombol Reset Password Massal terlebih dahulu (tombol merah) sebelum mencetak/mengexport akun.');" class="px-4 py-2 bg-gray-200 text-gray-500 cursor-not-allowed rounded-xl text-sm font-bold flex items-center justify-center gap-2" title="Reset Password Terlebih Dahulu">
+                    <i class="fas fa-print"></i> Cetak Daftar Akun
+                </button>
+                <button type="button" onclick="alert('Silakan klik tombol Reset Password Massal terlebih dahulu (tombol merah) sebelum mencetak/mengexport akun.');" class="px-4 py-2 bg-gray-200 text-gray-500 cursor-not-allowed rounded-xl text-sm font-bold flex items-center justify-center gap-2" title="Reset Password Terlebih Dahulu">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </button>
+            @endif
             <button type="button" onclick="if(confirm('PERINGATAN! Semua password guru di unit ini akan direset menjadi pola: Pembda + KodeGuru.\n\nLanjutkan?')) document.getElementById('reset-pwd-form').submit();" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2" title="Reset Password Massal">
                 <i class="fas fa-key"></i> Reset Password
             </button>
@@ -122,10 +131,10 @@
         @endif
     </div>
 
-    @if(request('school_id'))
+    @if(request('school_id') || !auth()->user()->isSuperAdmin())
     <form id="reset-pwd-form" action="{{ route('admin.teachers.reset-passwords') }}" method="POST" class="hidden">
         @csrf
-        <input type="hidden" name="school_id" value="{{ request('school_id') }}">
+        <input type="hidden" name="school_id" value="{{ request('school_id', auth()->user()->school_id) }}">
     </form>
     @endif
 

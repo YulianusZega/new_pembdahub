@@ -54,7 +54,21 @@ class StudentController extends Controller
         }
         $classrooms = $classroomQuery->orderBy('class_name')->get();
 
-        return view('admin.students.index', compact('students', 'schools', 'classrooms', 'academicYears', 'activeAcademicYear', 'selectedAcademicYearId'));
+        $isPasswordReset = false;
+        if ($request->filled('classroom_id') || $request->filled('school_id')) {
+            $sampleStudent = collect($students->items())->first(function ($student) {
+                return $student->user !== null;
+            });
+            
+            if ($sampleStudent) {
+                $expectedPassword = 'Pembda' . $sampleStudent->nisn;
+                if (\Illuminate\Support\Facades\Hash::check($expectedPassword, $sampleStudent->user->password)) {
+                    $isPasswordReset = true;
+                }
+            }
+        }
+
+        return view('admin.students.index', compact('students', 'schools', 'classrooms', 'academicYears', 'activeAcademicYear', 'selectedAcademicYearId', 'isPasswordReset'));
     }
 
     public function create()

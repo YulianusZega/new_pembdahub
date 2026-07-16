@@ -72,7 +72,21 @@ class TeacherController extends Controller
             ? School::where('is_active', 1)->schoolsOnly()->get()
             : School::where('id', $user->school_id)->get();
 
-        return view('admin.teachers.index', compact('teachers', 'schools'));
+        $isPasswordReset = false;
+        if ($request->filled('school_id') || !$user->isSuperAdmin()) {
+            $sampleTeacher = collect($teachers->items())->first(function ($teacher) {
+                return $teacher->user !== null;
+            });
+            
+            if ($sampleTeacher) {
+                $expectedPassword = 'Pembda' . $sampleTeacher->teacher_code;
+                if (\Illuminate\Support\Facades\Hash::check($expectedPassword, $sampleTeacher->user->password)) {
+                    $isPasswordReset = true;
+                }
+            }
+        }
+
+        return view('admin.teachers.index', compact('teachers', 'schools', 'isPasswordReset'));
     }
 
     public function create()

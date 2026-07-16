@@ -93,7 +93,7 @@ if ($action === 'fix_markus' || $action === 'clean_all') {
                 // Check if classrooms table already has a class assigned to this teacher right now
                 $masterClassroom = Classroom::where('homeroom_teacher_id', $emp->teacher->id)
                     ->where('academic_year_id', $yearId)
-                    ->orderBy('updated_at', 'desc')
+                    ->orderBy('id', 'desc')
                     ->first();
 
                 $latestPivotRow = DB::table('employee_positions')

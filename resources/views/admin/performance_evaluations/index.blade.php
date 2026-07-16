@@ -19,7 +19,7 @@
                 <select name="academic_year_id" onchange="this.form.submit()" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm text-gray-900 !text-gray-900 bg-white !bg-white font-medium">
                     @foreach($academicYears as $year)
                         <option value="{{ $year->id }}" {{ $selectedYearId == $year->id ? 'selected' : '' }} class="text-gray-900 !text-gray-900 bg-white">
-                            {{ $year->name }}
+                            {{ $year->year ?? $year->name }}{{ $year->is_active ? ' (Aktif)' : '' }}
                         </option>
                     @endforeach
                 </select>

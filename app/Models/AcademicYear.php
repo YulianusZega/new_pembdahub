@@ -103,6 +103,14 @@ class AcademicYear extends Model
     }
 
     /**
+     * Fallback for name attribute (returns year string)
+     */
+    public function getNameAttribute()
+    {
+        return $this->year;
+    }
+
+    /**
      * Check if academic year is ongoing
      */
     public function isOngoing()

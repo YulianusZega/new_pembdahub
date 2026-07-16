@@ -169,13 +169,49 @@
                     
                     @php
                         $isReadOnly = false;
-                        if (auth()->user()->isKetuaYayasan() && $evaluation->status === 'approved_by_yayasan') {
-                            $isReadOnly = false; // Yayasan bisa revisi meskipun sudah final (opsional, tergantung rules)
-                        } elseif (!auth()->user()->isKetuaYayasan() && in_array($evaluation->status, ['submitted_to_yayasan', 'approved_by_yayasan'])) {
-                            $isReadOnly = true; // Kepsek/Admin tidak bisa ubah jika sudah di-submit ke yayasan
+                        $showAccButton = false;
+                        if (auth()->user()->isKetuaYayasan()) {
+                            // Yayasan TIDAK menilai dari nol. Yayasan hanya meninjau dan menyetujui (ACC) hasil penilaian Kepsek.
+                            $isReadOnly = true; 
+                            if ($evaluation->status === 'submitted_to_yayasan' && $evaluation->score > 0) {
+                                $showAccButton = true;
+                            }
+                        } else {
+                            // Kepala Sekolah / Admin adalah pihak yang berwenang menilai kinerja
+                            if (in_array($evaluation->status, ['submitted_to_yayasan', 'approved_by_yayasan'])) {
+                                $isReadOnly = true; // Kepsek tidak bisa ubah lagi jika sudah diajukan/di-ACC
+                            }
                         }
                     @endphp
                     
+                    @if(auth()->user()->isKetuaYayasan())
+                        @if($evaluation->status !== 'submitted_to_yayasan' && $evaluation->status !== 'approved_by_yayasan')
+                            <div class="p-4 bg-amber-50 border-b border-amber-200 text-amber-800 text-sm flex items-center gap-3">
+                                <i class="fas fa-exclamation-triangle text-amber-600 text-lg shrink-0"></i>
+                                <div>
+                                    <span class="font-bold">Menunggu Penilaian Kepala Sekolah:</span>
+                                    <span>Kewenangan menilai kinerja (skor 1-5 & umpan balik) berada pada Kepala Sekolah. Saat ini Kepala Sekolah belum mengajukan penilaian untuk guru ini. Yayasan dapat meninjau dan menyetujui (ACC) setelah hasil evaluasi diajukan.</span>
+                                </div>
+                            </div>
+                        @elseif($evaluation->status === 'submitted_to_yayasan')
+                            <div class="p-4 bg-indigo-50 border-b border-indigo-200 text-indigo-900 text-sm flex items-center gap-3">
+                                <i class="fas fa-info-circle text-indigo-600 text-lg shrink-0"></i>
+                                <div>
+                                    <span class="font-bold">Penilaian Diajukan oleh Kepala Sekolah:</span>
+                                    <span>Berikut adalah rincian skor dan analisis penilaian dari Kepala Sekolah. Silakan periksa dan klik tombol <b>Setujui & ACC Hasil Penilaian Kepala Sekolah</b> di bawah agar hasil evaluasi resmi diterbitkan ke layar Guru yang bersangkutan.</span>
+                                </div>
+                            </div>
+                        @elseif($evaluation->status === 'approved_by_yayasan')
+                            <div class="p-4 bg-emerald-50 border-b border-emerald-200 text-emerald-900 text-sm flex items-center gap-3">
+                                <i class="fas fa-check-circle text-emerald-600 text-lg shrink-0"></i>
+                                <div>
+                                    <span class="font-bold">Sudah Disetujui (Final ACC Yayasan):</span>
+                                    <span>Hasil penilaian Kepala Sekolah ini telah disetujui oleh Yayasan dan saat ini sudah dapat dilihat secara transparan di portal Guru yang bersangkutan.</span>
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+
                     <div class="p-0">
                         <table class="w-full">
                             <thead>
@@ -223,15 +259,14 @@
                             Batal & Kembali
                         </a>
                         <div class="flex gap-3">
-                            @if(!$isReadOnly)
-                                @if(auth()->user()->isKetuaYayasan())
-                                    <button type="submit" onclick="document.getElementById('form_action_input').value='draft'" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
-                                        Simpan Draft
+                            @if(auth()->user()->isKetuaYayasan())
+                                @if($showAccButton)
+                                    <button type="submit" onclick="document.getElementById('form_action_input').value='approve_yayasan'" class="px-6 py-2.5 border border-transparent text-sm font-bold rounded-xl shadow-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all flex items-center gap-2">
+                                        <i class="fas fa-check-double"></i> Setujui & ACC Hasil Penilaian Kepala Sekolah
                                     </button>
-                                    <button type="submit" onclick="document.getElementById('form_action_input').value='approve_yayasan'" class="px-6 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                        <i class="fas fa-check-circle mr-1"></i> Simpan & ACC (Final)
-                                    </button>
-                                @else
+                                @endif
+                            @else
+                                @if(!$isReadOnly)
                                     <button type="submit" onclick="document.getElementById('form_action_input').value='draft'" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
                                         Simpan Draft
                                     </button>

@@ -207,10 +207,34 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right text-sm font-medium">
-                                <a href="{{ route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.evaluate', [$contract->id, $selectedSemesterId]) }}" 
-                                   class="inline-flex items-center gap-1 text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors">
-                                    <i class="fas fa-edit text-xs"></i> Nilai
-                                </a>
+                                @php
+                                    $evalRoute = route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.evaluate', [$contract->id, $selectedSemesterId]);
+                                @endphp
+                                @if(auth()->user()->isKetuaYayasan())
+                                    @if($evaluation && $evaluation->status === 'submitted_to_yayasan')
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors">
+                                            <i class="fas fa-check-double text-xs"></i> Tinjau & ACC
+                                        </a>
+                                    @elseif($evaluation && $evaluation->status === 'approved_by_yayasan')
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-slate-600 hover:bg-slate-700 px-3.5 py-1.5 rounded-lg font-medium shadow-sm transition-colors">
+                                            <i class="fas fa-eye text-xs"></i> Lihat Hasil ACC
+                                        </a>
+                                    @else
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-amber-500 hover:bg-amber-600 px-3.5 py-1.5 rounded-lg font-medium shadow-sm transition-colors" title="Kepala Sekolah belum mengajukan penilaian">
+                                            <i class="fas fa-clock text-xs"></i> Menunggu Kepsek
+                                        </a>
+                                    @endif
+                                @else
+                                    @if($evaluation && in_array($evaluation->status, ['submitted_to_yayasan', 'approved_by_yayasan']))
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-1.5 rounded-lg font-medium shadow-sm transition-colors">
+                                            <i class="fas fa-eye text-xs"></i> Lihat Detail
+                                        </a>
+                                    @else
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-indigo-600 hover:bg-indigo-700 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors">
+                                            <i class="fas fa-pen text-xs"></i> Nilai Kinerja
+                                        </a>
+                                    @endif
+                                @endif
                             </td>
                         </tr>
                     @empty

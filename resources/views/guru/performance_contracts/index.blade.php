@@ -37,6 +37,7 @@
                         <th class="px-5 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tipe Kontrak</th>
                         <th class="px-5 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Jabatan</th>
                         <th class="px-5 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Status Persetujuan</th>
+                        <th class="px-5 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Hasil Evaluasi Akhir</th>
                         <th class="px-5 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -95,6 +96,33 @@
                             @endif
                         </td>
                         <td class="px-5 py-4">
+                            @php
+                                $approvedEval = $contract->evaluations ? $contract->evaluations->where('status', 'approved_by_yayasan')->first() : null;
+                                $submittedEval = $contract->evaluations ? $contract->evaluations->where('status', 'submitted_to_yayasan')->first() : null;
+                            @endphp
+                            @if($approvedEval && $approvedEval->score > 0)
+                                @php
+                                    $s = $approvedEval->score;
+                                    $label = ($s >= 4.5) ? 'Sangat Baik' : (($s >= 3.5) ? 'Baik' : (($s >= 2.5) ? 'Cukup' : 'Kurang'));
+                                    $badgeClass = ($s >= 4.5) ? 'bg-purple-50 text-purple-700 border-purple-200' : (($s >= 3.5) ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200');
+                                @endphp
+                                <a href="{{ route('guru.performance_contracts.show', $contract->id) }}" class="inline-flex flex-col items-start gap-1 p-2 rounded-xl {{ $badgeClass }} border hover:shadow-sm transition-all" title="Klik untuk lihat rincian evaluasi">
+                                    <div class="flex items-center gap-1.5 font-black text-sm">
+                                        <span>{{ number_format($s, 2) }}</span>
+                                        <i class="fas fa-star text-amber-400"></i>
+                                        <span class="text-xs font-bold px-1.5 py-0.5 bg-white/80 rounded-md">{{ $label }}</span>
+                                    </div>
+                                    <span class="text-[10px] opacity-80 font-medium"><i class="fas fa-check-circle mr-0.5"></i> Di-ACC Yayasan</span>
+                                </a>
+                            @elseif($submittedEval)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                    <i class="fas fa-clock text-amber-500"></i> Menunggu ACC Yayasan
+                                </span>
+                            @else
+                                <span class="text-xs text-gray-400 font-medium italic">Belum Dinilai</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('guru.performance_contracts.show', $contract->id) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-50 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 border border-gray-200 hover:border-emerald-200 transition-colors tooltip" title="Lihat Detail">
                                     <i class="fas fa-eye text-sm"></i>
@@ -123,7 +151,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="px-5 py-12 text-center">
+                        <td colspan="6" class="px-5 py-12 text-center">
                             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
                                 <i class="fas fa-file-signature text-2xl text-gray-300"></i>
                             </div>

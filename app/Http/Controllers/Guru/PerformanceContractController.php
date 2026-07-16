@@ -18,7 +18,7 @@ class PerformanceContractController extends Controller
         }
 
         $contracts = PerformanceContract::where('employee_id', $user->teacher->employee_id)
-            ->with(['academicYear', 'position'])
+            ->with(['academicYear', 'position', 'evaluations'])
             ->orderBy('created_at', 'desc')
             ->get();
 

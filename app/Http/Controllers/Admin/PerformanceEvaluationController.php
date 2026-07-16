@@ -113,10 +113,20 @@ class PerformanceEvaluationController extends Controller
             $status = PerformanceEvaluation::STATUS_APPROVED_BY_YAYASAN;
         }
         
+        $existingEval = PerformanceEvaluation::where('performance_contract_id', $contract->id)
+            ->where('semester_id', $semester->id)
+            ->first();
+            
+        // Jika yang melakukan adalah Yayasan (menyutujui/ACC), pertahankan ID Kepsek sebagai evaluator jika sudah ada
+        $evaluatorId = $user->id;
+        if ($validated['action'] === 'approve_yayasan' && $existingEval && $existingEval->evaluated_by) {
+            $evaluatorId = $existingEval->evaluated_by;
+        }
+
         $evaluation = PerformanceEvaluation::updateOrCreate(
             ['performance_contract_id' => $contract->id, 'semester_id' => $semester->id],
             [
-                'evaluated_by' => $user->id,
+                'evaluated_by' => $evaluatorId,
                 'evaluation_data' => $validated['scores'],
                 'score' => $averageScore,
                 'status' => $status,
@@ -124,6 +134,11 @@ class PerformanceEvaluationController extends Controller
             ]
         );
         
-        return redirect()->route('admin.performance_evaluations.index')->with('success', 'Evaluasi Kinerja berhasil disimpan.');
+        $routePrefix = ($user->isKetuaYayasan() && request()->routeIs('yayasan.*')) ? 'yayasan.' : 'admin.';
+        $msg = ($validated['action'] === 'approve_yayasan') 
+            ? 'Hasil Penilaian Kepala Sekolah berhasil disetujui (ACC) oleh Yayasan dan kini dapat dilihat oleh Guru yang bersangkutan.' 
+            : 'Evaluasi Kinerja berhasil disimpan/diajukan.';
+            
+        return redirect()->route($routePrefix . 'performance_evaluations.index')->with('success', $msg);
     }
 }

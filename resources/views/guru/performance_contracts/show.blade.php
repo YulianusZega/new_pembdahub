@@ -229,6 +229,57 @@
                                 @endforeach
                             </div>
 
+                            @if(is_array($eval->evaluation_data) && count($eval->evaluation_data) > 0)
+                                @php
+                                    $scores = $eval->evaluation_data;
+                                    $maxScore = max($scores);
+                                    $minScore = min($scores);
+                                    $highestKeys = array_keys($scores, $maxScore);
+                                    $lowestKeys = array_keys($scores, $minScore);
+
+                                    $getKeyLabel = function($k) use ($contract) {
+                                        if (isset($contract->target_data[$k])) {
+                                            $val = $contract->target_data[$k];
+                                            $text = is_array($val) ? implode(', ', $val) : $val;
+                                            if (!empty($text)) {
+                                                return \Illuminate\Support\Str::limit(strip_tags($text), 45);
+                                            }
+                                        }
+                                        $map = [
+                                            'pilar_1' => ($contract->contract_type == 'pkg_kejuruan') ? 'Kompetensi Praktik' : 'Kompetensi Relevansi Praktik',
+                                            'pilar_2' => ($contract->contract_type == 'pkg_kejuruan') ? 'Kontribusi Program' : 'Kontribusi Program/TEFA',
+                                            'pilar_3' => 'Kolaborasi',
+                                            'pilar_4' => 'Budaya Industri 5R / K3',
+                                        ];
+                                        return $map[$k] ?? ucwords(str_replace('_', ' ', $k));
+                                    };
+
+                                    $lowestLabel = $getKeyLabel($lowestKeys[0] ?? '');
+                                    $highestLabel = $getKeyLabel($highestKeys[0] ?? '');
+                                    $score = $eval->score;
+
+                                    if ($score >= 4.0) {
+                                        $analisa = "Kinerja sangat konsisten dan unggul. Keunggulan utama pada aspek {$highestLabel} ({$maxScore}/5). Layak dipertahankan sebagai rol model.";
+                                    } elseif ($score >= 3.5) {
+                                        if ($minScore < 3.0) {
+                                            $analisa = "Memenuhi syarat rata-rata SK (> 3.5), namun perlu perhatian khusus pada peningkatan aspek {$lowestLabel} ({$minScore}/5).";
+                                        } else {
+                                            $analisa = "Kinerja stabil dan memenuhi target di seluruh pilar. Paling menonjol pada aspek {$highestLabel} ({$maxScore}/5).";
+                                        }
+                                    } elseif ($score >= 2.5) {
+                                        $analisa = "Kinerja dalam tahap cukup. Diperlukan pembinaan dan pendampingan intensif khususnya pada aspek {$lowestLabel} ({$minScore}/5).";
+                                    } else {
+                                        $analisa = "Kinerja berada di bawah target yang disepakati. Evaluasi menyeluruh dan evaluasi pembinaan diperlukan pada aspek {$lowestLabel}.";
+                                    }
+                                @endphp
+                                <div class="mt-4 p-3.5 bg-indigo-50/80 border border-indigo-100 rounded-xl text-left text-xs text-slate-700 space-y-1.5 shadow-sm">
+                                    <div class="font-bold text-indigo-900 flex items-center gap-1.5 text-sm">
+                                        <i class="fas fa-chart-pie text-indigo-600"></i> Analisis Deskriptif Kinerja
+                                    </div>
+                                    <div class="leading-relaxed text-slate-700 text-sm">{{ $analisa }}</div>
+                                </div>
+                            @endif
+
                             @if($eval->notes)
                             <div class="mt-4 bg-yellow-50 p-3 rounded-lg border border-yellow-100">
                                 <p class="text-xs font-bold text-yellow-800 mb-1"><i class="fas fa-comment-dots"></i> Catatan Evaluasi:</p>

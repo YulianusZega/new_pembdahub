@@ -174,6 +174,22 @@ class PositionAssignmentController extends Controller
             }
         }
         
+        $currentClassroom = null;
+        if ($selectedEmployee && $currentYear) {
+            $pivotClassroomId = $selectedEmployee->employeePositions()
+                ->where('academic_year_id', $currentYear->id)
+                ->whereNull('end_date')
+                ->whereNotNull('classroom_id')
+                ->value('classroom_id');
+
+            if ($pivotClassroomId) {
+                $currentClassroom = Classroom::find($pivotClassroomId);
+            }
+            if (!$currentClassroom && $selectedEmployee->teacher) {
+                $currentClassroom = Classroom::where('homeroom_teacher_id', $selectedEmployee->teacher->id)->first();
+            }
+        }
+        
         return view('admin.assignments.positions.create', compact(
             'teachers',
             'positions',
@@ -183,6 +199,7 @@ class PositionAssignmentController extends Controller
             'currentPositions',
             'currentAssignment',
             'classrooms',
+            'currentClassroom',
             'isSMK',
             'approvedContractPositionIds'
         ));
@@ -329,9 +346,18 @@ class PositionAssignmentController extends Controller
             ->orderBy('class_name')
             ->get();
         
-        // Get current classroom if wali kelas
+        // Get current classroom if wali kelas (check pivot table first, fallback to classrooms table)
         $currentClassroom = null;
-        if ($employee->teacher) {
+        $pivotClassroomId = $employee->employeePositions()
+            ->where('academic_year_id', $currentYear->id ?? 0)
+            ->whereNull('end_date')
+            ->whereNotNull('classroom_id')
+            ->value('classroom_id');
+
+        if ($pivotClassroomId) {
+            $currentClassroom = Classroom::find($pivotClassroomId);
+        }
+        if (!$currentClassroom && $employee->teacher) {
             $currentClassroom = Classroom::where('homeroom_teacher_id', $employee->teacher->id)->first();
         }
         
@@ -542,7 +568,22 @@ class PositionAssignmentController extends Controller
             if ($request->filled('classroom_id')) {
                 $classroom = Classroom::find($validated['classroom_id']);
                 if ($classroom && $classroom->school_id == $employee->school_id) {
-                    $classroom->update(['homeroom_teacher_id' => $employee->teacher->id ?? null]);
+                    $teacherId = $employee->teacher->id ?? null;
+                    if (!$teacherId && $employee->employee_type === 'guru') {
+                        $teacher = \App\Models\Teacher::firstOrCreate(
+                            ['employee_id' => $employee->id],
+                            [
+                                'school_id' => $employee->school_id,
+                                'teacher_code' => $employee->employee_code ?? 'TCH-' . $employee->id,
+                                'full_name' => $employee->full_name,
+                                'is_active' => 1,
+                            ]
+                        );
+                        $teacherId = $teacher->id;
+                    }
+                    if ($teacherId) {
+                        $classroom->update(['homeroom_teacher_id' => $teacherId]);
+                    }
                 }
             }
         }

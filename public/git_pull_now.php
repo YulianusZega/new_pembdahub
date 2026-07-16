@@ -65,6 +65,7 @@ $checks = [
     ['app/Http/Controllers/Admin/TimeSlotController.php', '$schools->first() ? $schools->first()->id : null', 'TimeSlot fix'],
     ['resources/views/admin/assignments/positions/index.blade.php', 'destroy-single', 'Index view single delete button'],
     ['app/Http/Controllers/Admin/PositionAssignmentController.php', '$schoolIdForClassrooms', 'PositionAssignmentController classrooms fix'],
+    ['app/Http/Controllers/Admin/PositionController.php', '$yearName', 'PositionController active year destroy check'],
 ];
 foreach ($checks as [$file, $marker, $label]) {
     $path = "{$root}/{$file}";

@@ -201,14 +201,22 @@ class PositionController extends Controller
             }
         }
         
-        // Check if position is being used
-        $usageCount = DB::table('employee_positions')
+        // Check if position is being used in active academic year
+        $currentYear = \App\Models\AcademicYear::where('is_active', 1)->first();
+        
+        $usageQuery = DB::table('employee_positions')
             ->where('position_id', $position->id)
-            ->whereNull('end_date')
-            ->count();
+            ->whereNull('end_date');
+            
+        if ($currentYear) {
+            $usageQuery->where('academic_year_id', $currentYear->id);
+        }
+        
+        $usageCount = $usageQuery->count();
         
         if ($usageCount > 0) {
-            return back()->with('error', "Tidak dapat menghapus jabatan. Masih ada {$usageCount} guru yang memegang jabatan ini.");
+            $yearName = $currentYear ? $currentYear->year : 'Aktif';
+            return back()->with('error', "Tidak dapat menghapus jabatan. Masih ada {$usageCount} guru yang aktif memegang jabatan ini pada Tahun Pelajaran {$yearName}.");
         }
         
         $position->delete();

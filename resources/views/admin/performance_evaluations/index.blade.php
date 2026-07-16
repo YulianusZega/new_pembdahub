@@ -212,25 +212,25 @@
                                 @endphp
                                 @if(auth()->user()->isKetuaYayasan())
                                     @if($evaluation && $evaluation->status === 'submitted_to_yayasan')
-                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #059669 !important; color: #ffffff !important;">
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap text-white bg-emerald-600 hover:bg-emerald-700 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #059669 !important; color: #ffffff !important; white-space: nowrap !important;">
                                             <i class="fas fa-check-double text-xs"></i> Tinjau & ACC
                                         </a>
                                     @elseif($evaluation && $evaluation->status === 'approved_by_yayasan')
-                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-slate-700 hover:bg-slate-800 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #334155 !important; color: #ffffff !important;">
-                                            <i class="fas fa-eye text-xs"></i> Lihat Hasil ACC
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap text-white bg-slate-700 hover:bg-slate-800 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #334155 !important; color: #ffffff !important; white-space: nowrap !important;">
+                                            <i class="fas fa-eye text-xs"></i> Lihat Hasil
                                         </a>
                                     @else
-                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-amber-500 hover:bg-amber-600 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #f59e0b !important; color: #ffffff !important;" title="Kepala Sekolah belum mengajukan penilaian">
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap text-white bg-amber-500 hover:bg-amber-600 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #f59e0b !important; color: #ffffff !important; white-space: nowrap !important;" title="Kepala Sekolah belum mengajukan penilaian">
                                             <i class="fas fa-clock text-xs"></i> Menunggu Kepsek
                                         </a>
                                     @endif
                                 @else
                                     @if($evaluation && in_array($evaluation->status, ['submitted_to_yayasan', 'approved_by_yayasan']))
-                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #2563eb !important; color: #ffffff !important;">
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #2563eb !important; color: #ffffff !important; white-space: nowrap !important;">
                                             <i class="fas fa-eye text-xs"></i> Lihat Detail
                                         </a>
                                     @else
-                                        <a href="{{ $evalRoute }}" class="inline-flex items-center gap-1.5 text-white bg-indigo-600 hover:bg-indigo-700 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #4f46e5 !important; color: #ffffff !important;">
+                                        <a href="{{ $evalRoute }}" class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap text-white bg-indigo-600 hover:bg-indigo-700 px-3.5 py-1.5 rounded-lg font-bold shadow-sm transition-colors" style="background-color: #4f46e5 !important; color: #ffffff !important; white-space: nowrap !important;">
                                             <i class="fas fa-pen text-xs"></i> Nilai Kinerja
                                         </a>
                                     @endif

@@ -98,9 +98,9 @@ try {
     );
     echo "DUDI berhasil disiapkan: BENGKELIN\n";
 
-    // 3. Dapatkan 4 Siswa kelas XII
+    // 3. Dapatkan 4 Siswa kelas XII (atau sembarang siswa aktif)
     $students = Student::whereHas('classrooms', function($q) use ($activeYear) {
-        $q->where('level', 'XII')->where('classrooms.academic_year_id', $activeYear->id);
+        $q->where('classrooms.academic_year_id', $activeYear->id);
     })->take(4)->get();
 
     if ($students->count() < 4) {

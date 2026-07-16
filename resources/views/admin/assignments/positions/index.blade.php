@@ -194,9 +194,9 @@
                                                     @method('DELETE')
                                                     <input type="hidden" name="academic_year_id" value="{{ $selectedYearId }}">
                                                     <button type="submit" 
-                                                            class="px-2 py-1 bg-red-100 hover:bg-red-200 text-red-600 rounded-md transition-colors text-xs font-semibold flex items-center gap-1 shadow-sm" 
-                                                            title="Hapus khusus jabatan {{ $empPos->position->display_name ?? '-' }} ini saja">
-                                                        <i class="fas fa-times text-xs"></i> Hapus
+                                                            class="w-6 h-6 bg-red-100 hover:bg-red-200 text-red-600 rounded-md flex items-center justify-center transition-colors shadow-sm" 
+                                                            title="Hapus khusus jabatan [{{ $empPos->position->display_name ?? '-' }}] ini">
+                                                        <i class="fas fa-times text-xs"></i>
                                                     </button>
                                                 </form>
                                             </div>

@@ -18,7 +18,7 @@
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-200">
                         <th class="p-4 font-semibold text-sm text-slate-600 uppercase tracking-wider">Nama Guru Pembimbing</th>
-                        <th class="p-4 font-semibold text-sm text-slate-600 uppercase tracking-wider text-center">Jml. Lokasi (DUDI)</th>
+                        <th class="p-4 font-semibold text-sm text-slate-600 uppercase tracking-wider">Nama & Alamat DUDI</th>
                         <th class="p-4 font-semibold text-sm text-slate-600 uppercase tracking-wider text-center">Total Laporan</th>
                         <th class="p-4 font-semibold text-sm text-slate-600 uppercase tracking-wider text-right">Aksi</th>
                     </tr>
@@ -37,10 +37,38 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="p-4 text-center">
-                                <span class="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-bold">
-                                    {{ count($t->pklPlacements) }} Lokasi
-                                </span>
+                            <td class="p-4">
+                                @php
+                                    $uniquePlacements = $t->pklPlacements->unique(function($item) {
+                                        return $item->dudi_id ? 'dudi_'.$item->dudi_id : 'name_'.$item->company_name;
+                                    });
+                                @endphp
+                                @if($uniquePlacements->isNotEmpty())
+                                    <div class="space-y-2">
+                                        @foreach($uniquePlacements as $placement)
+                                            @php
+                                                $dudiName = $placement->dudi->name ?? $placement->company_name ?? 'DUDI Belum Ditentukan';
+                                                $dudiAddress = $placement->dudi->address ?? $placement->company_address ?? 'Alamat belum tercatat';
+                                            @endphp
+                                            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                                                <div class="flex items-start gap-2.5">
+                                                    <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                                                        <i class="fas fa-building text-xs"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-bold text-slate-800 text-sm leading-tight">{{ $dudiName }}</p>
+                                                        <p class="text-xs text-slate-500 mt-1 flex items-start gap-1">
+                                                            <i class="fas fa-map-marker-alt text-slate-400 shrink-0 mt-0.5"></i>
+                                                            <span>{{ $dudiAddress }}</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-xs text-slate-400 italic">Belum ada lokasi DUDI</span>
+                                @endif
                             </td>
                             <td class="p-4 text-center">
                                 <span class="px-3 py-1 {{ $t->pkl_monitorings_count > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700' }} rounded-full text-xs font-bold">

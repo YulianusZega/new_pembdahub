@@ -28,8 +28,7 @@ class PklMonitoringReportController extends Controller
                 if ($activeYear) {
                     $q->where('academic_year_id', $activeYear->id);
                 }
-                $q->select('teacher_id', 'dudi_id', 'shift')->distinct();
-            }, 'user'])
+            }, 'pklPlacements.dudi', 'user'])
             ->withCount('pklMonitorings')
             ->paginate(15);
             

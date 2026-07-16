@@ -38,7 +38,13 @@
                                 <p><i class="fas fa-users w-4 text-slate-400"></i> {{ $place->total_students }} Siswa</p>
                                 <p>
                                     @if($place->is_perangkat_ready)
-                                        <span class="text-emerald-600"><i class="fas fa-check-circle w-4"></i> Perangkat Siap</span>
+                                        @if(isset($place->perangkat_file_path))
+                                            <a href="{{ Storage::url($place->perangkat_file_path) }}" target="_blank" class="text-emerald-600 hover:text-emerald-800 transition-colors">
+                                                <i class="fas fa-check-circle w-4"></i> Perangkat Siap (Lihat)
+                                            </a>
+                                        @else
+                                            <span class="text-emerald-600"><i class="fas fa-check-circle w-4"></i> Perangkat Siap</span>
+                                        @endif
                                     @else
                                         <span class="text-amber-600"><i class="fas fa-exclamation-triangle w-4"></i> Perangkat Belum Siap</span>
                                     @endif
@@ -71,12 +77,18 @@
                                     <p class="text-xs text-indigo-600 font-semibold mt-1"><i class="fas fa-building mr-1"></i> {{ $mon->dudi->name ?? 'Unknown' }} (Shift: {{ $mon->shift ?: '-' }})</p>
                                     <p class="text-sm text-slate-600 mt-3">{{ $mon->notes ?? 'Tidak ada catatan monitoring.' }}</p>
                                 </div>
-                                <div class="flex gap-2 shrink-0">
+                                <div class="flex gap-3 shrink-0">
                                     @if($mon->photo_path)
-                                        <a href="{{ Storage::url($mon->photo_path) }}" target="_blank" class="flex flex-col items-center justify-center w-16 h-16 bg-blue-50 border border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm" title="Lihat Foto">
-                                            <i class="fas fa-image text-xl mb-1"></i>
-                                            <span class="text-[10px] font-bold uppercase">Foto</span>
-                                        </a>
+                                        <div x-data="{ open: false }">
+                                            <img @click="open = true" src="{{ Storage::url($mon->photo_path) }}" class="w-16 h-16 object-cover rounded-xl cursor-pointer border border-slate-200 hover:opacity-80 transition-opacity shadow-sm" title="Lihat Foto Monitoring" alt="Foto">
+                                            
+                                            <div x-show="open" style="display: none;" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4" @click="open = false" @keydown.escape.window="open = false">
+                                                <img src="{{ Storage::url($mon->photo_path) }}" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl" @click.stop>
+                                                <button @click="open = false" class="absolute top-6 right-6 text-white hover:text-slate-300">
+                                                    <i class="fas fa-times text-3xl"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     @endif
                                     @if($mon->assignment_letter_path)
                                         <a href="{{ Storage::url($mon->assignment_letter_path) }}" target="_blank" class="flex flex-col items-center justify-center w-16 h-16 bg-emerald-50 border border-emerald-100 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm" title="Lihat Surat">

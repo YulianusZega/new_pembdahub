@@ -48,7 +48,7 @@ class PklMonitoringReportController extends Controller
             $placementsQuery->where('academic_year_id', $activeYear->id);
         }
             
-        $placements = $placementsQuery->select('dudi_id', 'shift', DB::raw('count(*) as total_students'), DB::raw('MAX(is_perangkat_ready) as is_perangkat_ready'))
+        $placements = $placementsQuery->select('dudi_id', 'shift', DB::raw('count(*) as total_students'), DB::raw('MAX(is_perangkat_ready) as is_perangkat_ready'), DB::raw('MAX(perangkat_file_path) as perangkat_file_path'))
             ->groupBy('dudi_id', 'shift')
             ->get();
 

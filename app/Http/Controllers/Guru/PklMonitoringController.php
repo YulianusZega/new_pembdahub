@@ -68,6 +68,7 @@ class PklMonitoringController extends Controller
         }
 
         $isPerangkatReady = $placements->first()->is_perangkat_ready;
+        $perangkatFilePath = $placements->first()->perangkat_file_path;
 
         $monitorings = PklMonitoring::where('teacher_id', $teacher->id)
             ->where('dudi_id', $dudi_id)
@@ -75,7 +76,7 @@ class PklMonitoringController extends Controller
             ->orderByDesc('monitoring_date')
             ->get();
 
-        return view('guru.pkl_monitorings.show', compact('teacher', 'dudi', 'shift', 'placements', 'monitorings', 'isPerangkatReady'));
+        return view('guru.pkl_monitorings.show', compact('teacher', 'dudi', 'shift', 'placements', 'monitorings', 'isPerangkatReady', 'perangkatFilePath'));
     }
 
     public function updatePerangkat(Request $request, $dudi_id, $shift = null)
@@ -83,12 +84,21 @@ class PklMonitoringController extends Controller
         if ($shift === 'null') $shift = null;
         $teacher = $this->getTeacher();
         
+        $request->validate([
+            'perangkat_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        $path = $request->file('perangkat_file')->store('pkl_perangkat', 'public');
+
         PklPlacement::where('teacher_id', $teacher->id)
             ->where('dudi_id', $dudi_id)
             ->where('shift', $shift)
-            ->update(['is_perangkat_ready' => $request->has('is_perangkat_ready')]);
+            ->update([
+                'is_perangkat_ready' => true,
+                'perangkat_file_path' => $path
+            ]);
 
-        return back()->with('success', 'Status perangkat PKL berhasil diperbarui.');
+        return back()->with('success', 'Dokumen Perangkat PKL berhasil diunggah.');
     }
 
     public function store(Request $request, $dudi_id, $shift = null)

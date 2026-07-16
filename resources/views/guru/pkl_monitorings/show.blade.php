@@ -58,13 +58,25 @@
                                     <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Aktivitas Terakhir:</p>
                                     <ul class="space-y-2">
                                         @foreach($placement->logs as $log)
-                                            <li class="flex items-start gap-2 text-sm">
-                                                <i class="fas fa-check-circle text-emerald-500 mt-0.5 text-xs"></i>
-                                                <div>
-                                                    <span class="font-medium text-slate-700">{{ $log->log_date->format('d/m/Y') }}:</span>
-                                                    <span class="text-slate-600">{{ Str::limit($log->activity, 80) }}</span>
-                                                </div>
-                                            </li>
+                                              <li class="flex items-start gap-3 text-sm">
+                                                  <i class="fas fa-check-circle text-emerald-500 mt-0.5 text-xs"></i>
+                                                  <div class="flex-1">
+                                                      <span class="font-medium text-slate-700">{{ $log->log_date->format('d/m/Y') }}:</span>
+                                                      <span class="text-slate-600">{{ Str::limit($log->activity, 80) }}</span>
+                                                      @if($log->photo)
+                                                      <div x-data="{ open: false }" class="mt-2">
+                                                          <img @click="open = true" src="{{ Storage::url($log->photo) }}" class="w-16 h-16 object-cover rounded-lg cursor-pointer border border-slate-200 hover:opacity-80 transition-opacity shadow-sm" title="Lihat Foto Kegiatan" alt="Foto">
+                                                          
+                                                          <div x-show="open" style="display: none;" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4" @click="open = false" @keydown.escape.window="open = false">
+                                                              <img src="{{ Storage::url($log->photo) }}" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl" @click.stop>
+                                                              <button @click="open = false" class="absolute top-6 right-6 text-white hover:text-slate-300">
+                                                                  <i class="fas fa-times text-3xl"></i>
+                                                              </button>
+                                                          </div>
+                                                      </div>
+                                                      @endif
+                                                  </div>
+                                              </li>
                                         @endforeach
                                     </ul>
                                 </div>
@@ -90,13 +102,20 @@
                                 <h4 class="font-bold text-slate-800">{{ $mon->monitoring_date->format('d F Y') }}</h4>
                                 <p class="text-sm text-slate-600 mt-1">{{ $mon->notes ?? 'Tidak ada catatan' }}</p>
                             </div>
-                            <div class="flex gap-2 shrink-0">
-                                @if($mon->photo_path)
-                                    <a href="{{ Storage::url($mon->photo_path) }}" target="_blank" class="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-xl transition-colors" title="Lihat Foto">
-                                        <i class="fas fa-image"></i>
-                                    </a>
-                                @endif
-                                @if($mon->assignment_letter_path)
+                              <div class="flex gap-3 shrink-0">
+                                  @if($mon->photo_path)
+                                      <div x-data="{ open: false }">
+                                          <img @click="open = true" src="{{ Storage::url($mon->photo_path) }}" class="w-16 h-16 object-cover rounded-xl cursor-pointer border border-slate-200 hover:opacity-80 transition-opacity shadow-sm" title="Lihat Foto Monitoring" alt="Foto Monitoring">
+                                          
+                                          <div x-show="open" style="display: none;" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4" @click="open = false" @keydown.escape.window="open = false">
+                                              <img src="{{ Storage::url($mon->photo_path) }}" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl" @click.stop>
+                                              <button @click="open = false" class="absolute top-6 right-6 text-white hover:text-slate-300">
+                                                  <i class="fas fa-times text-3xl"></i>
+                                              </button>
+                                          </div>
+                                      </div>
+                                  @endif
+                                  @if($mon->assignment_letter_path)
                                     <a href="{{ Storage::url($mon->assignment_letter_path) }}" target="_blank" class="w-10 h-10 flex items-center justify-center bg-emerald-50 text-emerald-600 hover:bg-emerald-100 rounded-xl transition-colors" title="Lihat Surat">
                                         <i class="fas fa-file-pdf"></i>
                                     </a>
@@ -115,26 +134,60 @@
         <!-- Right Column: Form Laporan & Perangkat -->
         <div class="space-y-6">
             <!-- Form Perangkat -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-5 border-b border-slate-100 bg-slate-50">
-                    <h3 class="font-bold text-slate-800"><i class="fas fa-clipboard-check text-indigo-500 mr-2"></i> Kesiapan Perangkat</h3>
-                </div>
-                <div class="p-5">
-                    <form action="{{ route('guru.pkl_monitorings.update-perangkat', [$dudi->id, $shift ?: 'null']) }}" method="POST">
-                        @csrf
-                        <label class="flex items-start gap-3 cursor-pointer group">
-                            <div class="relative flex items-center justify-center mt-0.5">
-                                <input type="checkbox" name="is_perangkat_ready" class="peer appearance-none w-5 h-5 border-2 border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 checked:bg-indigo-600 checked:border-indigo-600 transition-all cursor-pointer" {{ $isPerangkatReady ? 'checked' : '' }} onchange="this.form.submit()">
-                                <i class="fas fa-check absolute text-white text-xs opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity"></i>
-                            </div>
-                            <div>
-                                <span class="text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">Perangkat PKL Siap</span>
-                                <p class="text-xs text-slate-500 mt-1">Centang jika dokumen monitoring (buku penilaian, absen, dll) sudah disiapkan oleh Panitia untuk DUDI ini.</p>
-                            </div>
-                        </label>
-                    </form>
-                </div>
-            </div>
+              <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                  <div class="p-5 border-b border-slate-100 bg-slate-50">
+                      <h3 class="font-bold text-slate-800"><i class="fas fa-clipboard-check text-indigo-500 mr-2"></i> Dokumen Perangkat PKL</h3>
+                  </div>
+                  <div class="p-5">
+                      @if($perangkatFilePath)
+                          <div class="flex items-center justify-between p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                              <div class="flex items-center gap-3">
+                                  <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-lg">
+                                      <i class="fas fa-check"></i>
+                                  </div>
+                                  <div>
+                                      <p class="font-bold text-emerald-800">Perangkat Sudah Diunggah</p>
+                                      <p class="text-xs text-emerald-600">Terima kasih, dokumen panduan dan checklist sudah ditandatangani DUDI.</p>
+                                  </div>
+                              </div>
+                              <a href="{{ Storage::url($perangkatFilePath) }}" target="_blank" class="px-4 py-2 bg-white border border-emerald-200 text-emerald-700 rounded-lg text-sm font-semibold hover:bg-emerald-100 transition-colors shadow-sm">
+                                  Lihat Dokumen
+                              </a>
+                          </div>
+                          
+                          <div class="mt-4 pt-4 border-t border-slate-100" x-data="{ showUpload: false }">
+                              <button @click="showUpload = !showUpload" type="button" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                                  <i class="fas fa-upload mr-1"></i> Unggah ulang dokumen baru
+                              </button>
+                              
+                              <form x-show="showUpload" x-cloak style="display: none;" action="{{ route('guru.pkl_monitorings.update-perangkat', [$dudi->id, $shift ?: 'null']) }}" method="POST" enctype="multipart/form-data" class="mt-3 space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                  @csrf
+                                  <input type="file" name="perangkat_file" required accept=".pdf,image/*" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                  <button type="submit" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold hover:bg-indigo-700 transition-colors">
+                                      Simpan Dokumen Pengganti
+                                  </button>
+                              </form>
+                          </div>
+                      @else
+                          <form action="{{ route('guru.pkl_monitorings.update-perangkat', [$dudi->id, $shift ?: 'null']) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                              @csrf
+                              <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl mb-4">
+                                  <h4 class="font-bold text-amber-800 mb-1"><i class="fas fa-exclamation-circle mr-1"></i> Perangkat Belum Diunggah</h4>
+                                  <p class="text-xs text-amber-700">Silakan unggah pindaian (scan) atau foto dari dokumen checklist perangkat yang sudah ditandatangani oleh DUDI pada saat penyerahan siswa.</p>
+                              </div>
+                              
+                              <div>
+                                  <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Unggah Dokumen Perangkat (PDF/Image) <span class="text-rose-500">*</span></label>
+                                  <input type="file" name="perangkat_file" required accept=".pdf,image/*" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                              </div>
+                              
+                              <button type="submit" class="w-full px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition-colors">
+                                  Unggah Perangkat PKL
+                              </button>
+                          </form>
+                      @endif
+                  </div>
+              </div>
 
             <!-- Form Buat Laporan -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">

@@ -247,88 +247,7 @@ class PositionAssignmentController extends Controller
         
         DB::beginTransaction();
         try {
-            $semester = 'full_year';
-
-            $existingPositions = $employee->employeePositions()
-                ->where('academic_year_id', $validated['academic_year_id'])
-                ->whereNull('end_date')
-                ->get();
-                
-            $existingPositionIds = $existingPositions->pluck('position_id')->toArray();
-            $newPositionIds = $validated['positions'];
-            
-            $positionsToClose = array_diff($existingPositionIds, $newPositionIds);
-            $positionsToAttach = array_diff($newPositionIds, $existingPositionIds);
-            $positionsToUpdate = array_intersect($newPositionIds, $existingPositionIds);
-            
-            // Close removed positions
-            if (!empty($positionsToClose)) {
-                $employee->employeePositions()
-                    ->where('academic_year_id', $validated['academic_year_id'])
-                    ->whereIn('position_id', $positionsToClose)
-                    ->whereNull('end_date')
-                    ->update(['end_date' => now()]);
-            }
-            
-            // Update kept positions
-            foreach ($positionsToUpdate as $positionId) {
-                $position = Position::find($positionId);
-                $isWaliKelas = $position && (
-                    stripos($position->position_code, 'WAKEL') !== false || 
-                    stripos($position->position_code, 'WALIKELAS') !== false
-                );
-                
-                $employee->employeePositions()
-                    ->where('academic_year_id', $validated['academic_year_id'])
-                    ->where('position_id', $positionId)
-                    ->whereNull('end_date')
-                    ->update([
-                        'sk_number' => $validated['sk_number'],
-                        'sk_date' => $validated['sk_date'],
-                        'is_primary' => ($positionId == $validated['primary_position_id']),
-                        'classroom_id' => ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null,
-                        'updated_at' => now(),
-                    ]);
-            }
-            
-            // Attach new positions
-            $positionDataToAttach = [];
-            foreach ($positionsToAttach as $positionId) {
-                $position = Position::find($positionId);
-                $isWaliKelas = $position && (
-                    stripos($position->position_code, 'WAKEL') !== false || 
-                    stripos($position->position_code, 'WALIKELAS') !== false
-                );
-                
-                $positionDataToAttach[$positionId] = [
-                    'academic_year_id' => $validated['academic_year_id'],
-                    'semester' => $semester,
-                    'start_date' => $validated['position_start_date'],
-                    'end_date' => null,
-                    'sk_number' => $validated['sk_number'],
-                    'sk_date' => $validated['sk_date'],
-                    'is_primary' => ($positionId == $validated['primary_position_id']),
-                    'classroom_id' => ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-            
-            if (!empty($positionDataToAttach)) {
-                $employee->positions()->attach($positionDataToAttach);
-            }
-            
-            // Check if wali kelas position is assigned
-            $waliKelasPosition = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
-            if ($waliKelasPosition && in_array($waliKelasPosition->id, $validated['positions'])) {
-                // Update classroom's homeroom_teacher_id if classroom is selected
-                if ($request->filled('classroom_id')) {
-                    $classroom = Classroom::find($validated['classroom_id']);
-                    if ($classroom && $classroom->school_id == $employee->school_id) {
-                        $classroom->update(['homeroom_teacher_id' => $employee->teacher->id ?? null]);
-                    }
-                }
-            }
+            $this->syncEmployeePositions($employee, $validated, $request);
             
             DB::commit();
             
@@ -340,10 +259,10 @@ class PositionAssignmentController extends Controller
                 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Gagal menyimpan penugasan jabatan: ' . $e->getMessage());
+            Log::error('Gagal menyimpan penugasan jabatan: ' . $e->getMessage() . ' ' . $e->getTraceAsString());
             return back()
                 ->withInput()
-                ->with('error', 'Gagal menyimpan penugasan. Silakan coba lagi.');
+                ->with('error', 'Gagal menyimpan penugasan: ' . $e->getMessage());
         }
     }
     
@@ -452,88 +371,7 @@ class PositionAssignmentController extends Controller
         
         DB::beginTransaction();
         try {
-            $semester = 'full_year';
-
-            $existingPositions = $employee->employeePositions()
-                ->where('academic_year_id', $validated['academic_year_id'])
-                ->whereNull('end_date')
-                ->get();
-                
-            $existingPositionIds = $existingPositions->pluck('position_id')->toArray();
-            $newPositionIds = $validated['positions'];
-            
-            $positionsToClose = array_diff($existingPositionIds, $newPositionIds);
-            $positionsToAttach = array_diff($newPositionIds, $existingPositionIds);
-            $positionsToUpdate = array_intersect($newPositionIds, $existingPositionIds);
-            
-            // Close removed positions
-            if (!empty($positionsToClose)) {
-                $employee->employeePositions()
-                    ->where('academic_year_id', $validated['academic_year_id'])
-                    ->whereIn('position_id', $positionsToClose)
-                    ->whereNull('end_date')
-                    ->update(['end_date' => now()]);
-            }
-            
-            // Update kept positions
-            foreach ($positionsToUpdate as $positionId) {
-                $position = Position::find($positionId);
-                $isWaliKelas = $position && (
-                    stripos($position->position_code, 'WAKEL') !== false || 
-                    stripos($position->position_code, 'WALIKELAS') !== false
-                );
-                
-                $employee->employeePositions()
-                    ->where('academic_year_id', $validated['academic_year_id'])
-                    ->where('position_id', $positionId)
-                    ->whereNull('end_date')
-                    ->update([
-                        'sk_number' => $validated['sk_number'],
-                        'sk_date' => $validated['sk_date'],
-                        'is_primary' => ($positionId == $validated['primary_position_id']),
-                        'classroom_id' => ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null,
-                        'updated_at' => now(),
-                    ]);
-            }
-            
-            // Attach new positions
-            $positionDataToAttach = [];
-            foreach ($positionsToAttach as $positionId) {
-                $position = Position::find($positionId);
-                $isWaliKelas = $position && (
-                    stripos($position->position_code, 'WAKEL') !== false || 
-                    stripos($position->position_code, 'WALIKELAS') !== false
-                );
-                
-                $positionDataToAttach[$positionId] = [
-                    'academic_year_id' => $validated['academic_year_id'],
-                    'semester' => $semester,
-                    'start_date' => $validated['position_start_date'],
-                    'end_date' => null,
-                    'sk_number' => $validated['sk_number'],
-                    'sk_date' => $validated['sk_date'],
-                    'is_primary' => ($positionId == $validated['primary_position_id']),
-                    'classroom_id' => ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-            
-            if (!empty($positionDataToAttach)) {
-                $employee->positions()->attach($positionDataToAttach);
-            }
-            
-            // Check if wali kelas position is assigned
-            $waliKelasPosition = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
-            if ($waliKelasPosition && in_array($waliKelasPosition->id, $validated['positions'])) {
-                // Update classroom's homeroom_teacher_id if classroom is selected
-                if ($request->filled('classroom_id')) {
-                    $classroom = Classroom::find($validated['classroom_id']);
-                    if ($classroom && $classroom->school_id == $employee->school_id) {
-                        $classroom->update(['homeroom_teacher_id' => $employee->teacher->id ?? null]);
-                    }
-                }
-            }
+            $this->syncEmployeePositions($employee, $validated, $request);
             
             DB::commit();
             
@@ -545,10 +383,10 @@ class PositionAssignmentController extends Controller
                 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Gagal memperbarui penugasan jabatan: ' . $e->getMessage());
+            Log::error('Gagal memperbarui penugasan jabatan: ' . $e->getMessage() . ' ' . $e->getTraceAsString());
             return back()
                 ->withInput()
-                ->with('error', 'Gagal memperbarui penugasan. Silakan coba lagi.');
+                ->with('error', 'Gagal memperbarui penugasan: ' . $e->getMessage());
         }
     }
     
@@ -601,5 +439,112 @@ class PositionAssignmentController extends Controller
         }
         
         return back()->with('error', 'Jabatan tidak ditemukan atau sudah dihapus.');
+    }
+    
+    private function syncEmployeePositions($employee, $validated, $request)
+    {
+        $semester = 'full_year';
+        $newPositionIds = $validated['positions'];
+
+        // 1. Close all active positions for this academic year that are NOT in the new selection
+        $employee->employeePositions()
+            ->where('academic_year_id', $validated['academic_year_id'])
+            ->whereNotIn('position_id', $newPositionIds)
+            ->whereNull('end_date')
+            ->update(['end_date' => now(), 'updated_at' => now()]);
+
+        // 2. Loop through each selected position and either update existing or attach
+        foreach ($newPositionIds as $positionId) {
+            $position = Position::find($positionId);
+            $isWaliKelas = $position && (
+                stripos($position->position_code, 'WAKEL') !== false || 
+                stripos($position->position_code, 'WALIKELAS') !== false
+            );
+            $classroomId = ($isWaliKelas && $request->filled('classroom_id')) ? $validated['classroom_id'] : null;
+            $isPrimary = ($positionId == $validated['primary_position_id']);
+
+            // Priority A: Check if a record exists for this EXACT (position_id, start_date) for this employee
+            // This prevents unique(['employee_id', 'position_id', 'start_date']) collision!
+            $existingExactDate = $employee->employeePositions()
+                ->where('position_id', $positionId)
+                ->where('start_date', $validated['position_start_date'])
+                ->first();
+
+            if ($existingExactDate) {
+                $existingExactDate->update([
+                    'academic_year_id' => $validated['academic_year_id'],
+                    'semester' => $semester,
+                    'end_date' => null, // Reactivate
+                    'sk_number' => $validated['sk_number'],
+                    'sk_date' => $validated['sk_date'],
+                    'is_primary' => $isPrimary,
+                    'classroom_id' => $classroomId,
+                    'updated_at' => now(),
+                ]);
+            } else {
+                // Priority B: Check if there is an existing record for this academic_year_id & position_id
+                $existingYearRecord = $employee->employeePositions()
+                    ->where('academic_year_id', $validated['academic_year_id'])
+                    ->where('position_id', $positionId)
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                if ($existingYearRecord) {
+                    $existingYearRecord->update([
+                        'start_date' => $validated['position_start_date'],
+                        'end_date' => null, // Reactivate
+                        'sk_number' => $validated['sk_number'],
+                        'sk_date' => $validated['sk_date'],
+                        'is_primary' => $isPrimary,
+                        'classroom_id' => $classroomId,
+                        'updated_at' => now(),
+                    ]);
+                } else {
+                    // Priority C: Check if there is any active position_id without end_date that we can reuse
+                    $existingActive = $employee->employeePositions()
+                        ->where('position_id', $positionId)
+                        ->whereNull('end_date')
+                        ->first();
+
+                    if ($existingActive) {
+                        $existingActive->update([
+                            'academic_year_id' => $validated['academic_year_id'],
+                            'semester' => $semester,
+                            'start_date' => $validated['position_start_date'],
+                            'sk_number' => $validated['sk_number'],
+                            'sk_date' => $validated['sk_date'],
+                            'is_primary' => $isPrimary,
+                            'classroom_id' => $classroomId,
+                            'updated_at' => now(),
+                        ]);
+                    } else {
+                        // Attach brand new record
+                        $employee->positions()->attach($positionId, [
+                            'academic_year_id' => $validated['academic_year_id'],
+                            'semester' => $semester,
+                            'start_date' => $validated['position_start_date'],
+                            'end_date' => null,
+                            'sk_number' => $validated['sk_number'],
+                            'sk_date' => $validated['sk_date'],
+                            'is_primary' => $isPrimary,
+                            'classroom_id' => $classroomId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
+            }
+        }
+
+        // 3. Check if wali kelas position is assigned, and update classroom's homeroom_teacher_id
+        $waliKelasPosition = Position::whereRaw('LOWER(position_name) LIKE ?', ['%wali kelas%'])->first();
+        if ($waliKelasPosition && in_array($waliKelasPosition->id, $newPositionIds)) {
+            if ($request->filled('classroom_id')) {
+                $classroom = Classroom::find($validated['classroom_id']);
+                if ($classroom && $classroom->school_id == $employee->school_id) {
+                    $classroom->update(['homeroom_teacher_id' => $employee->teacher->id ?? null]);
+                }
+            }
+        }
     }
 }

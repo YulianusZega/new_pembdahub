@@ -16,13 +16,20 @@ class PerformanceEvaluationController extends Controller
         $user = auth()->user();
         
         $academicYears = AcademicYear::orderBy('start_date', 'desc')->get();
-        $semesters = Semester::orderBy('start_date', 'asc')->get();
-        
         $currentYear = AcademicYear::where('is_active', 1)->first();
         $currentSemester = Semester::where('is_active', 1)->first();
         
         $selectedYearId = $request->input('academic_year_id', $currentYear ? $currentYear->id : null);
+        
+        // Filter semesters by the selected academic year to prevent duplicate/double options from all years
+        $semesters = Semester::when($selectedYearId, function($q) use ($selectedYearId) {
+            return $q->where('academic_year_id', $selectedYearId);
+        })->orderBy('semester_number', 'asc')->orderBy('start_date', 'asc')->get();
+        
         $selectedSemesterId = $request->input('semester_id', $currentSemester ? $currentSemester->id : null);
+        if ($semesters->isNotEmpty() && (!$selectedSemesterId || !$semesters->contains('id', $selectedSemesterId))) {
+            $selectedSemesterId = $semesters->where('is_active', 1)->first()->id ?? $semesters->first()->id;
+        }
         
         $query = PerformanceContract::with(['employee', 'position', 'evaluations' => function($q) use ($selectedSemesterId) {
                 $q->where('semester_id', $selectedSemesterId);

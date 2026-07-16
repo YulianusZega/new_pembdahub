@@ -15,10 +15,10 @@
     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
         <form method="GET" action="{{ route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Pelajaran (Target)</label>
-                <select name="academic_year_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                <label class="block text-sm font-semibold text-gray-900 !text-gray-900 mb-1">Tahun Pelajaran (Target)</label>
+                <select name="academic_year_id" onchange="this.form.submit()" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm text-gray-900 !text-gray-900 bg-white !bg-white font-medium">
                     @foreach($academicYears as $year)
-                        <option value="{{ $year->id }}" {{ $selectedYearId == $year->id ? 'selected' : '' }}>
+                        <option value="{{ $year->id }}" {{ $selectedYearId == $year->id ? 'selected' : '' }} class="text-gray-900 !text-gray-900 bg-white">
                             {{ $year->name }}
                         </option>
                     @endforeach
@@ -26,10 +26,10 @@
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Semester (Penilaian)</label>
-                <select name="semester_id" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                <label class="block text-sm font-semibold text-gray-900 !text-gray-900 mb-1">Semester (Penilaian)</label>
+                <select name="semester_id" onchange="this.form.submit()" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm text-gray-900 !text-gray-900 bg-white !bg-white font-medium">
                     @foreach($semesters as $semester)
-                        <option value="{{ $semester->id }}" {{ $selectedSemesterId == $semester->id ? 'selected' : '' }}>
+                        <option value="{{ $semester->id }}" {{ $selectedSemesterId == $semester->id ? 'selected' : '' }} class="text-gray-900 !text-gray-900 bg-white">
                             {{ $semester->name }} ({{ \Carbon\Carbon::parse($semester->start_date)->format('M Y') }} - {{ \Carbon\Carbon::parse($semester->end_date)->format('M Y') }})
                         </option>
                     @endforeach
@@ -37,8 +37,8 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Cari Guru</label>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / NIP" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                <label class="block text-sm font-semibold text-gray-900 !text-gray-900 mb-1">Cari Guru</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Nama / NIP" class="w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm text-gray-900 !text-gray-900 bg-white !bg-white font-medium">
             </div>
 
             <div class="flex items-end gap-2">

@@ -148,7 +148,7 @@
                         </td>
                         <td class="px-4 py-3">
                             @php
-                                $positions = $employee->employeePositions;
+                                $positions = $employee->employeePositions->sortByDesc('is_primary');
                                 $totalAllowance = 0;
                             @endphp
                             @if($positions->isNotEmpty())
@@ -231,7 +231,12 @@
                         </td>
                         @endif
                         <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="flex items-center justify-center gap-1">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <a href="{{ route('admin.assignments.positions.create', ['employee_id' => $employee->id]) }}" 
+                                   class="px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg flex items-center gap-1 text-xs font-semibold shadow transition-all" 
+                                   title="Tambah Jabatan kepada {{ $employee->full_name }}">
+                                    <i class="fas fa-plus text-[10px]"></i> Jabatan
+                                </a>
                                 <a href="{{ route('admin.assignments.positions.edit', $employee->id) }}" 
                                    class="w-8 h-8 bg-amber-100 hover:bg-amber-200 text-amber-600 rounded-lg flex items-center justify-center transition-colors" 
                                    title="Edit Penugasan">

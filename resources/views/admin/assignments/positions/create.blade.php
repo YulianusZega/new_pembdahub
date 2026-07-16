@@ -218,7 +218,7 @@
                             @if(isset($classrooms))
                                 @foreach($classrooms as $classroom)
                                     <option value="{{ $classroom->id }}" {{ old('classroom_id') == $classroom->id ? 'selected' : '' }}>
-                                        {{ $classroom->class_name }} ({{ $classroom->grade_level }})
+                                        {{ $classroom->class_name }}
                                     </option>
                                 @endforeach
                             @endif

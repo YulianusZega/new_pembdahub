@@ -35,6 +35,7 @@ class PositionAssignmentController extends Controller
             $q->where('academic_year_id', $selectedYearId);
             $q->whereNull('end_date'); // Only show active positions
             $q->with('position');
+            $q->orderBy('is_primary', 'desc')->orderBy('start_date', 'desc')->orderBy('id', 'desc');
         }])
         ->where('employee_type', 'guru');
         

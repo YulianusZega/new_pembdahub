@@ -128,6 +128,8 @@ try {
                 'dudi_id' => $dudi->id,
                 'teacher_id' => $teacher->id,
                 'shift' => 'Shift A',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => now()->addMonths(4)->format('Y-m-d'),
                 'is_perangkat_ready' => true,
                 'perangkat_file_path' => $pdfPath
             ]

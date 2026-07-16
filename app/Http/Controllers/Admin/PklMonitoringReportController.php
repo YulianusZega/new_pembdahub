@@ -44,13 +44,15 @@ class PklMonitoringReportController extends Controller
         $placementsQuery = PklPlacement::with('dudi')
             ->where('teacher_id', $teacher->id);
             
-        if ($activeYear) {
-            $placementsQuery->where('academic_year_id', $activeYear->id);
-        }
-            
-        $placements = $placementsQuery->select('dudi_id', 'shift', DB::raw('count(*) as total_students'), DB::raw('MAX(is_perangkat_ready) as is_perangkat_ready'), DB::raw('MAX(perangkat_file_path) as perangkat_file_path'))
-            ->groupBy('dudi_id', 'shift')
-            ->get();
+        $placements = PklPlacement::with(['dudi', 'student.classroom'])
+            ->where('teacher_id', $teacher->id)
+            ->when($activeYear, function($q) use ($activeYear) {
+                $q->where('academic_year_id', $activeYear->id);
+            })
+            ->get()
+            ->groupBy(function($item) {
+                return $item->dudi_id . '|' . $item->shift;
+            });
 
         $monitorings = PklMonitoring::with('dudi')
             ->where('teacher_id', $teacher->id)

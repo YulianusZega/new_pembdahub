@@ -44,11 +44,16 @@
                     @foreach($placements as $placement)
                         <div class="p-5 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
                             <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                                <div>
-                                    <h4 class="font-bold text-slate-800">{{ $placement->student->user->name ?? 'Nama Siswa' }}</h4>
-                                    <p class="text-xs text-slate-500">{{ $placement->student->nisn ?? '-' }} &bull; {{ $placement->student->classroom->class_name ?? '-' }}</p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full overflow-hidden border border-slate-200 shrink-0">
+                                        <img src="{{ $placement->student->photo_url ?? asset('images/default-avatar.png') }}" class="w-full h-full object-cover" alt="Foto Siswa">
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800">{{ $placement->student->full_name ?? 'Nama Siswa' }}</h4>
+                                        <p class="text-xs text-slate-500">{{ $placement->student->nisn ?? '-' }} &bull; {{ $placement->student->classroom->class_name ?? '-' }}</p>
+                                    </div>
                                 </div>
-                                <a href="{{ route('guru.pkl.show', $placement->id) }}" class="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-xs font-semibold transition-colors" target="_blank">
+                                <a href="{{ route('guru.pkl.show', $placement->id) }}" class="px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-xs font-semibold transition-colors shrink-0" target="_blank">
                                     <i class="fas fa-book-open mr-1"></i> Buka Logbook Lengkap
                                 </a>
                             </div>

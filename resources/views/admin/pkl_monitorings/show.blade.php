@@ -28,14 +28,15 @@
                     <span class="px-2.5 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full">{{ count($placements) }}</span>
                 </div>
                 <div class="divide-y divide-slate-100">
-                    @forelse($placements as $place)
-                        <div class="p-4 hover:bg-slate-50 transition-colors">
+                    @forelse($placements as $group)
+                        @php $place = $group->first(); @endphp
+                        <div class="p-4 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-bold text-slate-800 line-clamp-1">{{ $place->dudi->name ?? 'Unknown DUDI' }}</h4>
                             </div>
                             <div class="mt-2 text-xs text-slate-600 space-y-1">
                                 <p><i class="fas fa-clock w-4 text-slate-400"></i> Shift: {{ $place->shift ?: '-' }}</p>
-                                <p><i class="fas fa-users w-4 text-slate-400"></i> {{ $place->total_students }} Siswa</p>
+                                <p><i class="fas fa-users w-4 text-slate-400"></i> {{ $group->count() }} Siswa</p>
                                 <p>
                                     @if($place->is_perangkat_ready)
                                         @if(isset($place->perangkat_file_path))
@@ -49,6 +50,21 @@
                                         <span class="text-amber-600"><i class="fas fa-exclamation-triangle w-4"></i> Perangkat Belum Siap</span>
                                     @endif
                                 </p>
+                            </div>
+                            
+                            <div class="mt-3 pt-3 border-t border-slate-100 space-y-2">
+                                <p class="text-xs font-semibold text-slate-500 mb-2">Daftar Siswa:</p>
+                                @foreach($group as $studentPlacement)
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full overflow-hidden border border-slate-200 shrink-0">
+                                            <img src="{{ $studentPlacement->student->photo_url ?? asset('images/default-avatar.png') }}" class="w-full h-full object-cover" alt="Foto">
+                                        </div>
+                                        <div class="text-xs">
+                                            <span class="font-semibold text-slate-700 block">{{ $studentPlacement->student->full_name ?? 'Siswa' }}</span>
+                                            <span class="text-[10px] text-slate-500">{{ $studentPlacement->student->classroom->class_name ?? '-' }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
                     @empty

@@ -156,28 +156,30 @@ try {
     }
     echo "Penempatan PKL dan Logbook Siswa berhasil dibuat.\n";
 
-    // 5. Buat 1 Laporan Monitoring Guru
-    $monImgPath = 'pkl_monitorings/photos/dummy_mon_' . time() . '.png';
-    createDummyImage("FOTO KUNJUNGAN MONITORING\nLokasi: BENGKELIN\nOleh: " . $teacher->full_name, $monImgPath);
+    // 5. Buat 3 Laporan Monitoring Guru
+    for ($w=1; $w<=3; $w++) {
+        $monImgPath = 'pkl_monitorings/photos/dummy_mon_' . $w . '_' . time() . '.png';
+        createDummyImage("FOTO KUNJUNGAN MONITORING\nLokasi: BENGKELIN\nMinggu ke-$w\nOleh: " . $teacher->full_name, $monImgPath);
 
-    $monPdfPath = 'pkl_monitorings/letters/dummy_surat_' . time() . '.pdf';
-    createDummyPdf("SURAT TUGAS MONITORING BENGKELIN", $monPdfPath);
+        $monPdfPath = 'pkl_monitorings/letters/dummy_surat_' . $w . '_' . time() . '.pdf';
+        createDummyPdf("SURAT TUGAS MONITORING BENGKELIN MINGGU KE-$w", $monPdfPath);
 
-    PklMonitoring::firstOrCreate(
-        [
-            'teacher_id' => $teacher->id,
-            'dudi_id' => $dudi->id,
-            'shift' => 'Shift A',
-            'monitoring_date' => now()->subDays(1)->format('Y-m-d')
-        ],
-        [
-            'notes' => 'Siswa dalam kondisi baik. Pihak mekanik BENGKELIN memberikan apresiasi atas kedisiplinan siswa.',
-            'status' => 'submitted',
-            'photo_path' => $monImgPath,
-            'assignment_letter_path' => $monPdfPath
-        ]
-    );
-    echo "Laporan Monitoring Guru berhasil dibuat.\n";
+        PklMonitoring::firstOrCreate(
+            [
+                'teacher_id' => $teacher->id,
+                'dudi_id' => $dudi->id,
+                'shift' => 'Shift A',
+                'monitoring_date' => now()->subWeeks(4-$w)->format('Y-m-d')
+            ],
+            [
+                'notes' => 'Monitoring minggu ke-' . $w . '. Siswa dalam kondisi baik. Pihak mekanik BENGKELIN memberikan apresiasi atas kedisiplinan siswa.',
+                'status' => 'submitted',
+                'photo_path' => $monImgPath,
+                'assignment_letter_path' => $monPdfPath
+            ]
+        );
+    }
+    echo "Laporan Monitoring Guru berhasil dibuat (3 kunjungan).\n";
 
     echo "\nSIMULASI SELESAI! Silakan login sebagai Guru: " . $teacher->full_name . " atau Yayasan/Admin.\n";
     echo "</pre>";

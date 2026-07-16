@@ -203,7 +203,7 @@
                         </label>
                         <input type="date" name="position_start_date" id="position_start_date" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('position_start_date') border-red-500 @enderror" 
-                               value="{{ old('position_start_date') }}" required>
+                               value="{{ old('position_start_date', isset($currentAssignment) && $currentAssignment->start_date ? \Carbon\Carbon::parse($currentAssignment->start_date)->format('Y-m-d') : '') }}" required>
                         @error('position_start_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -215,7 +215,7 @@
                         </label>
                         <input type="text" name="sk_number" id="sk_number" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('sk_number') border-red-500 @enderror" 
-                               value="{{ old('sk_number') }}"
+                               value="{{ old('sk_number', $currentAssignment->sk_number ?? '') }}"
                                placeholder="Contoh: 001/SK/2024">
                         @error('sk_number')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -228,7 +228,7 @@
                         </label>
                         <input type="date" name="sk_date" id="sk_date" 
                                class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent @error('sk_date') border-red-500 @enderror" 
-                               value="{{ old('sk_date') }}">
+                               value="{{ old('sk_date', isset($currentAssignment) && $currentAssignment->sk_date ? \Carbon\Carbon::parse($currentAssignment->sk_date)->format('Y-m-d') : '') }}">
                         @error('sk_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror

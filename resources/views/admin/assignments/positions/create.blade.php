@@ -152,8 +152,8 @@
                                 <input type="checkbox" 
                                        name="positions[]" 
                                        value="{{ $position->id }}" 
-                                       class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 {{ $isDisabled ? 'cursor-not-allowed' : '' }}"
-                                       {{ in_array($position->id, old('positions', [])) ? 'checked' : '' }}
+                                       class="position-checkbox w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500 focus:ring-2 {{ $isDisabled ? 'cursor-not-allowed' : '' }}"
+                                       {{ in_array($position->id, old('positions', $currentPositions ?? [])) ? 'checked' : '' }}
                                        {{ $isDisabled ? 'disabled' : '' }}>
                             </div>
                             <div class="ml-3 flex-1">
@@ -233,7 +233,7 @@
                         <input type="date" 
                                name="position_start_date" 
                                id="position_start_date" 
-                               value="{{ old('position_start_date', date('Y-m-d')) }}"
+                               value="{{ old('position_start_date', isset($currentAssignment) && $currentAssignment->start_date ? \Carbon\Carbon::parse($currentAssignment->start_date)->format('Y-m-d') : date('Y-m-d')) }}"
                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 @error('position_start_date') border-red-500 @enderror" 
                                required>
                         @error('position_start_date')
@@ -248,7 +248,7 @@
                         <input type="text" 
                                name="sk_number" 
                                id="sk_number" 
-                               value="{{ old('sk_number') }}"
+                               value="{{ old('sk_number', $currentAssignment->sk_number ?? '') }}"
                                placeholder="Contoh: SK-001/YPP/2024"
                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 @error('sk_number') border-red-500 @enderror">
                         @error('sk_number')
@@ -263,7 +263,7 @@
                         <input type="date" 
                                name="sk_date" 
                                id="sk_date" 
-                               value="{{ old('sk_date') }}"
+                               value="{{ old('sk_date', isset($currentAssignment) && $currentAssignment->sk_date ? \Carbon\Carbon::parse($currentAssignment->sk_date)->format('Y-m-d') : '') }}"
                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 @error('sk_date') border-red-500 @enderror">
                         @error('sk_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Initial primary position from server
-    const initialPrimaryId = String('{{ old("primary_position_id") ?? "" }}');
+    const initialPrimaryId = String('{{ old("primary_position_id") ?? (isset($currentAssignment) ? $selectedEmployee->employeePositions()->where("academic_year_id", $currentYear->id ?? 0)->whereNull("end_date")->where("is_primary", 1)->value("position_id") : "") }}');
 
     // Update primary position options when checkboxes change
     function updatePrimaryOptions() {

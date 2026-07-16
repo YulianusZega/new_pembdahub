@@ -244,6 +244,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Alias for isKetuaYayasan()
+     */
+    public function isYayasan(): bool
+    {
+        return $this->isKetuaYayasan();
+    }
+
+    /**
      * Check if user is Bendahara (Treasurer)
      */
     public function isBendahara(): bool

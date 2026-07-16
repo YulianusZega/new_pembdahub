@@ -37,7 +37,7 @@ class PerformanceEvaluationController extends Controller
             ->where('status', PerformanceContract::STATUS_APPROVED_BY_YAYASAN)
             ->where('academic_year_id', $selectedYearId);
             
-        if (!$user->isSuperAdmin() && !$user->isYayasan()) {
+        if (!$user->isSuperAdmin() && !$user->isKetuaYayasan()) {
             $query->where('school_id', $user->school_id);
         }
         
@@ -65,7 +65,7 @@ class PerformanceEvaluationController extends Controller
         $semester = Semester::findOrFail($semesterId);
         
         // Authorization
-        if (!$user->isSuperAdmin() && !$user->isYayasan() && $contract->school_id !== $user->school_id) {
+        if (!$user->isSuperAdmin() && !$user->isKetuaYayasan() && $contract->school_id !== $user->school_id) {
             abort(403);
         }
 
@@ -82,13 +82,13 @@ class PerformanceEvaluationController extends Controller
         $contract = PerformanceContract::findOrFail($contractId);
         $semester = Semester::findOrFail($semesterId);
         
-        if (!$user->isSuperAdmin() && !$user->isYayasan() && $contract->school_id !== $user->school_id) {
+        if (!$user->isSuperAdmin() && !$user->isKetuaYayasan() && $contract->school_id !== $user->school_id) {
             abort(403);
         }
         
         if (!$request->filled('action')) {
             $request->merge([
-                'action' => ($user->isYayasan() || $user->isSuperAdmin()) ? 'approve_yayasan' : 'submit_yayasan'
+                'action' => ($user->isKetuaYayasan() || $user->isSuperAdmin()) ? 'approve_yayasan' : 'submit_yayasan'
             ]);
         }
         
@@ -107,7 +107,7 @@ class PerformanceEvaluationController extends Controller
         if ($validated['action'] === 'submit_yayasan') {
             $status = PerformanceEvaluation::STATUS_SUBMITTED_TO_YAYASAN;
         } elseif ($validated['action'] === 'approve_yayasan') {
-            if (!$user->isYayasan() && !$user->isSuperAdmin()) {
+            if (!$user->isKetuaYayasan() && !$user->isSuperAdmin()) {
                 abort(403, 'Hanya Yayasan yang dapat menyetujui evaluasi.');
             }
             $status = PerformanceEvaluation::STATUS_APPROVED_BY_YAYASAN;

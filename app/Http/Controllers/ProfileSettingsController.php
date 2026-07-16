@@ -151,7 +151,7 @@ class ProfileSettingsController extends Controller
         }
         
         // Super admin murni tanpa relasi guru/pegawai/siswa tidak memiliki tabel profil detail
-        if (!$profileUpdated && !$user->isSuperAdmin() && !$user->isYayasan()) {
+        if (!$profileUpdated && !$user->isSuperAdmin() && !$user->isKetuaYayasan()) {
             return back()->withErrors(['biodata' => 'Data profil detail tidak ditemukan.']);
         }
 

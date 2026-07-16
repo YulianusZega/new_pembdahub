@@ -121,6 +121,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <form action="{{ route((auth()->user()->isKetuaYayasan() && request()->routeIs('yayasan.*') ? 'yayasan.' : 'admin.') . 'performance_evaluations.store', [$contract->id, $semester->id]) }}" method="POST">
                     @csrf
+                    <input type="hidden" id="form_action_input" name="action" value="{{ auth()->user()->isKetuaYayasan() ? 'approve_yayasan' : 'submit_yayasan' }}">
                     
                     @php
                         $isReadOnly = false;
@@ -180,17 +181,17 @@
                         <div class="flex gap-3">
                             @if(!$isReadOnly)
                                 @if(auth()->user()->isKetuaYayasan())
-                                    <button type="submit" name="action" value="draft" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+                                    <button type="submit" onclick="document.getElementById('form_action_input').value='draft'" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
                                         Simpan Draft
                                     </button>
-                                    <button type="submit" name="action" value="approve_yayasan" class="px-6 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    <button type="submit" onclick="document.getElementById('form_action_input').value='approve_yayasan'" class="px-6 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                         <i class="fas fa-check-circle mr-1"></i> Simpan & ACC (Final)
                                     </button>
                                 @else
-                                    <button type="submit" name="action" value="draft" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+                                    <button type="submit" onclick="document.getElementById('form_action_input').value='draft'" class="px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
                                         Simpan Draft
                                     </button>
-                                    <button type="submit" name="action" value="submit_yayasan" class="px-6 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    <button type="submit" onclick="document.getElementById('form_action_input').value='submit_yayasan'" class="px-6 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                         <i class="fas fa-paper-plane mr-1"></i> Ajukan ke Yayasan
                                     </button>
                                 @endif

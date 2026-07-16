@@ -86,6 +86,12 @@ class PerformanceEvaluationController extends Controller
             abort(403);
         }
         
+        if (!$request->filled('action')) {
+            $request->merge([
+                'action' => ($user->isYayasan() || $user->isSuperAdmin()) ? 'approve_yayasan' : 'submit_yayasan'
+            ]);
+        }
+        
         $validated = $request->validate([
             'scores' => 'required|array',
             'scores.*' => 'required|numeric|min:1|max:5',

@@ -72,6 +72,8 @@ class Employee extends Model
     {
         return $this->belongsToMany(Position::class, 'employee_positions')
             ->withPivot([
+                'academic_year_id',
+                'classroom_id',
                 'start_date',
                 'end_date',
                 'sk_number',

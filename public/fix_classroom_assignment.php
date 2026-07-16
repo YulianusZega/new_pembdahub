@@ -90,29 +90,41 @@ if ($action === 'fix_markus' || $action === 'clean_all') {
 
             // Also check classrooms table homeroom_teacher_id synchronization
             if ($emp->teacher) {
-                $latestClassroomId = DB::table('employee_positions')
+                // Check if classrooms table already has a class assigned to this teacher right now
+                $masterClassroom = Classroom::where('homeroom_teacher_id', $emp->teacher->id)
+                    ->where('academic_year_id', $yearId)
+                    ->orderBy('updated_at', 'desc')
+                    ->first();
+
+                $latestPivotRow = DB::table('employee_positions')
                     ->where('employee_id', $emp->id)
                     ->whereIn('position_id', $waliKelasPosIds)
                     ->where('academic_year_id', $yearId)
                     ->whereNull('end_date')
                     ->orderBy('updated_at', 'desc')
                     ->orderBy('id', 'desc')
-                    ->value('classroom_id');
+                    ->first();
 
-                if ($latestClassroomId) {
+                if ($masterClassroom && $latestPivotRow && $latestPivotRow->classroom_id != $masterClassroom->id) {
+                    // Sync pivot row to match the master classroom that was just assigned
+                    DB::table('employee_positions')
+                        ->where('id', $latestPivotRow->id)
+                        ->update(['classroom_id' => $masterClassroom->id, 'updated_at' => now()]);
+                    echo "<li>✔ Memperbarui kelas pada riwayat jabatan (Pivot ID: {$latestPivotRow->id}) menjadi <b>{$masterClassroom->class_name}</b> (ID: {$masterClassroom->id}) sesuai tabel master kelas.</li>";
+                } elseif ($latestPivotRow && $latestPivotRow->classroom_id && !$masterClassroom) {
                     // Clear from any other classroom in active year
                     DB::table('classrooms')
                         ->where('homeroom_teacher_id', $emp->teacher->id)
                         ->where('academic_year_id', $yearId)
-                        ->where('id', '!=', $latestClassroomId)
+                        ->where('id', '!=', $latestPivotRow->classroom_id)
                         ->update(['homeroom_teacher_id' => null]);
 
                     // Assign to latestClassroomId
                     DB::table('classrooms')
-                        ->where('id', $latestClassroomId)
+                        ->where('id', $latestPivotRow->classroom_id)
                         ->update(['homeroom_teacher_id' => $emp->teacher->id]);
 
-                    $cls = Classroom::find($latestClassroomId);
+                    $cls = Classroom::find($latestPivotRow->classroom_id);
                     echo "<li>✔ Sinkronisasi kelas di tabel classrooms untuk <b>{$emp->full_name}</b> -> <b>" . ($cls ? $cls->class_name : 'Unknown') . "</b></li>";
                 }
             }

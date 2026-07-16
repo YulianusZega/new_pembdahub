@@ -14,6 +14,7 @@ class EmployeePosition extends Model
         'employee_id',
         'position_id',
         'academic_year_id',
+        'classroom_id',
         'semester',
         'start_date',
         'end_date',

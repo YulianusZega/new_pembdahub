@@ -252,13 +252,19 @@ class PositionAssignmentController extends Controller
                 if (!$position) continue;
                 
                 $posName = strtolower($position->position_name);
+                $posCode = strtolower($position->position_code ?? '');
                 
-                // Pengecualian: Kepsek, PKS, Wali Kelas
+                // Pengecualian: Kepsek, PKS, Wali Kelas, KTU, Bendahara
                 $isExempt = str_contains($posName, 'kepala sekolah') || 
                             str_contains($posName, 'wakil kepala sekolah') || 
                             str_contains($posName, 'pks ') || 
                             $posName == 'pks' ||
-                            str_contains($posName, 'wali kelas');
+                            str_contains($posName, 'wali kelas') ||
+                            str_contains($posName, 'kepala tata usaha') ||
+                            str_contains($posName, 'ktu') ||
+                            $posCode == 'ktu' ||
+                            str_contains($posName, 'bendahara') ||
+                            str_contains($posCode, 'bendahara');
                             
                 if (!$isExempt) {
                     // Wajib punya Perjanjian Kinerja Jabatan (Tipe 4) untuk posisi ini yang di-ACC Yayasan

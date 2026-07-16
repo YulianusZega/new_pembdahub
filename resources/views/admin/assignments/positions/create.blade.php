@@ -122,7 +122,7 @@
                         <i class="fas fa-exclamation-triangle text-amber-500 text-xl mt-0.5"></i>
                         <div class="text-sm text-amber-900">
                             <h4 class="font-bold text-base mb-1">Syarat Penugasan Jabatan (Khusus SMK)</h4>
-                            <p>Penugasan jabatan <b>selain</b> Kepala Sekolah, Wakil Kepala Sekolah, PKS, dan Wali Kelas <b>WAJIB</b> memiliki Perjanjian Kinerja Jabatan yang telah disetujui Yayasan. Jabatan yang belum di-ACC akan otomatis digembok.</p>
+                            <p>Penugasan jabatan <b>selain</b> Kepala Sekolah, Wakil Kepala Sekolah, PKS, Wali Kelas, KTU, dan Bendahara <b>WAJIB</b> memiliki Perjanjian Kinerja Jabatan yang telah disetujui Yayasan. Jabatan yang belum di-ACC akan otomatis digembok.</p>
                         </div>
                     </div>
                 </div>
@@ -139,11 +139,17 @@
                         @foreach($categoryPositions as $position)
                         @php
                             $posName = strtolower($position->position_name);
+                            $posCode = strtolower($position->position_code ?? '');
                             $isExempt = str_contains($posName, 'kepala sekolah') || 
                                         str_contains($posName, 'wakil kepala sekolah') || 
                                         str_contains($posName, 'pks ') || 
                                         $posName == 'pks' ||
-                                        str_contains($posName, 'wali kelas');
+                                        str_contains($posName, 'wali kelas') ||
+                                        str_contains($posName, 'kepala tata usaha') ||
+                                        str_contains($posName, 'ktu') ||
+                                        $posCode == 'ktu' ||
+                                        str_contains($posName, 'bendahara') ||
+                                        str_contains($posCode, 'bendahara');
                             $hasApprovedContract = in_array($position->id, $approvedContractPositionIds ?? []);
                             $isDisabled = isset($isSMK) && $isSMK && !$isExempt && !$hasApprovedContract;
                         @endphp

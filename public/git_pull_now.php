@@ -29,12 +29,27 @@ echo "--- 4. Sesudah Update ---\n";
 echo "HEAD: " . trim(shell_exec("git -C {$root} rev-parse --short HEAD 2>&1")) . "\n";
 echo shell_exec("git -C {$root} log --oneline -5 2>&1") . "\n";
 
-// 5. Clear cache
+// 5. Clear cache & OPcache
 echo "--- 5. Clear Cache ---\n";
+if (function_exists('opcache_reset')) {
+    if (@opcache_reset()) {
+        echo "OPcache reset: OK\n";
+    } else {
+        echo "OPcache reset: FAILED\n";
+    }
+}
 $viewDir = "{$root}/storage/framework/views/";
 $cleared = 0;
 if (is_dir($viewDir)) {
-    foreach (glob($viewDir . '*.php') as $f) { if (@unlink($f)) $cleared++; }
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($viewDir, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+    foreach ($files as $fileinfo) {
+        if ($fileinfo->isFile() && $fileinfo->getExtension() === 'php') {
+            if (@unlink($fileinfo->getRealPath())) $cleared++;
+        }
+    }
 }
 echo "Views cleared: {$cleared}\n";
 foreach (['config.php','routes-v7.php','packages.php','services.php','events.php'] as $cf) {
@@ -48,6 +63,8 @@ $checks = [
     ['app/Http/Controllers/Admin/ScheduleGridController.php', '$schools->first() ? $schools->first()->id : null', 'ScheduleGrid fix'],
     ['app/Http/Controllers/Admin/TeachingAssignmentController.php', 'Prioritas: (1) teacher', 'TeachingAssignment fix'],
     ['app/Http/Controllers/Admin/TimeSlotController.php', '$schools->first() ? $schools->first()->id : null', 'TimeSlot fix'],
+    ['resources/views/admin/assignments/positions/index.blade.php', 'destroy-single', 'Index view single delete button'],
+    ['app/Http/Controllers/Admin/PositionAssignmentController.php', '$schoolIdForClassrooms', 'PositionAssignmentController classrooms fix'],
 ];
 foreach ($checks as [$file, $marker, $label]) {
     $path = "{$root}/{$file}";

@@ -145,10 +145,19 @@ class PositionAssignmentController extends Controller
         }
         
         // Get classrooms for wali kelas assignment
-        $classrooms = [];
-        if ($selectedEmployee) {
-            $classroomsQuery = Classroom::where('school_id', $selectedEmployee->school_id)
-                ->where('is_active', 1);
+        $classrooms = collect([]);
+        $schoolIdForClassrooms = $selectedEmployee ? $selectedEmployee->school_id : (!$user->isSuperAdmin() ? $user->school_id : null);
+        
+        if ($schoolIdForClassrooms) {
+            $classroomsQuery = Classroom::where('school_id', $schoolIdForClassrooms)->where('is_active', 1);
+            if ($currentYear) {
+                $classroomsQuery->where('academic_year_id', $currentYear->id);
+            }
+            $classrooms = $classroomsQuery->orderBy('grade_level')
+                ->orderBy('class_name')
+                ->get();
+        } elseif ($user->isSuperAdmin()) {
+            $classroomsQuery = Classroom::where('is_active', 1);
             if ($currentYear) {
                 $classroomsQuery->where('academic_year_id', $currentYear->id);
             }

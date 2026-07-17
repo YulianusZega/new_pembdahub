@@ -68,6 +68,15 @@ try {
 
         $action = "-";
         
+        // FORCE SYNC (Hapus log lama dan ulangi proses transfer poin)
+        if ($r->user_id && isset($_GET['force']) && $_GET['force'] == '1') {
+            DB::table('reputation_logs')
+                ->where('reference_type', 'App\Models\StudentCounselingRecord')
+                ->where('reference_id', $r->id)
+                ->delete();
+            $hasLog = false;
+        }
+
         // SYNC OTOMATIS JIKA BELUM ADA POIN
         if (!$hasLog && $r->user_id && isset($_GET['sync']) && $_GET['sync'] == '1') {
             \App\Models\ReputationLog::log($r->user_id, $expectedPoints, 'achievement', $r->title, \App\Models\StudentCounselingRecord::find($r->id));
@@ -90,7 +99,7 @@ try {
     echo "</table>";
 
     if (!isset($_GET['sync'])) {
-        echo "<br><a href='?secret=pembda99&sync=1' class='btn'>⚡ Masukkan Poin yang Tertinggal Sekarang</a>";
+        echo "<br><a href='?secret=pembda99&sync=1&force=1' class='btn'>⚡ Masukkan Poin yang Tertinggal Sekarang (Force Sync)</a>";
     } else {
         echo "<br><a href='https://perguruanpembda.com/admin/counseling' class='btn'>✅ Selesai - Buka Konseling</a>";
     }

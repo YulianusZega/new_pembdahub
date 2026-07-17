@@ -109,7 +109,7 @@
                 </div>
                 <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">Dinas Luar Hari Ini</p>
                 <div class="flex items-end gap-2 mt-1">
-                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_dinas_luar">{{ number_format($dailyStats['terlambat']) }}</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_dinas_luar">{{ number_format($dailyStats['dinas_luar']) }}</h3>
                 </div>
             </div>
         </div>
@@ -212,7 +212,7 @@
                     </div>
                 @endif
                 <div class="space-y-3">
-                    <div id="live_chart_data_container" style="display:none;" data-chart-data="{{ json_encode($chartData) }}" data-cum-hadir="{{ $cumulativeStats['hadir'] }}" data-cum-terlambat="{{ $cumulativeStats['terlambat'] }}" data-cum-izin="{{ $cumulativeStats['izin'] }}" data-cum-sakit="{{ $cumulativeStats['sakit'] }}" data-cum-alpha="{{ $cumulativeStats['alpha'] }}"></div>
+                    <div id="live_chart_data_container" style="display:none;" data-chart-data="{{ json_encode($chartData) }}" data-cum-hadir="{{ $cumulativeStats['hadir'] }}" data-cum-terlambat="{{ $cumulativeStats['dinas_luar'] }}" data-cum-izin="{{ $cumulativeStats['izin'] }}" data-cum-sakit="{{ $cumulativeStats['sakit'] }}" data-cum-alpha="{{ $cumulativeStats['alpha'] }}"></div>
                     <div class="flex items-center justify-between text-sm">
                         <span class="flex items-center gap-2 text-gray-600 font-medium">
                             <span class="w-3 h-3 bg-emerald-500 rounded-full"></span> Hadir
@@ -227,9 +227,9 @@
                     </div>
                     <div class="flex items-center justify-between text-sm">
                         <span class="flex items-center gap-2 text-gray-600 font-medium">
-                            <span class="w-3 h-3 bg-purple-500 rounded-full"></span> Terlambat
+                            <span class="w-3 h-3 bg-purple-500 rounded-full"></span> Dinas Luar
                         </span>
-                        <span class="font-bold text-gray-800 transition-all duration-300" id="live_cum_terlambat">{{ number_format($cumulativeStats['terlambat']) }}</span>
+                        <span class="font-bold text-gray-800 transition-all duration-300" id="live_cum_dinas_luar">{{ number_format($cumulativeStats['dinas_luar']) }}</span>
                     </div>
                     <div class="flex items-center justify-between text-sm">
                         <span class="flex items-center gap-2 text-gray-600 font-medium">
@@ -406,7 +406,7 @@
         });
 
         const cumHadir = {{ $cumulativeStats['hadir'] }};
-        const cumTerlambat = {{ $cumulativeStats['terlambat'] }};
+        const cumDinasLuar = {{ $cumulativeStats['dinas_luar'] }};
         const cumIzin = {{ $cumulativeStats['izin'] }};
         const cumSakit = {{ $cumulativeStats['sakit'] }};
         const cumAlpha = {{ $cumulativeStats['alpha'] }};
@@ -417,9 +417,9 @@
             window.pieChart = new Chart(pieCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Hadir', 'Terlambat', 'Izin', 'Sakit', 'Alpha'],
+                    labels: ['Hadir', 'Dinas Luar', 'Izin', 'Sakit', 'Alpha'],
                     datasets: [{
-                        data: [cumHadir, cumTerlambat, cumIzin, cumSakit, cumAlpha],
+                        data: [cumHadir, cumDinasLuar, cumIzin, cumSakit, cumAlpha],
                         backgroundColor: ['#10b981', '#f97316', '#3b82f6', '#f59e0b', '#ef4444'],
                         borderWidth: 0,
                         hoverOffset: 15
@@ -518,7 +518,7 @@
                 const ds = data.dailyStats;
                 const dailyTotal = ds.total_daily || 1;
                 const hadirPercentage = dailyTotal > 0 ? Math.round((ds.hadir / dailyTotal) * 100 * 10) / 10 : 0;
-                const terlambatPercentage = dailyTotal > 0 ? Math.round((ds.dinas_luar / dailyTotal) * 100 * 10) / 10 : 0;
+                const dinasLuarPercentage = dailyTotal > 0 ? Math.round((ds.dinas_luar / dailyTotal) * 100 * 10) / 10 : 0;
 
                 updateUIElement('live_daily_hadir', ds.hadir);
                 updateUIElement('live_daily_hadir_percentage', hadirPercentage, true);
@@ -535,7 +535,7 @@
                 updateUIElement('live_cumulative_rate', cumulativeRate, true);
                 updateUIElement('live_cum_hadir', cs.hadir);
                 updateUIElement('live_cum_izin', cs.izin);
-                updateUIElement('live_cum_terlambat', cs.terlambat);
+                updateUIElement('live_cum_dinas_luar', cs.dinas_luar);
                 updateUIElement('live_cum_sakit', cs.sakit);
                 updateUIElement('live_cum_alpha', cs.alpha);
 
@@ -555,7 +555,7 @@
                 }
 
                 if (window.pieChart) {
-                    window.pieChart.data.datasets[0].data = [cs.hadir, cs.terlambat, cs.izin, cs.sakit, cs.alpha];
+                    window.pieChart.data.datasets[0].data = [cs.hadir, cs.dinas_luar, cs.izin, cs.sakit, cs.alpha];
                     window.pieChart.update('none');
                 }
 
@@ -589,7 +589,7 @@
 
                 let html = '';
                 feed.forEach(item => {
-                    const badgeClass = item.tipe === 'pulang' ? 'bg-purple-50 text-purple-700 border-orange-100' : (item.tipe === 'terlambat' ? 'bg-yellow-50 text-yellow-700 border-yellow-100' : 'bg-green-50 text-green-700 border-green-100');
+                    const badgeClass = item.tipe === 'cuti' ? 'bg-teal-50 text-teal-700 border-teal-100' : (item.tipe === 'dinas_luar' ? 'bg-yellow-50 text-yellow-700 border-yellow-100' : 'bg-green-50 text-green-700 border-green-100');
                     const viaLabel = item.recorded_via === 'qr_gps' ? 'GPS' : (item.recorded_via === 'qr' ? 'QR Code' : 'RFID');
                     const viaClass = item.recorded_via === 'qr_gps' ? 'bg-purple-50 text-purple-700' : (item.recorded_via === 'qr' ? 'bg-indigo-50 text-indigo-700' : 'bg-blue-50 text-blue-700');
                     

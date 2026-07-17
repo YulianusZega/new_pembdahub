@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Monitoring Absensi Pegawai - Admin')
+@section('title', 'Monitoring Absensi - Admin')
 
 @push('styles')
 <style>
@@ -19,12 +19,14 @@
     <!-- Modern Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div class="flex items-center gap-4">
-            <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                <i class="fas fa-fingerprint text-white text-3xl"></i>
+            <div class="w-16 h-16 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
             </div>
             <div>
                 <div class="flex items-center gap-3">
-                    <h1 class="text-3xl font-bold text-gray-800">Monitoring Absensi Pegawai</h1>
+                    <h1 class="text-3xl font-bold text-gray-800">Monitoring Absensi</h1>
                     <span id="live_status_badge" style="display: none;" class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200 shadow-sm">
                         <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
                         LIVE
@@ -35,50 +37,46 @@
         </div>
 
         <form method="GET" class="flex flex-wrap items-center gap-3">
-            @if(\)
+            @if($isSuperAdmin)
             <div class="min-w-[200px]">
-                <select name="school_id" onchange="this.form.submit()" class="w-full border-gray-200 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 shadow-sm text-sm">
+                <select name="school_id" onchange="this.form.submit()" class="w-full border-gray-200 rounded-xl focus:ring-teal-500 focus:border-teal-500 shadow-sm text-sm">
                     <option value="">Semua Sekolah</option>
-                    @foreach(\ as \)
-                        <option value="{{ \->id }}" {{ \ == \->id ? 'selected' : '' }}>{{ \->name }}</option>
+                    @foreach($schools as $school)
+                        <option value="{{ $school->id }}" {{ $schoolId == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
                     @endforeach
                 </select>
             </div>
             @endif
             <div class="flex items-center bg-white rounded-xl shadow-sm border border-gray-200 px-3 py-1.5">
                 <i class="fas fa-calendar-alt text-gray-400 mr-2 text-sm"></i>
-                <input type="date" name="date" value="{{ \ }}" onchange="this.form.submit()" class="border-none focus:ring-0 text-sm p-0 text-gray-700 font-semibold">
+                <input type="date" name="date" value="{{ $date }}" onchange="this.form.submit()" class="border-none focus:ring-0 text-sm p-0 text-gray-700 font-semibold">
             </div>
-            <a href="{{ route('admin.employees.attendance.index') }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl transition-all">Kembali</a>
         </form>
     </div>
 
     <!-- Cumulative Overview Section -->
-    <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-8 shadow-xl text-white mb-8 relative overflow-hidden">
+    <div class="bg-gradient-to-r from-teal-600 to-emerald-700 rounded-2xl p-8 shadow-xl text-white mb-8 relative overflow-hidden">
         <div class="absolute top-0 right-0 -m-12 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div class="max-w-xl">
                 <h2 class="text-2xl font-bold mb-2 flex items-center gap-3">
-                    <i class="fas fa-chart-pie text-indigo-300"></i> Rekap Kehadiran Kumulatif (Bulan Ini)
+                    <i class="fas fa-chart-pie text-teal-300"></i> Rekap Kehadiran Kumulatif
                 </h2>
-                <p class="text-indigo-50 text-sm leading-relaxed opacity-90">
-                    Berdasarkan formula: <span class="font-mono bg-black/20 px-2 py-0.5 rounded">(Hadir / Hari Kerja) * 100%</span>. 
-                    Dimana <span class="font-bold">Hari Kerja</span> dihitung sejak tanggal 1 awal bulan sampai hari ini (tanpa Sabtu/Minggu).
+                <p class="text-teal-50 text-sm leading-relaxed opacity-90">
+                    Berdasarkan formula: <span class="font-mono bg-black/20 px-2 py-0.5 rounded">(Hadir / Hari Aktif Sekolah) * 100%</span>. 
+                    Dimana <span class="font-bold">Hari Aktif Sekolah</span> adalah hari efektif belajar sejak awal tahun ajaran sampai hari ini.
                 </p>
                 <div class="mt-4 flex flex-wrap gap-4 text-xs font-bold uppercase tracking-wider">
                     <span class="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg border border-gray-100">
-                        <i class="fas fa-calendar-day text-indigo-300"></i> Total Hari Kerja: {{ \['z'] }} Hari
-                    </span>
-                    <span class="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg border border-gray-100">
-                        <i class="fas fa-users text-indigo-300"></i> Total Pegawai Aktif: {{ \['active_employees'] }} Orang
+                        <i class="fas fa-calendar-day text-teal-300"></i> Total Hari Aktif Sekolah: {{ $cumulativeStats['z'] }} Hari
                     </span>
                 </div>
             </div>
             <div class="flex items-end gap-1">
                 <div class="text-right">
-                    <p class="text-xs font-bold text-indigo-200 uppercase tracking-widest mb-1">Total Persentase</p>
+                    <p class="text-xs font-bold text-teal-200 uppercase tracking-widest mb-1">Total Persentase</p>
                     <h3 class="text-6xl font-bold leading-none">
-                        <span id="live_cumulative_rate" class="transition-all duration-300">{{ \['z'] > 0 ? round((\['hadir'] / (\['z'] * (\['active_employees'] ?: 1))) * 100, 1) : 0 }}</span>%
+                        <span id="live_cumulative_rate" class="transition-all duration-300">{{ $cumulativeStats['z'] > 0 ? round(($cumulativeStats['hadir'] / ($cumulativeStats['z'] * ($classroomStats->sum('employees_count') ?: 1))) * 100, 1) : 0 }}</span>%
                     </h3>
                 </div>
             </div>
@@ -96,22 +94,22 @@
                 </div>
                 <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">Hadir Hari Ini</p>
                 <div class="flex items-end gap-2 mt-1">
-                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_hadir">{{ number_format(\['hadir']) }}</h3>
-                    <span class="text-xs font-bold text-green-600 mb-1.5 transition-all duration-300" id="live_daily_hadir_percentage">{{ \['total_daily'] > 0 ? round((\['hadir'] / \['total_daily']) * 100, 1) : 0 }}%</span>
+                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_hadir">{{ number_format($dailyStats['hadir']) }}</h3>
+                    <span class="text-xs font-bold text-green-600 mb-1.5 transition-all duration-300" id="live_daily_hadir_percentage">{{ $dailyStats['total_daily'] > 0 ? round(($dailyStats['hadir'] / $dailyStats['total_daily']) * 100, 1) : 0 }}%</span>
                 </div>
             </div>
         </div>
 
-        <!-- Dinas Luar -->
+        <!-- Terlambat -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition group overflow-hidden relative">
             <div class="absolute -right-4 -top-4 w-20 h-20 bg-purple-50 rounded-full group-hover:scale-110 transition duration-500 opacity-50"></div>
             <div class="relative">
                 <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4">
                     <i class="fas fa-car"></i>
                 </div>
-                <p class="text-gray-500 text-[11px] font-bold uppercase tracking-wider">Dinas Luar Hari Ini</p>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">Dinas Luar Hari Ini</p>
                 <div class="flex items-end gap-2 mt-1">
-                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_dinas_luar">{{ number_format(\['dinas_luar']) }}</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_dinas_luar">{{ number_format($dailyStats['terlambat']) }}</h3>
                 </div>
             </div>
         </div>
@@ -125,7 +123,7 @@
                 </div>
                 <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">Izin Hari Ini</p>
                 <div class="flex items-end gap-2 mt-1">
-                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_izin">{{ number_format(\['izin']) }}</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_izin">{{ number_format($dailyStats['izin']) }}</h3>
                 </div>
             </div>
         </div>
@@ -139,7 +137,7 @@
                 </div>
                 <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">Sakit Hari Ini</p>
                 <div class="flex items-end gap-2 mt-1">
-                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_sakit">{{ number_format(\['sakit']) }}</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_sakit">{{ number_format($dailyStats['sakit']) }}</h3>
                 </div>
             </div>
         </div>
@@ -151,237 +149,360 @@
                 <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center text-red-600 mb-4">
                     <i class="fas fa-times-circle"></i>
                 </div>
-                <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">Alpha Hari Ini</p>
+                <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">Alpa Hari Ini</p>
                 <div class="flex items-end gap-2 mt-1">
-                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_alpha">{{ number_format(\['alpha']) }}</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_alpha">{{ number_format($dailyStats['alpha']) }}</h3>
                 </div>
             </div>
         </div>
-        
-        <!-- Cuti -->
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition group overflow-hidden relative">
-            <div class="absolute -right-4 -top-4 w-20 h-20 bg-teal-50 rounded-full group-hover:scale-110 transition duration-500 opacity-50"></div>
-            <div class="relative">
-                <div class="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center text-teal-600 mb-4">
-                    <i class="fas fa-plane-departure"></i>
+
+        <!-- Total Hari Sekolah (Z) -->
+        <div class="bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl p-6 shadow-lg shadow-indigo-200 border border-indigo-500 hover:scale-[1.02] transition group overflow-hidden relative">
+            <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full group-hover:scale-110 transition duration-500"></div>
+            <div class="relative text-white">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-calendar-check"></i>
                 </div>
-                <p class="text-gray-500 text-xs font-bold uppercase tracking-wider">Cuti Hari Ini</p>
-                <div class="flex items-end gap-2 mt-1">
-                    <h3 class="text-2xl font-bold text-gray-800 transition-all duration-300" id="live_daily_cuti">{{ number_format(\['cuti']) }}</h3>
-                </div>
+                <p class="text-indigo-100 text-xs font-bold uppercase tracking-wider">Hari Aktif Sekolah</p>
+                <h3 class="text-2xl font-bold text-gray-900 mt-1">{{ $cumulativeStats['z'] }} <span class="text-sm font-normal opacity-70">Hari</span></h3>
             </div>
         </div>
     </div>
 
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Live Feed Activity -->
-        <div class="lg:col-span-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[600px]">
-            <div class="p-5 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+    <!-- Charts & Classroom Table -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Presence Trend (Line Chart) -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-8 py-6 border-b border-gray-50 flex items-center justify-between">
                 <div>
-                    <h3 class="font-bold text-gray-800">Live Tap Activity</h3>
-                    <p class="text-xs text-gray-500 mt-1">Aktivitas absen masuk/pulang hari ini</p>
+                    <h3 class="text-lg font-bold text-gray-800">Tren Presence Terakhir</h3>
+                    <p class="text-xs text-gray-400">Statistik kehadiran harian (snapshot)</p>
                 </div>
-                <div class="flex gap-1" id="feed_filters">
-                    <button class="px-3 py-1 rounded-full text-xs font-bold transition-all bg-indigo-600 text-white shadow-sm" data-filter="">Semua</button>
-                    @if(\)
-                        <button class="px-3 py-1 rounded-full text-xs font-bold transition-all bg-white text-gray-600 hover:bg-gray-100 border border-gray-200" data-filter="smp">SMP</button>
-                        <button class="px-3 py-1 rounded-full text-xs font-bold transition-all bg-white text-gray-600 hover:bg-gray-100 border border-gray-200" data-filter="sma">SMA</button>
-                        <button class="px-3 py-1 rounded-full text-xs font-bold transition-all bg-white text-gray-600 hover:bg-gray-100 border border-gray-200" data-filter="smk">SMK</button>
-                    @endif
+                <div class="flex gap-2">
+                    <span class="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase">
+                        <span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span> Hadir
+                    </span>
+                    <span class="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase">
+                        <span class="w-2.5 h-2.5 bg-red-400 rounded-full"></span> Absen
+                    </span>
                 </div>
             </div>
-            <div class="flex-1 overflow-y-auto p-4 space-y-3" id="live_feed_container">
-                <!-- Data will be populated by JS -->
-                <div class="flex items-center justify-center h-full text-gray-400">
-                    <i class="fas fa-spinner fa-spin mr-2"></i> Memuat live feed...
+            <div class="p-8">
+                <div style="height: 350px;">
+                    <canvas id="presenceTrendChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Charts & Tables -->
-        <div class="lg:col-span-2 space-y-6 flex flex-col h-[600px]">
-            <!-- Unit Status Table -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex-1 overflow-hidden flex flex-col">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-bold text-gray-800">Rekap Unit Sekolah Hari Ini</h3>
-                    <a href="{{ route('admin.employees.attendance.rekap') }}" class="text-xs font-bold text-indigo-600 hover:text-indigo-800">Lihat Rekap Lengkap &rarr;</a>
+        <!-- Presence Composition (Pie Chart) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-8 py-6 border-b border-gray-50">
+                <h3 class="text-lg font-bold text-gray-800">Komposisi Kehadiran</h3>
+                <p class="text-xs text-gray-400">Total partisipasi siswa kumulatif</p>
+            </div>
+            <div class="p-8">
+                @if($cumulativeStats['hadir'] > 0)
+                    <div style="height: 300px;" class="mb-6">
+                        <canvas id="dailyPieChart"></canvas>
+                    </div>
+                @else
+                    <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+                        <i class="fas fa-chart-pie text-5xl mb-4 opacity-20"></i>
+                        <p class="text-sm">Mulai kumpulkan data absensi</p>
+                    </div>
+                @endif
+                <div class="space-y-3">
+                    <div id="live_chart_data_container" style="display:none;" data-chart-data="{{ json_encode($chartData) }}" data-cum-hadir="{{ $cumulativeStats['hadir'] }}" data-cum-terlambat="{{ $cumulativeStats['terlambat'] }}" data-cum-izin="{{ $cumulativeStats['izin'] }}" data-cum-sakit="{{ $cumulativeStats['sakit'] }}" data-cum-alpha="{{ $cumulativeStats['alpha'] }}"></div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="flex items-center gap-2 text-gray-600 font-medium">
+                            <span class="w-3 h-3 bg-emerald-500 rounded-full"></span> Hadir
+                        </span>
+                        <span class="font-bold text-gray-800 transition-all duration-300" id="live_cum_hadir">{{ number_format($cumulativeStats['hadir']) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="flex items-center gap-2 text-gray-600 font-medium">
+                            <span class="w-3 h-3 bg-blue-500 rounded-full"></span> Izin
+                        </span>
+                        <span class="font-bold text-gray-800 transition-all duration-300" id="live_cum_izin">{{ number_format($cumulativeStats['izin']) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="flex items-center gap-2 text-gray-600 font-medium">
+                            <span class="w-3 h-3 bg-purple-500 rounded-full"></span> Terlambat
+                        </span>
+                        <span class="font-bold text-gray-800 transition-all duration-300" id="live_cum_terlambat">{{ number_format($cumulativeStats['terlambat']) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="flex items-center gap-2 text-gray-600 font-medium">
+                            <span class="w-3 h-3 bg-amber-500 rounded-full"></span> Sakit
+                        </span>
+                        <span class="font-bold text-gray-800 transition-all duration-300" id="live_cum_sakit">{{ number_format($cumulativeStats['sakit']) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="flex items-center gap-2 text-gray-600 font-medium">
+                            <span class="w-3 h-3 bg-red-500 rounded-full"></span> Alpha
+                        </span>
+                        <span class="font-bold text-gray-800 transition-all duration-300" id="live_cum_alpha">{{ number_format($cumulativeStats['alpha']) }}</span>
+                    </div>
+                    
+                    <div class="pt-2 border-t border-gray-50 flex items-center justify-between text-sm">
+                        <span class="text-gray-500 font-bold uppercase text-[10px] tracking-widest">Total Hari Aktif Sekolah</span>
+                        <span class="font-bold text-indigo-600">{{ $cumulativeStats['z'] }} Hari</span>
+                    </div>
                 </div>
-                <div class="overflow-y-auto flex-1 pr-2">
-                    <table class="w-full text-sm">
-                        <thead class="bg-gray-50 sticky top-0 z-10">
-                            <tr>
-                                <th class="px-4 py-3 text-left font-semibold text-gray-600 rounded-l-xl">Unit</th>
-                                <th class="px-4 py-3 text-center font-semibold text-gray-600">Total Pegawai</th>
-                                <th class="px-4 py-3 text-right font-semibold text-gray-600 rounded-r-xl">Persentase Hadir</th>
-                            </tr>
-                        </thead>
-                        <tbody id="unit_table_body" class="divide-y divide-gray-50">
-                            @foreach(\ as \)
-                            <tr class="hover:bg-gray-50/50 transition">
-                                <td class="px-4 py-4">
-                                    <div class="font-bold text-gray-800">{{ \['school_name'] }}</div>
+            </div>
+        </div>
+    </div>    <!-- Grid Classroom Rank & Live Feed -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Classroom Rank Table (2/3 width) -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-8 py-6 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Peringkat Kehadiran Kumulatif Per Unit</h3>
+                    <p class="text-sm text-gray-400 mt-1">Peringkat berdasarkan persentase kehadiran terhadap Total Hari Aktif Sekolah</p>
+                </div>
+                <span class="bg-teal-50 text-teal-700 px-4 py-1.5 rounded-full text-xs font-bold border border-teal-100 uppercase tracking-widest">
+                    Urutan Tertinggi
+                </span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-100">
+                        <tr class="bg-gray-50/50">
+                            <th class="px-8 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Rank</th>
+                            <th class="px-8 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Nama Unit</th>
+                            <th class="px-8 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-widest">Hari Aktif</th>
+                            <th class="px-8 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-widest">Total Pegawai</th>
+                            <th class="px-8 py-4 text-right text-xs font-bold text-green-600 uppercase tracking-widest">Total Hadir</th>
+                            <th class="px-8 py-4 text-right text-xs font-bold text-indigo-500 uppercase tracking-widest">Hadir Hari Ini</th>
+                            <th class="px-8 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-widest">Persentase Kumulatif</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50" id="live_classroom_tbody">
+                        @forelse($classroomStats as $index => $cls)
+                            <tr class="group hover:bg-gray-50 transition duration-150">
+                                <td class="px-8 py-5">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-xs {{ $index < 3 ? 'bg-teal-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600' }}">
+                                        {{ $index + 1 }}
+                                    </span>
                                 </td>
-                                <td class="px-4 py-4 text-center font-medium text-gray-600">{{ \['employees_count'] }}</td>
-                                <td class="px-4 py-4">
-                                    <div class="flex items-center justify-end gap-3">
-                                        <div class="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                            @php
-                                                \ = \['presence_rate'];
-                                                \ = \ >= 90 ? 'from-green-400 to-green-500' : (\ >= 75 ? 'from-yellow-400 to-yellow-500' : 'from-red-400 to-red-500');
-                                            @endphp
-                                            <div class="h-full bg-gradient-to-r {{ \ }}" style="width: {{ \ }}%"></div>
+                                <td class="px-8 py-5">
+                                    <div class="font-bold text-gray-800 group-hover:text-teal-600 transition">{{ $cls->school_name }}</div>
+                                    <div class="text-[10px] text-gray-400">{{ $cls->school->name ?? '-' }}</div>
+                                </td>
+                                <td class="px-8 py-5 text-right font-bold text-indigo-600">{{ $cls->z_days }}</td>
+                                <td class="px-8 py-5 text-right font-semibold text-gray-600">{{ $cls->employees_count }}</td>
+                                <td class="px-8 py-5 text-right font-bold text-green-600">{{ number_format($cls->total_hadir) }}</td>
+                                <td class="px-8 py-5 text-right">
+                                    <span class="px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 font-bold text-xs">{{ $cls->daily_present }}</span>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center justify-center gap-3">
+                                        <div class="flex-1 max-w-[100px] h-2 bg-gray-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r {{ $cls->presence_rate > 90 ? 'from-green-400 to-emerald-500' : ($cls->presence_rate > 70 ? 'from-blue-400 to-indigo-500' : 'from-orange-400 to-red-500') }}" style="width: {{ $cls->presence_rate }}%"></div>
                                         </div>
-                                        <span class="text-sm font-bold text-gray-800 min-w-[45px] text-right">{{ \ }}%</span>
+                                        <span class="text-sm font-bold text-gray-800 min-w-[45px] text-right">{{ $cls->presence_rate }}%</span>
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-8 py-20 text-center text-gray-400">
+                                    <i class="fas fa-school text-5xl mb-4 opacity-10"></i>
+                                    <p>Belum ada data absensi untuk Unit manapun di tanggal ini.</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex-1 flex flex-col min-h-[300px]">
-                <h3 class="font-bold text-gray-800 mb-4">Trend Kehadiran Pegawai (14 Hari Terakhir)</h3>
-                <div class="relative w-full h-full min-h-[200px] flex-1">
-                    <canvas id="trendChart"></canvas>
+        </div>
+
+        <!-- Live Activity Feed (1/3 width) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[550px]">
+            <div class="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800">Aktivitas Tap Terbaru</h3>
+                    <p class="text-xs text-gray-400">Arus scan RFID & QR Code hari ini</p>
+                </div>
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 space-y-4" id="live_feed_container" style="max-height: 480px;">
+                <div class="flex flex-col items-center justify-center h-full text-gray-400 py-20">
+                    <i class="fas fa-id-card text-4xl mb-3 opacity-20"></i>
+                    <p class="text-xs">Menunggu aktivitas tap...</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const selectedDate = urlParams.get('date') || new Date().toISOString().split('T')[0];
+        // Prepare data for line chart
+        const initialChartData = @json($chartData);
+        const dates = Object.keys(initialChartData).sort();
         
-        // Define today in local timezone
-        const now = new Date();
-        const offset = now.getTimezoneOffset() * 60000;
-        const localISOTime = (new Date(now - offset)).toISOString().split('T')[0];
-        const todayStr = localISOTime;
-        
-        const badge = document.getElementById('live_status_badge');
-        
-        // Chart Data
-        const chartRawData = @json(\);
-        const dates = Object.keys(chartRawData).sort();
-        const hadirData = dates.map(d => chartRawData[d].hadir || 0);
-        const absenData = dates.map(d => (chartRawData[d].izin || 0) + (chartRawData[d].sakit || 0) + (chartRawData[d].alpha || 0) + (chartRawData[d].cuti || 0) + (chartRawData[d].dinas_luar || 0));
-        
-        const labels = dates.map(d => {
-            const dt = new Date(d);
-            return dt.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+        const hadirData = dates.map(d => initialChartData[d].hadir || 0);
+        const absenData = dates.map(d => {
+            return (initialChartData[d].izin || 0) + (initialChartData[d].sakit || 0) + (initialChartData[d].alpha || 0);
         });
 
-        // Initialize Trend Chart
-        const ctxTrend = document.getElementById('trendChart').getContext('2d');
-        window.trendChart = new Chart(ctxTrend, {
+        // Trend Line Chart
+        const trendCtx = document.getElementById('presenceTrendChart').getContext('2d');
+        window.trendChart = new Chart(trendCtx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: dates.map(d => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })),
                 datasets: [
                     {
                         label: 'Hadir',
                         data: hadirData,
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        borderWidth: 2,
+                        fill: true,
                         tension: 0.4,
-                        fill: true
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 2
                     },
                     {
-                        label: 'Tidak Hadir (Sakit/Izin/Alpha/Cuti/DL)',
+                        label: 'Absen',
                         data: absenData,
-                        borderColor: '#ef4444',
-                        backgroundColor: 'rgba(239, 68, 68, 0.05)',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
+                        borderColor: '#f87171',
+                        backgroundColor: 'rgba(248, 113, 113, 0.1)',
+                        fill: true,
                         tension: 0.4,
-                        fill: true
+                        borderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        pointBorderWidth: 2
                     }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
+                interaction: { intersect: false, mode: 'index' },
                 plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { usePointStyle: true, boxWidth: 6, font: { family: "'Inter', sans-serif", size: 11 } }
-                    }
+                    legend: { display: false }
                 },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#f3f4f6' }, border: { display: false } },
-                    x: { grid: { display: false }, border: { display: false } }
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(0,0,0,0.03)' },
+                        ticks: { font: { size: 10, weight: 'bold' }, color: '#94a3b8' }
+                    },
+                    x: { 
+                        grid: { display: false },
+                        ticks: { font: { size: 10, weight: 'bold' }, color: '#94a3b8' }
+                    }
                 }
             }
         });
 
-        // Live Feed Filtering
-        let activeSchoolType = '';
-        const filterBtns = document.querySelectorAll('#feed_filters button');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                filterBtns.forEach(b => {
-                    b.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
-                    b.classList.add('bg-white', 'text-gray-600');
-                });
-                e.target.classList.remove('bg-white', 'text-gray-600');
-                e.target.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
-                activeSchoolType = e.target.dataset.filter;
-                fetchLiveFeed(); // Refetch/render immediately
-            });
-        });
+        const cumHadir = {{ $cumulativeStats['hadir'] }};
+        const cumTerlambat = {{ $cumulativeStats['terlambat'] }};
+        const cumIzin = {{ $cumulativeStats['izin'] }};
+        const cumSakit = {{ $cumulativeStats['sakit'] }};
+        const cumAlpha = {{ $cumulativeStats['alpha'] }};
 
+        // Cumulative Distribution Pie Chart
+        const pieCtx = document.getElementById('dailyPieChart')?.getContext('2d');
+        if (pieCtx) {
+            window.pieChart = new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hadir', 'Terlambat', 'Izin', 'Sakit', 'Alpha'],
+                    datasets: [{
+                        data: [cumHadir, cumTerlambat, cumIzin, cumSakit, cumAlpha],
+                        backgroundColor: ['#10b981', '#f97316', '#3b82f6', '#f59e0b', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        const selectedDate = "{{ $date }}";
+        const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jakarta' }); // format: YYYY-MM-DD
+        
+        const badge = document.getElementById('live_status_badge');
+        const activeSchoolType = '{{ $schoolId ? strtolower($school?->type) : "" }}';
+
+        // Render functions
         function updateUIElement(id, value, isPercentage = false) {
             const el = document.getElementById(id);
             if (el) {
-                const currentVal = el.innerText.replace('%', '').replace(/,/g, '');
-                if (currentVal !== value.toString()) {
-                    el.style.transform = 'scale(1.1)';
-                    el.style.color = '#4f46e5';
+                const cleanValue = isPercentage ? value + '%' : Number(value).toLocaleString('id-ID');
+                if (el.textContent.trim() !== cleanValue) {
+                    el.textContent = cleanValue;
+                    // Visual flash effect
+                    el.classList.add('text-teal-600', 'scale-110');
                     setTimeout(() => {
-                        el.innerText = isPercentage ? value + '%' : new Intl.NumberFormat('id-ID').format(value);
-                        el.style.transform = 'scale(1)';
-                        el.style.color = '';
-                    }, 150);
+                        el.classList.remove('text-teal-600', 'scale-110');
+                    }, 1000);
                 }
             }
         }
 
-        function renderUnitTable(unitStats) {
-            const tbody = document.getElementById('unit_table_body');
+        function renderClassrooms(classroomStats) {
+            const tbody = document.getElementById('live_classroom_tbody');
             if (!tbody) return;
             
-            let html = '';
-            unitStats.forEach(unit => {
-                const rate = unit.presence_rate;
-                const rateColor = rate >= 90 ? 'from-green-400 to-green-500' : (rate >= 75 ? 'from-yellow-400 to-yellow-500' : 'from-red-400 to-red-500');
-                
-                html += \
-                <tr class="hover:bg-gray-50/50 transition">
-                    <td class="px-4 py-4">
-                        <div class="font-bold text-gray-800">\</div>
+            if (classroomStats.length === 0) {
+                tbody.innerHTML = `<tr>
+                    <td colspan="7" class="px-8 py-20 text-center text-gray-400">
+                        <i class="fas fa-school text-5xl mb-4 opacity-10"></i>
+                        <p>Belum ada data absensi untuk Unit manapun di tanggal ini.</p>
                     </td>
-                    <td class="px-4 py-4 text-center font-medium text-gray-600">\</td>
-                    <td class="px-4 py-4">
-                        <div class="flex items-center justify-end gap-3">
-                            <div class="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r \" style="width: \%"></div>
+                </tr>`;
+                return;
+            }
+            
+            let html = '';
+            classroomStats.forEach((cls, index) => {
+                const rankClass = index < 3 ? 'bg-teal-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600';
+                const rateColor = cls.presence_rate > 90 ? 'from-green-400 to-emerald-500' : (cls.presence_rate > 70 ? 'from-blue-400 to-indigo-500' : 'from-orange-400 to-red-500');
+                const schoolName = cls.school ? cls.school.name : '-';
+                
+                html += `<tr class="group hover:bg-gray-50 transition duration-150">
+                    <td class="px-8 py-5">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-xs ${rankClass}">
+                            ${index + 1}
+                        </span>
+                    </td>
+                    <td class="px-8 py-5">
+                        <div class="font-bold text-gray-800 group-hover:text-teal-600 transition">${cls.school_name}</div>
+                        <div class="text-[10px] text-gray-400">${schoolName}</div>
+                    </td>
+                    <td class="px-8 py-5 text-right font-bold text-indigo-600">${cls.z_days}</td>
+                    <td class="px-8 py-5 text-right font-semibold text-gray-600">${cls.employees_count}</td>
+                    <td class="px-8 py-5 text-right font-bold text-green-600">${Number(cls.total_hadir).toLocaleString('id-ID')}</td>
+                    <td class="px-8 py-5 text-right">
+                        <span class="px-2 py-1 rounded-md bg-indigo-50 text-indigo-700 font-bold text-xs">${cls.daily_present}</span>
+                    </td>
+                    <td class="px-8 py-5">
+                        <div class="flex items-center justify-center gap-3">
+                            <div class="flex-1 max-w-[100px] h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r ${rateColor}" style="width: ${cls.presence_rate}%"></div>
                             </div>
-                            <span class="text-sm font-bold text-gray-800 min-w-[45px] text-right">\%</span>
+                            <span class="text-sm font-bold text-gray-800 min-w-[45px] text-right">${cls.presence_rate}%</span>
                         </div>
                     </td>
-                </tr>\;
+                </tr>`;
             });
             tbody.innerHTML = html;
         }
@@ -397,6 +518,7 @@
                 const ds = data.dailyStats;
                 const dailyTotal = ds.total_daily || 1;
                 const hadirPercentage = dailyTotal > 0 ? Math.round((ds.hadir / dailyTotal) * 100 * 10) / 10 : 0;
+                const terlambatPercentage = dailyTotal > 0 ? Math.round((ds.dinas_luar / dailyTotal) * 100 * 10) / 10 : 0;
 
                 updateUIElement('live_daily_hadir', ds.hadir);
                 updateUIElement('live_daily_hadir_percentage', hadirPercentage, true);
@@ -404,29 +526,39 @@
                 updateUIElement('live_daily_izin', ds.izin);
                 updateUIElement('live_daily_sakit', ds.sakit);
                 updateUIElement('live_daily_alpha', ds.alpha);
-                updateUIElement('live_daily_cuti', ds.cuti);
 
                 // 2. Update Cumulative Stats
                 const cs = data.cumulativeStats;
-                const activeEmployeesCount = cs.active_employees || 1;
-                const cumulativeRate = cs.z > 0 ? Math.round((cs.hadir / (cs.z * activeEmployeesCount)) * 100 * 10) / 10 : 0;
+                const activeStudentsCount = data.classroomStats.reduce((acc, c) => acc + (c.employees_count || 0), 0) || 1;
+                const cumulativeRate = cs.z > 0 ? Math.round((cs.hadir / (cs.z * activeStudentsCount)) * 100 * 10) / 10 : 0;
 
                 updateUIElement('live_cumulative_rate', cumulativeRate, true);
+                updateUIElement('live_cum_hadir', cs.hadir);
+                updateUIElement('live_cum_izin', cs.izin);
+                updateUIElement('live_cum_terlambat', cs.terlambat);
+                updateUIElement('live_cum_sakit', cs.sakit);
+                updateUIElement('live_cum_alpha', cs.alpha);
 
-                // 3. Update Unit Table
-                renderUnitTable(data.unitStats);
+                // 3. Update Classroom Table
+                renderClassrooms(data.classroomStats);
 
                 // 4. Update Charts
                 if (window.trendChart) {
                     const trendDates = Object.keys(data.chartData).sort();
                     const trHadir = trendDates.map(d => data.chartData[d].hadir || 0);
-                    const trAbsen = trendDates.map(d => (data.chartData[d].izin || 0) + (data.chartData[d].sakit || 0) + (data.chartData[d].alpha || 0) + (data.chartData[d].dinas_luar || 0) + (data.chartData[d].cuti || 0));
+                    const trAbsen = trendDates.map(d => (data.chartData[d].izin || 0) + (data.chartData[d].sakit || 0) + (data.chartData[d].alpha || 0));
 
                     window.trendChart.data.labels = trendDates.map(d => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }));
                     window.trendChart.data.datasets[0].data = trHadir;
                     window.trendChart.data.datasets[1].data = trAbsen;
                     window.trendChart.update('none');
                 }
+
+                if (window.pieChart) {
+                    window.pieChart.data.datasets[0].data = [cs.hadir, cs.terlambat, cs.izin, cs.sakit, cs.alpha];
+                    window.pieChart.update('none');
+                }
+
             } catch (error) {
                 console.error('Failed to fetch statistics:', error);
             }
@@ -442,43 +574,40 @@
 
                 let feed = data.feed || [];
                 
-                // FILTER HANYA PEGAWAI
-                feed = feed.filter(item => item.kategori === 'pegawai');
-
                 // Filter by school type if selected
                 if (activeSchoolType !== '') {
                     feed = feed.filter(item => item.unit === activeSchoolType);
                 }
 
                 if (feed.length === 0) {
-                    feedContainer.innerHTML = \<div class="flex flex-col items-center justify-center h-full text-gray-400 py-20">
+                    feedContainer.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-400 py-20">
                         <i class="fas fa-id-card text-4xl mb-3 opacity-20"></i>
-                        <p class="text-xs">Belum ada aktivitas tap pegawai...</p>
-                    </div>\;
+                        <p class="text-xs">Belum ada aktivitas tap...</p>
+                    </div>`;
                     return;
                 }
 
                 let html = '';
                 feed.forEach(item => {
-                    const badgeClass = item.tipe === 'pulang' ? 'bg-orange-50 text-orange-700 border-orange-100' : 'bg-green-50 text-green-700 border-green-100';
+                    const badgeClass = item.tipe === 'pulang' ? 'bg-purple-50 text-purple-700 border-orange-100' : (item.tipe === 'terlambat' ? 'bg-yellow-50 text-yellow-700 border-yellow-100' : 'bg-green-50 text-green-700 border-green-100');
                     const viaLabel = item.recorded_via === 'qr_gps' ? 'GPS' : (item.recorded_via === 'qr' ? 'QR Code' : 'RFID');
                     const viaClass = item.recorded_via === 'qr_gps' ? 'bg-purple-50 text-purple-700' : (item.recorded_via === 'qr' ? 'bg-indigo-50 text-indigo-700' : 'bg-blue-50 text-blue-700');
                     
-                    html += \<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100/70 transition duration-150 animate-fade-in border border-gray-100 shadow-sm">
-                        <img src="\" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0" alt="Avatar">
+                    html += `<div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100/70 transition duration-150 animate-fade-in border border-gray-100 shadow-sm">
+                        <img src="${item.foto}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0" alt="Avatar">
                         <div class="flex-1 min-w-0">
-                            <div class="font-bold text-sm text-gray-800 truncate">\</div>
+                            <div class="font-bold text-sm text-gray-800 truncate">${item.nama}</div>
                             <div class="text-[10px] text-gray-500 flex items-center gap-2">
-                                <span class="truncate font-semibold">\</span>
-                                <span>•</span>
-                                <span class="px-1.5 py-0.5 rounded text-[9px] font-bold \">\</span>
+                                <span class="truncate">${item.info}</span>
+                                <span>â€¢</span>
+                                <span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${viaClass}">${viaLabel}</span>
                             </div>
                         </div>
                         <div class="text-right flex-shrink-0">
-                            <span class="inline-block px-2 py-0.5 rounded-full border text-[10px] font-bold \">\</span>
-                            <div class="text-[10px] text-gray-400 mt-1 font-semibold">\</div>
+                            <span class="inline-block px-2 py-0.5 rounded-full border text-[10px] font-bold ${badgeClass}">${item.aksi}</span>
+                            <div class="text-[10px] text-gray-400 mt-1 font-semibold">${item.waktu}</div>
                         </div>
-                    </div>\;
+                    </div>`;
                 });
                 
                 feedContainer.innerHTML = html;
@@ -510,3 +639,4 @@
 </script>
 @endpush
 @endsection
+

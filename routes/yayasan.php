@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('yayasan')->name('yayasan.')->middleware('auth', 'yayasan')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Yayasan\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/progress-input', [App\Http\Controllers\Yayasan\ProgressInputController::class, 'index'])->name('progress-input');
+    Route::get('/progress-input/export-pdf', [App\Http\Controllers\Yayasan\ProgressInputController::class, 'exportPdf'])->name('progress-input.export-pdf');
     Route::get('/invitations', [App\Http\Controllers\Yayasan\InvitationController::class, 'index'])->name('invitations');
     Route::post('/invitations/send', [App\Http\Controllers\Yayasan\InvitationController::class, 'send'])->name('invitations.send');
     Route::post('/invitations/send-bulk', [App\Http\Controllers\Yayasan\InvitationController::class, 'sendBulk'])->name('invitations.send_bulk');

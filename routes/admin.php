@@ -187,6 +187,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
         // Absensi Pegawai
         Route::prefix('attendance')->name('attendance.')->group(function () {
             Route::get('/', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'index'])->name('index');
+            Route::get('monitoring', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'monitoring'])->name('monitoring');
             Route::get('bulk', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'bulkInput'])->name('bulk');
             Route::post('bulk', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'bulkStore'])->name('bulk.store');
             Route::get('rekap', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'rekap'])->name('rekap');

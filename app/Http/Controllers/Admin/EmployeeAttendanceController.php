@@ -164,4 +164,130 @@ class EmployeeAttendanceController extends Controller
             'employees', 'attendanceData', 'schools', 'schoolId', 'month', 'year', 'daysInMonth'
         ));
     }
+
+    public function monitoring(Request $request)
+    {
+        $user = auth()->user();
+        $isSuperAdmin = $user->isSuperAdmin() || $user->isKetuaYayasan();
+        $schoolId = $request->input('school_id', $isSuperAdmin ? null : $user->school_id);
+        
+        $date = $request->input('date', \Carbon\Carbon::now('Asia/Jakarta')->toDateString());
+        $startDateOfMonth = \Carbon\Carbon::parse($date)->startOfMonth();
+        $endDate = \Carbon\Carbon::parse($date);
+
+        // Daily Stats
+        $dailyStatsQuery = EmployeeAttendance::where('date', $date)
+            ->whereHas('employee', function ($q) use ($schoolId) {
+                $q->where('is_active', true);
+                if ($schoolId) {
+                    $q->where('school_id', $schoolId);
+                }
+            });
+
+        $dailyStats = [
+            'hadir' => (clone $dailyStatsQuery)->where('status', 'hadir')->count(),
+            'sakit' => (clone $dailyStatsQuery)->where('status', 'sakit')->count(),
+            'izin' => (clone $dailyStatsQuery)->where('status', 'izin')->count(),
+            'alpha' => (clone $dailyStatsQuery)->where('status', 'alpha')->count(),
+            'dinas_luar' => (clone $dailyStatsQuery)->where('status', 'dinas_luar')->count(),
+            'cuti' => (clone $dailyStatsQuery)->where('status', 'cuti')->count(),
+        ];
+        $dailyStats['total_daily'] = array_sum($dailyStats);
+
+        // Active Employee Count
+        $activeEmployeesQuery = Employee::where('is_active', true);
+        if ($schoolId) {
+            $activeEmployeesQuery->where('school_id', $schoolId);
+        }
+        $activeEmployeeCount = $activeEmployeesQuery->count();
+
+        // Cumulative Stats (Start of Month)
+        $cumulativeStatsQuery = EmployeeAttendance::whereBetween('date', [$startDateOfMonth->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->whereHas('employee', function ($q) use ($schoolId) {
+                $q->where('is_active', true);
+                if ($schoolId) {
+                    $q->where('school_id', $schoolId);
+                }
+            });
+
+        // Calculate 'Z' -> working days since start of month
+        $workingDays = 0;
+        for ($d = $startDateOfMonth->copy(); $d->lte($endDate); $d->addDay()) {
+            if (!in_array($d->dayOfWeek, [0, 6])) { // Skip Sun, Sat
+                $workingDays++;
+            }
+        }
+        
+        $cumulativeStats = [
+            'hadir' => (clone $cumulativeStatsQuery)->where('status', 'hadir')->count(),
+            'sakit' => (clone $cumulativeStatsQuery)->where('status', 'sakit')->count(),
+            'izin' => (clone $cumulativeStatsQuery)->where('status', 'izin')->count(),
+            'alpha' => (clone $cumulativeStatsQuery)->where('status', 'alpha')->count(),
+            'dinas_luar' => (clone $cumulativeStatsQuery)->where('status', 'dinas_luar')->count(),
+            'cuti' => (clone $cumulativeStatsQuery)->where('status', 'cuti')->count(),
+            'z' => $workingDays,
+            'active_employees' => $activeEmployeeCount
+        ];
+        $cumulativeStats['total_count'] = $cumulativeStats['hadir'] + $cumulativeStats['sakit'] + $cumulativeStats['izin'] + $cumulativeStats['alpha'] + $cumulativeStats['dinas_luar'] + $cumulativeStats['cuti'];
+
+        // Chart Data (Last 14 days)
+        $chartData = [];
+        $startChart = $endDate->copy()->subDays(13);
+        $chartQuery = EmployeeAttendance::whereBetween('date', [$startChart->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->whereHas('employee', function ($q) use ($schoolId) {
+                $q->where('is_active', true);
+                if ($schoolId) {
+                    $q->where('school_id', $schoolId);
+                }
+            })->get();
+
+        for ($d = $startChart->copy(); $d->lte($endDate); $d->addDay()) {
+            $dStr = $d->format('Y-m-d');
+            $chartData[$dStr] = [
+                'hadir' => 0,
+                'sakit' => 0,
+                'izin' => 0,
+                'alpha' => 0,
+                'dinas_luar' => 0,
+                'cuti' => 0
+            ];
+            foreach ($chartQuery as $cq) {
+                if ($cq->date->format('Y-m-d') === $dStr) {
+                    if (isset($chartData[$dStr][$cq->status])) {
+                        $chartData[$dStr][$cq->status]++;
+                    }
+                }
+            }
+        }
+
+        // Unit Stats (for Table)
+        $unitStats = [];
+        $schools = $isSuperAdmin ? School::orderBy('name')->get() : School::where('id', $user->school_id)->get();
+        foreach ($schools as $sch) {
+            $empCount = Employee::where('school_id', $sch->id)->where('is_active', true)->count();
+            $schDaily = (clone $dailyStatsQuery)->whereHas('employee', fn($q) => $q->where('school_id', $sch->id))->get();
+            $schHadir = $schDaily->where('status', 'hadir')->count();
+            
+            $unitStats[] = [
+                'school_id' => $sch->id,
+                'school_name' => $sch->name,
+                'employees_count' => $empCount,
+                'presence_rate' => $empCount > 0 ? round(($schHadir / $empCount) * 100, 1) : 0
+            ];
+        }
+
+        if ($request->ajax() && $request->has('json')) {
+            return response()->json([
+                'dailyStats' => $dailyStats,
+                'cumulativeStats' => $cumulativeStats,
+                'unitStats' => $unitStats,
+                'chartData' => $chartData
+            ]);
+        }
+
+        return view('admin.employees.attendance.monitoring', compact(
+            'date', 'schoolId', 'isSuperAdmin', 'schools',
+            'dailyStats', 'cumulativeStats', 'chartData', 'unitStats'
+        ));
+    }
 }

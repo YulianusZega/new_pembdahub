@@ -16,6 +16,10 @@
                 </div>
             </div>
             <div class="flex gap-3">
+                <a href="{{ route('admin.employees.attendance.monitoring') }}"
+                    class="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
+                    <i class="fas fa-satellite-dish animate-pulse"></i> Live Monitoring
+                </a>
                 <a href="{{ route('admin.employees.attendance.rekap') }}"
                     class="flex items-center gap-2 px-5 py-3 bg-white border border-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all">
                     <i class="fas fa-chart-bar"></i> Rekapitulasi

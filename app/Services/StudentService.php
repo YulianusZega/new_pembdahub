@@ -130,8 +130,9 @@ class StudentService
                     }
 
                     // Prepare student data
+                    $defaultSchoolId = auth()->check() ? (auth()->user()->school_id ?? 1) : 1;
                     $data = [
-                        'school_id' => $row['school_id'] ?? 1,
+                        'school_id' => $row['school_id'] ?? $defaultSchoolId,
                         'nisn' => $row['nisn'],
                         'nis' => $row['nis'] ?? null,
                         'full_name' => $row['full_name'],

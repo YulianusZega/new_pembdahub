@@ -12,9 +12,11 @@ class StudentSampleExport implements FromArray, WithHeadings, WithStyles, Should
 {
     public function array(): array
     {
+        $defaultSchoolId = auth()->check() ? (auth()->user()->school_id ?? 1) : 1;
+
         return [
             [
-                'school_id' => 1,
+                'school_id' => $defaultSchoolId,
                 'nisn' => '20210001',
                 'nis' => '1001',
                 'full_name' => 'Andi Wijaya',

@@ -31,8 +31,8 @@ class StudentController extends Controller
         $activeAcademicYear = \App\Models\AcademicYear::where('is_active', true)->first();
         $academicYears = \App\Models\AcademicYear::orderBy('year', 'desc')->get();
 
-        // Determine selected academic year - default to active year
-        $selectedAcademicYearId = $request->filled('academic_year_id')
+        // Determine selected academic year - default to active year ONLY if not present in request
+        $selectedAcademicYearId = $request->has('academic_year_id')
             ? $request->academic_year_id
             : ($activeAcademicYear?->id ?? null);
 
@@ -328,7 +328,7 @@ class StudentController extends Controller
      */
     public function resetPasswords(Request $request)
     {
-        $this->authorize('update', Student::class);
+        $this->authorize('create', Student::class);
 
         $classroomId = $request->get('classroom_id');
         $schoolId = $request->get('school_id');
@@ -349,15 +349,25 @@ class StudentController extends Controller
         $students = $query->get();
 
         $count = 0;
-        foreach ($students as $student) {
-            if ($student->user) {
-                // Pola: Pembda + NISN
-                $newPassword = 'Pembda' . $student->nisn;
-                $student->user->update([
-                    'password' => \Illuminate\Support\Facades\Hash::make($newPassword)
-                ]);
-                $count++;
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            foreach ($students as $student) {
+                if ($student->user) {
+                    // Pola: Pembda + NISN
+                    $newPassword = 'Pembda' . $student->nisn;
+                    
+                    // Gunakan cost rounds=4 agar proses hashing jauh lebih cepat (mencegah timeout di shared hosting)
+                    // Password ini sifatnya sementara dan idealnya diwajibkan ganti saat login
+                    $student->user->update([
+                        'password' => \Illuminate\Support\Facades\Hash::make($newPassword, ['rounds' => 4])
+                    ]);
+                    $count++;
+                }
             }
+            \Illuminate\Support\Facades\DB::commit();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan saat mereset password: ' . $e->getMessage());
         }
 
         return back()->with('success', "Berhasil mereset password {$count} siswa menjadi pola standar (Pembda+NISN).");

@@ -231,7 +231,7 @@
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white"><i class="fas fa-tools text-[10px]"></i></div>
                 <span>Absensi TEFA (Bengkelin)</span>
             </a>
-            @if($isYayasan)
+            @if($isYayasan || $isSA)
             <a href="{{ route('admin.employees.leaves.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.employees.leaves.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-sky-600 flex items-center justify-center text-white"><i class="fas fa-calendar-check text-[10px]"></i></div>
                 <span>Cuti & Izin</span>
@@ -443,14 +443,14 @@
     @endif
 
     <!-- ════════════════ GROUP: KEUANGAN ════════════════ -->
-    @if($isYayasan || $isFinance)
+    @if($isYayasan || $isFinance || $isSA)
     <div class="pt-3" data-menu-group="finance">
         <button class="menu-group-toggle w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600" onclick="toggleGroup(this)">
             <span class="flex items-center gap-2"><i class="fas fa-coins text-[10px]"></i> Keuangan</span>
             <i class="fas fa-chevron-right text-[9px] chevron"></i>
         </button>
         <div class="menu-group-body closed mt-1 space-y-0.5">
-            @if($isYayasan || $isFinance)
+            @if($isYayasan || $isFinance || $isSA)
             <a href="{{ route('admin.bills.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.bills.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white"><i class="fas fa-file-invoice-dollar text-[10px]"></i></div>
                 <span>Tagihan Siswa</span>
@@ -464,7 +464,7 @@
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-white"><i class="fas fa-chart-pie text-[10px]"></i></div>
                 <span>Laporan Rekap Tagihan</span>
             </a>
-            @if($isYayasan)
+            @if($isYayasan || $isSA)
             <a href="{{ route('admin.settings.late-fees') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.settings.late-fees*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white"><i class="fas fa-percent text-[10px]"></i></div>
                 <span>Pengaturan Denda</span>

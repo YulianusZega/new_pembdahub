@@ -64,6 +64,16 @@ class TefaController extends Controller
         ]);
 
         $uid = $request->filled('rfid_uid') ? strtoupper(trim($request->rfid_uid)) : null;
+        if ($uid) {
+            // --- HACK UNTUK STATION LAMA (BACKWARD COMPATIBILITY) ---
+            if (preg_match('/^\d+$/', $uid) && strlen($uid) >= 6 && strlen($uid) <= 12) {
+                $num = (int)$uid;
+                if ($num > 0 && $num <= 4294967295) {
+                    $hexUid = strtoupper(dechex($num));
+                    $uid = str_pad($hexUid, 8, '0', STR_PAD_LEFT);
+                }
+            }
+        }
 
         if ($uid && $this->isRfidExists($uid)) {
             return back()->with('error', "Kartu RFID ($uid) sudah terdaftar pada pengguna/karyawan lain!");
@@ -127,6 +137,14 @@ class TefaController extends Controller
         ]);
 
         $uid = strtoupper(trim($request->rfid_uid));
+        // --- HACK UNTUK STATION LAMA (BACKWARD COMPATIBILITY) ---
+        if (preg_match('/^\d+$/', $uid) && strlen($uid) >= 6 && strlen($uid) <= 12) {
+            $num = (int)$uid;
+            if ($num > 0 && $num <= 4294967295) {
+                $hexUid = strtoupper(dechex($num));
+                $uid = str_pad($hexUid, 8, '0', STR_PAD_LEFT);
+            }
+        }
 
         if ($this->isRfidExists($uid, $id)) {
             return back()->with('error', "Kartu RFID ($uid) sudah terdaftar pada pengguna/karyawan lain!");

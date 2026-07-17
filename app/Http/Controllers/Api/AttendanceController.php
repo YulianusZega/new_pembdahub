@@ -30,7 +30,19 @@ class AttendanceController extends Controller
             }
 
             $request->validate(['uid' => 'required|string']);
-            $uid = trim($request->uid);
+            $uid = strtoupper(trim($request->uid));
+            
+            // --- HACK UNTUK STATION LAMA (BACKWARD COMPATIBILITY) ---
+            // Jika UID dari hardware lama masih berupa angka desimal murni (misal: 50012561)
+            // Kita ubah otomatis ke format Hex USB Scanner (misal: 02FB2191)
+            if (preg_match('/^\d+$/', $uid) && strlen($uid) >= 6 && strlen($uid) <= 12) {
+                $num = (int)$uid;
+                if ($num > 0 && $num <= 4294967295) {
+                    $hexUid = strtoupper(dechex($num));
+                    $uid = str_pad($hexUid, 8, '0', STR_PAD_LEFT);
+                }
+            }
+
             $type = $request->input('type'); // Opsional: 'rfid' atau 'qr'
 
             // Tulis UID ke scan-buffer agar browser (modal registrasi RFID) bisa mengambilnya

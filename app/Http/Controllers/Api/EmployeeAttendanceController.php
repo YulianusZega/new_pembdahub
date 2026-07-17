@@ -26,6 +26,15 @@ class EmployeeAttendanceController extends Controller
             return response()->json(['status' => 'error', 'message' => 'UID kosong'], 400);
         }
 
+        // --- HACK UNTUK STATION LAMA (BACKWARD COMPATIBILITY) ---
+        if (preg_match('/^\d+$/', $uid) && strlen($uid) >= 6 && strlen($uid) <= 12) {
+            $num = (int)$uid;
+            if ($num > 0 && $num <= 4294967295) {
+                $hexUid = strtoupper(dechex($num));
+                $uid = str_pad($hexUid, 8, '0', STR_PAD_LEFT);
+            }
+        }
+
         // Tulis UID ke scan-buffer agar browser (modal registrasi RFID) bisa mengambilnya
         $bufferFile = storage_path('app/rfid_scan_buffer.json');
         file_put_contents($bufferFile, json_encode(['uid' => $uid, 'time' => time()]));

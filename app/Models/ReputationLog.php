@@ -75,7 +75,7 @@ class ReputationLog extends Model
         // Update total points in Reputation table
         $rep = Reputation::firstOrCreate(
             ['user_id' => $userId],
-            ['total_points' => 0, 'level' => 1, 'current_streak' => 0]
+            ['total_points' => 0, 'level_name' => 'Newbie']
         );
         $rep->total_points += $diff;
         $rep->updateLevel();

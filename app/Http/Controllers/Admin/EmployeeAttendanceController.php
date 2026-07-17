@@ -267,12 +267,19 @@ class EmployeeAttendanceController extends Controller
             $empCount = Employee::where('school_id', $sch->id)->where('is_active', true)->count();
             $schDaily = (clone $dailyStatsQuery)->whereHas('employee', fn($q) => $q->where('school_id', $sch->id))->get();
             $schHadir = $schDaily->where('status', 'hadir')->count();
+            $schCumHadir = (clone $cumulativeStatsQuery)->whereHas('employee', fn($q) => $q->where('school_id', $sch->id))->where('status', 'hadir')->count();
             
-            $unitStats[] = [
+            $presenceRate = ($workingDays > 0 && $empCount > 0) ? round(($schCumHadir / ($workingDays * $empCount)) * 100, 1) : 0;
+            
+            $unitStats[] = (object) [
                 'school_id' => $sch->id,
                 'school_name' => $sch->name,
+                'school' => (object) ['name' => $sch->name],
                 'employees_count' => $empCount,
-                'presence_rate' => $empCount > 0 ? round(($schHadir / $empCount) * 100, 1) : 0
+                'total_hadir' => $schCumHadir,
+                'daily_present' => $schHadir,
+                'z_days' => $workingDays,
+                'presence_rate' => $presenceRate
             ];
         }
 

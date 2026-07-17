@@ -76,7 +76,7 @@
                 <div class="text-right">
                     <p class="text-xs font-bold text-teal-200 uppercase tracking-widest mb-1">Total Persentase</p>
                     <h3 class="text-6xl font-bold leading-none">
-                        <span id="live_cumulative_rate" class="transition-all duration-300">{{ $cumulativeStats['z'] > 0 ? round(($cumulativeStats['hadir'] / ($cumulativeStats['z'] * ($classroomStats->sum('employees_count') ?: 1))) * 100, 1) : 0 }}</span>%
+                        <span id="live_cumulative_rate" class="transition-all duration-300">{{ $cumulativeStats['z'] > 0 ? round(($cumulativeStats['hadir'] / ($cumulativeStats['z'] * ($cumulativeStats['active_employees'] ?: 1))) * 100, 1) : 0 }}</span>%
                     </h3>
                 </div>
             </div>
@@ -278,7 +278,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-50" id="live_classroom_tbody">
-                        @forelse($classroomStats as $index => $cls)
+                        @forelse($unitStats as $index => $cls)
                             <tr class="group hover:bg-gray-50 transition duration-150">
                                 <td class="px-8 py-5">
                                     <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-xs {{ $index < 3 ? 'bg-teal-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600' }}">
@@ -458,11 +458,11 @@
             }
         }
 
-        function renderClassrooms(classroomStats) {
+        function renderClassrooms(unitStats) {
             const tbody = document.getElementById('live_classroom_tbody');
             if (!tbody) return;
             
-            if (classroomStats.length === 0) {
+            if (unitStats.length === 0) {
                 tbody.innerHTML = `<tr>
                     <td colspan="7" class="px-8 py-20 text-center text-gray-400">
                         <i class="fas fa-school text-5xl mb-4 opacity-10"></i>
@@ -473,7 +473,7 @@
             }
             
             let html = '';
-            classroomStats.forEach((cls, index) => {
+            unitStats.forEach((cls, index) => {
                 const rankClass = index < 3 ? 'bg-teal-500 text-white shadow-sm' : 'bg-gray-100 text-gray-600';
                 const rateColor = cls.presence_rate > 90 ? 'from-green-400 to-emerald-500' : (cls.presence_rate > 70 ? 'from-blue-400 to-indigo-500' : 'from-orange-400 to-red-500');
                 const schoolName = cls.school ? cls.school.name : '-';
@@ -529,8 +529,8 @@
 
                 // 2. Update Cumulative Stats
                 const cs = data.cumulativeStats;
-                const activeStudentsCount = data.classroomStats.reduce((acc, c) => acc + (c.employees_count || 0), 0) || 1;
-                const cumulativeRate = cs.z > 0 ? Math.round((cs.hadir / (cs.z * activeStudentsCount)) * 100 * 10) / 10 : 0;
+                const activeEmployeesCount = data.unitStats.reduce((acc, c) => acc + (c.employees_count || 0), 0) || 1;
+                const cumulativeRate = cs.z > 0 ? Math.round((cs.hadir / (cs.z * activeEmployeesCount)) * 100 * 10) / 10 : 0;
 
                 updateUIElement('live_cumulative_rate', cumulativeRate, true);
                 updateUIElement('live_cum_hadir', cs.hadir);
@@ -540,7 +540,7 @@
                 updateUIElement('live_cum_alpha', cs.alpha);
 
                 // 3. Update Classroom Table
-                renderClassrooms(data.classroomStats);
+                renderClassrooms(data.unitStats);
 
                 // 4. Update Charts
                 if (window.trendChart) {

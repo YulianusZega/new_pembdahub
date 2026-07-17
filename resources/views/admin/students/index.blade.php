@@ -64,7 +64,7 @@
                 </div>
             </div>
 
-            <div class="w-full lg:w-64">
+            <div class="w-full lg:w-auto">
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Unit Sekolah</label>
                 <div class="relative group">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500">
@@ -88,7 +88,7 @@
                 </div>
             </div>
 
-            <div class="w-full lg:w-48">
+            <div class="w-full lg:w-auto">
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Tahun Pelajaran</label>
                 <div class="relative group">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500">
@@ -108,7 +108,7 @@
                 </div>
             </div>
 
-            <div class="w-full lg:min-w-[220px] lg:w-auto">
+            <div class="w-full lg:w-auto">
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Kelas</label>
                 <div class="relative group">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500">
@@ -128,7 +128,7 @@
                 </div>
             </div>
 
-            <div class="w-full lg:w-44">
+            <div class="w-full lg:w-auto">
                 <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Status</label>
                 <div class="relative group">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500">

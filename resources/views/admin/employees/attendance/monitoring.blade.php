@@ -76,7 +76,7 @@
                 <div class="text-right">
                     <p class="text-xs font-bold text-teal-200 uppercase tracking-widest mb-1">Total Persentase</p>
                     <h3 class="text-6xl font-bold leading-none">
-                        <span id="live_cumulative_rate" class="transition-all duration-300">{{ $cumulativeStats['z'] > 0 ? round(($cumulativeStats['hadir'] / ($cumulativeStats['z'] * ($cumulativeStats['active_employees'] ?: 1))) * 100, 1) : 0 }}</span>%
+                        <span id="live_cumulative_rate" class="transition-all duration-300">{{ $cumulativeStats['expected_attendances'] > 0 ? round(($cumulativeStats['hadir'] / $cumulativeStats['expected_attendances']) * 100, 1) : 0 }}</span>%
                     </h3>
                 </div>
             </div>
@@ -529,8 +529,8 @@
 
                 // 2. Update Cumulative Stats
                 const cs = data.cumulativeStats;
-                const activeEmployeesCount = data.unitStats.reduce((acc, c) => acc + (c.employees_count || 0), 0) || 1;
-                const cumulativeRate = cs.z > 0 ? Math.round((cs.hadir / (cs.z * activeEmployeesCount)) * 100 * 10) / 10 : 0;
+                const expectedAttendances = cs.expected_attendances || 1;
+                const cumulativeRate = cs.expected_attendances > 0 ? Math.round((cs.hadir / expectedAttendances) * 100 * 10) / 10 : 0;
 
                 updateUIElement('live_cumulative_rate', cumulativeRate, true);
                 updateUIElement('live_cum_hadir', cs.hadir);

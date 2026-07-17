@@ -218,6 +218,37 @@ class EmployeeAttendanceController extends Controller
             }
         }
         
+        // Calculate dynamic expected Z (total expected attendances) for all active employees
+        $totalExpectedAttendances = 0;
+        $allActiveEmployees = \App\Models\Employee::where('is_active', true)
+            ->when($schoolId, function($q) use ($schoolId) {
+                return $q->where('school_id', $schoolId);
+            })
+            ->with('teacher.schedules')
+            ->get();
+            
+        foreach ($allActiveEmployees as $emp) {
+            $isTeacher = $emp->teacher !== null && $emp->teacher->schedules->count() > 0;
+            $teachingDays = [];
+            if ($isTeacher) {
+                $teachingDays = $emp->teacher->schedules->pluck('day_of_week')->map(function($day) {
+                    return strtolower($day);
+                })->unique()->toArray();
+            }
+            
+            for ($d = $startDateOfMonth->copy(); $d->lte($endDate); $d->addDay()) {
+                if ($isTeacher) {
+                    if (in_array(strtolower($d->format('l')), $teachingDays)) {
+                        $totalExpectedAttendances++;
+                    }
+                } else {
+                    if (!in_array($d->dayOfWeek, [0, 6])) {
+                        $totalExpectedAttendances++;
+                    }
+                }
+            }
+        }
+        
         $cumulativeStats = [
             'hadir' => (clone $cumulativeStatsQuery)->where('status', 'hadir')->count(),
             'sakit' => (clone $cumulativeStatsQuery)->where('status', 'sakit')->count(),
@@ -226,6 +257,7 @@ class EmployeeAttendanceController extends Controller
             'dinas_luar' => (clone $cumulativeStatsQuery)->where('status', 'dinas_luar')->count(),
             'cuti' => (clone $cumulativeStatsQuery)->where('status', 'cuti')->count(),
             'z' => $workingDays,
+            'expected_attendances' => $totalExpectedAttendances,
             'active_employees' => $activeEmployeeCount
         ];
         $cumulativeStats['total_count'] = $cumulativeStats['hadir'] + $cumulativeStats['sakit'] + $cumulativeStats['izin'] + $cumulativeStats['alpha'] + $cumulativeStats['dinas_luar'] + $cumulativeStats['cuti'];
@@ -265,11 +297,36 @@ class EmployeeAttendanceController extends Controller
         $schools = $isSuperAdmin ? School::orderBy('name')->get() : School::where('id', $user->school_id)->get();
         foreach ($schools as $sch) {
             $empCount = Employee::where('school_id', $sch->id)->where('is_active', true)->count();
+            
+            // Calculate expected attendances specifically for this school
+            $schExpectedAttendances = 0;
+            $schEmployees = $allActiveEmployees->where('school_id', $sch->id);
+            foreach ($schEmployees as $emp) {
+                $isTeacher = $emp->teacher !== null && $emp->teacher->schedules->count() > 0;
+                $teachingDays = [];
+                if ($isTeacher) {
+                    $teachingDays = $emp->teacher->schedules->pluck('day_of_week')->map(function($day) {
+                        return strtolower($day);
+                    })->unique()->toArray();
+                }
+                for ($d = $startDateOfMonth->copy(); $d->lte($endDate); $d->addDay()) {
+                    if ($isTeacher) {
+                        if (in_array(strtolower($d->format('l')), $teachingDays)) {
+                            $schExpectedAttendances++;
+                        }
+                    } else {
+                        if (!in_array($d->dayOfWeek, [0, 6])) {
+                            $schExpectedAttendances++;
+                        }
+                    }
+                }
+            }
+            
             $schDaily = (clone $dailyStatsQuery)->whereHas('employee', fn($q) => $q->where('school_id', $sch->id))->get();
             $schHadir = $schDaily->where('status', 'hadir')->count();
             $schCumHadir = (clone $cumulativeStatsQuery)->whereHas('employee', fn($q) => $q->where('school_id', $sch->id))->where('status', 'hadir')->count();
             
-            $presenceRate = ($workingDays > 0 && $empCount > 0) ? round(($schCumHadir / ($workingDays * $empCount)) * 100, 1) : 0;
+            $presenceRate = $schExpectedAttendances > 0 ? round(($schCumHadir / $schExpectedAttendances) * 100, 1) : 0;
             
             $unitStats[] = (object) [
                 'school_id' => $sch->id,
@@ -279,6 +336,7 @@ class EmployeeAttendanceController extends Controller
                 'total_hadir' => $schCumHadir,
                 'daily_present' => $schHadir,
                 'z_days' => $workingDays,
+                'expected_attendances' => $schExpectedAttendances,
                 'presence_rate' => $presenceRate
             ];
         }

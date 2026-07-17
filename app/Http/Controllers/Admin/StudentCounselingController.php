@@ -27,7 +27,9 @@ class StudentCounselingController extends Controller
             'total_achievement' => StudentCounselingRecord::where('record_type', 'penghargaan')->count(),
             'total_cases' => StudentCounselingRecord::where('record_type', '!=', 'penghargaan')->count(),
             'star_students' => User::whereHas('student')
-                ->with(['student.currentClassroom', 'reputation'])
+                ->with(['student.currentClassroom', 'reputation', 'reputationLogs' => function($q) {
+                    $q->orderByDesc('created_at')->take(5);
+                }])
                 ->whereHas('reputation', fn($q) => $q->where('total_points', '>', 0))
                 ->orderByDesc(function($q) {
                     $q->select('total_points')->from('reputations')->whereColumn('reputations.user_id', 'users.id')->limit(1);

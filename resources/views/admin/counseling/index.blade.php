@@ -263,25 +263,50 @@
             <div class="space-y-3">
                 @forelse($stats['star_students'] as $idx => $user)
                     @php $rank = $idx + 1; @endphp
-                    <div class="flex items-center gap-4 p-3 rounded-2xl bg-white/5 hover:bg-white/10 transition">
-                        {{-- Rank Badge --}}
-                        <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-extrabold flex-shrink-0
-                            {{ $rank == 1 ? 'lb-rank-1' : ($rank == 2 ? 'lb-rank-2' : ($rank == 3 ? 'lb-rank-3' : 'lb-rank-n')) }}">
-                            {{ $rank <= 3 ? ['🥇','🥈','🥉'][$rank-1] : $rank }}
+                    <div class="relative group">
+                        <div class="flex items-center gap-4 p-3 rounded-2xl bg-white/5 hover:bg-white/10 transition cursor-help">
+                            {{-- Rank Badge --}}
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-extrabold flex-shrink-0
+                                {{ $rank == 1 ? 'lb-rank-1' : ($rank == 2 ? 'lb-rank-2' : ($rank == 3 ? 'lb-rank-3' : 'lb-rank-n')) }}">
+                                {{ $rank <= 3 ? ['🥇','🥈','🥉'][$rank-1] : $rank }}
+                            </div>
+                            {{-- Avatar --}}
+                            <div class="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-white/10 flex-shrink-0">
+                                <img src="{{ $user->student->photo_url }}" class="w-full h-full object-cover" alt="{{ $user->student->full_name }}">
+                            </div>
+                            {{-- Info --}}
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-bold leading-tight truncate">{{ $user->student->full_name }}</p>
+                                <p class="text-xs text-slate-400 mt-0.5">{{ $user->student->currentClassroom->first()?->class_name ?? '-' }}</p>
+                            </div>
+                            {{-- Points --}}
+                            <div class="text-right flex-shrink-0">
+                                <p class="text-base font-extrabold text-indigo-300">{{ number_format($user->reputation->total_points) }}</p>
+                                <p class="text-[10px] text-slate-500 font-semibold uppercase">Poin</p>
+                            </div>
                         </div>
-                        {{-- Avatar --}}
-                        <div class="w-10 h-10 rounded-xl overflow-hidden ring-2 ring-white/10 flex-shrink-0">
-                            <img src="{{ $user->student->photo_url }}" class="w-full h-full object-cover" alt="{{ $user->student->full_name }}">
-                        </div>
-                        {{-- Info --}}
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-bold leading-tight truncate">{{ $user->student->full_name }}</p>
-                            <p class="text-xs text-slate-400 mt-0.5">{{ $user->student->currentClassroom->first()?->class_name ?? '-' }}</p>
-                        </div>
-                        {{-- Points --}}
-                        <div class="text-right flex-shrink-0">
-                            <p class="text-base font-extrabold text-indigo-300">{{ $user->reputation->total_points }}</p>
-                            <p class="text-[10px] text-slate-500 font-semibold uppercase">Poin</p>
+
+                        {{-- Tooltip / Popover saat di-hover --}}
+                        <div class="absolute left-1/2 top-full mt-2 -translate-x-1/2 w-64 bg-slate-800 rounded-xl p-4 shadow-2xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                            {{-- Panah atas --}}
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-b-slate-800"></div>
+                            
+                            <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-2 border-b border-slate-700 pb-2">Riwayat Poin Terakhir</p>
+                            <div class="space-y-2.5">
+                                @forelse($user->reputationLogs as $log)
+                                <div class="text-xs leading-tight">
+                                    <div class="flex justify-between items-start mb-0.5">
+                                        <span class="font-semibold text-slate-200 line-clamp-1 flex-1 pr-2" title="{{ $log->description ?: 'Aktivitas' }}">{{ $log->description ?: 'Aktivitas' }}</span>
+                                        <span class="font-bold whitespace-nowrap {{ $log->points > 0 ? 'text-emerald-400' : 'text-rose-400' }}">
+                                            {{ $log->points > 0 ? '+'.$log->points : $log->points }}
+                                        </span>
+                                    </div>
+                                    <div class="text-[9px] text-slate-400">{{ $log->created_at->format('d M Y H:i') }}</div>
+                                </div>
+                                @empty
+                                <div class="text-xs text-slate-400 italic">Belum ada rincian histori.</div>
+                                @endforelse
+                            </div>
                         </div>
                     </div>
                 @empty

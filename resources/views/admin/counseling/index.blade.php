@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Pusat Perkembangan Siswa - PembdaHUB')
+@section('title', 'Pembinaan, Prestasi & Konseling Siswa - PembdaHUB')
 
 @push('styles')
 <style>
@@ -146,15 +146,16 @@
     {{-- ===================== HERO HEADER ===================== --}}
     <div class="counseling-hero rounded-3xl p-8 md:p-10 text-white">
         <div class="relative z-10">
+            {{-- Title Row --}}
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div class="flex items-center gap-5">
                     <div class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center text-3xl shadow-xl ring-1 ring-white/20">
-                        🎓
+                        📊
                     </div>
                     <div>
-                        <p class="text-indigo-300 text-xs font-bold uppercase tracking-[.15em] mb-1">Sistem Konseling & BK</p>
-                        <h1 class="text-2xl md:text-3xl font-extrabold leading-tight tracking-tight">Pusat Perkembangan Siswa</h1>
-                        <p class="text-slate-400 text-sm mt-1">Monitoring holistik prestasi &amp; pembinaan karakter siswa SMKS Pembda Nias</p>
+                        <p class="text-indigo-300 text-xs font-bold uppercase tracking-[.15em] mb-1">Sistem Monitoring Siswa</p>
+                        <h1 class="text-2xl md:text-3xl font-extrabold leading-tight tracking-tight">Pembinaan, Prestasi &amp; Konseling</h1>
+                        <p class="text-slate-400 text-sm mt-1">Rekap holistik perkembangan karakter &amp; pencapaian seluruh siswa SMKS Pembda Nias</p>
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-3">
@@ -168,7 +169,33 @@
                     </a>
                 </div>
             </div>
-            <div class="hero-shimmer-line mt-8"></div>
+
+            {{-- 3 Module Badges --}}
+            <div class="flex flex-wrap gap-3 mt-6">
+                <div class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl ring-1 ring-white/15 backdrop-blur-sm">
+                    <span class="text-base">🏆</span>
+                    <div>
+                        <p class="text-xs font-bold text-white leading-tight">Prestasi Siswa</p>
+                        <p class="text-[10px] text-indigo-300">Akademik · Olahraga · Seni · Lomba</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl ring-1 ring-white/15 backdrop-blur-sm">
+                    <span class="text-base">🛡️</span>
+                    <div>
+                        <p class="text-xs font-bold text-white leading-tight">Pembinaan Karakter</p>
+                        <p class="text-[10px] text-rose-300">Kedisiplinan · Perilaku · Absensi</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl ring-1 ring-white/15 backdrop-blur-sm">
+                    <span class="text-base">💬</span>
+                    <div>
+                        <p class="text-xs font-bold text-white leading-tight">Konseling & BK</p>
+                        <p class="text-[10px] text-sky-300">Pribadi · Sosial · Karir · Belajar</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-shimmer-line mt-6"></div>
         </div>
     </div>
 

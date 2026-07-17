@@ -4,22 +4,22 @@
 
 @section('content')
 <div class="hof-universe" id="hofUniverse">
-    {{-- ═══════════════════ COMPACT HERO HEADER ═══════════════════ --}}
+    {{-- ═══════════════════ HERO HEADER ═══════════════════ --}}
     <div class="hof-header">
-        <div class="hof-header__bg-orbs">
-            <div class="hof-orb hof-orb--1"></div>
-            <div class="hof-orb hof-orb--2"></div>
-            <div class="hof-orb hof-orb--3"></div>
+        {{-- Floating stars decoration --}}
+        <div class="hof-stars" aria-hidden="true">
+            @for($i = 0; $i < 12; $i++)
+            <span class="hof-star" style="--i:{{ $i }}">{{ ['⭐','🌟','✨','💫'][($i % 4)] }}</span>
+            @endfor
         </div>
+
         <div class="hof-header__content">
             <div class="hof-badge-live">
                 <span class="hof-badge-live__dot"></span>
                 <span class="hof-badge-live__text">Live Rankings</span>
             </div>
-            <h1 class="hof-header__title">
-                <i class="fas fa-trophy hof-header__icon"></i>
-                Hall of Fame
-            </h1>
+            <div class="hof-header__trophy">🏆</div>
+            <h1 class="hof-header__title">Hall of Fame</h1>
             <p class="hof-header__subtitle">Panggung kehormatan bagi siswa & guru PembdaHub terbaik</p>
 
             @if(auth()->check() && $userRanking)
@@ -241,7 +241,7 @@
 
 {{-- ═══════════════════ STYLES ═══════════════════ --}}
 <style>
-/* ────── BASE RESET ────── */
+/* ────── BASE ────── */
 .hof-universe {
     --gold: #f59e0b;
     --gold-light: #fbbf24;
@@ -249,117 +249,163 @@
     --bronze: #d97706;
     --emerald: #10b981;
     --indigo: #6366f1;
-    --slate-900: #0f172a;
-    --slate-800: #1e293b;
-    padding: 2rem 0;
+    padding: 1.5rem 0 3rem;
     min-height: 100vh;
 }
 
-/* ────── HEADER ────── */
+/* ────── HEADER — NEW VIBRANT DESIGN ────── */
 .hof-header {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--slate-900) 0%, #1e1b4b 50%, var(--slate-800) 100%);
-    border-radius: 1.5rem;
-    padding: 3rem 2rem;
+    background: linear-gradient(135deg,
+        #667eea 0%,
+        #764ba2 25%,
+        #f093fb 50%,
+        #f5a623 75%,
+        #ffd700 100%
+    );
+    background-size: 300% 300%;
+    animation: headerGradShift 8s ease infinite;
+    border-radius: 2rem;
+    padding: 2.5rem 2rem 2rem;
     text-align: center;
     color: #fff;
     margin-bottom: 3rem;
+    box-shadow:
+        0 20px 60px rgba(102, 126, 234, 0.35),
+        0 8px 25px rgba(245, 166, 35, 0.2),
+        inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
-.hof-header__bg-orbs { position: absolute; inset: 0; pointer-events: none; }
+@keyframes headerGradShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-.hof-orb {
+.hof-header::before {
+    content: '';
     position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.15;
-    animation: orbFloat 8s ease-in-out infinite;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    border-radius: inherit;
+    pointer-events: none;
 }
-.hof-orb--1 { width: 300px; height: 300px; background: var(--gold); top: -80px; right: -60px; }
-.hof-orb--2 { width: 250px; height: 250px; background: var(--indigo); bottom: -60px; left: -40px; animation-delay: 3s; }
-.hof-orb--3 { width: 180px; height: 180px; background: var(--emerald); top: 50%; left: 50%; animation-delay: 5s; }
 
-@keyframes orbFloat {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(20px, -20px) scale(1.1); }
+.hof-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 100%);
+    border-radius: 0 0 2rem 2rem;
+}
+
+.hof-stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.hof-star {
+    position: absolute;
+    font-size: 1.2rem;
+    opacity: 0;
+    animation: starFloat 6s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.5s);
+    top: calc(10% + (var(--i) * 7%));
+    left: calc(5% + (var(--i) * 8%));
+}
+@keyframes starFloat {
+    0%   { opacity: 0; transform: translateY(10px) rotate(0deg); }
+    30%  { opacity: 0.7; }
+    70%  { opacity: 0.5; }
+    100% { opacity: 0; transform: translateY(-30px) rotate(20deg); }
 }
 
 .hof-header__content { position: relative; z-index: 2; }
+
+.hof-header__trophy {
+    font-size: 3.5rem;
+    display: block;
+    margin: 0.25rem auto 0.5rem;
+    animation: trophyBounce 3s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+}
+@keyframes trophyBounce {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%       { transform: translateY(-10px) rotate(3deg); }
+}
 
 .hof-badge-live {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    padding: 0.35rem 1rem;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.35);
+    backdrop-filter: blur(8px);
+    padding: 0.3rem 1rem;
     border-radius: 9999px;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
 }
 .hof-badge-live__dot {
-    width: 8px; height: 8px;
-    background: var(--emerald);
+    width: 7px; height: 7px;
+    background: #fff;
     border-radius: 50%;
     animation: pulse 2s infinite;
-    box-shadow: 0 0 6px var(--emerald);
+    box-shadow: 0 0 6px rgba(255,255,255,0.8);
 }
 @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.4); }
+    50%       { opacity: 0.5; transform: scale(1.4); }
 }
 
 .hof-header__title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin: 0 0 0.5rem;
-    background: linear-gradient(135deg, #fff, var(--gold-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.2;
+    font-size: 2.6rem;
+    font-weight: 900;
+    margin: 0 0 0.4rem;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+    letter-spacing: -0.02em;
 }
-.hof-header__icon { -webkit-text-fill-color: var(--gold); margin-right: 0.5rem; font-size: 2rem; }
 
 .hof-header__subtitle {
-    color: rgba(255,255,255,0.6);
+    color: rgba(255,255,255,0.85);
     font-size: 0.95rem;
     margin: 0;
     font-weight: 500;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
-/* My Rank */
 .hof-myrank {
     display: inline-flex;
     align-items: center;
     gap: 1.5rem;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 1rem;
-    padding: 1rem 2rem;
-    margin-top: 1.5rem;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 1.25rem;
+    padding: 0.85rem 1.75rem;
+    margin-top: 1.25rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 .hof-myrank__label {
     display: block;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.7);
     font-weight: 700;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.1rem;
 }
-.hof-myrank__value { font-size: 1.75rem; font-weight: 800; }
-.hof-myrank__value--emerald { color: var(--emerald); }
-.hof-myrank__divider { width: 1px; height: 40px; background: rgba(255,255,255,0.15); }
+.hof-myrank__value { font-size: 1.6rem; font-weight: 900; color: #fff; }
+.hof-myrank__value--emerald { color: #d1fae5; }
+.hof-myrank__divider { width: 1px; height: 36px; background: rgba(255,255,255,0.25); }
 
 /* ────── SECTION ────── */
-.hof-section {
-    margin-bottom: 3.5rem;
-}
+.hof-section { margin-bottom: 3.5rem; }
 .hof-section__title {
     text-align: center;
     font-size: 1.5rem;
@@ -389,31 +435,17 @@
     gap: 1.5rem;
     padding: 1rem 0;
 }
-
 .hof-tree__svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
 }
-
 .hof-tree__svg line, .hof-tree__svg path {
-    stroke-width: 2;
-    stroke-linecap: round;
-    fill: none;
+    stroke-width: 2; stroke-linecap: round; fill: none;
 }
-
-/* Tiers */
 .hof-tier {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    flex-wrap: wrap;
+    display: flex; justify-content: center; gap: 2rem;
+    position: relative; z-index: 1; width: 100%; flex-wrap: wrap;
 }
 .hof-tier--1 { margin-bottom: 0.5rem; }
 .hof-tier--2 { gap: 4rem; }
@@ -433,21 +465,18 @@
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.6);
     box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease;
     opacity: 0;
     transform: translateY(40px) scale(0.9);
-    animation: nodeEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: nodeEnter 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
 }
 .hof-node:hover {
     transform: translateY(-6px) scale(1.03);
     box-shadow: 0 20px 50px rgba(0,0,0,0.12);
 }
-
 @keyframes nodeEnter {
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
-
-/* Champion Node */
 .hof-node--champion {
     padding: 2rem 2rem 1.75rem;
     background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,251,235,0.9));
@@ -455,65 +484,40 @@
     box-shadow: 0 8px 40px rgba(245,158,11,0.12), 0 2px 8px rgba(0,0,0,0.04);
     min-width: 220px;
 }
-.hof-node--champion:hover {
-    box-shadow: 0 24px 60px rgba(245,158,11,0.2);
-}
-
-/* Silver/Bronze Node */
+.hof-node--champion:hover { box-shadow: 0 24px 60px rgba(245,158,11,0.2); }
 .hof-node--silver { min-width: 180px; }
 .hof-node--bronze { min-width: 180px; }
+.hof-node--leaf { padding: 1rem 1rem 0.85rem; min-width: 140px; max-width: 160px; }
 
-/* Leaf Node */
-.hof-node--leaf {
-    padding: 1rem 1rem 0.85rem;
-    min-width: 140px;
-    max-width: 160px;
-}
-
-/* Crown */
 .hof-node__crown {
-    position: absolute;
-    top: -18px;
-    left: 50%;
+    position: absolute; top: -18px; left: 50%;
     transform: translateX(-50%);
-    color: var(--gold);
-    font-size: 1.75rem;
+    color: var(--gold); font-size: 1.75rem;
     animation: crownBounce 3s ease-in-out infinite;
     filter: drop-shadow(0 2px 6px rgba(245,158,11,0.4));
 }
 @keyframes crownBounce {
     0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-6px); }
+    50%       { transform: translateX(-50%) translateY(-6px); }
 }
 
-/* Glow */
 .hof-node__glow {
-    position: absolute;
-    width: 130%;
-    height: 130%;
-    border-radius: 50%;
-    top: -15%;
-    left: -15%;
-    pointer-events: none;
-    opacity: 0.12;
+    position: absolute; width: 130%; height: 130%;
+    border-radius: 50%; top: -15%; left: -15%;
+    pointer-events: none; opacity: 0.12;
     animation: glowPulse 4s ease-in-out infinite;
 }
-.hof-node__glow--gold { background: radial-gradient(circle, var(--gold), transparent 70%); }
+.hof-node__glow--gold   { background: radial-gradient(circle, var(--gold), transparent 70%); }
 .hof-node__glow--silver { background: radial-gradient(circle, var(--silver), transparent 70%); opacity: 0.08; }
 .hof-node__glow--bronze { background: radial-gradient(circle, var(--bronze), transparent 70%); opacity: 0.1; }
-
 @keyframes glowPulse {
     0%, 100% { transform: scale(1); opacity: 0.12; }
-    50% { transform: scale(1.15); opacity: 0.2; }
+    50%       { transform: scale(1.15); opacity: 0.2; }
 }
 
-/* Photo Ring */
 .hof-node__photo-ring {
-    position: relative;
-    border-radius: 50%;
-    padding: 3px;
-    margin-bottom: 0.75rem;
-    z-index: 2;
+    position: relative; border-radius: 50%;
+    padding: 3px; margin-bottom: 0.75rem; z-index: 2;
 }
 .hof-node__photo-ring--gold {
     width: 100px; height: 100px;
@@ -541,136 +545,56 @@
     background: linear-gradient(135deg, var(--indigo), #a78bfa);
     box-shadow: 0 0 8px rgba(99,102,241,0.2);
 }
-
 @keyframes ringShimmer {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
-
 .hof-node__photo {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #fff;
+    width: 100%; height: 100%; border-radius: 50%;
+    object-fit: cover; border: 2px solid #fff;
 }
 
-/* Node Info */
 .hof-node__info { position: relative; z-index: 2; }
-
 .hof-node__rank {
-    display: inline-block;
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #fff;
-    background: var(--indigo);
-    padding: 0.15rem 0.6rem;
-    border-radius: 9999px;
-    margin-bottom: 0.35rem;
+    display: inline-block; font-size: 0.65rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: #fff; background: var(--indigo);
+    padding: 0.15rem 0.6rem; border-radius: 9999px; margin-bottom: 0.35rem;
 }
 .hof-node--champion .hof-node__rank { background: linear-gradient(135deg, var(--gold), var(--bronze)); font-size: 0.75rem; }
-.hof-node--silver .hof-node__rank { background: linear-gradient(135deg, #64748b, #94a3b8); }
-.hof-node--bronze .hof-node__rank { background: linear-gradient(135deg, #b45309, var(--bronze)); }
+.hof-node--silver   .hof-node__rank { background: linear-gradient(135deg, #64748b, #94a3b8); }
+.hof-node--bronze   .hof-node__rank { background: linear-gradient(135deg, #b45309, var(--bronze)); }
 
-.hof-node__name {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0.25rem 0 0.1rem;
-    line-height: 1.3;
-}
+.hof-node__name { font-size: 0.95rem; font-weight: 700; color: #1e293b; margin: 0.25rem 0 0.1rem; line-height: 1.3; }
 .hof-node__name--sm { font-size: 0.8rem; }
-
-.hof-node__class {
-    font-size: 0.65rem;
-    color: #94a3b8;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
+.hof-node__class { font-size: 0.65rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 
 .hof-node__points {
     margin-top: 0.5rem;
     background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-    border: 1px solid #d1fae5;
-    border-radius: 0.75rem;
+    border: 1px solid #d1fae5; border-radius: 0.75rem;
     padding: 0.35rem 0.75rem;
 }
 .hof-node__points--sm { padding: 0.25rem 0.5rem; }
-
-.hof-node__points-value {
-    display: block;
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: #059669;
-}
+.hof-node__points-value { display: block; font-size: 1.15rem; font-weight: 800; color: #059669; }
 .hof-node__points--sm .hof-node__points-value { font-size: 0.9rem; }
+.hof-node__points-label { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.08em; color: #6ee7b7; font-weight: 700; }
 
-.hof-node__points-label {
-    font-size: 0.55rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #6ee7b7;
-    font-weight: 700;
-}
-
-.hof-node__badges {
-    display: flex;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 0.5rem;
-}
+.hof-node__badges { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: center; margin-top: 0.5rem; }
 .hof-node__badge {
-    font-size: 0.6rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.35rem;
-    color: #fff;
-    font-weight: 700;
-    text-transform: uppercase;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
+    font-size: 0.6rem; padding: 0.2rem 0.5rem; border-radius: 0.35rem;
+    color: #fff; font-weight: 700; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 0.25rem;
 }
 .hof-node__badge i { font-size: 0.55rem; }
 
-/* Particles */
-.hof-node__particles {
-    position: absolute;
-    inset: -20px;
-    pointer-events: none;
-    z-index: 0;
-}
+.hof-node__particles { position: absolute; inset: -20px; pointer-events: none; z-index: 0; }
 .hof-particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: var(--gold);
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    animation: sparkle 3s ease-in-out infinite;
-    animation-delay: calc(var(--i) * 0.375s);
-    opacity: 0;
+    position: absolute; width: 4px; height: 4px;
+    background: var(--gold); border-radius: 50%;
+    top: 50%; left: 50%; opacity: 0;
 }
-@keyframes sparkle {
-    0% { opacity: 0; transform: translate(0, 0) scale(0); }
-    30% { opacity: 1; transform: translate(calc(cos(var(--i) * 45deg) * 60px), calc(sin(var(--i) * 45deg) * 60px)) scale(1); }
-    100% { opacity: 0; transform: translate(calc(cos(var(--i) * 45deg) * 90px), calc(sin(var(--i) * 45deg) * 90px)) scale(0); }
-}
-/* JS-based particle fallback positions */
-.hof-particle:nth-child(1) { animation-name: sparkle1; }
-.hof-particle:nth-child(2) { animation-name: sparkle2; }
-.hof-particle:nth-child(3) { animation-name: sparkle3; }
-.hof-particle:nth-child(4) { animation-name: sparkle4; }
-.hof-particle:nth-child(5) { animation-name: sparkle5; }
-.hof-particle:nth-child(6) { animation-name: sparkle6; }
-.hof-particle:nth-child(7) { animation-name: sparkle7; }
-.hof-particle:nth-child(8) { animation-name: sparkle8; }
-
 @keyframes sparkle1 { 0%{opacity:0;transform:translate(0,0) scale(0)} 30%{opacity:1;transform:translate(50px,-30px) scale(1)} 100%{opacity:0;transform:translate(70px,-45px) scale(0)} }
 @keyframes sparkle2 { 0%{opacity:0;transform:translate(0,0) scale(0)} 30%{opacity:1;transform:translate(40px,35px) scale(1)} 100%{opacity:0;transform:translate(60px,50px) scale(0)} }
 @keyframes sparkle3 { 0%{opacity:0;transform:translate(0,0) scale(0)} 30%{opacity:1;transform:translate(-45px,-25px) scale(1)} 100%{opacity:0;transform:translate(-65px,-40px) scale(0)} }
@@ -679,294 +603,151 @@
 @keyframes sparkle6 { 0%{opacity:0;transform:translate(0,0) scale(0)} 30%{opacity:1;transform:translate(-50px,5px) scale(1)} 100%{opacity:0;transform:translate(-70px,8px) scale(0)} }
 @keyframes sparkle7 { 0%{opacity:0;transform:translate(0,0) scale(0)} 30%{opacity:1;transform:translate(15px,-50px) scale(1)} 100%{opacity:0;transform:translate(20px,-70px) scale(0)} }
 @keyframes sparkle8 { 0%{opacity:0;transform:translate(0,0) scale(0)} 30%{opacity:1;transform:translate(-10px,55px) scale(1)} 100%{opacity:0;transform:translate(-15px,75px) scale(0)} }
+.hof-particle:nth-child(1) { animation: sparkle1 3s ease-in-out infinite; }
+.hof-particle:nth-child(2) { animation: sparkle2 3s ease-in-out infinite 0.375s; }
+.hof-particle:nth-child(3) { animation: sparkle3 3s ease-in-out infinite 0.75s; }
+.hof-particle:nth-child(4) { animation: sparkle4 3s ease-in-out infinite 1.125s; }
+.hof-particle:nth-child(5) { animation: sparkle5 3s ease-in-out infinite 1.5s; }
+.hof-particle:nth-child(6) { animation: sparkle6 3s ease-in-out infinite 1.875s; }
+.hof-particle:nth-child(7) { animation: sparkle7 3s ease-in-out infinite 2.25s; }
+.hof-particle:nth-child(8) { animation: sparkle8 3s ease-in-out infinite 2.625s; }
 
 /* ────── GURU DECK ────── */
 .hof-guru-deck {
-    display: flex;
-    gap: 1.25rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 0 1rem;
+    display: flex; gap: 1.25rem;
+    justify-content: center; flex-wrap: wrap; padding: 0 1rem;
 }
-
 .hof-guru-card {
     position: relative;
     background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.6);
-    border-radius: 1.25rem;
-    padding: 2rem 1.5rem 1.5rem;
-    text-align: center;
-    min-width: 170px;
-    max-width: 200px;
-    flex: 1;
+    border-radius: 1.25rem; padding: 2rem 1.5rem 1.5rem;
+    text-align: center; min-width: 170px; max-width: 200px; flex: 1;
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease;
-    opacity: 0;
-    animation: nodeEnter 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+    opacity: 0; animation: nodeEnter 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
 }
-.hof-guru-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.1);
-}
-
+.hof-guru-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
 .hof-guru-card--top {
     border: 2px solid rgba(16,185,129,0.25);
     background: linear-gradient(145deg, rgba(255,255,255,0.95), rgba(236,253,245,0.9));
     box-shadow: 0 8px 30px rgba(16,185,129,0.1);
 }
-.hof-guru-card--top:hover {
-    box-shadow: 0 20px 50px rgba(16,185,129,0.15);
-}
+.hof-guru-card--top:hover { box-shadow: 0 20px 50px rgba(16,185,129,0.15); }
 
 .hof-guru-card__crown {
-    position: absolute;
-    top: -12px;
-    left: 50%;
+    position: absolute; top: -12px; left: 50%;
     transform: translateX(-50%);
     background: linear-gradient(135deg, var(--emerald), #059669);
-    color: #fff;
-    font-size: 0.6rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    white-space: nowrap;
-    box-shadow: 0 2px 10px rgba(16,185,129,0.3);
+    color: #fff; font-size: 0.6rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0.25rem 0.75rem; border-radius: 9999px;
+    white-space: nowrap; box-shadow: 0 2px 10px rgba(16,185,129,0.3);
 }
-
-.hof-guru-card__rank {
-    font-size: 0.65rem;
-    font-weight: 800;
-    color: #94a3b8;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-}
+.hof-guru-card__rank { font-size: 0.65rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; margin-bottom: 0.5rem; }
 .hof-guru-card--top .hof-guru-card__rank { color: var(--emerald); }
-
 .hof-guru-card__photo-wrap {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    padding: 3px;
+    width: 72px; height: 72px; border-radius: 50%; padding: 3px;
     background: linear-gradient(135deg, var(--emerald), var(--indigo));
     margin: 0 auto 0.75rem;
 }
-.hof-guru-card__photo {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #fff;
-}
-
-.hof-guru-card__name {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0 0 0.5rem;
-    line-height: 1.3;
-}
-
-.hof-guru-card__badges {
-    display: flex;
-    gap: 0.25rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 0.75rem;
-}
+.hof-guru-card__photo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid #fff; }
+.hof-guru-card__name { font-size: 0.9rem; font-weight: 700; color: #1e293b; margin: 0 0 0.5rem; line-height: 1.3; }
+.hof-guru-card__badges { display: flex; gap: 0.25rem; flex-wrap: wrap; justify-content: center; margin-bottom: 0.75rem; }
 .hof-guru-card__badge {
-    font-size: 0.55rem;
-    padding: 0.15rem 0.4rem;
-    border-radius: 0.3rem;
-    color: #fff;
-    font-weight: 700;
-    text-transform: uppercase;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.2rem;
+    font-size: 0.55rem; padding: 0.15rem 0.4rem; border-radius: 0.3rem;
+    color: #fff; font-weight: 700; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 0.2rem;
 }
-
 .hof-guru-card__score {
     background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-    border: 1px solid #d1fae5;
-    border-radius: 0.75rem;
-    padding: 0.4rem 0.75rem;
+    border: 1px solid #d1fae5; border-radius: 0.75rem; padding: 0.4rem 0.75rem;
 }
-.hof-guru-card__score-val {
-    display: block;
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #059669;
-}
-.hof-guru-card__score-lbl {
-    font-size: 0.55rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #6ee7b7;
-    font-weight: 700;
-}
+.hof-guru-card__score-val { display: block; font-size: 1.1rem; font-weight: 800; color: #059669; }
+.hof-guru-card__score-lbl { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.06em; color: #6ee7b7; font-weight: 700; }
 
-/* Empty state */
-.hof-empty {
-    text-align: center;
-    color: #94a3b8;
-    padding: 3rem 0;
-    width: 100%;
-}
+.hof-empty { text-align: center; color: #94a3b8; padding: 3rem 0; width: 100%; }
 .hof-empty i { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
 .hof-empty p { font-size: 0.9rem; font-style: italic; margin: 0; }
 
 /* ────── BADGE SHOWCASE ────── */
 .hof-section--badges {
     background: linear-gradient(135deg, #f8fafc, #eef2ff);
-    border-radius: 1.5rem;
-    padding: 3rem 2rem;
+    border-radius: 1.5rem; padding: 3rem 2rem;
     border: 1px solid #e0e7ff;
 }
-
-.hof-badges-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.25rem;
-}
-
+.hof-badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem; }
 .hof-badge-card {
-    background: #fff;
-    border-radius: 1.25rem;
-    padding: 1.75rem 1.25rem;
-    text-align: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    background: #fff; border-radius: 1.25rem; padding: 1.75rem 1.25rem;
+    text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
     border: 1px solid #f1f5f9;
 }
-.hof-badge-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-}
-
+.hof-badge-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
 .hof-badge-card__icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 1rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
+    width: 52px; height: 52px; border-radius: 1rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 1.25rem; margin-bottom: 1rem;
     transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
 }
 .hof-badge-card:hover .hof-badge-card__icon { transform: rotate(12deg) scale(1.1); }
+.hof-badge-card__name { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0 0 0.35rem; }
+.hof-badge-card__desc { font-size: 0.75rem; color: #94a3b8; line-height: 1.5; margin: 0 0 1rem; }
+.hof-badge-card__req { border-top: 1px solid #f1f5f9; padding-top: 0.75rem; }
+.hof-badge-card__req-label { display: block; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: #cbd5e1; font-weight: 700; margin-bottom: 0.15rem; }
+.hof-badge-card__req-value { font-size: 0.85rem; font-weight: 700; color: #475569; }
 
-.hof-badge-card__name {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0 0 0.35rem;
-}
-
-.hof-badge-card__desc {
-    font-size: 0.75rem;
-    color: #94a3b8;
-    line-height: 1.5;
-    margin: 0 0 1rem;
-}
-
-.hof-badge-card__req {
-    border-top: 1px solid #f1f5f9;
-    padding-top: 0.75rem;
-}
-.hof-badge-card__req-label {
-    display: block;
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #cbd5e1;
-    font-weight: 700;
-    margin-bottom: 0.15rem;
-}
-.hof-badge-card__req-value {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #475569;
-}
-
-/* ────── FLOATING ANIMATION FOR NODES ────── */
+/* ────── FLOATING NODE ANIMATION ────── */
 .hof-node--champion { animation: nodeEnter 0.7s cubic-bezier(0.16,1,0.3,1) forwards, nodeFloat 6s ease-in-out 1s infinite; }
 .hof-node--silver   { animation: nodeEnter 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s forwards, nodeFloat 7s ease-in-out 1.5s infinite; }
 .hof-node--bronze   { animation: nodeEnter 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s forwards, nodeFloat 7s ease-in-out 2s infinite; }
 .hof-node--leaf     { animation: nodeEnter 0.7s cubic-bezier(0.16,1,0.3,1) forwards, nodeFloat 8s ease-in-out 2.5s infinite; }
-
 @keyframes nodeFloat {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50%       { transform: translateY(-8px); }
 }
 
 /* ────── RESPONSIVE ────── */
-@media (max-width: 1024px) {
-    .hof-tier--2 { gap: 2rem; }
-    .hof-tier--3 { gap: 1rem; }
-}
-
 @media (max-width: 768px) {
-    .hof-header { padding: 2rem 1.25rem; border-radius: 1rem; }
-    .hof-header__title { font-size: 1.75rem; }
-    .hof-header__icon { font-size: 1.5rem; }
+    .hof-header { padding: 2rem 1.25rem 1.75rem; border-radius: 1.25rem; }
+    .hof-header__title { font-size: 2rem; }
+    .hof-header__trophy { font-size: 2.75rem; }
     .hof-myrank { padding: 0.75rem 1.25rem; gap: 1rem; }
     .hof-myrank__value { font-size: 1.35rem; }
-
-    .hof-tree { gap: 1.25rem; }
-    .hof-tier { gap: 1rem; }
     .hof-tier--2 { flex-direction: column; align-items: center; gap: 1rem; }
-    .hof-tier--3 { 
-        display: grid; 
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 0.75rem; 
-        padding: 0 0.5rem;
-    }
+    .hof-tier--3 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; padding: 0 0.5rem; }
     .hof-node--leaf { max-width: none; }
     .hof-node--champion { min-width: auto; padding: 1.5rem 1.25rem; }
     .hof-node--silver, .hof-node--bronze { min-width: auto; }
-
     .hof-guru-deck { flex-direction: column; align-items: center; }
     .hof-guru-card { max-width: 280px; width: 100%; }
-
     .hof-section__title { font-size: 1.2rem; }
     .hof-badges-grid { grid-template-columns: repeat(2, 1fr); }
+    .hof-star { font-size: 0.9rem; }
 }
-
 @media (max-width: 480px) {
     .hof-universe { padding: 1rem 0; }
     .hof-header { padding: 1.5rem 1rem; }
-    .hof-header__title { font-size: 1.5rem; }
+    .hof-header__title { font-size: 1.65rem; }
+    .hof-header__trophy { font-size: 2.25rem; }
     .hof-tier--3 { grid-template-columns: 1fr; }
     .hof-badges-grid { grid-template-columns: 1fr; }
     .hof-myrank { flex-direction: column; gap: 0.5rem; }
     .hof-myrank__divider { width: 60px; height: 1px; }
 }
 
-/* ────── SVG LINE DRAW ANIMATION ────── */
-.hof-connector {
-    stroke-dasharray: 200;
-    stroke-dashoffset: 200;
-    animation: drawLine 1.2s ease-out forwards;
-}
+/* SVG Connectors */
+.hof-connector { stroke-dasharray: 200; stroke-dashoffset: 200; animation: drawLine 1.2s ease-out forwards; }
 .hof-connector--d1 { animation-delay: 0.6s; }
 .hof-connector--d2 { animation-delay: 0.8s; }
 .hof-connector--d3 { animation-delay: 1.0s; }
 .hof-connector--d4 { animation-delay: 1.1s; }
 .hof-connector--d5 { animation-delay: 1.2s; }
 .hof-connector--d6 { animation-delay: 1.3s; }
-
-@keyframes drawLine {
-    to { stroke-dashoffset: 0; }
-}
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
 </style>
 
-{{-- ═══════════════════ JAVASCRIPT: SVG CONNECTORS ═══════════════════ --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const svg = document.getElementById('hofTreeSvg');
@@ -987,9 +768,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function drawConnectors() {
-        // Clear existing
         svg.querySelectorAll('.hof-connector').forEach(el => el.remove());
-
         const tree = document.getElementById('hofTree');
         if (!tree) return;
         const treeRect = tree.getBoundingClientRect();
@@ -1000,37 +779,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const n1 = getNodeCenter('node1');
         const n2 = getNodeCenter('node2');
         const n3 = getNodeCenter('node3');
-
         let delayIdx = 1;
 
-        // Connect #1 -> #2
-        if (n1 && n2) {
-            drawCurve(svg, n1.x, n1.bottom, n2.x, n2.top, 'url(#lineGradGold)', delayIdx++);
-        }
-        // Connect #1 -> #3
-        if (n1 && n3) {
-            drawCurve(svg, n1.x, n1.bottom, n3.x, n3.top, 'url(#lineGradGold)', delayIdx++);
-        }
-
-        // Connect #2 -> #4, #5
-        if (n2) {
-            [4, 5].forEach(function(num) {
-                const nx = getNodeCenter('node' + num);
-                if (nx) {
-                    drawCurve(svg, n2.x, n2.bottom, nx.x, nx.top, 'url(#lineGradSilver)', delayIdx++);
-                }
-            });
-        }
-
-        // Connect #3 -> #6, #7
-        if (n3) {
-            [6, 7].forEach(function(num) {
-                const nx = getNodeCenter('node' + num);
-                if (nx) {
-                    drawCurve(svg, n3.x, n3.bottom, nx.x, nx.top, 'url(#lineGradSilver)', delayIdx++);
-                }
-            });
-        }
+        if (n1 && n2) drawCurve(svg, n1.x, n1.bottom, n2.x, n2.top, 'url(#lineGradGold)', delayIdx++);
+        if (n1 && n3) drawCurve(svg, n1.x, n1.bottom, n3.x, n3.top, 'url(#lineGradGold)', delayIdx++);
+        if (n2) [4, 5].forEach(function(num) { const nx = getNodeCenter('node' + num); if (nx) drawCurve(svg, n2.x, n2.bottom, nx.x, nx.top, 'url(#lineGradSilver)', delayIdx++); });
+        if (n3) [6, 7].forEach(function(num) { const nx = getNodeCenter('node' + num); if (nx) drawCurve(svg, n3.x, n3.bottom, nx.x, nx.top, 'url(#lineGradSilver)', delayIdx++); });
     }
 
     function drawCurve(svg, x1, y1, x2, y2, stroke, delayIdx) {
@@ -1043,8 +797,6 @@ document.addEventListener('DOMContentLoaded', function() {
         path.setAttribute('stroke-width', '2');
         path.setAttribute('stroke-linecap', 'round');
         path.classList.add('hof-connector', 'hof-connector--d' + delayIdx);
-
-        // Calculate path length for dash animation
         svg.appendChild(path);
         const length = path.getTotalLength();
         path.style.strokeDasharray = length;

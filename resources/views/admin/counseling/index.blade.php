@@ -137,6 +137,40 @@
         background-size: 1000px 100%;
         animation: shimmer 3s infinite;
     }
+    /* === HOVER TOOLTIP (PURE CSS) === */
+    .student-row-group { position: relative; }
+    .student-row-group .tooltip-panel {
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        transform: translate(-50%, 10px);
+        margin-top: 8px;
+        width: 260px;
+        background: #1e293b;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5), 0 8px 10px -6px rgba(0,0,0,0.3);
+        border: 1px solid #334155;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+        z-index: 999;
+        pointer-events: none;
+    }
+    .student-row-group:hover .tooltip-panel {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+    }
+    .tooltip-arrow {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent transparent #1e293b transparent;
+    }
 </style>
 @endpush
 
@@ -263,7 +297,7 @@
             <div class="space-y-3">
                 @forelse($stats['star_students'] as $idx => $user)
                     @php $rank = $idx + 1; @endphp
-                    <div class="relative group">
+                    <div class="student-row-group">
                         <div class="flex items-center gap-4 p-3 rounded-2xl bg-white/5 hover:bg-white/10 transition cursor-help">
                             {{-- Rank Badge --}}
                             <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-extrabold flex-shrink-0
@@ -287,9 +321,9 @@
                         </div>
 
                         {{-- Tooltip / Popover saat di-hover --}}
-                        <div class="absolute left-1/2 top-full mt-2 -translate-x-1/2 w-64 bg-slate-800 rounded-xl p-4 shadow-2xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                        <div class="tooltip-panel">
                             {{-- Panah atas --}}
-                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-b-slate-800"></div>
+                            <div class="tooltip-arrow"></div>
                             
                             <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-2 border-b border-slate-700 pb-2">Riwayat Poin Terakhir</p>
                             <div class="space-y-2.5">

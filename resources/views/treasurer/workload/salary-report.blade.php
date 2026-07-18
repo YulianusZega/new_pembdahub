@@ -179,8 +179,8 @@
                             </div>
                         </td>
                         <td class="px-3 py-4 text-right text-xs font-medium text-gray-700 align-top pt-5">Rp&nbsp;{{ number_format($sal['gaji_pokok'] ?? 0, 0, ',', '.') }}</td>
-                        <td class="px-4 py-4 align-top">
-                            <div class="flex flex-col h-full justify-between">
+                        <td class="p-0 align-top h-[1px]">
+                            <div class="flex flex-col h-full justify-between px-4 py-4">
                                 <div class="space-y-1">
                                     @if(!empty($sal['jabatan_details']))
                                         @foreach($sal['jabatan_details'] as $detail)
@@ -198,8 +198,8 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-3 py-4 align-top">
-                            <div class="flex flex-col h-full justify-between">
+                        <td class="p-0 align-top h-[1px]">
+                            <div class="flex flex-col h-full justify-between px-3 py-4">
                                 <div class="text-[10px] text-gray-500 font-medium">
                                     <div class="flex justify-between text-gray-600 mb-0.5">
                                         <span>Jam</span>
@@ -215,8 +215,8 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-5 py-4 align-top">
-                            <div class="flex flex-col h-full justify-between">
+                        <td class="p-0 align-top h-[1px]">
+                            <div class="flex flex-col h-full justify-between px-5 py-4">
                                 <div class="space-y-0.5">
                                     @if(($sal['tunjangan_keluarga'] ?? 0) > 0) 
                                         <div class="flex justify-between text-[10px] font-medium leading-tight text-pink-600 italic">

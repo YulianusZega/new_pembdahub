@@ -271,7 +271,7 @@
     @endif
 
     <!-- ═══════ BODY ═══════ -->
-    <div class="flex flex-1 pt-[62px]">
+    <div class="flex flex-1" style="padding-top: 62px;">
         <!-- ═══════ SIDEBAR ═══════ -->
         @if(!request()->has('embed'))
         <aside id="{{ $sidebarId }}" class="bg-white border-r border-gray-200 flex-shrink-0 collapsed">

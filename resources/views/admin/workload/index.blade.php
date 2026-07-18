@@ -230,25 +230,38 @@
 
                         {{-- Tunjangan Yayasan --}}
                         <td class="px-5 py-5 align-top">
-                            @php $totalYayasan = ($summary->family_allowance + $summary->child_allowance + $summary->rice_allowance); @endphp
+                            @php 
+                                $totalYayasan = ($summary->family_allowance + $summary->child_allowance + $summary->rice_allowance); 
+                                $tunjMeta = app(\App\Services\EmployeeAssignmentService::class)->calculateTunjangan($employee, $employee->school_id);
+                                $meta = $tunjMeta['meta'];
+                            @endphp
                             @if($totalYayasan > 0)
                             <div class="space-y-1.5">
                                 @if($summary->family_allowance > 0)
-                                <div class="flex justify-between items-center gap-3">
-                                    <span class="text-[11px] text-pink-600 font-medium">Keluarga</span>
-                                    <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->family_allowance, 0, ',', '.') }}</span>
+                                <div>
+                                    <div class="flex justify-between items-center gap-3">
+                                        <span class="text-[11px] text-pink-600 font-medium">Keluarga</span>
+                                        <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->family_allowance, 0, ',', '.') }}</span>
+                                    </div>
+                                    <p class="text-[9px] text-gray-400 font-medium mt-0.5">{{ $meta['keluarga_persen'] }}% x {{ number_format($meta['gaji_pokok'], 0, ',', '.') }}</p>
                                 </div>
                                 @endif
                                 @if($summary->child_allowance > 0)
-                                <div class="flex justify-between items-center gap-3">
-                                    <span class="text-[11px] text-blue-600 font-medium">Anak</span>
-                                    <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->child_allowance, 0, ',', '.') }}</span>
+                                <div>
+                                    <div class="flex justify-between items-center gap-3">
+                                        <span class="text-[11px] text-blue-600 font-medium">Anak</span>
+                                        <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->child_allowance, 0, ',', '.') }}</span>
+                                    </div>
+                                    <p class="text-[9px] text-gray-400 font-medium mt-0.5">{{ $meta['anak_persen'] }}% x {{ number_format($meta['gaji_pokok'], 0, ',', '.') }} x {{ $meta['jumlah_anak'] }}</p>
                                 </div>
                                 @endif
                                 @if($summary->rice_allowance > 0)
-                                <div class="flex justify-between items-center gap-3">
-                                    <span class="text-[11px] text-amber-600 font-medium">Beras</span>
-                                    <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->rice_allowance, 0, ',', '.') }}</span>
+                                <div>
+                                    <div class="flex justify-between items-center gap-3">
+                                        <span class="text-[11px] text-amber-600 font-medium">Beras</span>
+                                        <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->rice_allowance, 0, ',', '.') }}</span>
+                                    </div>
+                                    <p class="text-[9px] text-gray-400 font-medium mt-0.5">{{ number_format($meta['beras_nominal'], 0, ',', '.') }} x {{ 1 + $meta['jumlah_anak'] }} org</p>
                                 </div>
                                 @endif
                                 <div class="flex justify-end pt-1.5 mt-1 border-t border-gray-100">

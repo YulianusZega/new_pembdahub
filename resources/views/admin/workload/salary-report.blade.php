@@ -239,9 +239,7 @@
                                 Rp&nbsp;{{ number_format($sal['tunjangan_jabatan'], 0, ',', '.') }}
                             </div>
                             @else
-                            <div class="text-right font-bold text-indigo-700 text-[11px]">
-                                Rp&nbsp;0
-                            </div>
+                            <div class="text-[11px] text-gray-400 italic text-center pt-1">-</div>
                             @endif
                         </td>
                         <td class="px-3 pb-4 pt-1 align-bottom border-b border-gray-100">
@@ -250,9 +248,7 @@
                                 Rp&nbsp;{{ number_format($sal['honor_mengajar'], 0, ',', '.') }}
                             </div>
                             @else
-                            <div class="text-right text-xs font-bold text-gray-900 italic">
-                                Rp&nbsp;0
-                            </div>
+                            <div class="text-[11px] text-gray-400 italic text-center pt-1">-</div>
                             @endif
                         </td>
                         <td class="px-5 pb-4 pt-1 align-bottom border-b border-gray-100">
@@ -261,7 +257,7 @@
                                 Rp&nbsp;{{ number_format($totalYayasan, 0, ',', '.') }}
                             </div>
                             @else
-                            <div class="text-[11px] text-gray-400 italic text-center">-</div>
+                            <div class="text-[11px] text-gray-400 italic text-center pt-1">-</div>
                             @endif
                         </td>
                     </tr>

@@ -33,6 +33,7 @@
             
             <input type="hidden" name="school_id" value="{{ $timeSlot->school_id }}">
             <input type="hidden" name="day_of_week" value="{{ $timeSlot->day_of_week }}">
+            <input type="hidden" name="academic_year_id" value="{{ $timeSlot->academic_year_id }}">
 
             <!-- Slot Name -->
             <div class="mb-4">

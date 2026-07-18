@@ -74,7 +74,7 @@ const char* DEVICE_ID         = "STATION-SMA-03";
 
 // MP3 Player TX Pin (menggunakan SoftwareSerial bersama QR Scanner RX)
 #define MP3_TX_PIN      2   // D4 (GPIO2) - Hubungkan ke RX MP3 Player via resistor 1K Ohm
-#define MP3_VOLUME     22   // Tingkat volume MP3 (0 s.d 30)
+#define MP3_VOLUME     30   // Tingkat volume MP3 (0 s.d 30)
 
 // Buzzer (satu-satunya indikator - Opsi B tanpa LED)
 #define BUZZER_PIN     15   // D8 (GPIO15) - pull-down bawaan = buzzer OFF saat boot

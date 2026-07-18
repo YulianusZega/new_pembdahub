@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreTeacherRequest;
 use App\Http\Requests\Admin\UpdateTeacherRequest;
 use App\Models\Teacher;
+use App\Models\Employee;
 use App\Models\School;
 use App\Models\User;
 use App\Models\Subject;

@@ -46,10 +46,12 @@ class EmployeeAttendanceController extends Controller
                 }
             }
 
-            // Hanya tampilkan pegawai yang sudah memiliki record absensi
+            // Hanya tampilkan pegawai yang sudah memiliki record absensi, urutkan dari yang terbaru absen
             $employees = $employees->filter(function($emp) use ($attendances) {
                 return $attendances->has($emp->id);
-            });
+            })->sortByDesc(function($emp) use ($attendances) {
+                return $attendances->get($emp->id)->created_at;
+            })->values();
         }
 
         $schools = $user->isSuperAdmin() || $user->isKetuaYayasan()

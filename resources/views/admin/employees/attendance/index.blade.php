@@ -62,6 +62,7 @@
     </div>
 
     @if($schoolId)
+    <div id="live_attendance_wrapper">
     <!-- Summary Cards -->
     <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
         @php
@@ -163,6 +164,7 @@
             </table>
         </div>
     </div>
+    </div>
     @else
     <div class="bg-white rounded-2xl shadow-sm border border-blue-100 p-12 text-center">
         <i class="fas fa-school text-5xl text-gray-300 mb-4"></i>
@@ -171,3 +173,28 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Hanya auto-refresh jika melihat data hari ini
+    const isToday = '{{ $date }}' === '{{ today()->toDateString() }}';
+    
+    if (isToday && document.getElementById('live_attendance_wrapper')) {
+        setInterval(() => {
+            fetch(window.location.href)
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newWrapper = doc.getElementById('live_attendance_wrapper');
+                    if (newWrapper) {
+                        document.getElementById('live_attendance_wrapper').innerHTML = newWrapper.innerHTML;
+                    }
+                })
+                .catch(err => console.error('Live update failed:', err));
+        }, 5000); // Refresh setiap 5 detik
+    }
+});
+</script>
+@endpush

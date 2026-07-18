@@ -5,7 +5,7 @@
 <style>
 @page { 
     size: A4 landscape; 
-    margin: 15mm; 
+    margin: 10mm 15mm 15mm 15mm; 
 }
 
 @media print {
@@ -21,7 +21,7 @@
     
     /* Hapus bayangan dan sesuaikan border */
     .shadow-sm, .shadow-lg, .shadow-xl { box-shadow: none !important; }
-    .border-gray-100 { border-color: #000 !important; border-width: 1px !important; }
+    .border-gray-100 { border-color: #000 !important; }
     
     /* Pastikan teks tabel hitam legam agar jelas saat di-print PDF */
     th, td, p, span, div { color: #000 !important; }
@@ -129,7 +129,7 @@
         </div>
     @else
     <!-- Report Table -->
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mt-6 print:border-none print:shadow-none print:rounded-none">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mt-6 print:mt-0 print:border-none print:shadow-none print:rounded-none">
         
         {{-- Print Title --}}
         <div class="print-only text-center mb-8 pb-4 border-b-2 border-black">
@@ -235,8 +235,8 @@
                     @empty
                     <tr><td colspan="7" class="px-6 py-12 text-center text-gray-400 italic font-medium">Data gaji belum tersedia untuk unit ini.</td></tr>
                     @endforelse
-                @if($employees->count() > 0)$([Environment]::NewLine)                    <tr class="bg-gray-50 border-t-2 border-gray-100 font-bold text-[12px] uppercase">
-                    <tr>
+                @if($employees->count() > 0)
+                    <tr class="bg-gray-50 border-t-2 border-gray-100 font-bold text-[12px] uppercase">
                         <td colspan="3" class="px-6 py-4 text-right text-gray-500">TOTAL SELURUH UNIT</td>
                         <td class="px-4 py-4 text-right text-gray-900 tracking-tighter">Rp&nbsp;{{ number_format(collect($salaryData)->sum('tunjangan_jabatan'), 0, ',', '.') }}</td>
                         <td class="px-3 py-4 text-right text-gray-900 tracking-tighter">Rp&nbsp;{{ number_format(collect($salaryData)->sum('honor_mengajar'), 0, ',', '.') }}</td>
@@ -245,7 +245,8 @@
                         </td>
                         <td class="px-4 py-4 text-right text-blue-900 text-lg tracking-tighter">Rp&nbsp;{{ number_format($totalGaji, 0, ',', '.') }}</td>
                     </tr>
-                </tr>$([Environment]::NewLine)                    @endif$([Environment]::NewLine)                </tbody>
+                @endif
+                </tbody>
             </table>
         </div>
 

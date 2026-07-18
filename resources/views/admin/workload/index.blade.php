@@ -170,9 +170,6 @@
                         {{-- Employee Info --}}
                         <td class="px-5 py-5 align-top">
                             <div class="flex items-start gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                    <span class="text-sm font-bold text-gray-400">{{ strtoupper(substr($employee->full_name ?? '?', 0, 1)) }}</span>
-                                </div>
                                 <div>
                                     <p class="text-sm font-bold text-gray-900 leading-tight">{{ $employee->full_name ?? '-' }}</p>
                                     <div class="flex items-center gap-1.5 mt-1.5">
@@ -217,7 +214,20 @@
                             <div>
                                 <span class="text-sm font-bold text-gray-800">Rp {{ number_format($summary->total_teaching_allowance ?? 0, 0, ',', '.') }}</span>
                                 @if($teachingHours > 0)
-                                <p class="text-[10px] text-gray-400 font-medium mt-1">{{ $teachingHours }} jam/minggu</p>
+                                @php
+                                    $honorData = app(\App\Services\EmployeeAssignmentService::class)->calculateTeachingHonor(
+                                        $teachingHours,
+                                        $employee->employment_status ?? 'yayasan',
+                                        $employee->school?->type ?? 'SMA',
+                                        $employee->school_id
+                                    );
+                                @endphp
+                                <p class="text-[10px] text-gray-400 font-medium mt-1 mb-1">
+                                    {{ $honorData['jam_mengajar'] }} | {{ $honorData['jam_wajib'] }} | {{ $honorData['jam_honor'] }} | {{ $honorData['jam_honor'] }} x Rp {{ number_format($honorData['honor_per_jam'], 0, ',', '.') }}
+                                </p>
+                                <p class="text-[9px] text-gray-400">Jam Tugas | Wajib | Lebih | Perhitungan</p>
+                                @else
+                                <p class="text-[10px] text-gray-400 font-medium mt-1">0 jam/minggu</p>
                                 @endif
                             </div>
                         </td>

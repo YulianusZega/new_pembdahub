@@ -80,7 +80,7 @@
             transition: width .3s ease, min-width .3s ease, opacity .3s ease, transform .3s ease;
             overflow-y: auto;
             overflow-x: hidden;
-            will-change: transform, width;
+            will-change: transform;
         }
         #{{ $sidebarId }}.collapsed {
             width: 0; min-width: 0; opacity: 0; overflow: hidden;
@@ -154,7 +154,7 @@
 
     @if(!request()->has('embed'))
     <!-- Mobile Backdrop -->
-    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998] hidden lg:hidden"></div>
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/40 z-[9998] hidden lg:hidden"></div>
 
     <!-- ═══════ HEADER ═══════ -->
     <header class="bg-gradient-to-r {{ $t['header'] }} text-white shadow-lg sticky top-0 z-50">
@@ -319,12 +319,6 @@
             if (isMobile()) {
                 sidebar.classList.toggle('show-mobile');
                 backdrop.classList.toggle('hidden');
-                // Menggunakan class khusus untuk lock scroll agar lebih aman di iOS
-                if (sidebar.classList.contains('show-mobile')) {
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    document.body.style.overflow = '';
-                }
             } else {
                 sidebar.classList.toggle('collapsed');
                 toggle.classList.toggle('is-active');

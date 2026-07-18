@@ -3,8 +3,12 @@
 
 @push('styles')
 <style>
+@page { 
+    size: A4 landscape; 
+    margin: 15mm; 
+}
+
 @media print {
-    @page { size: landscape; margin: 15mm; }
     body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     /* Sembunyikan elemen UI yang tidak perlu dicetak */
     aside, header, nav, .no-print { display: none !important; }

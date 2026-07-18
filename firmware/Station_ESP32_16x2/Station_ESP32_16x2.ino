@@ -84,15 +84,15 @@
 // ============================================================
 
 // WiFi Utama
-const char* WIFI_SSID          = "VistaHotLine";
-const char* WIFI_PASSWORD      = "pelita31";
+const char* WIFI_SSID          = "Xspace";
+const char* WIFI_PASSWORD      = "12345678starlink";
 
 // WiFi Alternatif (otomatis fallback jika utama gagal)
-const char* WIFI_ALT_SSID      = "Xspace";
-const char* WIFI_ALT_PASSWORD  = "12345678starlink";
+const char* WIFI_ALT_SSID      = "TEFA";
+const char* WIFI_ALT_PASSWORD  = "PEMBDA2026";
 
 // WiFi Alternatif 2
-const char* WIFI_ALT2_SSID     = "VISTAFAMILY";
+const char* WIFI_ALT2_SSID     = "VistaHotLine";
 const char* WIFI_ALT2_PASSWORD = "pelita31";
 
 // Server API - JANGAN DIUBAH kecuali domain berubah
@@ -102,7 +102,7 @@ const char* KIOSK_API_KEY     = "RAHASIA-PEMBDAHUB-12345";
 
 // ── GANTI DEVICE_ID UNTUK SETIAP STATION! ──
 // Contoh: "KIOSK-ESP32-01", "KIOSK-ESP32-02", dst.
-const char* DEVICE_ID         = "KIOSK-NEW-03";
+const char* DEVICE_ID         = "STATION-SMA-01";
 
 // ============================================================
 //  PIN DEFINITIONS - ESP32 Dev Module
@@ -720,11 +720,15 @@ void setMp3Volume(uint8_t vol) {
 //  BACA UID RFID (format HEX uppercase, contoh: "A3B2C1D4")
 // ============================================================
 String getRfidUID() {
-  String uid = "0000";
-  for (byte i = 0; i < 4; i++) {
-    if (rfid.uid.uidByte[i] < 0x10) uid += "0";
-    uid += String(rfid.uid.uidByte[i], HEX);
+  if (rfid.uid.size < 4) return "";
+  
+  String hexUID = "";
+  for (int i = 3; i >= 0; i--) {
+    if (rfid.uid.uidByte[i] < 0x10) hexUID += "0";
+    hexUID += String(rfid.uid.uidByte[i], HEX);
   }
-  uid.toUpperCase();
-  return uid;
+  
+  hexUID.toUpperCase();
+  return hexUID;
 }
+

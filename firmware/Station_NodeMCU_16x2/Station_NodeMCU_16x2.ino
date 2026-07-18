@@ -554,13 +554,8 @@ void setMp3Volume(uint8_t vol) {
 String getRfidUID() {
   if (rfid.uid.size < 4) return "";
   
-  // Sesuaikan dengan format USB Scanner Bapak (Hexadecimal 12 Karakter)
-  // Menambahkan 4 angka nol ("0000") sebagai padding di depan
-  String hexUID = "0000";
-  
-  // Looping 4 byte asli dari kartu (Jika ternyata urutannya terbalik, 
-  // ganti loopnya menjadi: for (int i = 3; i >= 0; i--) )
-  for (int i = 0; i < 4; i++) {
+  String hexUID = "";
+  for (int i = 3; i >= 0; i--) {
     if (rfid.uid.uidByte[i] < 0x10) hexUID += "0";
     hexUID += String(rfid.uid.uidByte[i], HEX);
   }

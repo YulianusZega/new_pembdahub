@@ -487,8 +487,8 @@ void setMp3Volume(uint8_t vol) {
 String getRfidUID() {
   if (rfid.uid.size < 4) return "";
   
-  String hexUID = "0000";
-  for (int i = 0; i < 4; i++) {
+  String hexUID = "";
+  for (int i = 3; i >= 0; i--) {
     if (rfid.uid.uidByte[i] < 0x10) hexUID += "0";
     hexUID += String(rfid.uid.uidByte[i], HEX);
   }
@@ -496,3 +496,5 @@ String getRfidUID() {
   hexUID.toUpperCase();
   return hexUID;
 }
+
+

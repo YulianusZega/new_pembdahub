@@ -552,11 +552,17 @@ void setMp3Volume(uint8_t vol) {
 //  BACA UID RFID
 // ============================================================
 String getRfidUID() {
-  String uid = "";
-  for (byte i = 0; i < rfid.uid.size; i++) {
-    if (rfid.uid.uidByte[i] < 0x10) uid += "0";
-    uid += String(rfid.uid.uidByte[i], HEX);
+  if (rfid.uid.size < 4) return "";
+  
+  // Ambil 4 byte pertama, susun menjadi 32-bit integer (reverse byte order / little endian)
+  // Ini adalah format standar mayoritas USB RFID Scanner
+  unsigned long uidDec = 0;
+  for (int i = 3; i >= 0; i--) {
+    uidDec = (uidDec << 8) | rfid.uid.uidByte[i];
   }
-  uid.toUpperCase();
-  return uid;
+  
+  // Format menjadi string dengan padding 0 di depan agar genap 10 digit
+  char buffer[12];
+  sprintf(buffer, "%010lu", uidDec);
+  return String(buffer);
 }

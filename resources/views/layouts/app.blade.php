@@ -73,14 +73,14 @@
     @endphp
 
     <style>
-        /* ── Sidebar Collapse ── */
         #{{ $sidebarId }} {
             font-family: 'Plus Jakarta Sans', sans-serif;
             width: 272px;
             min-width: 272px;
-            transition: width .3s ease, min-width .3s ease, opacity .3s ease;
+            transition: width .3s ease, min-width .3s ease, opacity .3s ease, transform .3s ease;
             overflow-y: auto;
             overflow-x: hidden;
+            will-change: transform, width;
         }
         #{{ $sidebarId }}.collapsed {
             width: 0; min-width: 0; opacity: 0; overflow: hidden;
@@ -127,11 +127,11 @@
             #{{ $sidebarId }} {
                 position: fixed; left: 0; top: 0; bottom: 0; z-index: 9999;
                 width: 280px !important; min-width: 280px !important;
-                transform: translateX(-100%); background: white;
+                transform: translate3d(-100%, 0, 0); background: white;
                 box-shadow: 4px 0 25px rgba(0,0,0,.1);
             }
-            #{{ $sidebarId }}.show-mobile { transform: translateX(0); opacity: 1; }
-            #{{ $sidebarId }}.collapsed { transform: translateX(-100%); }
+            #{{ $sidebarId }}.show-mobile { transform: translate3d(0, 0, 0); opacity: 1; }
+            #{{ $sidebarId }}.collapsed { transform: translate3d(-100%, 0, 0); }
         }
 
         /* ── Hamburger Animation ── */
@@ -160,7 +160,7 @@
     <header class="bg-gradient-to-r {{ $t['header'] }} text-white shadow-lg sticky top-0 z-50">
         <div class="flex items-center justify-between px-4 lg:px-6 h-[62px]">
             <div class="flex items-center gap-3">
-                <button id="sidebar-toggle" class="hamburger flex flex-col justify-center items-center gap-[5px] p-2 rounded-lg hover:bg-white/10 transition is-active" aria-label="Toggle sidebar">
+                <button id="sidebar-toggle" type="button" style="touch-action: manipulation;" class="hamburger flex flex-col justify-center items-center gap-[5px] p-2 rounded-lg hover:bg-white/10 transition is-active" aria-label="Toggle sidebar">
                     <span></span><span></span><span></span>
                 </button>
                 <div class="flex items-center gap-2">
@@ -314,11 +314,17 @@
 
         const isMobile = () => window.innerWidth < 1024;
 
-        toggle.addEventListener('click', function () {
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
             if (isMobile()) {
                 sidebar.classList.toggle('show-mobile');
                 backdrop.classList.toggle('hidden');
-                document.body.style.overflow = sidebar.classList.contains('show-mobile') ? 'hidden' : '';
+                // Menggunakan class khusus untuk lock scroll agar lebih aman di iOS
+                if (sidebar.classList.contains('show-mobile')) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
             } else {
                 sidebar.classList.toggle('collapsed');
                 toggle.classList.toggle('is-active');

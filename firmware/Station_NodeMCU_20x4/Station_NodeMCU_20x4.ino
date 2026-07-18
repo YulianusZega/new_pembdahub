@@ -46,23 +46,23 @@
 // ============================================================
 
 // WiFi Utama
-const char* WIFI_SSID         = "VistaHotLine";
-const char* WIFI_PASSWORD     = "pelita31";
+const char* WIFI_SSID         = "Xspace";
+const char* WIFI_PASSWORD     = "12345678starlink";
 
 // WiFi Alternatif (otomatis fallback jika utama gagal)
-const char* WIFI_ALT_SSID     = "Xspace";
-const char* WIFI_ALT_PASSWORD = "12345678starlink";
+const char* WIFI_ALT_SSID     = "TEFA";
+const char* WIFI_ALT_PASSWORD = "PEMBDA2026";
 
 // WiFi Alternatif 2
-const char* WIFI_ALT2_SSID    = "VISTAFAMILY";
-const char* WIFI_ALT2_PASSWORD= "pealita31";
+const char* WIFI_ALT2_SSID    = "VistaHotLine";
+const char* WIFI_ALT2_PASSWORD= "pelita31";
 
 // Server API - JANGAN DIUBAH kecuali domain berubah
-const char* SERVER_URL        = "https://www.perguruanpembda.com/api/attendance/rfid-scan";
+const char* SERVER_URL        = "https://perguruanpembda.com/api/attendance/rfid-scan";
 const char* KIOSK_API_KEY     = "RAHASIA-PEMBDAHUB-12345";
 
 // ── GANTI DEVICE_ID UNTUK SETIAP STATION! ──
-const char* DEVICE_ID         = "KIOSK-NEW-02";
+const char* DEVICE_ID         = "STATION-SMA-03";
 
 // ============================================================
 //  PIN DEFINITIONS - NodeMCU V3 (ESP-12F)
@@ -357,7 +357,6 @@ void sendToServer(String uid, String type) {
 
   BearSSL::WiFiClientSecure client;
   client.setInsecure();
-  client.setBufferSizes(2048, 512);
 
   HTTPClient http;
   http.begin(client, String(SERVER_URL));

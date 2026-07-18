@@ -291,7 +291,6 @@ void sendToServer(String uid, String type) {
   // BearSSL WiFiClientSecure - skip validasi sertifikat
   BearSSL::WiFiClientSecure client;
   client.setInsecure();
-  client.setBufferSizes(2048, 512);
 
   HTTPClient http;
   http.begin(client, String(SERVER_URL));

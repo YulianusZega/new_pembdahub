@@ -102,7 +102,7 @@ const char* KIOSK_API_KEY     = "RAHASIA-PEMBDAHUB-12345";
 
 // ── GANTI DEVICE_ID UNTUK SETIAP STATION! ──
 // Contoh: "KIOSK-ESP32-01", "KIOSK-ESP32-02", dst.
-const char* DEVICE_ID         = "STATION-SMA-01";
+const char* DEVICE_ID         = "STATION-SMA-02";
 
 // ============================================================
 //  PIN DEFINITIONS - ESP32 Dev Module

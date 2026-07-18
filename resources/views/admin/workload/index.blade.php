@@ -12,7 +12,7 @@
         transform: translateY(-4px);
     }
     .table-row-hover:hover {
-        background: rgba(99, 102, 241, 0.03);
+        background: #eef2ff; /* indigo-50 */
     }
     .custom-scrollbar::-webkit-scrollbar { height: 6px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 999px; }
@@ -138,14 +138,14 @@
             <table class="w-full min-w-[1000px]">
                 <thead class="bg-gray-50 border-b border-gray-100">
                     <tr class="bg-gradient-to-r from-gray-50/80 to-gray-100/50 border-b border-gray-100">
-                        <th class="px-4 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-12">No</th>
-                        <th class="px-5 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[180px]">Pegawai</th>
-                        <th class="px-4 py-5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Gaji Pokok</th>
-                        <th class="px-5 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[150px]">Tunj. Jabatan</th>
-                        <th class="px-4 py-5 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Honor</th>
-                        <th class="px-5 py-5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[150px]">Tunj. Yayasan</th>
-                        <th class="px-5 py-5 text-right text-[10px] font-bold text-indigo-500 uppercase tracking-widest">THP</th>
-                        <th class="px-4 py-5 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider w-40">Aksi</th>
+                        <th class="px-4 py-5 text-left text-xs font-bold text-gray-900 uppercase tracking-wider w-12">No</th>
+                        <th class="px-5 py-5 text-left text-xs font-bold text-gray-900 uppercase tracking-wider min-w-[180px]">Pegawai</th>
+                        <th class="px-4 py-5 text-right text-xs font-bold text-gray-900 uppercase tracking-wider">Gaji Pokok</th>
+                        <th class="px-5 py-5 text-left text-xs font-bold text-gray-900 uppercase tracking-wider min-w-[150px]">Tunj. Jabatan</th>
+                        <th class="px-4 py-5 text-right text-xs font-bold text-gray-900 uppercase tracking-wider">Honor</th>
+                        <th class="px-5 py-5 text-left text-xs font-bold text-gray-900 uppercase tracking-wider min-w-[150px]">Tunj. Yayasan</th>
+                        <th class="px-5 py-5 text-right text-[10.5px] font-extrabold text-indigo-700 uppercase tracking-widest">THP</th>
+                        <th class="px-4 py-5 text-center text-xs font-bold text-gray-900 uppercase tracking-wider w-40">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -161,19 +161,19 @@
                         ];
                         $empStatusColor = $statusClasses[$employee->employment_status ?? ''] ?? 'bg-gray-100 text-gray-500';
                     @endphp
-                    <tr class="table-row-hover border-b border-gray-50 transition-all duration-200">
+                    <tr class="table-row-hover group border-b border-gray-50 transition-all duration-200">
                         {{-- No --}}
                         <td class="px-4 py-5 text-center align-top">
-                            <span class="text-xs font-bold text-gray-300">{{ $summaries->firstItem() + $index }}</span>
+                            <span class="text-xs font-bold text-gray-400 group-hover:text-gray-700 transition-colors">{{ $summaries->firstItem() + $index }}</span>
                         </td>
 
                         {{-- Employee Info --}}
                         <td class="px-5 py-5 align-top">
                             <div class="flex items-start gap-3">
                                 <div>
-                                    <p class="text-sm font-bold text-gray-900 leading-tight">{{ $employee->full_name ?? '-' }}</p>
+                                    <p class="text-sm font-bold text-gray-900 group-hover:text-indigo-900 leading-tight transition-colors">{{ $employee->full_name ?? '-' }}</p>
                                     <div class="flex items-center gap-1.5 mt-1.5">
-                                        <span class="text-[10px] font-mono text-gray-400">{{ $employee->employee_code ?? '-' }}</span>
+                                        <span class="text-[10px] font-mono font-semibold text-gray-500 group-hover:text-gray-700 transition-colors">{{ $employee->employee_code ?? '-' }}</span>
                                         <span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold uppercase {{ $empStatusColor }}">{{ $employee->employment_status ?? '-' }}</span>
                                     </div>
                                 </div>
@@ -195,7 +195,7 @@
                                             : $pos->allowance_amount;
                                     @endphp
                                     <div class="flex justify-between items-center gap-3">
-                                        <span class="text-[11px] text-gray-600 font-medium truncate max-w-[120px]" title="{{ $pos->position_name }}">{{ $pos->position_name }}</span>
+                                        <span class="text-[11px] text-gray-600 group-hover:text-gray-900 group-hover:font-bold font-medium truncate max-w-[120px] transition-all" title="{{ $pos->position_name }}">{{ $pos->position_name }}</span>
                                         <span class="text-[11px] text-gray-900 font-bold whitespace-nowrap tabular-nums">{{ number_format($posAmount, 0, ',', '.') }}</span>
                                     </div>
                                 @empty
@@ -221,10 +221,10 @@
                                         $employee->school_id
                                     );
                                 @endphp
-                                <p class="text-[10px] text-gray-400 font-medium mt-1 mb-1">
+                                <p class="text-[10px] text-gray-500 group-hover:text-gray-800 font-semibold mt-1 mb-1 transition-colors">
                                     {{ $honorData['jam_mengajar'] }} | {{ $honorData['jam_wajib'] }} | {{ $honorData['jam_honor'] }} | {{ $honorData['jam_honor'] }} x Rp {{ number_format($honorData['honor_per_jam'], 0, ',', '.') }}
                                 </p>
-                                <p class="text-[9px] text-gray-400">Jam Tugas | Wajib | Lebih | Perhitungan</p>
+                                <p class="text-[9px] text-gray-400 group-hover:text-gray-600 font-medium transition-colors">Jam Tugas | Wajib | Lebih | Perhitungan</p>
                             </div>
                         </td>
 
@@ -240,28 +240,28 @@
                                 @if($summary->family_allowance > 0)
                                 <div>
                                     <div class="flex justify-between items-center gap-3">
-                                        <span class="text-[11px] text-pink-600 font-medium">Keluarga</span>
+                                        <span class="text-[11px] text-pink-600 group-hover:text-pink-700 font-bold transition-colors">Keluarga</span>
                                         <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->family_allowance, 0, ',', '.') }}</span>
                                     </div>
-                                    <p class="text-[9px] text-gray-400 font-medium mt-0.5">{{ $meta['keluarga_persen'] }}% x {{ number_format($meta['gaji_pokok'], 0, ',', '.') }}</p>
+                                    <p class="text-[9px] text-gray-400 group-hover:text-gray-600 font-medium mt-0.5 transition-colors">{{ $meta['keluarga_persen'] }}% x {{ number_format($meta['gaji_pokok'], 0, ',', '.') }}</p>
                                 </div>
                                 @endif
                                 @if($summary->child_allowance > 0)
                                 <div>
                                     <div class="flex justify-between items-center gap-3">
-                                        <span class="text-[11px] text-blue-600 font-medium">Anak</span>
+                                        <span class="text-[11px] text-blue-600 group-hover:text-blue-700 font-bold transition-colors">Anak</span>
                                         <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->child_allowance, 0, ',', '.') }}</span>
                                     </div>
-                                    <p class="text-[9px] text-gray-400 font-medium mt-0.5">{{ $meta['anak_persen'] }}% x {{ number_format($meta['gaji_pokok'], 0, ',', '.') }} x {{ $meta['jumlah_anak'] }}</p>
+                                    <p class="text-[9px] text-gray-400 group-hover:text-gray-600 font-medium mt-0.5 transition-colors">{{ $meta['anak_persen'] }}% x {{ number_format($meta['gaji_pokok'], 0, ',', '.') }} x {{ $meta['jumlah_anak'] }}</p>
                                 </div>
                                 @endif
                                 @if($summary->rice_allowance > 0)
                                 <div>
                                     <div class="flex justify-between items-center gap-3">
-                                        <span class="text-[11px] text-amber-600 font-medium">Beras</span>
+                                        <span class="text-[11px] text-amber-600 group-hover:text-amber-700 font-bold transition-colors">Beras</span>
                                         <span class="text-[11px] text-gray-800 font-bold tabular-nums">{{ number_format($summary->rice_allowance, 0, ',', '.') }}</span>
                                     </div>
-                                    <p class="text-[9px] text-gray-400 font-medium mt-0.5">{{ number_format($meta['beras_nominal'], 0, ',', '.') }} x {{ 1 + $meta['jumlah_anak'] }} org</p>
+                                    <p class="text-[9px] text-gray-400 group-hover:text-gray-600 font-medium mt-0.5 transition-colors">{{ number_format($meta['beras_nominal'], 0, ',', '.') }} x {{ 1 + $meta['jumlah_anak'] }} org</p>
                                 </div>
                                 @endif
                                 <div class="flex justify-end pt-1.5 mt-1 border-t border-gray-100">

@@ -77,13 +77,22 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             width: 272px;
             min-width: 272px;
-            transition: width .3s ease, min-width .3s ease, opacity .3s ease, transform .3s ease;
+            transition: left .3s ease, width .3s ease, min-width .3s ease, opacity .3s ease;
             overflow-y: auto;
             overflow-x: hidden;
-            will-change: transform;
+            will-change: left, width;
         }
         #{{ $sidebarId }}.collapsed {
             width: 0; min-width: 0; opacity: 0; overflow: hidden;
+        }
+        
+        /* ── Desktop ── */
+        @media (min-width: 1024px) {
+            #{{ $sidebarId }} {
+                height: calc(100vh - 62px);
+                position: sticky;
+                top: 62px;
+            }
         }
         #main-content { transition: all .3s ease; }
 
@@ -125,13 +134,15 @@
         /* ── Mobile ── */
         @media (max-width: 1023px) {
             #{{ $sidebarId }} {
-                position: fixed; left: 0; top: 0; bottom: 0; z-index: 9999;
+                position: fixed !important; left: -320px; top: 0 !important; bottom: 0 !important; z-index: 9999;
                 width: 280px !important; min-width: 280px !important;
-                transform: translate3d(-100%, 0, 0); background: white;
+                height: 100% !important; max-height: 100vh;
+                background: white;
                 box-shadow: 4px 0 25px rgba(0,0,0,.1);
+                transform: none !important;
             }
-            #{{ $sidebarId }}.show-mobile { transform: translate3d(0, 0, 0); opacity: 1; }
-            #{{ $sidebarId }}.collapsed { transform: translate3d(-100%, 0, 0); }
+            #{{ $sidebarId }}.show-mobile { left: 0 !important; opacity: 1; }
+            #{{ $sidebarId }}.collapsed { left: -320px; }
         }
 
         /* ── Hamburger Animation ── */
@@ -263,8 +274,13 @@
     <div class="flex flex-1 pt-[62px]">
         <!-- ═══════ SIDEBAR ═══════ -->
         @if(!request()->has('embed'))
-        <aside id="{{ $sidebarId }}" class="bg-white border-r border-gray-200 h-[calc(100vh-62px)] sticky top-[62px] flex-shrink-0 collapsed">
+        <aside id="{{ $sidebarId }}" class="bg-white border-r border-gray-200 flex-shrink-0 collapsed">
             <div class="p-4 space-y-1">
+                <!-- Mobile Close Button -->
+                <button type="button" class="lg:hidden w-full flex items-center justify-between px-3 py-2 bg-gray-100 rounded-xl text-gray-600 mb-4 font-bold" onclick="document.getElementById('sidebar-toggle').click()">
+                    <span>Tutup Menu</span>
+                    <i class="fas fa-times"></i>
+                </button>
                 @yield('sidebar-menu')
 
                 <!-- Spacer -->
@@ -319,6 +335,8 @@
             if (isMobile()) {
                 sidebar.classList.toggle('show-mobile');
                 backdrop.classList.toggle('hidden');
+                // Force Repaint hack for iOS
+                void sidebar.offsetHeight;
             } else {
                 sidebar.classList.toggle('collapsed');
                 toggle.classList.toggle('is-active');

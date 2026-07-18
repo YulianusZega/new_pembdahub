@@ -27,7 +27,7 @@ class WorkloadSummaryController extends Controller
 
         // Filter schools for dropdown
         $schools = $user->isSuperAdmin() 
-            ? School::orderBy('name')->get()
+            ? School::where('is_active', true)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
 
         $activeYear = AcademicYear::where('is_active', true)->first();
@@ -261,7 +261,7 @@ class WorkloadSummaryController extends Controller
         $semesterId = $request->get('semester_id', Semester::where('is_active', true)->first()?->id);
 
         $schools = $user->isSuperAdmin() 
-            ? School::orderBy('name')->get()
+            ? School::where('is_active', true)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
             
         $academicYears = AcademicYear::orderByDesc('year')->get();
@@ -411,3 +411,4 @@ class WorkloadSummaryController extends Controller
         }
     }
 }
+

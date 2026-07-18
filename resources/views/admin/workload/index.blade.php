@@ -124,7 +124,7 @@
                     </div>
                     <div class="stat-card text-center p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100/50">
                         <p class="text-[9px] font-bold text-emerald-500/70 uppercase tracking-widest mb-1">Total THP</p>
-                        <p class="text-xl font-bold text-emerald-700">Rp {{ number_format($totals['total_compensation'], 0, ',', '.') }}</p>
+                        <p class="text-xl font-bold text-emerald-700">Rp&nbsp;{{ number_format($totals['total_compensation'], 0, ',', '.') }}</p>
                         <p class="text-[10px] text-emerald-400 font-medium mt-0.5">Per Bulan</p>
                     </div>
                 </div>
@@ -163,12 +163,12 @@
                     @endphp
                     <tr class="table-row-hover group border-b border-gray-50 transition-all duration-200">
                         {{-- No --}}
-                        <td class="px-4 py-5 text-center align-top">
+                        <td class="px-4 py-5 text-center align-bottom">
                             <span class="text-xs font-bold text-gray-400 group-hover:text-gray-700 transition-colors">{{ $summaries->firstItem() + $index }}</span>
                         </td>
 
                         {{-- Employee Info --}}
-                        <td class="px-5 py-5 align-top">
+                        <td class="px-5 py-5 align-bottom">
                             <div class="flex items-start gap-3">
                                 <div>
                                     <p class="text-sm font-bold text-gray-900 group-hover:text-indigo-900 leading-tight transition-colors">{{ $employee->full_name ?? '-' }}</p>
@@ -181,12 +181,12 @@
                         </td>
 
                         {{-- Gaji Pokok --}}
-                        <td class="px-4 py-5 text-right align-top pt-6">
-                            <span class="text-sm font-bold text-gray-800">Rp {{ number_format($summary->basic_salary ?? 0, 0, ',', '.') }}</span>
+                        <td class="px-4 py-5 text-right align-bottom">
+                            <span class="text-sm font-bold text-gray-800">Rp&nbsp;{{ number_format($summary->basic_salary ?? 0, 0, ',', '.') }}</span>
                         </td>
 
                         {{-- Tunjangan Jabatan --}}
-                        <td class="px-5 py-5 align-top">
+                        <td class="px-5 py-5 align-bottom">
                             <div class="space-y-1.5">
                                 @forelse($employee->activePositions as $pos)
                                     @php 
@@ -203,16 +203,16 @@
                                 @endforelse
                                 @if($employee->activePositions->count() > 0)
                                 <div class="flex justify-end pt-1.5 mt-1 border-t border-gray-100">
-                                    <span class="text-xs font-bold text-indigo-600 tabular-nums">Rp {{ number_format($summary->total_position_allowance ?? 0, 0, ',', '.') }}</span>
+                                    <span class="text-xs font-bold text-indigo-600 tabular-nums">Rp&nbsp;{{ number_format($summary->total_position_allowance ?? 0, 0, ',', '.') }}</span>
                                 </div>
                                 @endif
                             </div>
                         </td>
 
                         {{-- Honor Mengajar --}}
-                        <td class="px-4 py-5 text-right align-top pt-6">
+                        <td class="px-4 py-5 text-right align-bottom">
                             <div>
-                                <span class="text-sm font-bold text-gray-800">Rp {{ number_format($summary->total_teaching_allowance ?? 0, 0, ',', '.') }}</span>
+                                <span class="text-sm font-bold text-gray-800">Rp&nbsp;{{ number_format($summary->total_teaching_allowance ?? 0, 0, ',', '.') }}</span>
                                 @php
                                     $honorData = app(\App\Services\EmployeeAssignmentService::class)->calculateTeachingHonor(
                                         $teachingHours,
@@ -222,14 +222,14 @@
                                     );
                                 @endphp
                                 <p class="text-[10px] text-gray-500 group-hover:text-gray-800 font-semibold mt-1 mb-1 transition-colors">
-                                    {{ $honorData['jam_mengajar'] }} | {{ $honorData['jam_wajib'] }} | {{ $honorData['jam_honor'] }} | {{ $honorData['jam_honor'] }} x Rp {{ number_format($honorData['honor_per_jam'], 0, ',', '.') }}
+                                    {{ $honorData['jam_mengajar'] }} | {{ $honorData['jam_wajib'] }} | {{ $honorData['jam_honor'] }} | {{ $honorData['jam_honor'] }} x Rp&nbsp;{{ number_format($honorData['honor_per_jam'], 0, ',', '.') }}
                                 </p>
                                 <p class="text-[9px] text-gray-400 group-hover:text-gray-600 font-medium transition-colors">Jam Tugas | Wajib | Lebih | Perhitungan</p>
                             </div>
                         </td>
 
                         {{-- Tunjangan Yayasan --}}
-                        <td class="px-5 py-5 align-top">
+                        <td class="px-5 py-5 align-bottom">
                             @php 
                                 $totalYayasan = ($summary->family_allowance + $summary->child_allowance + $summary->rice_allowance); 
                                 $tunjMeta = app(\App\Services\EmployeeAssignmentService::class)->calculateTunjangan($employee, $employee->school_id);
@@ -265,7 +265,7 @@
                                 </div>
                                 @endif
                                 <div class="flex justify-end pt-1.5 mt-1 border-t border-gray-100">
-                                    <span class="text-xs font-bold text-emerald-600 tabular-nums">Rp {{ number_format($totalYayasan, 0, ',', '.') }}</span>
+                                    <span class="text-xs font-bold text-emerald-600 tabular-nums">Rp&nbsp;{{ number_format($totalYayasan, 0, ',', '.') }}</span>
                                 </div>
                             </div>
                             @else
@@ -274,14 +274,14 @@
                         </td>
 
                         {{-- THP --}}
-                        <td class="px-5 py-5 text-right align-top pt-6">
-                            <span class="text-base font-bold text-indigo-700 tabular-nums">Rp {{ number_format($summary->total_compensation ?? 0, 0, ',', '.') }}</span>
+                        <td class="px-5 py-5 text-right align-bottom">
+                            <span class="text-base font-bold text-indigo-700 tabular-nums">Rp&nbsp;{{ number_format($summary->total_compensation ?? 0, 0, ',', '.') }}</span>
                         </td>
 
 
 
                         {{-- Aksi --}}
-                        <td class="px-4 py-5 align-top pt-5">
+                        <td class="px-4 py-5 align-bottom">
                             <div class="flex items-center justify-center gap-1.5">
                                 {{-- Detail --}}
                                 <a href="{{ route('admin.workload.salary-detail', $employee) }}" 

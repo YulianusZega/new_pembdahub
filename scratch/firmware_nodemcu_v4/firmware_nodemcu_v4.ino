@@ -631,20 +631,22 @@ void setMp3Volume(uint8_t vol) {
 }
 
 // ============================================================
-//  BACA UID RFID
+//  BACA UID RFID (FORMAT HEXADECIMAL)
 // ============================================================
 String getRfidUID() {
   if (rfid.uid.size < 4) return "";
   
-  // Ambil 4 byte pertama, susun menjadi 32-bit integer (reverse byte order / little endian)
-  // Ini adalah format standar mayoritas USB RFID Scanner
-  unsigned long uidDec = 0;
-  for (int i = 3; i >= 0; i--) {
-    uidDec = (uidDec << 8) | rfid.uid.uidByte[i];
+  // Sesuaikan dengan format USB Scanner (Hexadecimal 12 Karakter)
+  // Menambahkan 4 angka nol ("0000") sebagai padding di depan
+  String hexUID = "0000";
+  
+  // Looping 4 byte asli dari kartu (Jika ternyata urutannya terbalik, 
+  // ganti loopnya menjadi: for (int i = 3; i >= 0; i--) )
+  for (int i = 0; i < 4; i++) {
+    if (rfid.uid.uidByte[i] < 0x10) hexUID += "0";
+    hexUID += String(rfid.uid.uidByte[i], HEX);
   }
   
-  // Format menjadi string dengan padding 0 di depan agar genap 10 digit
-  char buffer[12];
-  sprintf(buffer, "%010lu", uidDec);
-  return String(buffer);
+  hexUID.toUpperCase();
+  return hexUID;
 }

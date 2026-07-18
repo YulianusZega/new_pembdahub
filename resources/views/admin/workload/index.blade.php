@@ -213,7 +213,6 @@
                         <td class="px-4 py-5 text-right align-top pt-6">
                             <div>
                                 <span class="text-sm font-bold text-gray-800">Rp {{ number_format($summary->total_teaching_allowance ?? 0, 0, ',', '.') }}</span>
-                                @if($teachingHours > 0)
                                 @php
                                     $honorData = app(\App\Services\EmployeeAssignmentService::class)->calculateTeachingHonor(
                                         $teachingHours,
@@ -226,9 +225,6 @@
                                     {{ $honorData['jam_mengajar'] }} | {{ $honorData['jam_wajib'] }} | {{ $honorData['jam_honor'] }} | {{ $honorData['jam_honor'] }} x Rp {{ number_format($honorData['honor_per_jam'], 0, ',', '.') }}
                                 </p>
                                 <p class="text-[9px] text-gray-400">Jam Tugas | Wajib | Lebih | Perhitungan</p>
-                                @else
-                                <p class="text-[10px] text-gray-400 font-medium mt-1">0 jam/minggu</p>
-                                @endif
                             </div>
                         </td>
 

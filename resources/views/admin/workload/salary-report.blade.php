@@ -156,12 +156,12 @@
                         <th class="px-4 py-4 text-right">THP</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50 text-sm">
+                <tbody class="text-sm">
                     @forelse($employees as $idx => $emp)
                     @php $sal = $salaryData[$emp->id] ?? []; @endphp
                     <tr class="hover:bg-gray-50/50 transition-colors">
-                        <td class="px-3 py-4 text-xs text-gray-400 text-center font-medium align-top">{{ $idx + 1 }}</td>
-                        <td class="px-4 py-4 align-top">
+                        <td rowspan="2" class="px-3 py-4 border-b border-gray-100 text-xs text-gray-400 text-center font-medium align-top">{{ $idx + 1 }}</td>
+                        <td rowspan="2" class="px-4 py-4 border-b border-gray-100 align-top">
                             <div class="font-bold text-gray-900 leading-tight text-[13px]">{{ $emp->full_name }}</div>
                             <div class="flex items-center gap-2 mt-0.5">
                                 <span class="text-[10px] text-gray-500 font-mono">{{ $emp->employee_code ?? '-' }}</span>
@@ -178,77 +178,79 @@
                                 <span class="text-[10px] font-bold uppercase tracking-tighter {{ $statusColor }}">{{ $emp->employment_status ?? '-' }}</span>
                             </div>
                         </td>
-                        <td class="px-3 py-4 text-right text-xs font-medium text-gray-700 align-top pt-5">Rp&nbsp;{{ number_format($sal['gaji_pokok'] ?? 0, 0, ',', '.') }}</td>
-                        <td class="p-0 align-top h-[1px]">
-                            <div class="flex flex-col h-full justify-between px-4 py-4">
-                                <div class="space-y-1">
-                                    @if(!empty($sal['jabatan_details']))
-                                        @foreach($sal['jabatan_details'] as $detail)
-                                            <div class="flex justify-between items-start gap-4 text-[10px] leading-tight">
-                                                <span class="text-gray-600 font-medium">• {{ $detail['name'] }}</span>
-                                                <span class="text-gray-900 font-bold whitespace-nowrap">Rp&nbsp;{{ number_format($detail['amount'], 0, ',', '.') }}</span>
-                                            </div>
-                                        @endforeach
-                                    @else
-                                        <div class="text-gray-400 text-[10px] italic">-</div>
-                                    @endif
-                                </div>
-                                <div class="text-right border-t border-gray-100 pt-1 mt-2 font-bold text-indigo-700 text-[11px]">
-                                    Rp&nbsp;{{ number_format($sal['tunjangan_jabatan'] ?? 0, 0, ',', '.') }}
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-0 align-top h-[1px]">
-                            <div class="flex flex-col h-full justify-between px-3 py-4">
-                                <div class="text-[10px] text-gray-500 font-medium">
-                                    <div class="flex justify-between text-gray-600 mb-0.5">
-                                        <span>Jam</span>
-                                        <span>{{ $sal['jam_mengajar'] ?? 0 }} | {{ $sal['jam_wajib'] ?? 0 }} | {{ $sal['jam_honor'] ?? 0 }}</span>
-                                    </div>
-                                    <div class="flex justify-between text-gray-600">
-                                        <span>Tarif</span>
-                                        <span>Rp&nbsp;{{ number_format($sal['honor_per_jam'] ?? 0, 0, ',', '.') }}</span>
-                                    </div>
-                                </div>
-                                <div class="text-right border-t border-gray-100 pt-1 mt-2 text-xs font-bold text-gray-900 italic">
-                                    Rp&nbsp;{{ number_format($sal['honor_mengajar'] ?? 0, 0, ',', '.') }}
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-0 align-top h-[1px]">
-                            <div class="flex flex-col h-full justify-between px-5 py-4">
-                                <div class="space-y-0.5">
-                                    @if(($sal['tunjangan_keluarga'] ?? 0) > 0) 
-                                        <div class="flex justify-between text-[10px] font-medium leading-tight text-pink-600 italic">
-                                            <span>Keluarga</span> 
-                                            <span>Rp&nbsp;{{ number_format($sal['tunjangan_keluarga'], 0, ',', '.') }}</span>
-                                        </div> 
-                                    @endif
-                                    @if(($sal['tunjangan_anak'] ?? 0) > 0) 
-                                        <div class="flex justify-between text-[10px] font-medium leading-tight text-blue-600 italic">
-                                            <span>Anak</span> 
-                                            <span>Rp&nbsp;{{ number_format($sal['tunjangan_anak'], 0, ',', '.') }}</span>
-                                        </div> 
-                                    @endif
-                                    @if(($sal['tunjangan_beras'] ?? 0) > 0) 
-                                        <div class="flex justify-between text-[10px] font-medium leading-tight text-amber-600 italic">
-                                            <span>Beras</span> 
-                                            <span>Rp&nbsp;{{ number_format($sal['tunjangan_beras'], 0, ',', '.') }}</span>
-                                        </div> 
-                                    @endif
-                                </div>
-                                @php $totalYayasan = (($sal['tunjangan_keluarga'] ?? 0) + ($sal['tunjangan_anak'] ?? 0) + ($sal['tunjangan_beras'] ?? 0)); @endphp
-                                @if($totalYayasan > 0)
-                                <div class="text-[11px] font-bold text-emerald-700 border-t border-gray-100 pt-1 mt-2 text-right">
-                                    Rp&nbsp;{{ number_format($totalYayasan, 0, ',', '.') }}
-                                </div>
+                        <td rowspan="2" class="px-3 py-4 border-b border-gray-100 text-right text-xs font-medium text-gray-700 align-top pt-5">Rp&nbsp;{{ number_format($sal['gaji_pokok'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="px-4 pt-4 pb-1 align-top">
+                            <div class="space-y-1">
+                                @if(!empty($sal['jabatan_details']))
+                                    @foreach($sal['jabatan_details'] as $detail)
+                                        <div class="flex justify-between items-start gap-4 text-[10px] leading-tight">
+                                            <span class="text-gray-600 font-medium">• {{ $detail['name'] }}</span>
+                                            <span class="text-gray-900 font-bold whitespace-nowrap">Rp&nbsp;{{ number_format($detail['amount'], 0, ',', '.') }}</span>
+                                        </div>
+                                    @endforeach
                                 @else
-                                <div class="text-[11px] text-gray-400 italic text-center pt-1 mt-2">-</div>
+                                    <div class="text-gray-400 text-[10px] italic">-</div>
                                 @endif
                             </div>
                         </td>
-                        <td class="px-4 py-4 text-right align-top pt-5">
+                        <td class="px-3 pt-4 pb-1 align-top">
+                            <div class="text-[10px] text-gray-500 font-medium">
+                                <div class="flex justify-between text-gray-600 mb-0.5">
+                                    <span>Jam</span>
+                                    <span>{{ $sal['jam_mengajar'] ?? 0 }} | {{ $sal['jam_wajib'] ?? 0 }} | {{ $sal['jam_honor'] ?? 0 }}</span>
+                                </div>
+                                <div class="flex justify-between text-gray-600">
+                                    <span>Tarif</span>
+                                    <span>Rp&nbsp;{{ number_format($sal['honor_per_jam'] ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 pt-4 pb-1 align-top">
+                            <div class="space-y-0.5">
+                                @php $totalYayasan = (($sal['tunjangan_keluarga'] ?? 0) + ($sal['tunjangan_anak'] ?? 0) + ($sal['tunjangan_beras'] ?? 0)); @endphp
+                                @if(($sal['tunjangan_keluarga'] ?? 0) > 0) 
+                                    <div class="flex justify-between text-[10px] font-medium leading-tight text-pink-600 italic">
+                                        <span>Keluarga</span> 
+                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_keluarga'], 0, ',', '.') }}</span>
+                                    </div> 
+                                @endif
+                                @if(($sal['tunjangan_anak'] ?? 0) > 0) 
+                                    <div class="flex justify-between text-[10px] font-medium leading-tight text-blue-600 italic">
+                                        <span>Anak</span> 
+                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_anak'], 0, ',', '.') }}</span>
+                                    </div> 
+                                @endif
+                                @if(($sal['tunjangan_beras'] ?? 0) > 0) 
+                                    <div class="flex justify-between text-[10px] font-medium leading-tight text-amber-600 italic">
+                                        <span>Beras</span> 
+                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_beras'], 0, ',', '.') }}</span>
+                                    </div> 
+                                @endif
+                            </div>
+                        </td>
+                        <td rowspan="2" class="px-4 py-4 border-b border-gray-100 text-right align-top pt-5">
                             <div class="text-[15px] font-bold text-blue-800 tracking-tight">Rp&nbsp;{{ number_format($sal['thp'] ?? 0, 0, ',', '.') }}</div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-gray-50/50 transition-colors">
+                        <td class="px-4 pb-4 pt-1 align-bottom border-b border-gray-100">
+                            <div class="text-right border-t border-gray-200 pt-1 font-bold text-indigo-700 text-[11px]">
+                                Rp&nbsp;{{ number_format($sal['tunjangan_jabatan'] ?? 0, 0, ',', '.') }}
+                            </div>
+                        </td>
+                        <td class="px-3 pb-4 pt-1 align-bottom border-b border-gray-100">
+                            <div class="text-right border-t border-gray-200 pt-1 text-xs font-bold text-gray-900 italic">
+                                Rp&nbsp;{{ number_format($sal['honor_mengajar'] ?? 0, 0, ',', '.') }}
+                            </div>
+                        </td>
+                        <td class="px-5 pb-4 pt-1 align-bottom border-b border-gray-100">
+                            @if($totalYayasan > 0)
+                            <div class="text-[11px] font-bold text-emerald-700 border-t border-emerald-100 pt-1 text-right">
+                                Rp&nbsp;{{ number_format($totalYayasan, 0, ',', '.') }}
+                            </div>
+                            @else
+                            <div class="text-[11px] text-gray-400 italic text-center border-t border-gray-100 pt-1">-</div>
+                            @endif
                         </td>
                     </tr>
                     @empty

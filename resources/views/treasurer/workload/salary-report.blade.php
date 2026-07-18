@@ -1,11 +1,40 @@
 @extends('layouts.treasurer')
 @section('title', 'Laporan Gaji')
+
+@push('styles')
+<style>
+@media print {
+    @page { size: landscape; margin: 15mm; }
+    body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Sembunyikan elemen UI yang tidak perlu dicetak */
+    aside, header, nav, .no-print { display: none !important; }
+    
+    /* Reset padding dan margin utama */
+    main { padding: 0 !important; margin: 0 !important; margin-left: 0 !important; width: 100% !important; }
+    
+    /* Tampilkan elemen khusus cetak */
+    .print-only { display: block !important; }
+    
+    /* Hapus bayangan dan sesuaikan border */
+    .shadow-sm, .shadow-lg, .shadow-xl { box-shadow: none !important; }
+    .border-gray-100 { border-color: #000 !important; border-width: 1px !important; }
+    
+    /* Pastikan teks tabel hitam legam agar jelas saat di-print PDF */
+    th, td, p, span, div { color: #000 !important; }
+    
+    /* Pastikan tabel mengambil seluruh lebar kertas */
+    table { width: 100% !important; }
+}
+.print-only { display: none; }
+</style>
+@endpush
+
 @section('content')
 <div class="space-y-6">
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white">
                     <i class="fas fa-chart-bar text-2xl"></i>
                 </div>
                 <div>
@@ -13,14 +42,18 @@
                     <p class="text-gray-600 mt-1">Rekapitulasi penggajian pegawai per sekolah</p>
                 </div>
             </div>
-            <div class="flex gap-3">
+            <div class="flex gap-3 no-print">
                 @if($schoolId)
-                <a href="{{ route('treasurer.salary-report.export', ['academic_year_id' => $yearId, 'semester_id' => $semesterId]) }}"
-                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:shadow-lg transition">
+                <button onclick="window.print()"
+                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 text-white rounded-xl hover:shadow-lg transition">
+                    <i class="fas fa-file-pdf mr-2"></i> Cetak PDF
+                </button>
+                <a href="{{ route('treasurer.workload.salary-report.export', ['school_id' => $schoolId, 'academic_year_id' => $yearId, 'semester_id' => $semesterId]) }}"
+                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:shadow-lg transition">
                     <i class="fas fa-file-csv mr-2"></i> Export CSV
                 </a>
                 @endif
-                <a href="{{ route('treasurer.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50">
+                <a href="{{ route('treasurer.workload.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50">
                     <i class="fas fa-arrow-left mr-2"></i> Kembali
                 </a>
             </div>
@@ -32,16 +65,21 @@
     @endif
 
     {{-- Filter & Stats --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 no-print">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <form method="GET" class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1">Sekolah</label>
-                    <input type="text" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 text-gray-500 font-medium" value="{{ $school->name }}" readonly disabled>
+                    <select name="school_id" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">-- Pilih Sekolah --</option>
+                        @foreach($schools as $school)
+                            <option value="{{ $school->id }}" {{ $schoolId == $school->id ? 'selected' : '' }}>{{ $school->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1">Tahun Ajaran</label>
-                    <select name="academic_year_id" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    <select name="academic_year_id" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         @foreach($academicYears as $ay)
                             <option value="{{ $ay->id }}" {{ $yearId == $ay->id ? 'selected' : '' }}>{{ $ay->year }}</option>
                         @endforeach
@@ -49,14 +87,14 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-500 mb-1">Semester</label>
-                    <select name="semester_id" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    <select name="semester_id" class="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                         @foreach($semesters as $sem)
                             <option value="{{ $sem->id }}" {{ $semesterId == $sem->id ? 'selected' : '' }}>{{ $sem->semester_name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button type="submit" class="w-full px-4 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition text-sm font-semibold shadow-sm">
+                    <button type="submit" class="w-full px-4 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition text-sm font-semibold shadow-sm">
                         <i class="fas fa-filter mr-1"></i> Tampilkan
                     </button>
                 </div>
@@ -69,7 +107,7 @@
                     <div class="text-xl font-bold text-gray-900">{{ $employees->count() }}</div>
                 </div>
                 <div class="text-right">
-                    <div class="text-[10px] text-emerald-500 font-bold uppercase tracking-wider">Total THP (Seluruh Unit)</div>
+                    <div class="text-[10px] text-indigo-500 font-bold uppercase tracking-wider">Total THP (Seluruh Unit)</div>
                     <div class="text-2xl font-bold text-green-600">Rp {{ number_format($totalGaji, 0, ',', '.') }}</div>
                 </div>
             </div>
@@ -77,9 +115,30 @@
         </div>
     </div>
 
-    @if($schoolId)
+    @if(!$schoolId)
+        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-12 text-center mt-6">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-school text-blue-500 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-blue-800 mb-1">Pilih Sekolah</h3>
+            <p class="text-sm text-blue-600">Pilih sekolah terlebih dahulu untuk menampilkan laporan gaji</p>
+        </div>
+    @else
     <!-- Report Table -->
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mt-6">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mt-6 print:border-none print:shadow-none print:rounded-none">
+        
+        {{-- Print Title --}}
+        <div class="print-only text-center mb-8 pb-4 border-b-2 border-black">
+            <h1 class="text-xl font-bold uppercase" style="font-family: 'Times New Roman', Times, serif;">Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</h1>
+            <h2 class="text-lg font-bold mt-1" style="font-family: 'Times New Roman', Times, serif;">
+                Keputusan Yayasan Perguruan Pembda Nias tentang Gaji/Honor Guru/Pegawai 
+                {{ $academicYears->firstWhere('id', $yearId)->year ?? '' }}
+            </h2>
+            <h3 class="text-lg font-bold mt-1 uppercase" style="font-family: 'Times New Roman', Times, serif;">
+                {{ $schools->firstWhere('id', $schoolId)->name ?? '' }}
+            </h3>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50 border-b border-gray-100">
@@ -187,6 +246,17 @@
                 </tfoot>
                 @endif
             </table>
+        </div>
+
+        {{-- Print Signature --}}
+        <div class="print-only mt-12 text-right">
+            <div class="inline-block text-center mr-16" style="font-family: 'Times New Roman', Times, serif;">
+                <p class="text-md">Gunungsitoli, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+                <p class="text-md font-bold mt-1">Yayasan Perguruan Pembangunan Daerah Nias</p>
+                <br><br><br><br>
+                <p class="text-md font-bold underline">_________________________</p>
+                <p class="text-md font-bold mt-1">Ketua</p>
+            </div>
         </div>
     </div>
     @endif

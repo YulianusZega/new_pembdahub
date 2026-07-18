@@ -1,5 +1,34 @@
 @extends('layouts.admin')
 @section('title', 'Laporan Gaji')
+
+@push('styles')
+<style>
+@media print {
+    @page { size: landscape; margin: 15mm; }
+    body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Sembunyikan elemen UI yang tidak perlu dicetak */
+    aside, header, nav, .no-print { display: none !important; }
+    
+    /* Reset padding dan margin utama */
+    main { padding: 0 !important; margin: 0 !important; margin-left: 0 !important; width: 100% !important; }
+    
+    /* Tampilkan elemen khusus cetak */
+    .print-only { display: block !important; }
+    
+    /* Hapus bayangan dan sesuaikan border */
+    .shadow-sm, .shadow-lg, .shadow-xl { box-shadow: none !important; }
+    .border-gray-100 { border-color: #000 !important; border-width: 1px !important; }
+    
+    /* Pastikan teks tabel hitam legam agar jelas saat di-print PDF */
+    th, td, p, span, div { color: #000 !important; }
+    
+    /* Pastikan tabel mengambil seluruh lebar kertas */
+    table { width: 100% !important; }
+}
+.print-only { display: none; }
+</style>
+@endpush
+
 @section('content')
 <div class="space-y-6">
     <div class="mb-8">
@@ -13,8 +42,12 @@
                     <p class="text-gray-600 mt-1">Rekapitulasi penggajian pegawai per sekolah</p>
                 </div>
             </div>
-            <div class="flex gap-3">
+            <div class="flex gap-3 no-print">
                 @if($schoolId)
+                <button onclick="window.print()"
+                   class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-500 to-rose-600 text-white rounded-xl hover:shadow-lg transition">
+                    <i class="fas fa-file-pdf mr-2"></i> Cetak PDF
+                </button>
                 <a href="{{ route('admin.workload.salary-report.export', ['school_id' => $schoolId, 'academic_year_id' => $yearId, 'semester_id' => $semesterId]) }}"
                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:shadow-lg transition">
                     <i class="fas fa-file-csv mr-2"></i> Export CSV
@@ -32,7 +65,7 @@
     @endif
 
     {{-- Filter & Stats --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 no-print">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <form method="GET" class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
@@ -92,7 +125,20 @@
         </div>
     @else
     <!-- Report Table -->
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mt-6">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mt-6 print:border-none print:shadow-none print:rounded-none">
+        
+        {{-- Print Title --}}
+        <div class="print-only text-center mb-8 pb-4 border-b-2 border-black">
+            <h1 class="text-xl font-bold uppercase" style="font-family: 'Times New Roman', Times, serif;">Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</h1>
+            <h2 class="text-lg font-bold mt-1" style="font-family: 'Times New Roman', Times, serif;">
+                Keputusan Yayasan Perguruan Pembda Nias tentang Gaji/Honor Guru/Pegawai 
+                {{ $academicYears->firstWhere('id', $yearId)->year ?? '' }}
+            </h2>
+            <h3 class="text-lg font-bold mt-1 uppercase" style="font-family: 'Times New Roman', Times, serif;">
+                {{ $schools->firstWhere('id', $schoolId)->name ?? '' }}
+            </h3>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead class="bg-gray-50 border-b border-gray-100">
@@ -200,6 +246,17 @@
                 </tfoot>
                 @endif
             </table>
+        </div>
+
+        {{-- Print Signature --}}
+        <div class="print-only mt-12 text-right">
+            <div class="inline-block text-center mr-16" style="font-family: 'Times New Roman', Times, serif;">
+                <p class="text-md">Gunungsitoli, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
+                <p class="text-md font-bold mt-1">Yayasan Perguruan Pembangunan Daerah Nias</p>
+                <br><br><br><br>
+                <p class="text-md font-bold underline">_________________________</p>
+                <p class="text-md font-bold mt-1">Ketua</p>
+            </div>
         </div>
     </div>
     @endif

@@ -191,6 +191,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
             Route::get('bulk', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'bulkInput'])->name('bulk');
             Route::post('bulk', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'bulkStore'])->name('bulk.store');
             Route::get('rekap', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'rekap'])->name('rekap');
+            Route::delete('{attendance}', [App\Http\Controllers\Admin\EmployeeAttendanceController::class, 'destroy'])->name('destroy');
         });
 
         // Sub-resources (inline CRUD on profile page)

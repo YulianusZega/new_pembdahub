@@ -97,6 +97,7 @@
                         <th class="px-6 py-4 text-center text-sm font-semibold">Jam Keluar</th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Via</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold">Keterangan</th>
+                        <th class="px-6 py-4 text-center text-sm font-semibold">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -136,12 +137,25 @@
                             @else - @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600">{{ $att?->notes ?? '-' }}</td>
+                        <td class="px-6 py-4 text-center">
+                            @if($att)
+                            <form action="{{ route('admin.employees.attendance.destroy', $att->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data absensi ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                            @else
+                            -
+                            @endif
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                        <td colspan="8" class="px-6 py-12 text-center text-gray-500">
                             <i class="fas fa-users text-4xl text-gray-300 mb-2"></i>
-                            <p>Tidak ada data pegawai untuk unit ini.</p>
+                            <p>Belum ada data absensi untuk unit ini pada tanggal tersebut.</p>
                         </td>
                     </tr>
                     @endforelse

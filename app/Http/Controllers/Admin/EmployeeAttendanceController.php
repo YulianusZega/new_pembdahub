@@ -45,6 +45,11 @@ class EmployeeAttendanceController extends Controller
                     $stats['belum']++;
                 }
             }
+
+            // Hanya tampilkan pegawai yang sudah memiliki record absensi
+            $employees = $employees->filter(function($emp) use ($attendances) {
+                return $attendances->has($emp->id);
+            });
         }
 
         $schools = $user->isSuperAdmin() || $user->isKetuaYayasan()
@@ -354,5 +359,12 @@ class EmployeeAttendanceController extends Controller
             'date', 'schoolId', 'isSuperAdmin', 'schools',
             'dailyStats', 'cumulativeStats', 'chartData', 'unitStats'
         ));
+    }
+
+    public function destroy(EmployeeAttendance $attendance)
+    {
+        $attendance->delete();
+
+        return redirect()->back()->with('success', 'Data absensi berhasil dihapus.');
     }
 }

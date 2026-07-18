@@ -138,15 +138,16 @@ class TimeSlotController extends Controller
         $validated['duration_minutes'] = $end->diffInMinutes($start);
         
         // Check for overlapping time slots (strict inequality to allow adjacent slots sharing a boundary)
-        $overlaps = TimeSlot::where('school_id', $validated['school_id'])
+        $overlapSlot = TimeSlot::where('school_id', $validated['school_id'])
             ->where('academic_year_id', $validated['academic_year_id'])
             ->where('day_of_week', $validated['day_of_week'])
             ->where('start_time', '<', $validated['end_time'])
             ->where('end_time', '>', $validated['start_time'])
-            ->exists();
+            ->first();
         
-        if ($overlaps) {
-            return back()->withErrors(['start_time' => 'Waktu bertumpuk dengan time slot lain'])->withInput();
+        if ($overlapSlot) {
+            $timeStr = \Carbon\Carbon::parse($overlapSlot->start_time)->format('H:i') . ' - ' . \Carbon\Carbon::parse($overlapSlot->end_time)->format('H:i');
+            return back()->withErrors(['start_time' => 'Waktu bertumpuk dengan time slot lain: ' . $overlapSlot->slot_name . ' (' . $timeStr . ')'])->withInput();
         }
         
         TimeSlot::create($validated);
@@ -222,16 +223,17 @@ class TimeSlotController extends Controller
         $validated['duration_minutes'] = $end->diffInMinutes($start);
         
         // Check for overlapping time slots (exclude current, strict inequality to allow adjacent slots sharing a boundary)
-        $overlaps = TimeSlot::where('school_id', $validated['school_id'])
+        $overlapSlot = TimeSlot::where('school_id', $validated['school_id'])
             ->where('academic_year_id', $validated['academic_year_id'])
             ->where('day_of_week', $validated['day_of_week'])
             ->where('id', '!=', $timeSlot->id)
             ->where('start_time', '<', $validated['end_time'])
             ->where('end_time', '>', $validated['start_time'])
-            ->exists();
+            ->first();
         
-        if ($overlaps) {
-            return back()->withErrors(['start_time' => 'Waktu bertumpuk dengan time slot lain'])->withInput();
+        if ($overlapSlot) {
+            $timeStr = \Carbon\Carbon::parse($overlapSlot->start_time)->format('H:i') . ' - ' . \Carbon\Carbon::parse($overlapSlot->end_time)->format('H:i');
+            return back()->withErrors(['start_time' => 'Waktu bertumpuk dengan time slot lain: ' . $overlapSlot->slot_name . ' (' . $timeStr . ')'])->withInput();
         }
         
         $timeSlot->update($validated);

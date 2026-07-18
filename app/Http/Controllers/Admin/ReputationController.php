@@ -44,7 +44,7 @@ class ReputationController extends Controller
         }
 
         $logs = $query->latest()->paginate(50)->withQueryString();
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
 
         return view('admin.reputation.logs', compact('logs', 'schools'));
     }
@@ -54,7 +54,7 @@ class ReputationController extends Controller
      */
     public function awardForm()
     {
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         return view('admin.reputation.award', compact('schools'));
     }
 
@@ -132,3 +132,4 @@ class ReputationController extends Controller
         return back()->with('success', 'Log poin berhasil dihapus dan skor telah disesuaikan.');
     }
 }
+

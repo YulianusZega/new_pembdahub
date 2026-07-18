@@ -22,7 +22,7 @@ class PayrollController extends Controller
     {
         $academicYears = AcademicYear::orderByDesc('year')->get();
         $semesters = Semester::orderBy('id')->get();
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
 
         $activeYear = AcademicYear::where('is_active', true)->first();
         $activeSemester = Semester::where('is_active', true)->first();
@@ -147,3 +147,4 @@ class PayrollController extends Controller
         return back()->with('success', 'Pengaturan gaji berhasil disimpan.');
     }
 }
+

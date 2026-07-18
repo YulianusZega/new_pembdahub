@@ -53,7 +53,7 @@ class EmployeeLeaveController extends Controller
         ];
 
         $schools = $user->isSuperAdmin() || $user->isKetuaYayasan()
-            ? School::orderBy('name')->get()
+            ? School::where('is_active', true)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
 
         return view('admin.employees.leaves.index', compact('leaves', 'stats', 'schools'));
@@ -167,9 +167,10 @@ class EmployeeLeaveController extends Controller
         $employees = $query->orderBy('full_name')->get();
 
         $schools = $user->isSuperAdmin() || $user->isKetuaYayasan()
-            ? School::orderBy('name')->get()
+            ? School::where('is_active', true)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
 
         return view('admin.employees.leaves.rekap', compact('employees', 'schools', 'year'));
     }
 }
+

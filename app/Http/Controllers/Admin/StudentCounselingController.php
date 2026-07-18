@@ -145,7 +145,7 @@ class StudentCounselingController extends Controller
             })
             ->sortBy('display_name');
 
-        $schools = \App\Models\School::orderBy('name')->get();
+        $schools = \App\Models\School::where('is_active', true)->orderBy('name')->get();
         $preselectedStudent = $request->filled('student_id') ? Student::find($request->student_id) : null;
         
         // Cukup kirim preselected student jika ada, atau empty collection jika tidak
@@ -604,3 +604,4 @@ class StudentCounselingController extends Controller
             ->with('success', 'Catatan konseling berhasil dihapus dan poin telah disesuaikan.');
     }
 }
+

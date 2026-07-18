@@ -55,7 +55,7 @@ class EmployeeAttendanceController extends Controller
         }
 
         $schools = $user->isSuperAdmin() || $user->isKetuaYayasan()
-            ? School::orderBy('name')->get()
+            ? School::where('is_active', true)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
 
         return view('admin.employees.attendance.index', compact(
@@ -164,7 +164,7 @@ class EmployeeAttendanceController extends Controller
         }
 
         $schools = $user->isSuperAdmin() || $user->isKetuaYayasan()
-            ? School::orderBy('name')->get()
+            ? School::where('is_active', true)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
 
         return view('admin.employees.attendance.rekap', compact(
@@ -301,7 +301,7 @@ class EmployeeAttendanceController extends Controller
 
         // Unit Stats (for Table)
         $unitStats = [];
-        $schools = $isSuperAdmin ? School::orderBy('name')->get() : School::where('id', $user->school_id)->get();
+        $schools = $isSuperAdmin ? School::where('is_active', true)->orderBy('name')->get() : School::where('id', $user->school_id)->get();
         foreach ($schools as $sch) {
             $empCount = Employee::where('school_id', $sch->id)->where('is_active', true)->count();
             
@@ -370,3 +370,4 @@ class EmployeeAttendanceController extends Controller
         return redirect()->back()->with('success', 'Data absensi berhasil dihapus.');
     }
 }
+

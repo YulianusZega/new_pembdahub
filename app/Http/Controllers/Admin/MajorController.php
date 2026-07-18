@@ -55,7 +55,7 @@ class MajorController extends Controller
         }
 
         $majors = $query->paginate(15)->withQueryString();
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         
         // Get Program Keahlian for SMK tab
         $programKeahlians = ProgramKeahlian::with(['school', 'konsentrasiKeahlians'])
@@ -71,7 +71,7 @@ class MajorController extends Controller
     public function create()
     {
         $this->authorizeAccess();
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         return view('admin.majors.create', compact('schools'));
     }
 
@@ -99,7 +99,7 @@ class MajorController extends Controller
     public function edit(Major $major)
     {
         $this->authorizeAccess();
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         return view('admin.majors.edit', compact('major', 'schools'));
     }
 
@@ -131,3 +131,4 @@ class MajorController extends Controller
         return redirect()->route('admin.majors.index')->with('success', 'Jurusan berhasil dihapus.');
     }
 }
+

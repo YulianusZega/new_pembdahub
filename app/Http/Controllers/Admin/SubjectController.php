@@ -40,7 +40,7 @@ class SubjectController extends Controller
         $subjects = $query->orderBy('subject_name')->paginate(20)->withQueryString();
 
         $schools = $user->isSuperAdmin() 
-            ? School::orderBy('name')->get() 
+            ? School::where('is_active', true)->orderBy('name')->get() 
             : School::where('id', $user->school_id)->get();
             
         $majors = \App\Models\Major::when(!$user->isSuperAdmin(), fn($q) => $q->where('school_id', $user->school_id))
@@ -54,7 +54,7 @@ class SubjectController extends Controller
     {
         $user = auth()->user();
         $schools = $user->isSuperAdmin() 
-            ? School::orderBy('name')->get() 
+            ? School::where('is_active', true)->orderBy('name')->get() 
             : School::where('id', $user->school_id)->get();
             
         $majors = \App\Models\Major::when(!$user->isSuperAdmin(), fn($q) => $q->where('school_id', $user->school_id))
@@ -170,7 +170,7 @@ class SubjectController extends Controller
     {
         $user = auth()->user();
         $schools = $user->isSuperAdmin() 
-            ? School::orderBy('name')->get() 
+            ? School::where('is_active', true)->orderBy('name')->get() 
             : School::where('id', $user->school_id)->get();
             
         $majors = \App\Models\Major::when(!$user->isSuperAdmin(), fn($q) => $q->where('school_id', $user->school_id))
@@ -204,3 +204,4 @@ class SubjectController extends Controller
         }
     }
 }
+

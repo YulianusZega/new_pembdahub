@@ -196,7 +196,7 @@ class StudentBillController extends Controller
     {
         abort_unless(auth()->user()->isSuperAdmin(), 403, 'Hanya Super Admin yang dapat mengubah atau menghapus data keuangan.');
         
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         $students = Student::orderBy('full_name')->get();
         $paymentTypes = PaymentType::where('is_active', true)->orderBy('type_name')->get()->unique('type_code')->values();
         $academicYears = AcademicYear::orderBy('year', 'desc')->get()->unique('year')->values();
@@ -290,7 +290,7 @@ class StudentBillController extends Controller
         abort_unless(auth()->user()->isSuperAdmin(), 403, 'Hanya Super Admin yang dapat mengubah atau menghapus data keuangan.');
         
         $students = Student::orderBy('full_name')->get();
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         $academicYears = AcademicYear::orderBy('year', 'desc')->get();
         $paymentTypes = PaymentType::orderBy('type_name')->get();
         $semesters = Semester::orderBy('semester_name')->get();
@@ -345,7 +345,7 @@ class StudentBillController extends Controller
     {
         abort_unless(auth()->user()->isSuperAdmin(), 403, 'Hanya Super Admin yang dapat mengubah atau menghapus data keuangan.');
         
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         $paymentTypes = PaymentType::where('is_active', true)
             ->orderBy('type_name')
             ->get()
@@ -485,3 +485,4 @@ class StudentBillController extends Controller
         );
     }
 }
+

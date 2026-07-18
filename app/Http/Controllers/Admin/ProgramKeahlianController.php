@@ -12,13 +12,13 @@ class ProgramKeahlianController extends Controller
     public function index()
     {
         $programKeahlians = ProgramKeahlian::with('school', 'konsentrasiKeahlians')->orderBy('nama')->get();
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         return view('admin.program-keahlians.index', compact('programKeahlians', 'schools'));
     }
 
     public function create()
     {
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         return view('admin.program-keahlians.create', compact('schools'));
     }
 
@@ -38,7 +38,7 @@ class ProgramKeahlianController extends Controller
 
     public function edit(ProgramKeahlian $programKeahlian)
     {
-        $schools = School::orderBy('name')->get();
+        $schools = School::where('is_active', true)->orderBy('name')->get();
         return view('admin.program-keahlians.edit', compact('programKeahlian', 'schools'));
     }
 
@@ -62,3 +62,4 @@ class ProgramKeahlianController extends Controller
         return redirect()->route('admin.majors.index')->with('success', 'Program Keahlian berhasil dihapus.');
     }
 }
+

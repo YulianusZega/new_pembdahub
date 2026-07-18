@@ -831,8 +831,8 @@ void setMp3Volume(uint8_t vol) {
 //  BACA UID RFID (format HEX uppercase, contoh: "A3B2C1D4")
 // ============================================================
 String getRfidUID() {
-  String uid = "";
-  for (byte i = 0; i < rfid.uid.size; i++) {
+  String uid = "0000";
+  for (byte i = 0; i < 4; i++) {
     if (rfid.uid.uidByte[i] < 0x10) uid += "0";
     uid += String(rfid.uid.uidByte[i], HEX);
   }

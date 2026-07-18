@@ -444,8 +444,8 @@ void beep(int count, int duration) {
 }
 
 String getRfidUID() {
-  String uid = "";
-  for (byte i = 0; i < rfid.uid.size; i++) {
+  String uid = "0000";
+  for (byte i = 0; i < 4; i++) {
     if (rfid.uid.uidByte[i] < 0x10) uid += "0";
     uid += String(rfid.uid.uidByte[i], HEX);
   }

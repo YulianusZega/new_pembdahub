@@ -35,7 +35,7 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="mb-8">
+    <div class="mb-8 no-print">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white">
@@ -112,7 +112,7 @@
                 </div>
                 <div class="text-right">
                     <div class="text-[10px] text-indigo-500 font-bold uppercase tracking-wider">Total THP (Seluruh Unit)</div>
-                    <div class="text-2xl font-bold text-green-600">Rp {{ number_format($totalGaji, 0, ',', '.') }}</div>
+                    <div class="text-2xl font-bold text-green-600">Rp&nbsp;{{ number_format($totalGaji, 0, ',', '.') }}</div>
                 </div>
             </div>
             @endif
@@ -178,14 +178,14 @@
                                 <span class="text-[10px] font-bold uppercase tracking-tighter {{ $statusColor }}">{{ $emp->employment_status ?? '-' }}</span>
                             </div>
                         </td>
-                        <td class="px-3 py-4 text-right text-xs font-medium text-gray-700 align-top pt-5">Rp {{ number_format($sal['gaji_pokok'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="px-3 py-4 text-right text-xs font-medium text-gray-700 align-top pt-5">Rp&nbsp;{{ number_format($sal['gaji_pokok'] ?? 0, 0, ',', '.') }}</td>
                         <td class="px-4 py-4 align-top">
                             <div class="space-y-1">
                                 @if(!empty($sal['jabatan_details']))
                                     @foreach($sal['jabatan_details'] as $detail)
                                         <div class="flex justify-between items-start gap-4 text-[10px] leading-tight">
                                             <span class="text-gray-600 font-medium">• {{ $detail['name'] }}</span>
-                                            <span class="text-gray-900 font-bold whitespace-nowrap">Rp {{ number_format($detail['amount'], 0, ',', '.') }}</span>
+                                            <span class="text-gray-900 font-bold whitespace-nowrap">Rp&nbsp;{{ number_format($detail['amount'], 0, ',', '.') }}</span>
                                         </div>
                                     @endforeach
                                 @else
@@ -193,62 +193,59 @@
                                 @endif
                                 
                                 <div class="text-right border-t border-gray-100 pt-1 mt-1 font-bold text-indigo-700 text-[11px]">
-                                    Rp {{ number_format($sal['tunjangan_jabatan'] ?? 0, 0, ',', '.') }}
+                                    Rp&nbsp;{{ number_format($sal['tunjangan_jabatan'] ?? 0, 0, ',', '.') }}
                                 </div>
                             </div>
                         </td>
-                        <td class="px-3 py-4 text-right text-xs font-bold text-gray-900 italic align-top pt-5">Rp {{ number_format($sal['honor_mengajar'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="px-3 py-4 text-right text-xs font-bold text-gray-900 italic align-top pt-5">Rp&nbsp;{{ number_format($sal['honor_mengajar'] ?? 0, 0, ',', '.') }}</td>
                         <td class="px-5 py-4 align-top">
                             <div class="space-y-0.5">
                                 @if(($sal['tunjangan_keluarga'] ?? 0) > 0) 
                                     <div class="flex justify-between text-[10px] font-medium leading-tight text-pink-600 italic">
                                         <span>Keluarga</span> 
-                                        <span>Rp {{ number_format($sal['tunjangan_keluarga'], 0, ',', '.') }}</span>
+                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_keluarga'], 0, ',', '.') }}</span>
                                     </div> 
                                 @endif
                                 @if(($sal['tunjangan_anak'] ?? 0) > 0) 
                                     <div class="flex justify-between text-[10px] font-medium leading-tight text-blue-600 italic">
                                         <span>Anak</span> 
-                                        <span>Rp {{ number_format($sal['tunjangan_anak'], 0, ',', '.') }}</span>
+                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_anak'], 0, ',', '.') }}</span>
                                     </div> 
                                 @endif
                                 @if(($sal['tunjangan_beras'] ?? 0) > 0) 
                                     <div class="flex justify-between text-[10px] font-medium leading-tight text-amber-600 italic">
                                         <span>Beras</span> 
-                                        <span>Rp {{ number_format($sal['tunjangan_beras'], 0, ',', '.') }}</span>
+                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_beras'], 0, ',', '.') }}</span>
                                     </div> 
                                 @endif
                             </div>
                             @php $totalYayasan = (($sal['tunjangan_keluarga'] ?? 0) + ($sal['tunjangan_anak'] ?? 0) + ($sal['tunjangan_beras'] ?? 0)); @endphp
                             @if($totalYayasan > 0)
                             <div class="text-[11px] font-bold text-emerald-700 mt-1 border-t border-emerald-100 pt-1 text-right">
-                                Rp {{ number_format($totalYayasan, 0, ',', '.') }}
+                                Rp&nbsp;{{ number_format($totalYayasan, 0, ',', '.') }}
                             </div>
                             @else
                             <div class="text-[11px] text-gray-400 italic text-center pt-1">-</div>
                             @endif
                         </td>
                         <td class="px-4 py-4 text-right align-top pt-5">
-                            <div class="text-[15px] font-bold text-blue-800 tracking-tight">Rp {{ number_format($sal['thp'] ?? 0, 0, ',', '.') }}</div>
+                            <div class="text-[15px] font-bold text-blue-800 tracking-tight">Rp&nbsp;{{ number_format($sal['thp'] ?? 0, 0, ',', '.') }}</div>
                         </td>
                     </tr>
                     @empty
                     <tr><td colspan="7" class="px-6 py-12 text-center text-gray-400 italic font-medium">Data gaji belum tersedia untuk unit ini.</td></tr>
                     @endforelse
-                </tbody>
-                @if($employees->count() > 0)
-                <tfoot class="bg-gray-50 border-t-2 border-gray-100 font-bold text-[12px] uppercase">
+                @if($employees->count() > 0)$([Environment]::NewLine)                    <tr class="bg-gray-50 border-t-2 border-gray-100 font-bold text-[12px] uppercase">
                     <tr>
                         <td colspan="3" class="px-6 py-4 text-right text-gray-500">TOTAL SELURUH UNIT</td>
-                        <td class="px-4 py-4 text-right text-gray-900 tracking-tighter">Rp {{ number_format(collect($salaryData)->sum('tunjangan_jabatan'), 0, ',', '.') }}</td>
-                        <td class="px-3 py-4 text-right text-gray-900 tracking-tighter">Rp {{ number_format(collect($salaryData)->sum('honor_mengajar'), 0, ',', '.') }}</td>
+                        <td class="px-4 py-4 text-right text-gray-900 tracking-tighter">Rp&nbsp;{{ number_format(collect($salaryData)->sum('tunjangan_jabatan'), 0, ',', '.') }}</td>
+                        <td class="px-3 py-4 text-right text-gray-900 tracking-tighter">Rp&nbsp;{{ number_format(collect($salaryData)->sum('honor_mengajar'), 0, ',', '.') }}</td>
                         <td class="px-5 py-4 text-right text-emerald-800 tracking-tighter">
-                            Rp {{ number_format(collect($salaryData)->sum('tunjangan_keluarga') + collect($salaryData)->sum('tunjangan_anak') + collect($salaryData)->sum('tunjangan_beras'), 0, ',', '.') }}
+                            Rp&nbsp;{{ number_format(collect($salaryData)->sum('tunjangan_keluarga') + collect($salaryData)->sum('tunjangan_anak') + collect($salaryData)->sum('tunjangan_beras'), 0, ',', '.') }}
                         </td>
-                        <td class="px-4 py-4 text-right text-blue-900 text-lg tracking-tighter">Rp {{ number_format($totalGaji, 0, ',', '.') }}</td>
+                        <td class="px-4 py-4 text-right text-blue-900 text-lg tracking-tighter">Rp&nbsp;{{ number_format($totalGaji, 0, ',', '.') }}</td>
                     </tr>
-                </tfoot>
-                @endif
+                </tr>$([Environment]::NewLine)                    @endif$([Environment]::NewLine)                </tbody>
             </table>
         </div>
 
@@ -266,3 +263,5 @@
     @endif
 </div>
 @endsection
+
+

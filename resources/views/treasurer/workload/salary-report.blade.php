@@ -234,14 +234,26 @@
                     </tr>
                     <tr class="hover:bg-gray-50/50 transition-colors">
                         <td class="px-4 pb-4 pt-1 align-bottom border-b border-gray-100">
+                            @if(($sal['tunjangan_jabatan'] ?? 0) > 0)
                             <div class="text-right border-t border-gray-200 pt-1 font-bold text-indigo-700 text-[11px]">
-                                Rp&nbsp;{{ number_format($sal['tunjangan_jabatan'] ?? 0, 0, ',', '.') }}
+                                Rp&nbsp;{{ number_format($sal['tunjangan_jabatan'], 0, ',', '.') }}
                             </div>
+                            @else
+                            <div class="text-right font-bold text-indigo-700 text-[11px]">
+                                Rp&nbsp;0
+                            </div>
+                            @endif
                         </td>
                         <td class="px-3 pb-4 pt-1 align-bottom border-b border-gray-100">
+                            @if(($sal['honor_mengajar'] ?? 0) > 0)
                             <div class="text-right border-t border-gray-200 pt-1 text-xs font-bold text-gray-900 italic">
-                                Rp&nbsp;{{ number_format($sal['honor_mengajar'] ?? 0, 0, ',', '.') }}
+                                Rp&nbsp;{{ number_format($sal['honor_mengajar'], 0, ',', '.') }}
                             </div>
+                            @else
+                            <div class="text-right text-xs font-bold text-gray-900 italic">
+                                Rp&nbsp;0
+                            </div>
+                            @endif
                         </td>
                         <td class="px-5 pb-4 pt-1 align-bottom border-b border-gray-100">
                             @if($totalYayasan > 0)
@@ -249,7 +261,7 @@
                                 Rp&nbsp;{{ number_format($totalYayasan, 0, ',', '.') }}
                             </div>
                             @else
-                            <div class="text-[11px] text-gray-400 italic text-center border-t border-gray-100 pt-1">-</div>
+                            <div class="text-[11px] text-gray-400 italic text-center">-</div>
                             @endif
                         </td>
                     </tr>

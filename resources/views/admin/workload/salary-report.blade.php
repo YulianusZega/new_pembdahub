@@ -5,7 +5,7 @@
 <style>
 @page { 
     size: A4 landscape; 
-    margin: 10mm 15mm 15mm 15mm; 
+    margin: 5mm 15mm 15mm 15mm; 
 }
 
 @media print {
@@ -129,7 +129,7 @@
         </div>
     @else
     <!-- Report Table -->
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mt-6 print:mt-0 print:border-none print:shadow-none print:rounded-none">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden print:mt-0 print:border-none print:shadow-none print:rounded-none">
         
         {{-- Print Title --}}
         <div class="print-only text-center mb-8 pb-4 border-b-2 border-black">
@@ -180,53 +180,72 @@
                         </td>
                         <td class="px-3 py-4 text-right text-xs font-medium text-gray-700 align-top pt-5">Rp&nbsp;{{ number_format($sal['gaji_pokok'] ?? 0, 0, ',', '.') }}</td>
                         <td class="px-4 py-4 align-top">
-                            <div class="space-y-1">
-                                @if(!empty($sal['jabatan_details']))
-                                    @foreach($sal['jabatan_details'] as $detail)
-                                        <div class="flex justify-between items-start gap-4 text-[10px] leading-tight">
-                                            <span class="text-gray-600 font-medium">• {{ $detail['name'] }}</span>
-                                            <span class="text-gray-900 font-bold whitespace-nowrap">Rp&nbsp;{{ number_format($detail['amount'], 0, ',', '.') }}</span>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div class="text-gray-400 text-[10px] italic">-</div>
-                                @endif
-                                
-                                <div class="text-right border-t border-gray-100 pt-1 mt-1 font-bold text-indigo-700 text-[11px]">
+                            <div class="flex flex-col h-full justify-between">
+                                <div class="space-y-1">
+                                    @if(!empty($sal['jabatan_details']))
+                                        @foreach($sal['jabatan_details'] as $detail)
+                                            <div class="flex justify-between items-start gap-4 text-[10px] leading-tight">
+                                                <span class="text-gray-600 font-medium">• {{ $detail['name'] }}</span>
+                                                <span class="text-gray-900 font-bold whitespace-nowrap">Rp&nbsp;{{ number_format($detail['amount'], 0, ',', '.') }}</span>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <div class="text-gray-400 text-[10px] italic">-</div>
+                                    @endif
+                                </div>
+                                <div class="text-right border-t border-gray-100 pt-1 mt-2 font-bold text-indigo-700 text-[11px]">
                                     Rp&nbsp;{{ number_format($sal['tunjangan_jabatan'] ?? 0, 0, ',', '.') }}
                                 </div>
                             </div>
                         </td>
-                        <td class="px-3 py-4 text-right text-xs font-bold text-gray-900 italic align-top pt-5">Rp&nbsp;{{ number_format($sal['honor_mengajar'] ?? 0, 0, ',', '.') }}</td>
+                        <td class="px-3 py-4 align-top">
+                            <div class="flex flex-col h-full justify-between">
+                                <div class="text-[10px] text-gray-500 font-medium">
+                                    <div class="flex justify-between text-gray-600 mb-0.5">
+                                        <span>Jam</span>
+                                        <span>{{ $sal['jam_mengajar'] ?? 0 }} | {{ $sal['jam_wajib'] ?? 0 }} | {{ $sal['jam_honor'] ?? 0 }}</span>
+                                    </div>
+                                    <div class="flex justify-between text-gray-600">
+                                        <span>Tarif</span>
+                                        <span>Rp&nbsp;{{ number_format($sal['honor_per_jam'] ?? 0, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-right border-t border-gray-100 pt-1 mt-2 text-xs font-bold text-gray-900 italic">
+                                    Rp&nbsp;{{ number_format($sal['honor_mengajar'] ?? 0, 0, ',', '.') }}
+                                </div>
+                            </div>
+                        </td>
                         <td class="px-5 py-4 align-top">
-                            <div class="space-y-0.5">
-                                @if(($sal['tunjangan_keluarga'] ?? 0) > 0) 
-                                    <div class="flex justify-between text-[10px] font-medium leading-tight text-pink-600 italic">
-                                        <span>Keluarga</span> 
-                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_keluarga'], 0, ',', '.') }}</span>
-                                    </div> 
-                                @endif
-                                @if(($sal['tunjangan_anak'] ?? 0) > 0) 
-                                    <div class="flex justify-between text-[10px] font-medium leading-tight text-blue-600 italic">
-                                        <span>Anak</span> 
-                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_anak'], 0, ',', '.') }}</span>
-                                    </div> 
-                                @endif
-                                @if(($sal['tunjangan_beras'] ?? 0) > 0) 
-                                    <div class="flex justify-between text-[10px] font-medium leading-tight text-amber-600 italic">
-                                        <span>Beras</span> 
-                                        <span>Rp&nbsp;{{ number_format($sal['tunjangan_beras'], 0, ',', '.') }}</span>
-                                    </div> 
+                            <div class="flex flex-col h-full justify-between">
+                                <div class="space-y-0.5">
+                                    @if(($sal['tunjangan_keluarga'] ?? 0) > 0) 
+                                        <div class="flex justify-between text-[10px] font-medium leading-tight text-pink-600 italic">
+                                            <span>Keluarga</span> 
+                                            <span>Rp&nbsp;{{ number_format($sal['tunjangan_keluarga'], 0, ',', '.') }}</span>
+                                        </div> 
+                                    @endif
+                                    @if(($sal['tunjangan_anak'] ?? 0) > 0) 
+                                        <div class="flex justify-between text-[10px] font-medium leading-tight text-blue-600 italic">
+                                            <span>Anak</span> 
+                                            <span>Rp&nbsp;{{ number_format($sal['tunjangan_anak'], 0, ',', '.') }}</span>
+                                        </div> 
+                                    @endif
+                                    @if(($sal['tunjangan_beras'] ?? 0) > 0) 
+                                        <div class="flex justify-between text-[10px] font-medium leading-tight text-amber-600 italic">
+                                            <span>Beras</span> 
+                                            <span>Rp&nbsp;{{ number_format($sal['tunjangan_beras'], 0, ',', '.') }}</span>
+                                        </div> 
+                                    @endif
+                                </div>
+                                @php $totalYayasan = (($sal['tunjangan_keluarga'] ?? 0) + ($sal['tunjangan_anak'] ?? 0) + ($sal['tunjangan_beras'] ?? 0)); @endphp
+                                @if($totalYayasan > 0)
+                                <div class="text-[11px] font-bold text-emerald-700 border-t border-gray-100 pt-1 mt-2 text-right">
+                                    Rp&nbsp;{{ number_format($totalYayasan, 0, ',', '.') }}
+                                </div>
+                                @else
+                                <div class="text-[11px] text-gray-400 italic text-center pt-1 mt-2">-</div>
                                 @endif
                             </div>
-                            @php $totalYayasan = (($sal['tunjangan_keluarga'] ?? 0) + ($sal['tunjangan_anak'] ?? 0) + ($sal['tunjangan_beras'] ?? 0)); @endphp
-                            @if($totalYayasan > 0)
-                            <div class="text-[11px] font-bold text-emerald-700 mt-1 border-t border-emerald-100 pt-1 text-right">
-                                Rp&nbsp;{{ number_format($totalYayasan, 0, ',', '.') }}
-                            </div>
-                            @else
-                            <div class="text-[11px] text-gray-400 italic text-center pt-1">-</div>
-                            @endif
                         </td>
                         <td class="px-4 py-4 text-right align-top pt-5">
                             <div class="text-[15px] font-bold text-blue-800 tracking-tight">Rp&nbsp;{{ number_format($sal['thp'] ?? 0, 0, ',', '.') }}</div>

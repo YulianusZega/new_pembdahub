@@ -409,15 +409,32 @@ class StudentController extends Controller
 
         $uid = strtoupper(trim($request->rfid_uid));
 
-        // Cek apakah UID sudah dipakai siswa lain
-        $existing = Student::where('rfid_uid', $uid)
+        // Cek apakah UID sudah dipakai entitas lain
+        $existingStudent = Student::where('rfid_uid', $uid)
             ->where('id', '!=', $request->student_id)
             ->first();
 
-        if ($existing) {
+        if ($existingStudent) {
             return response()->json([
                 'success' => false,
-                'message' => "UID {$uid} sudah digunakan oleh siswa: {$existing->full_name}",
+                'message' => "UID {$uid} sudah digunakan oleh siswa: {$existingStudent->full_name}",
+            ], 422);
+        }
+
+        $existingEmployee = \App\Models\Employee::where('rfid_uid', $uid)->first();
+        if ($existingEmployee) {
+            $type = $existingEmployee->isTeacher() ? 'Guru' : 'Pegawai';
+            return response()->json([
+                'success' => false,
+                'message' => "UID {$uid} sudah digunakan oleh {$type}: {$existingEmployee->full_name}",
+            ], 422);
+        }
+
+        $existingTefa = \App\Models\TefaEmployee::where('rfid_uid', $uid)->first();
+        if ($existingTefa) {
+            return response()->json([
+                'success' => false,
+                'message' => "UID {$uid} sudah digunakan oleh Karyawan TEFA: {$existingTefa->name}",
             ], 422);
         }
 

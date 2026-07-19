@@ -202,25 +202,32 @@
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center">
         <div id="modal-waiting" class="">
             {{-- Animasi Pulsing Ring --}}
-            <div class="relative w-24 h-24 mx-auto mb-6">
+            <div class="relative w-20 h-20 mx-auto mb-4">
                 <div class="absolute inset-0 rounded-full bg-blue-100 animate-ping opacity-60"></div>
-                <div class="relative w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
+                <div class="relative w-20 h-20 rounded-full bg-blue-500 flex items-center justify-center">
+                    <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/></svg>
                 </div>
             </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Tempelkan Kartu Siswa</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-1">Tempelkan Kartu Siswa</h3>
             <p class="text-gray-500 text-sm mb-1">Menunggu scan untuk:</p>
-            <p id="modal-student-name" class="text-blue-600 font-bold text-lg mb-6">—</p>
-            <button onclick="closeScanModal()" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition-all">Batal</button>
+            <p id="modal-student-name" class="text-blue-600 font-bold text-base mb-3">—</p>
+            {{-- UID yang terbaca --}}
+            <div id="modal-uid-box" class="hidden mb-4 p-3 bg-gray-50 rounded-xl border border-gray-200">
+                <div class="text-xs text-gray-400 mb-1">UID Terbaca:</div>
+                <div id="modal-uid-value" class="text-xl font-bold font-mono text-gray-800 tracking-widest">—</div>
+                <div id="modal-uid-checking" class="text-xs text-blue-500 mt-1 animate-pulse">Memeriksa kepemilikan...</div>
+            </div>
+            <button onclick="closeScanModal()" class="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold rounded-xl transition-all">Batal</button>
         </div>
 
         <div id="modal-success" class="hidden">
-            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-green-500 flex items-center justify-center">
-                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-green-500 flex items-center justify-center">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
             </div>
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Berhasil Disimpan!</h3>
-            <p id="modal-success-msg" class="text-gray-500 text-sm mb-6">—</p>
-            <button onclick="closeScanModal()" class="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-all">OK, Lanjut</button>
+            <h3 class="text-xl font-bold text-gray-800 mb-1">Berhasil Disimpan!</h3>
+            <div id="modal-success-uid" class="inline-block px-3 py-1 bg-green-50 text-green-700 rounded-lg text-sm font-mono font-bold mb-2">—</div>
+            <p id="modal-success-msg" class="text-gray-500 text-sm mb-4">—</p>
+            <button onclick="closeScanModal()" class="w-full py-2.5 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-xl transition-all">OK, Lanjut</button>
         </div>
 
         <div id="modal-error" class="hidden">
@@ -378,11 +385,51 @@ function applyManualUid() {
 }
 
 // ================================================================
-//  Kirim RFID ke server
+//  Tampilkan UID di modal saat terbaca
+// ================================================================
+function showUidInModal(uid) {
+    const box = document.getElementById('modal-uid-box');
+    const val = document.getElementById('modal-uid-value');
+    const chk = document.getElementById('modal-uid-checking');
+    box.classList.remove('hidden');
+    val.textContent = uid;
+    chk.textContent = 'Memeriksa kepemilikan...';
+    chk.className = 'text-xs text-blue-500 mt-1 animate-pulse';
+}
+
+function setUidCheckResult(ok, msg) {
+    const chk = document.getElementById('modal-uid-checking');
+    chk.className = ok ? 'text-xs text-green-600 mt-1 font-semibold' : 'text-xs text-red-500 mt-1 font-semibold';
+    chk.textContent = msg;
+}
+
+// ================================================================
+//  Kirim RFID ke server (dengan pre-check kepemilikan)
 // ================================================================
 async function assignRfid(studentId, uid) {
     waitingForScan = false;
+
+    // Tampilkan UID di modal
+    showUidInModal(uid);
+
     try {
+        // ── STEP 1: Pre-check kepemilikan UID ──
+        const checkRes = await fetch(`{{ url('/api/rfid/check-uid') }}?uid=${uid}&exclude_type=student&exclude_id=${studentId}`);
+        const checkData = await checkRes.json();
+
+        if (checkData.owned) {
+            setUidCheckResult(false, `⚠️ UID ini milik: ${checkData.owner_name} (${checkData.owner_type})`);
+            // Tunggu 2 detik lalu tampilkan error
+            setTimeout(() => {
+                showModalError(`UID ${uid} sudah terdaftar atas nama:\n${checkData.owner_name} (${checkData.owner_type})\n\nGunakan kartu yang berbeda.`);
+            }, 1500);
+            return;
+        }
+
+        setUidCheckResult(true, '✓ UID bebas, menyimpan...');
+        await new Promise(r => setTimeout(r, 500)); // jeda singkat agar user bisa baca
+
+        // ── STEP 2: Simpan ke database ──
         const response = await fetch('{{ route("admin.students.rfid-bulk-assign") }}', {
             method: 'POST',
             headers: {
@@ -396,16 +443,12 @@ async function assignRfid(studentId, uid) {
         const data = await response.json();
 
         if (data.success) {
-            // Update UI tabel tanpa reload
             updateStudentRow(studentId, uid);
-
-            // Tampilkan success di modal
             document.getElementById('modal-waiting').classList.add('hidden');
             document.getElementById('modal-success').classList.remove('hidden');
+            document.getElementById('modal-success-uid').textContent = uid;
             document.getElementById('modal-success-msg').textContent = data.message;
-
-            // Auto close setelah 2 detik
-            setTimeout(closeScanModal, 2000);
+            setTimeout(closeScanModal, 2500);
         } else {
             showModalError(data.message || 'Terjadi kesalahan.');
         }

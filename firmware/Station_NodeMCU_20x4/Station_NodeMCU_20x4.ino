@@ -54,7 +54,7 @@ const char* WIFI_ALT_SSID     = "TEFA";
 const char* WIFI_ALT_PASSWORD = "PEMBDA2026";
 
 // WiFi Alternatif 2
-const char* WIFI_ALT2_SSID    = "VistaHotLine";
+const char* WIFI_ALT2_SSID    = "VISTAFAMILY";
 const char* WIFI_ALT2_PASSWORD= "pelita31";
 
 // Server API - JANGAN DIUBAH kecuali domain berubah
@@ -62,7 +62,7 @@ const char* SERVER_URL        = "https://perguruanpembda.com/api/attendance/rfid
 const char* KIOSK_API_KEY     = "RAHASIA-PEMBDAHUB-12345";
 
 // ── GANTI DEVICE_ID UNTUK SETIAP STATION! ──
-const char* DEVICE_ID         = "STATION-SMA-03";
+const char* DEVICE_ID         = "STATION-SMA-02";
 
 // ============================================================
 //  PIN DEFINITIONS - NodeMCU V3 (ESP-12F)
@@ -350,7 +350,7 @@ void sendToServer(String uid, String type) {
   Serial.println("Mengirim ke server: " + uid + " (" + type + ")");
   
   if (WiFi.status() != WL_CONNECTED) {
-    playAudio(1, 6); // 006.MP3
+    playAudio(1, 7); // 007.MP3 - Sistem ada gangguan hubungi admin
     showError("Koneksi Internet Off");
     return;
   }
@@ -380,13 +380,13 @@ void sendToServer(String uid, String type) {
     Serial.println("Server Response: " + payload);
     parseAndDisplay(payload);
   } else if (code == 401) {
-    playAudio(1, 6); // 006.MP3
+    playAudio(1, 7); // 007.MP3 - Sistem ada gangguan hubungi admin
     showError("API Key Tidak Valid!");
   } else if (code == 404) {
-    playAudio(1, 5); // 005.MP3
+    playAudio(1, 6); // 006.MP3 - Kartu tidak dikenali hubungi admin
     showError("Kartu/QR Tdk Terdaftar");
   } else if (code > 0) {
-    playAudio(1, 6); // 006.MP3
+    playAudio(1, 7); // 007.MP3 - Sistem ada gangguan hubungi admin
     showError("Gagal Server: " + String(code));
   } else {
     String errMsg = http.errorToString(code);
@@ -394,7 +394,7 @@ void sendToServer(String uid, String type) {
     if (payload.length() > 10 && payload.indexOf("status") > 0) {
       parseAndDisplay(payload);
     } else {
-      playAudio(1, 6); // 006.MP3
+      playAudio(1, 7); // 007.MP3 - Sistem ada gangguan hubungi admin
       showError("Server Error: " + errMsg.substring(0, 14));
     }
   }
@@ -439,12 +439,13 @@ void parseAndDisplay(String json) {
 
     if (action_code == "CHECK_IN") {
       lcd.setCursor(0, 2); lcd.print("MASUK PADA: " + waktu);
-      if (kelasDisplay.indexOf("Guru") >= 0 || kelasDisplay.indexOf("Staff") >= 0) {
+      if (kelasDisplay.indexOf("Guru") >= 0 || kelasDisplay.indexOf("Staf") >= 0 || kelasDisplay.indexOf("Staff") >= 0) {
         lcd.setCursor(0, 3); lcd.print(F("Selamat Bertugas!   "));
+        playAudio(1, 5); // 005.MP3 - Selamat Pagi Selamat Bekerja (Guru/Staf)
       } else {
         lcd.setCursor(0, 3); lcd.print(F("Selamat Belajar!    "));
+        playAudio(1, 2); // 002.MP3 - Akses diterima selamat belajar (Siswa)
       }
-      playAudio(1, 2); // 002.MP3
       indicatorCheckIn();
     }
     else if (action_code == "CHECK_OUT") {
@@ -469,7 +470,7 @@ void parseAndDisplay(String json) {
       lcd.setCursor(0, 1); lcd.print(kelasDisplay);
       lcd.setCursor(0, 2); lcd.print(F("Belum terdaftar!    "));
       lcd.setCursor(0, 3); lcd.print(F("Daftarkan di Admin  "));
-      playAudio(1, 5); // 005.MP3
+      playAudio(1, 6); // 006.MP3 - Kartu tidak dikenali hubungi admin
       indicatorNewCard();
     }
     else {
@@ -481,9 +482,9 @@ void parseAndDisplay(String json) {
   } else {
     String errMsg = (action_code == "ALREADY_ATTENDED") ? "Sudah Absen Lengkap" : message;
     if (action_code == "ALREADY_ATTENDED") {
-      playAudio(1, 4); // 004.MP3
+      playAudio(1, 4); // 004.MP3 - Absensi hadir dan pulang sudah tercatat
     } else {
-      playAudio(1, 6); // 006.MP3
+      playAudio(1, 7); // 007.MP3 - Sistem ada gangguan hubungi admin
     }
     showError(errMsg);
   }

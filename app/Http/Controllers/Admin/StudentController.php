@@ -372,5 +372,64 @@ class StudentController extends Controller
 
         return back()->with('success', "Berhasil mereset password {$count} siswa menjadi pola standar (Pembda+NISN).");
     }
+
+    /**
+     * Halaman Registrasi RFID Massal (via Arduino Nano Scanner)
+     */
+    public function rfidBulk(Request $request)
+    {
+        $schools = \App\Models\School::where('is_active', true)->orderBy('name')->get();
+        $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
+        $academicYears = \App\Models\AcademicYear::orderBy('year', 'desc')->get();
+
+        $schoolId = $request->get('school_id');
+        $yearId   = $request->get('academic_year_id', $activeYear?->id);
+
+        $students = collect();
+        if ($schoolId && $yearId) {
+            $students = Student::where('school_id', $schoolId)
+                ->where('status', 'aktif')
+                ->with(['classroom' => fn($q) => $q->where('academic_year_id', $yearId)])
+                ->orderBy('full_name')
+                ->get();
+        }
+
+        return view('admin.students.rfid-bulk', compact('schools', 'academicYears', 'students', 'schoolId', 'yearId'));
+    }
+
+    /**
+     * Simpan UID RFID ke siswa via AJAX (Registrasi Massal)
+     */
+    public function rfidBulkAssign(Request $request)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'rfid_uid'   => 'required|string|min:4|max:20',
+        ]);
+
+        $uid = strtoupper(trim($request->rfid_uid));
+
+        // Cek apakah UID sudah dipakai siswa lain
+        $existing = Student::where('rfid_uid', $uid)
+            ->where('id', '!=', $request->student_id)
+            ->first();
+
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => "UID {$uid} sudah digunakan oleh siswa: {$existing->full_name}",
+            ], 422);
+        }
+
+        $student = Student::findOrFail($request->student_id);
+        $student->update(['rfid_uid' => $uid]);
+
+        return response()->json([
+            'success'      => true,
+            'message'      => "UID berhasil disimpan untuk {$student->full_name}",
+            'student_name' => $student->full_name,
+            'rfid_uid'     => $uid,
+        ]);
+    }
 }
 

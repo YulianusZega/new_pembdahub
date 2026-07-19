@@ -16,19 +16,19 @@
 // ============================================================
 //  KONFIGURASI WIFI & SERVER
 // ============================================================
-const char* WIFI_SSID         = "VistaHotLine";
-const char* WIFI_PASSWORD     = "pelita31";
+const char* WIFI_SSID         = "Xspace";
+const char* WIFI_PASSWORD     = "12345678starlink";
 
-const char* WIFI_ALT_SSID     = "Xspace";
-const char* WIFI_ALT_PASSWORD = "12345678starlink";
+const char* WIFI_ALT_SSID     = "TEFA";
+const char* WIFI_ALT_PASSWORD = "PEMBDA2026";
 
-const char* WIFI_ALT2_SSID    = "TEFA";
-const char* WIFI_ALT2_PASSWORD= "PEMBDA2026";
+const char* WIFI_ALT2_SSID    = "VisatHotLine";
+const char* WIFI_ALT2_PASSWORD= "pelita31";
 
 const char* SERVER_URL        = "https://perguruanpembda.com/api/attendance/rfid-scan";
 const char* KIOSK_API_KEY     = "RAHASIA-PEMBDAHUB-12345";
 
-const char* DEVICE_ID         = "KIOSK-NEW-05";
+const char* DEVICE_ID         = "STATIIN-SMK-03";
 
 // ============================================================
 //  PIN DEFINITIONS - ESP32-C3

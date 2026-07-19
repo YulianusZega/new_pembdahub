@@ -147,8 +147,8 @@ const char* DEVICE_ID         = "KIOSK-NEW-04";
 
 // Indikator
 #define BUZZER_PIN     2    // GPIO 2  - Buzzer
-#define LED_GREEN      15   // GPIO 15 - LED Hijau
-#define LED_RED        13   // GPIO 13 - LED Merah
+#define LED_GREEN      13   // GPIO 13 - LED Hijau (Telah ditukar via software)
+#define LED_RED        15   // GPIO 15 - LED Merah (Telah ditukar via software)
 
 // ============================================================
 //  TIMEOUTS & COOLDOWNS

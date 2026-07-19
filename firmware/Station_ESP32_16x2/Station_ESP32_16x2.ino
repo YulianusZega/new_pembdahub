@@ -92,7 +92,7 @@ const char* WIFI_ALT_SSID      = "TEFA";
 const char* WIFI_ALT_PASSWORD  = "PEMBDA2026";
 
 // WiFi Alternatif 2
-const char* WIFI_ALT2_SSID     = "VistaHotLine";
+const char* WIFI_ALT2_SSID     = "VISTAFAMILY";
 const char* WIFI_ALT2_PASSWORD = "pelita31";
 
 // Server API - JANGAN DIUBAH kecuali domain berubah
@@ -102,7 +102,7 @@ const char* KIOSK_API_KEY     = "RAHASIA-PEMBDAHUB-12345";
 
 // ── GANTI DEVICE_ID UNTUK SETIAP STATION! ──
 // Contoh: "KIOSK-ESP32-01", "KIOSK-ESP32-02", dst.
-const char* DEVICE_ID         = "STATION-SMA-02";
+const char* DEVICE_ID         = "STATION-SMA-03";
 
 // ============================================================
 //  PIN DEFINITIONS - ESP32 Dev Module
@@ -132,7 +132,7 @@ const char* DEVICE_ID         = "STATION-SMA-02";
 // Serial2 default: RX2=GPIO16, TX2=GPIO17
 #define MP3_TX_PIN     17   // GPIO 17 - TX2 → hubungkan ke RX DFPlayer via R 1KΩ
 #define MP3_RX_PIN     16   // GPIO 16 - RX2 ← hubungkan ke TX DFPlayer (opsional)
-#define MP3_VOLUME     22   // Tingkat volume MP3 (0 s.d 30)
+#define MP3_VOLUME     30   // Tingkat volume MP3 (0 s.d 30)
 
 // ============================================================
 //  TIMEOUTS & COOLDOWNS

@@ -16,10 +16,10 @@
         <p class="text-gray-500 text-sm ml-8">Hubungkan Arduino Nano Scanner lalu pilih siswa dan tempelkan kartunya.</p>
     </div>
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <div class="flex flex-col xl:flex-row gap-4">
 
         {{-- KOLOM KIRI: Status Scanner & Filter --}}
-        <div class="space-y-4">
+        <div class="space-y-4 xl:w-72 shrink-0">
 
             {{-- PANEL STATUS SCANNER --}}
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
@@ -110,21 +110,23 @@
         </div>
 
         {{-- KOLOM KANAN: Daftar Siswa --}}
-        <div class="xl:col-span-2">
+        <div class="flex-1 min-w-0">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-                <div class="p-5 border-b border-gray-100 flex items-center justify-between">
-                    <h2 class="font-semibold text-gray-700">
-                        Daftar Siswa
+                <div class="p-4 border-b border-gray-100">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="font-semibold text-gray-700">
+                            Daftar Siswa
+                            @if($students->count() > 0)
+                                <span class="ml-1 text-sm font-normal text-gray-400">({{ $students->count() }} siswa)</span>
+                            @endif
+                        </h2>
                         @if($students->count() > 0)
-                            <span class="ml-2 text-sm font-normal text-gray-400">({{ $students->count() }} siswa)</span>
+                            <div class="flex items-center gap-4 text-xs">
+                                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-green-400 inline-block"></span> Sudah: <strong id="count-done" class="text-green-700">{{ $students->whereNotNull('rfid_uid')->count() }}</strong></span>
+                                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-gray-300 inline-block"></span> Belum: <strong id="count-pending" class="text-gray-600">{{ $students->whereNull('rfid_uid')->count() }}</strong></span>
+                            </div>
                         @endif
-                    </h2>
-                    @if($students->count() > 0)
-                        <div class="flex items-center gap-3 text-sm">
-                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-green-400 inline-block"></span> Sudah Terdaftar: <strong id="count-done">{{ $students->whereNotNull('rfid_uid')->count() }}</strong></span>
-                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-gray-300 inline-block"></span> Belum: <strong id="count-pending">{{ $students->whereNull('rfid_uid')->count() }}</strong></span>
-                        </div>
-                    @endif
+                    </div>
                 </div>
 
                 @if(!$schoolId)
@@ -145,42 +147,42 @@
                     </div>
 
                     {{-- Tabel Siswa --}}
-                    <div class="overflow-y-auto max-h-[calc(100vh-280px)]">
-                        <table class="w-full text-sm" id="student-table">
+                    <div class="overflow-auto max-h-[calc(100vh-260px)]">
+                        <table class="w-full text-sm" id="student-table" style="min-width:600px">
                             <thead class="bg-gray-50 sticky top-0 z-10">
                                 <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500">No</th>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500">Nama Siswa</th>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500">Kelas</th>
-                                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500">RFID UID</th>
-                                    <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500">Aksi</th>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-500 w-10">No</th>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-500">Nama Siswa</th>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-500 w-24">Kelas</th>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-500 w-36">RFID UID</th>
+                                    <th class="px-3 py-3 text-center text-xs font-semibold text-gray-500 w-24">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50" id="student-tbody">
                                 @foreach($students as $i => $student)
                                 <tr class="hover:bg-blue-50/30 transition-colors student-row" id="row-{{ $student->id }}" data-name="{{ strtolower($student->full_name) }}">
-                                    <td class="px-4 py-3 text-gray-400">{{ $i + 1 }}</td>
-                                    <td class="px-4 py-3">
-                                        <div class="font-medium text-gray-800">{{ $student->full_name }}</div>
+                                    <td class="px-3 py-2.5 text-gray-400 text-xs">{{ $i + 1 }}</td>
+                                    <td class="px-3 py-2.5">
+                                        <div class="font-medium text-gray-800 whitespace-nowrap">{{ $student->full_name }}</div>
                                         <div class="text-xs text-gray-400">{{ $student->nisn }}</div>
                                     </td>
-                                    <td class="px-4 py-3 text-gray-500 text-xs">
+                                    <td class="px-3 py-2.5 text-gray-500 text-xs whitespace-nowrap">
                                         {{ $student->classroom?->name ?? '-' }}
                                     </td>
-                                    <td class="px-4 py-3" id="uid-cell-{{ $student->id }}">
+                                    <td class="px-3 py-2.5" id="uid-cell-{{ $student->id }}">
                                         @if($student->rfid_uid)
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded-lg text-xs font-mono font-semibold">
-                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                            <span class="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded-lg text-xs font-mono font-semibold whitespace-nowrap">
+                                                <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                 {{ $student->rfid_uid }}
                                             </span>
                                         @else
                                             <span class="text-gray-300 italic text-xs">Belum ada</span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 text-center">
+                                    <td class="px-3 py-2.5 text-center">
                                         <button onclick="selectStudent({{ $student->id }}, '{{ addslashes($student->full_name) }}')"
                                             id="btn-select-{{ $student->id }}"
-                                            class="px-3 py-1.5 {{ $student->rfid_uid ? 'bg-yellow-50 text-yellow-700 hover:bg-yellow-100' : 'bg-blue-50 text-blue-700 hover:bg-blue-100' }} rounded-lg text-xs font-semibold transition-all">
+                                            class="px-3 py-1.5 {{ $student->rfid_uid ? 'bg-yellow-50 text-yellow-700 hover:bg-yellow-100 border border-yellow-200' : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200' }} rounded-lg text-xs font-semibold transition-all whitespace-nowrap">
                                             {{ $student->rfid_uid ? '✏️ Ganti' : '📡 Pilih' }}
                                         </button>
                                     </td>

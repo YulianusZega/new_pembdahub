@@ -148,14 +148,14 @@
 
                     {{-- Tabel Siswa --}}
                     <div class="overflow-auto max-h-[calc(100vh-260px)]">
-                        <table class="w-full text-sm" id="student-table" style="min-width:600px">
+                        <table class="w-full text-sm text-left" id="student-table">
                             <thead class="bg-gray-50 sticky top-0 z-10">
                                 <tr>
-                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-500 w-10">No</th>
-                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-500">Nama Siswa</th>
-                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-500 w-24">Kelas</th>
-                                    <th class="px-3 py-3 text-left text-xs font-semibold text-gray-500 w-36">RFID UID</th>
-                                    <th class="px-3 py-3 text-center text-xs font-semibold text-gray-500 w-24">Aksi</th>
+                                    <th class="px-3 py-3 text-xs font-semibold text-gray-500 w-[5%]">No</th>
+                                    <th class="px-3 py-3 text-xs font-semibold text-gray-500 w-[35%]">Nama Siswa</th>
+                                    <th class="px-3 py-3 text-xs font-semibold text-gray-500 w-[15%]">Kelas</th>
+                                    <th class="px-3 py-3 text-xs font-semibold text-gray-500 w-[25%]">RFID UID</th>
+                                    <th class="px-3 py-3 text-center text-xs font-semibold text-gray-500 w-[20%]">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50" id="student-tbody">
@@ -163,10 +163,10 @@
                                 <tr class="hover:bg-blue-50/30 transition-colors student-row" id="row-{{ $student->id }}" data-name="{{ strtolower($student->full_name) }}">
                                     <td class="px-3 py-2.5 text-gray-400 text-xs">{{ $i + 1 }}</td>
                                     <td class="px-3 py-2.5">
-                                        <div class="font-medium text-gray-800 whitespace-nowrap">{{ $student->full_name }}</div>
+                                        <div class="font-medium text-gray-800">{{ $student->full_name }}</div>
                                         <div class="text-xs text-gray-400">{{ $student->nisn }}</div>
                                     </td>
-                                    <td class="px-3 py-2.5 text-gray-500 text-xs whitespace-nowrap">
+                                    <td class="px-3 py-2.5 text-gray-500 text-xs">
                                         {{ $student->classroom?->name ?? '-' }}
                                     </td>
                                     <td class="px-3 py-2.5" id="uid-cell-{{ $student->id }}">
@@ -477,7 +477,7 @@ function updateStudentRow(studentId, uid) {
     const btn = document.getElementById('btn-select-' + studentId);
     if (btn) {
         btn.textContent = '✏️ Ganti';
-        btn.className = 'px-3 py-1.5 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 rounded-lg text-xs font-semibold transition-all';
+        btn.className = 'px-3 py-1.5 bg-yellow-50 text-yellow-700 hover:bg-yellow-100 border border-yellow-200 rounded-lg text-xs font-semibold transition-all whitespace-nowrap';
     }
 }
 

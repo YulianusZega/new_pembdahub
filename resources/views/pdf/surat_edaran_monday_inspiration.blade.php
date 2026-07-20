@@ -222,7 +222,11 @@
         <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias</div>
         <div class="pembda-title">( P E M B D A )</div>
         <div class="address">Jl. Pelita No.9 Kelurahan Ilir, Kota Gunungsitoli, Sumatera Utara (22815)</div>
-        <div class="website">Website: perguruanpembda.com | Email: perguruanpembdanias@gmail.com</div>
+    </div>
+
+    {{-- Tanggal Surat --}}
+    <div style="text-align: right; margin-bottom: 8px;">
+        Gunungsitoli, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM Y') }}
     </div>
 
     {{-- Info Surat --}}
@@ -244,10 +248,6 @@
                 <td><b>Program <i>Monday Inspiration</i> — "Keep Moving Forward"<br>Tahun Pelajaran 2026/2027</b></td>
             </tr>
         </table>
-    </div>
-
-    <div style="text-align: right; margin-bottom: 15px;">
-        Gunungsitoli, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM Y') }}
     </div>
 
     {{-- Kepada --}}

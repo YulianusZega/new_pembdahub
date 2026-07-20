@@ -20,6 +20,7 @@ Route::prefix('yayasan')->name('yayasan.')->middleware('auth', 'yayasan')->group
     Route::post('/invitations/send-bulk', [App\Http\Controllers\Yayasan\InvitationController::class, 'sendBulk'])->name('invitations.send_bulk');
     
     Route::get('/calendar/print', [App\Http\Controllers\Yayasan\EducationalCalendarController::class, 'print'])->name('calendar.print');
+    Route::get('/calendar/monday-inspiration/print', [App\Http\Controllers\Yayasan\EducationalCalendarController::class, 'printMondayInspiration'])->name('calendar.monday_inspiration.print');
     Route::get('/calendar', [App\Http\Controllers\Yayasan\EducationalCalendarController::class, 'index'])->name('calendar.index');
     Route::post('/calendar', [App\Http\Controllers\Yayasan\EducationalCalendarController::class, 'store'])->name('calendar.store');
     Route::put('/calendar/{calendar}', [App\Http\Controllers\Yayasan\EducationalCalendarController::class, 'update'])->name('calendar.update');

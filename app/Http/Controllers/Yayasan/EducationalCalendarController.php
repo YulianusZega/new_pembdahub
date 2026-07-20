@@ -131,6 +131,14 @@ class EducationalCalendarController extends Controller
         return $pdf->stream('Kalender_Pendidikan_Yayasan_' . $safeYear . '.pdf');
     }
 
+    public function printMondayInspiration()
+    {
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.surat_edaran_monday_inspiration')
+                ->setPaper('a4', 'portrait');
+        
+        return $pdf->stream('Surat_Edaran_Monday_Inspiration_TP_2026_2027.pdf');
+    }
+
     public function destroy(EducationalCalendar $calendar)
     {
         $calendar->delete();

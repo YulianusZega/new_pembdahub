@@ -18,6 +18,12 @@
                 </svg>
                 <span class="hidden xs:block ml-2">Cetak PDF</span>
             </a>
+            <a href="{{ route('yayasan.calendar.monday_inspiration.print') }}" target="_blank" class="btn text-white" style="background-color: #8b5cf6;" onmouseover="this.style.backgroundColor='#7c3aed'" onmouseout="this.style.backgroundColor='#8b5cf6'">
+                <svg class="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
+                    <path d="M14.3 2.3L11.7.3c-.4-.3-.9-.3-1.4-.3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3.7c0-.5-.2-1-.7-1.4zM11 2v3h3l-3-3zM3 14V2h6v4c0 .6.4 1 1 1h4v7H3z"/>
+                </svg>
+                <span class="hidden xs:block ml-2">Surat Edaran MI</span>
+            </a>
             <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white" onclick="document.getElementById('eventModal').classList.remove('hidden')">
                 <svg class="w-4 h-4 fill-current opacity-50 shrink-0" viewBox="0 0 16 16">
                     <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z" />

@@ -36,16 +36,16 @@
             height: auto;
         }
         .kop-surat .yayasan-name {
-            font-size: 14pt;
+            font-size: 13.5pt;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 2.5px;
+            letter-spacing: 1px;
             margin-bottom: 2px;
         }
         .kop-surat .pembda-title {
-            font-size: 20pt;
+            font-size: 19pt;
             font-weight: bold;
-            letter-spacing: 9px;
+            letter-spacing: 6px;
             margin: 2px 0 4px 0;
         }
         .kop-surat .address {
@@ -219,9 +219,11 @@
         @if(file_exists($logoPath))
             <img src="{{ $logoPath }}" class="logo" alt="Logo Pembda">
         @endif
-        <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias</div>
-        <div class="pembda-title">( P E M B D A )</div>
-        <div class="address">Jl. Pelita No.9 Kelurahan Ilir, Kota Gunungsitoli, Sumatera Utara (22815)</div>
+        <div style="margin: 0 80px;">
+            <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias</div>
+            <div class="pembda-title">( P E M B D A )</div>
+            <div class="address">Jl. Pelita No.9 Kelurahan Ilir, Kota Gunungsitoli, Sumatera Utara (22815)</div>
+        </div>
     </div>
 
     {{-- Tanggal Surat --}}
@@ -350,9 +352,11 @@
         @if(file_exists($logoPath))
             <img src="{{ $logoPath }}" class="logo" alt="Logo Pembda">
         @endif
-        <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias (Pembda)</div>
-        <div class="school-name" style="font-size: 14pt;">Lampiran Surat Edaran</div>
-        <div class="address">Program Monday Inspiration — "Keep Moving Forward" — TP 2026/2027</div>
+        <div style="margin: 0 80px;">
+            <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias (Pembda)</div>
+            <div class="school-name" style="font-size: 14pt;">Lampiran Surat Edaran</div>
+            <div class="address">Program Monday Inspiration — "Keep Moving Forward" — TP 2026/2027</div>
+        </div>
     </div>
 
     <div style="text-align: center; margin-bottom: 15px;">

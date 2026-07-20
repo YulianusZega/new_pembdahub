@@ -73,10 +73,11 @@ class WorkloadSummaryController extends Controller
                 'emp_status_rank' => function ($q) {
                     $q->selectRaw("CASE 
                         WHEN LOWER(employment_status) = 'pns' THEN 1 
-                        WHEN LOWER(employment_status) = 'yayasan' THEN 2 
-                        WHEN LOWER(employment_status) = 'honorer' THEN 3 
-                        WHEN LOWER(employment_status) = 'kontrak' THEN 4 
-                        ELSE 5 END")
+                        WHEN LOWER(employment_status) = 'gty' THEN 2 
+                        WHEN LOWER(employment_status) = 'yayasan' THEN 3
+                        WHEN LOWER(employment_status) = 'honorer' THEN 4 
+                        WHEN LOWER(employment_status) = 'kontrak' THEN 5 
+                        ELSE 6 END")
                         ->from('employees')
                         ->whereColumn('id', 'employee_workload_summaries.employee_id');
                 }
@@ -88,8 +89,8 @@ class WorkloadSummaryController extends Controller
             $query->whereHas('employee', fn($q) => $q->where('school_id', $schoolId));
         }
 
-        $summaries = $query->orderBy('emp_status_rank', 'asc')
-            ->orderBy('min_position_level', 'asc')
+        $summaries = $query->orderBy('min_position_level', 'asc')
+            ->orderBy('emp_status_rank', 'asc')
             ->orderBy('employee_name', 'asc')
             ->paginate(50)->withQueryString();
 
@@ -283,15 +284,29 @@ class WorkloadSummaryController extends Controller
                 ->where('school_id', $schoolId)
                 ->where('is_active', true)
                 ->select('employees.*')
-                ->addSelect(['min_position_level' => function ($q) use ($yearId) {
-                    $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
-                        ->from('employee_positions')
-                        ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
-                        ->whereColumn('employee_positions.employee_id', 'employees.id')
-                        ->where('employee_positions.academic_year_id', $yearId)
-                        ->whereNull('employee_positions.end_date');
-                }])
+                ->addSelect([
+                    'min_position_level' => function ($q) use ($yearId) {
+                        $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
+                            ->from('employee_positions')
+                            ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
+                            ->whereColumn('employee_positions.employee_id', 'employees.id')
+                            ->where('employee_positions.academic_year_id', $yearId)
+                            ->whereNull('employee_positions.end_date');
+                    },
+                    'emp_status_rank' => function ($q) {
+                        $q->selectRaw("CASE 
+                            WHEN LOWER(employment_status) = 'pns' THEN 1 
+                            WHEN LOWER(employment_status) = 'gty' THEN 2 
+                            WHEN LOWER(employment_status) = 'yayasan' THEN 3
+                            WHEN LOWER(employment_status) = 'honorer' THEN 4 
+                            WHEN LOWER(employment_status) = 'kontrak' THEN 5 
+                            ELSE 6 END")
+                            ->from('employees as emp_inner')
+                            ->whereColumn('emp_inner.id', 'employees.id');
+                    }
+                ])
                 ->orderBy('min_position_level', 'asc')
+                ->orderBy('emp_status_rank', 'asc')
                 ->orderBy('full_name', 'asc')
                 ->get();
 
@@ -330,15 +345,29 @@ class WorkloadSummaryController extends Controller
         $employees = Employee::where('school_id', $schoolId)
             ->where('is_active', true)
             ->select('employees.*')
-            ->addSelect(['min_position_level' => function ($q) use ($yearId) {
-                $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
-                    ->from('employee_positions')
-                    ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
-                    ->whereColumn('employee_positions.employee_id', 'employees.id')
-                    ->where('employee_positions.academic_year_id', $yearId)
-                    ->whereNull('employee_positions.end_date');
-            }])
+            ->addSelect([
+                'min_position_level' => function ($q) use ($yearId) {
+                    $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
+                        ->from('employee_positions')
+                        ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
+                        ->whereColumn('employee_positions.employee_id', 'employees.id')
+                        ->where('employee_positions.academic_year_id', $yearId)
+                        ->whereNull('employee_positions.end_date');
+                },
+                'emp_status_rank' => function ($q) {
+                    $q->selectRaw("CASE 
+                        WHEN LOWER(employment_status) = 'pns' THEN 1 
+                        WHEN LOWER(employment_status) = 'gty' THEN 2 
+                        WHEN LOWER(employment_status) = 'yayasan' THEN 3
+                        WHEN LOWER(employment_status) = 'honorer' THEN 4 
+                        WHEN LOWER(employment_status) = 'kontrak' THEN 5 
+                        ELSE 6 END")
+                        ->from('employees as emp_inner')
+                        ->whereColumn('emp_inner.id', 'employees.id');
+                }
+            ])
             ->orderBy('min_position_level', 'asc')
+            ->orderBy('emp_status_rank', 'asc')
             ->orderBy('full_name', 'asc')
             ->get();
 

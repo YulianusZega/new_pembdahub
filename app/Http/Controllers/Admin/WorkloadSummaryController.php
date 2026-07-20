@@ -57,8 +57,29 @@ class WorkloadSummaryController extends Controller
         ])
             ->select('employee_workload_summaries.*')
             ->addSelect([
+                'emp_type_rank' => function ($q) {
+                    $q->selectRaw("CASE WHEN employee_type = 'guru' THEN 1 ELSE 2 END")
+                        ->from('employees')
+                        ->whereColumn('id', 'employee_workload_summaries.employee_id');
+                },
                 'min_position_level' => function ($q) use ($yearId) {
                     $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
+                        ->from('employee_positions')
+                        ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
+                        ->whereColumn('employee_positions.employee_id', 'employee_workload_summaries.employee_id')
+                        ->where('employee_positions.academic_year_id', $yearId)
+                        ->whereNull('employee_positions.end_date');
+                },
+                'position_name_rank' => function ($q) use ($yearId) {
+                    $q->selectRaw("COALESCE(MIN(CASE 
+                        WHEN positions.position_name LIKE 'Wakil Kepala Sekolah%' OR positions.position_name LIKE 'Wakasek%' THEN 1
+                        WHEN positions.position_name LIKE 'Pembantu Kepala Sekolah%' OR positions.position_name LIKE 'PKS%' THEN 2
+                        WHEN positions.position_name LIKE 'Kapro%' THEN 3
+                        WHEN positions.position_name LIKE 'Koordinator%' THEN 4
+                        WHEN positions.position_name LIKE 'Wali Kelas%' THEN 5
+                        WHEN positions.position_name LIKE 'Kepala Tata Usaha%' OR positions.position_name LIKE 'KTU%' THEN 1
+                        WHEN positions.position_name LIKE 'Bendahara%' THEN 2
+                        ELSE 99 END), 999)")
                         ->from('employee_positions')
                         ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
                         ->whereColumn('employee_positions.employee_id', 'employee_workload_summaries.employee_id')
@@ -89,7 +110,9 @@ class WorkloadSummaryController extends Controller
             $query->whereHas('employee', fn($q) => $q->where('school_id', $schoolId));
         }
 
-        $summaries = $query->orderBy('min_position_level', 'asc')
+        $summaries = $query->orderBy('emp_type_rank', 'asc')
+            ->orderBy('min_position_level', 'asc')
+            ->orderBy('position_name_rank', 'asc')
             ->orderBy('emp_status_rank', 'asc')
             ->orderBy('employee_name', 'asc')
             ->paginate(50)->withQueryString();
@@ -285,8 +308,25 @@ class WorkloadSummaryController extends Controller
                 ->where('is_active', true)
                 ->select('employees.*')
                 ->addSelect([
+                    'emp_type_rank' => \Illuminate\Support\Facades\DB::raw("CASE WHEN employees.employee_type = 'guru' THEN 1 ELSE 2 END"),
                     'min_position_level' => function ($q) use ($yearId) {
                         $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
+                            ->from('employee_positions')
+                            ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
+                            ->whereColumn('employee_positions.employee_id', 'employees.id')
+                            ->where('employee_positions.academic_year_id', $yearId)
+                            ->whereNull('employee_positions.end_date');
+                    },
+                    'position_name_rank' => function ($q) use ($yearId) {
+                        $q->selectRaw("COALESCE(MIN(CASE 
+                            WHEN positions.position_name LIKE 'Wakil Kepala Sekolah%' OR positions.position_name LIKE 'Wakasek%' THEN 1
+                            WHEN positions.position_name LIKE 'Pembantu Kepala Sekolah%' OR positions.position_name LIKE 'PKS%' THEN 2
+                            WHEN positions.position_name LIKE 'Kapro%' THEN 3
+                            WHEN positions.position_name LIKE 'Koordinator%' THEN 4
+                            WHEN positions.position_name LIKE 'Wali Kelas%' THEN 5
+                            WHEN positions.position_name LIKE 'Kepala Tata Usaha%' OR positions.position_name LIKE 'KTU%' THEN 1
+                            WHEN positions.position_name LIKE 'Bendahara%' THEN 2
+                            ELSE 99 END), 999)")
                             ->from('employee_positions')
                             ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
                             ->whereColumn('employee_positions.employee_id', 'employees.id')
@@ -305,7 +345,9 @@ class WorkloadSummaryController extends Controller
                             ->whereColumn('emp_inner.id', 'employees.id');
                     }
                 ])
+                ->orderBy('emp_type_rank', 'asc')
                 ->orderBy('min_position_level', 'asc')
+                ->orderBy('position_name_rank', 'asc')
                 ->orderBy('emp_status_rank', 'asc')
                 ->orderBy('full_name', 'asc')
                 ->get();
@@ -346,8 +388,25 @@ class WorkloadSummaryController extends Controller
             ->where('is_active', true)
             ->select('employees.*')
             ->addSelect([
+                'emp_type_rank' => \Illuminate\Support\Facades\DB::raw("CASE WHEN employees.employee_type = 'guru' THEN 1 ELSE 2 END"),
                 'min_position_level' => function ($q) use ($yearId) {
                     $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
+                        ->from('employee_positions')
+                        ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
+                        ->whereColumn('employee_positions.employee_id', 'employees.id')
+                        ->where('employee_positions.academic_year_id', $yearId)
+                        ->whereNull('employee_positions.end_date');
+                },
+                'position_name_rank' => function ($q) use ($yearId) {
+                    $q->selectRaw("COALESCE(MIN(CASE 
+                        WHEN positions.position_name LIKE 'Wakil Kepala Sekolah%' OR positions.position_name LIKE 'Wakasek%' THEN 1
+                        WHEN positions.position_name LIKE 'Pembantu Kepala Sekolah%' OR positions.position_name LIKE 'PKS%' THEN 2
+                        WHEN positions.position_name LIKE 'Kapro%' THEN 3
+                        WHEN positions.position_name LIKE 'Koordinator%' THEN 4
+                        WHEN positions.position_name LIKE 'Wali Kelas%' THEN 5
+                        WHEN positions.position_name LIKE 'Kepala Tata Usaha%' OR positions.position_name LIKE 'KTU%' THEN 1
+                        WHEN positions.position_name LIKE 'Bendahara%' THEN 2
+                        ELSE 99 END), 999)")
                         ->from('employee_positions')
                         ->join('positions', 'employee_positions.position_id', '=', 'positions.id')
                         ->whereColumn('employee_positions.employee_id', 'employees.id')
@@ -366,7 +425,9 @@ class WorkloadSummaryController extends Controller
                         ->whereColumn('emp_inner.id', 'employees.id');
                 }
             ])
+            ->orderBy('emp_type_rank', 'asc')
             ->orderBy('min_position_level', 'asc')
+            ->orderBy('position_name_rank', 'asc')
             ->orderBy('emp_status_rank', 'asc')
             ->orderBy('full_name', 'asc')
             ->get();

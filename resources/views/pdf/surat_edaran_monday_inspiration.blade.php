@@ -5,7 +5,7 @@
     <title>Surat Edaran Monday Inspiration - Yayasan Perguruan Pembda Nias</title>
     <style>
         @page {
-            margin: 1cm 1cm 2cm 2cm;
+            margin: 1cm 2cm 1cm 2cm;
             size: A4 portrait;
         }
         body {

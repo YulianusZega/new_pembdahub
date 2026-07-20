@@ -68,12 +68,18 @@
         .surat-info td.label { width: 95px; }
         .surat-info td.sep { width: 15px; text-align: center; }
 
-        .kepada-block { margin: 12px 0 10px 0; }
+        .kepada-block { margin: 12px 0 10px 0; page-break-inside: avoid; }
         .kepada-block .di-tempat { margin-left: 120px; font-style: italic; }
 
-        .salam-pembuka { margin: 10px 0 6px 0; font-weight: bold; }
+        .salam-pembuka { margin: 10px 0 6px 0; font-weight: bold; page-break-inside: avoid; }
         .isi-surat { margin: 8px 0; text-align: justify; }
-        .isi-surat p { margin-bottom: 8px; text-indent: 35px; }
+        .isi-surat p { 
+            margin-bottom: 8px; 
+            text-indent: 35px; 
+            page-break-inside: avoid;
+            orphans: 3;
+            widows: 3;
+        }
         .isi-surat .no-indent { text-indent: 0; }
 
         /* === PROGRAM BOX === */
@@ -158,6 +164,7 @@
             margin-bottom: 5px;
             text-align: justify;
             padding-left: 4px;
+            page-break-inside: avoid;
         }
 
         /* === TTD === */

@@ -51,9 +51,11 @@ class TeacherController extends Controller
             $query->where('school_id', $request->school_id);
         }
 
-        // Filter by status
+        // Filter by status (default: hanya tampilkan yang aktif)
         if ($request->filled('is_active')) {
             $query->where('is_active', $request->is_active);
+        } else {
+            $query->where('is_active', 1);
         }
 
         // Search

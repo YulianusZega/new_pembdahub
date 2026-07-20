@@ -308,7 +308,7 @@ class WorkloadSummaryController extends Controller
                 ->where('is_active', true)
                 ->select('employees.*')
                 ->addSelect([
-                    'emp_type_rank' => \Illuminate\Support\Facades\DB::raw("CASE WHEN employees.employee_type = 'guru' THEN 1 ELSE 2 END"),
+                    'emp_type_rank' => \Illuminate\Support\Facades\DB::raw("CASE WHEN employees.employee_type = 'guru' THEN 1 ELSE 2 END as emp_type_rank"),
                     'min_position_level' => function ($q) use ($yearId) {
                         $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
                             ->from('employee_positions')
@@ -388,7 +388,7 @@ class WorkloadSummaryController extends Controller
             ->where('is_active', true)
             ->select('employees.*')
             ->addSelect([
-                'emp_type_rank' => \Illuminate\Support\Facades\DB::raw("CASE WHEN employees.employee_type = 'guru' THEN 1 ELSE 2 END"),
+                'emp_type_rank' => \Illuminate\Support\Facades\DB::raw("CASE WHEN employees.employee_type = 'guru' THEN 1 ELSE 2 END as emp_type_rank"),
                 'min_position_level' => function ($q) use ($yearId) {
                     $q->selectRaw('COALESCE(MIN(positions.position_level), 999)')
                         ->from('employee_positions')

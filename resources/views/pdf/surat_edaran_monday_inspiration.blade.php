@@ -5,15 +5,19 @@
     <title>Surat Edaran Monday Inspiration - Yayasan Perguruan Pembda Nias</title>
     <style>
         @page {
-            margin: 2cm 2cm 2cm 2cm;
-            size: A4;
+            margin: 2.5cm 2.5cm 2.5cm 2.5cm;
+            size: A4 portrait;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 11.5pt;
             line-height: 1.45;
             color: #000;
+            margin: 0;
+            padding: 0;
+        }
+        div, table, tr, td, th, p, ol, ul, li, h1, h2, h3, h4, span, b, i {
+            box-sizing: border-box;
         }
 
         /* === KOP SURAT === */

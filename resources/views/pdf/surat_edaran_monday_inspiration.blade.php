@@ -5,7 +5,7 @@
     <title>Surat Edaran Monday Inspiration - Yayasan Perguruan Pembda Nias</title>
     <style>
         @page {
-            margin: 1cm 2cm 2cm 2cm;
+            margin: 1cm 1cm 2cm 2cm;
             size: A4 portrait;
         }
         body {
@@ -341,17 +341,6 @@
             <div class="nama">Yulianus Zega, S.Kom.,M.Pd.T</div>
             <div>Ketua Yayasan</div>
         </div>
-    </div>
-
-    {{-- Tembusan --}}
-    <div class="tembusan">
-        <b>Tembusan:</b>
-        <ul>
-            <li>Kepala SMPS Pembda 2 Gunungsitoli</li>
-            <li>Kepala SMAS Pembda 1 Gunungsitoli</li>
-            <li>Kepala SMKS Pembda Gunungsitoli</li>
-            <li>Arsip</li>
-        </ul>
     </div>
 
     {{-- === HALAMAN 2-3: LAMPIRAN TABEL TEMA === --}}

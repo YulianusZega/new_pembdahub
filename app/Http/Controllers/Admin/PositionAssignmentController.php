@@ -72,7 +72,7 @@ class PositionAssignmentController extends Controller
         
         // Schools dropdown
         $schools = $user->isSuperAdmin() 
-            ? School::where('is_active', 1)->schoolsOnly()->get()
+            ? School::where('is_active', 1)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
         
         return view('admin.assignments.positions.index', compact(

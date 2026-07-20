@@ -70,7 +70,7 @@ class PositionController extends Controller
         
         // Get schools for filter
         $schools = $user->isSuperAdmin() 
-            ? School::where('is_active', 1)->schoolsOnly()->get()
+            ? School::where('is_active', 1)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
         
         // Get categories
@@ -95,7 +95,7 @@ class PositionController extends Controller
         $user = auth()->user();
         
         $schools = $user->isSuperAdmin() 
-            ? School::where('is_active', 1)->schoolsOnly()->get()
+            ? School::where('is_active', 1)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
         
         $categories = ['structural', 'functional', 'staff', 'support'];
@@ -145,7 +145,7 @@ class PositionController extends Controller
         }
         
         $schools = $user->isSuperAdmin() 
-            ? School::where('is_active', 1)->schoolsOnly()->get()
+            ? School::where('is_active', 1)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
         
         $categories = ['structural', 'functional', 'staff', 'support'];

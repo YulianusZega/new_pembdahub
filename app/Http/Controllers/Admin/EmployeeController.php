@@ -79,7 +79,7 @@ class EmployeeController extends Controller
         
         // Schools dropdown: superadmin sees all, admin sekolah sees only their school
         $schools = $user->isSuperAdmin() 
-            ? School::where('is_active', 1)->schoolsOnly()->get()
+            ? School::where('is_active', 1)->orderBy('name')->get()
             : School::where('id', $user->school_id)->get();
 
         return view('admin.employees.index', compact('employees', 'schools'));
@@ -96,7 +96,7 @@ class EmployeeController extends Controller
     {
         $this->checkEmploymentPermission();
 
-        $schools = School::where('is_active', 1)->schoolsOnly()->get();
+        $schools = School::where('is_active', 1)->orderBy('name')->get();
         
         return view('admin.employees.create', compact('schools'));
     }
@@ -193,7 +193,7 @@ class EmployeeController extends Controller
     {
         $this->checkEmploymentPermission();
 
-        $schools = School::where('is_active', 1)->schoolsOnly()->get();
+        $schools = School::where('is_active', 1)->orderBy('name')->get();
         
         return view('admin.employees.edit', compact('employee', 'schools'));
     }

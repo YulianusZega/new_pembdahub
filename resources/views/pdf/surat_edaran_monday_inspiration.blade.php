@@ -5,14 +5,14 @@
     <title>Surat Edaran Monday Inspiration - Yayasan Perguruan Pembda Nias</title>
     <style>
         @page {
-            margin: 2cm 2.5cm 2cm 2.5cm;
+            margin: 2cm 2cm 2cm 2cm;
             size: A4;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            line-height: 1.5;
+            font-size: 11.5pt;
+            line-height: 1.45;
             color: #000;
         }
 
@@ -20,33 +20,33 @@
         .kop-surat {
             text-align: center;
             border-bottom: 3px double #000;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            padding-bottom: 14px;
+            margin-bottom: 18px;
             position: relative;
         }
         .kop-surat .logo {
             position: absolute;
             left: 0;
-            top: 5px;
-            width: 75px;
+            top: 4px;
+            width: 78px;
             height: auto;
         }
         .kop-surat .yayasan-name {
-            font-size: 11pt;
+            font-size: 14pt;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2.5px;
+            margin-bottom: 2px;
         }
-        .kop-surat .school-name {
-            font-size: 16pt;
+        .kop-surat .pembda-title {
+            font-size: 20pt;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #000;
+            letter-spacing: 9px;
+            margin: 2px 0 4px 0;
         }
         .kop-surat .address {
             font-size: 10pt;
-            margin-top: 2px;
+            margin-top: 3px;
         }
         .kop-surat .website {
             font-size: 10pt;
@@ -61,54 +61,54 @@
             width: auto;
         }
         .surat-info td {
-            padding: 1px 5px 1px 0;
+            padding: 2px 5px 2px 0;
             vertical-align: top;
-            font-size: 12pt;
+            font-size: 11.5pt;
         }
-        .surat-info td.label { width: 90px; }
+        .surat-info td.label { width: 95px; }
         .surat-info td.sep { width: 15px; text-align: center; }
 
-        .perihal-line { margin: 10px 0; }
-        .kepada-block { margin: 10px 0 5px 0; }
+        .kepada-block { margin: 12px 0 10px 0; }
         .kepada-block .di-tempat { margin-left: 120px; font-style: italic; }
 
-        .salam-pembuka { margin: 10px 0; }
-        .isi-surat { margin: 10px 0; text-align: justify; }
-        .isi-surat p { margin-bottom: 8px; text-indent: 40px; }
+        .salam-pembuka { margin: 10px 0 6px 0; font-weight: bold; }
+        .isi-surat { margin: 8px 0; text-align: justify; }
+        .isi-surat p { margin-bottom: 8px; text-indent: 35px; }
         .isi-surat .no-indent { text-indent: 0; }
 
         /* === PROGRAM BOX === */
         .program-box {
             border: 2px solid #1a237e;
-            padding: 15px 20px;
-            margin: 15px 0;
+            padding: 12px 18px;
+            margin: 14px 0;
             text-align: center;
             background: #f5f5ff;
             page-break-inside: avoid;
+            border-radius: 4px;
         }
         .program-box .program-label {
-            font-size: 11pt;
+            font-size: 10.5pt;
             font-weight: bold;
             color: #1a237e;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         .program-box .program-title {
-            font-size: 18pt;
+            font-size: 17pt;
             font-weight: bold;
             color: #1a237e;
-            margin: 5px 0;
+            margin: 4px 0;
             letter-spacing: 2px;
         }
         .program-box .program-tagline {
-            font-size: 14pt;
+            font-size: 13.5pt;
             font-weight: bold;
             font-style: italic;
             color: #303f9f;
         }
         .program-box .program-subtitle {
-            font-size: 10pt;
-            margin-top: 5px;
+            font-size: 9.5pt;
+            margin-top: 4px;
             color: #555;
         }
 
@@ -116,28 +116,28 @@
         .tema-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 10pt;
+            margin: 12px 0;
+            font-size: 9.5pt;
         }
         .tema-table th {
             background: #1a237e;
             color: #fff;
-            padding: 6px 8px;
+            padding: 7px 8px;
             text-align: center;
             font-weight: bold;
             border: 1px solid #1a237e;
         }
         .tema-table td {
-            padding: 4px 8px;
+            padding: 5px 8px;
             border: 1px solid #ccc;
-            vertical-align: top;
+            vertical-align: middle;
         }
         .tema-table tr:nth-child(even) {
             background: #f8f9ff;
         }
-        .tema-table .col-mg { width: 35px; text-align: center; }
-        .tema-table .col-tgl { width: 95px; text-align: center; }
-        .tema-table .col-program { width: 120px; text-align: center; font-style: italic; }
+        .tema-table .col-mg { width: 35px; text-align: center; font-weight: bold; }
+        .tema-table .col-tgl { width: 100px; text-align: center; }
+        .tema-table .col-program { width: 125px; text-align: center; font-style: italic; color: #303f9f; }
         .tema-table .col-tema { }
 
         /* === FASE HEADER === */
@@ -147,21 +147,22 @@
             font-size: 10pt;
             color: #1a237e;
             text-align: center;
-            padding: 5px;
+            padding: 6px;
         }
 
         /* === PETUNJUK === */
         .petunjuk-list {
-            margin: 10px 0 10px 20px;
+            margin: 6px 0 10px 24px;
         }
         .petunjuk-list li {
             margin-bottom: 5px;
             text-align: justify;
+            padding-left: 4px;
         }
 
         /* === TTD === */
         .ttd-section {
-            margin-top: 30px;
+            margin-top: 25px;
             page-break-inside: avoid;
         }
         .ttd-right {
@@ -178,8 +179,9 @@
         /* === TEMBUSAN === */
         .tembusan {
             clear: both;
-            margin-top: 100px;
-            font-size: 11pt;
+            margin-top: 70px;
+            font-size: 10.5pt;
+            page-break-inside: avoid;
         }
         .tembusan ul {
             margin-left: 20px;
@@ -206,10 +208,10 @@
         @if(file_exists($logoPath))
             <img src="{{ $logoPath }}" class="logo" alt="Logo Pembda">
         @endif
-        <div class="yayasan-name">Yayasan Perguruan Pembda Nias</div>
-        <div class="school-name">Surat Edaran</div>
-        <div class="address">Jl. Pelita No.9 Kelurahan Ilir, Kota Gunungsitoli, Sumatera Utara 22815</div>
-        <div class="website">Website: perguruanpembda.com | Email: yayasan@perguruanpembda.com</div>
+        <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah</div>
+        <div class="pembda-title">( P E M B D A )</div>
+        <div class="address">Jl. Pelita No.9 Kelurahan Ilir, Kota Gunungsitoli, Sumatera Utara (22815)</div>
+        <div class="website">Website: perguruanpembda.com | Email: perguruanpembdanias@gmail.com</div>
     </div>
 
     {{-- Info Surat --}}
@@ -240,32 +242,40 @@
     {{-- Kepada --}}
     <div class="kepada-block">
         Kepada Yth.<br>
-        <b>Kepala Sekolah & Seluruh Guru</b><br>
-        di Lingkungan Yayasan Perguruan Pembda Nias<br>
+        <b>Seluruh Kepala Sekolah beserta Guru dan Pegawai</b><br>
+        di Lingkungan Yayasan Perguruan Pembangunan Daerah (Pembda)<br>
         <div class="di-tempat">di tempat</div>
     </div>
 
     {{-- Salam --}}
-    <div class="salam-pembuka"><i>Assalamu'alaikum Wr. Wb.</i></div>
-    <div class="salam-pembuka">Salam dan Bahagia.</div>
+    <div class="salam-pembuka">Salam Sejahtera,</div>
 
     {{-- Isi Surat --}}
     <div class="isi-surat">
         <p>
             Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa atas berkat dan rahmat-Nya yang senantiasa menyertai 
-            kita semua. Semoga seluruh sivitas akademika Yayasan Perguruan Pembda Nias dalam keadaan sehat dan penuh semangat 
-            dalam menjalankan tugas pendidikan.
+            kita semua. Semoga seluruh sivitas akademika Yayasan Perguruan Pembangunan Daerah (Pembda) senantiasa diberikan 
+            kesehatan, kekuatan, dan semangat dalam menjalankan pengabdian serta tugas pendidikan.
         </p>
 
         <p>
-            Dalam rangka memperkuat pembinaan karakter, semangat belajar, dan wawasan seluruh peserta didik, 
-            Yayasan Perguruan Pembda Nias dengan ini menerbitkan program:
+            Sebagaimana kita ketahui bersama, upacara bendera hari Senin sering kali dipandang sebatas rutinitas seremonial 
+            atau formalitas mingguan belaka. Melalui program pembinaan terpadu, kita ingin bersama-sama menghidupkan kembali esensi upacara 
+            agar sungguh-sungguh memberikan muatan nilai yang berbobot, pesan moral yang kuat, serta inspirasi nyata bagi 
+            seluruh peserta didik. Kita menyadari bahwa pembinaan karakter dan perubahan pola pikir tidak akan langsung 
+            berdampak luas atau instan dalam waktu singkat, namun dengan konsistensi penyampaian pesan yang terarah setiap minggunya, 
+            kita sedang membangun fondasi karakter jangka panjang bagi generasi muda Pembda.
+        </p>
+
+        <p>
+            Atas dasar komitmen kita bersama untuk memperkuat karakter, semangat belajar, serta wawasan kebangsaan anak-anak kita, 
+            Yayasan Perguruan Pembangunan Daerah (Pembda) menghadirkan program pembinaan mingguan:
         </p>
     </div>
 
     {{-- Box Program --}}
     <div class="program-box">
-        <div class="program-label">Program Yayasan Perguruan Pembda Nias</div>
+        <div class="program-label">Program Yayasan Perguruan Pembangunan Daerah (Pembda)</div>
         <div class="program-title">MONDAY INSPIRATION</div>
         <div class="program-tagline">"KEEP MOVING FORWARD"</div>
         <div class="program-subtitle">Tema Pembinaan Upacara Bendera Hari Senin — Tahun Pelajaran 2026/2027</div>
@@ -273,50 +283,51 @@
 
     <div class="isi-surat">
         <p>
-            Program <i>Monday Inspiration</i> merupakan program pembinaan mingguan yang dilaksanakan setiap hari Senin 
-            melalui upacara bendera. Setiap minggu, seluruh unit sekolah di bawah Yayasan Perguruan Pembda Nias 
-            akan menyampaikan tema pembinaan yang telah ditetapkan oleh Yayasan sebagai bahan amanat Pembina Upacara.
+            Program <i>Monday Inspiration</i> dilaksanakan melalui <b>Upacara Bendera Bersama</b>, di mana jadwal pelaksanaan 
+            serta penugasan Pembina Upacaranya diatur berdasarkan kesepakatan bersama seluruh Unit Sekolah di lingkungan Yayasan. 
+            Setiap minggu, Pembina Upacara yang bertugas akan menyampaikan amanat berdasarkan tema pembinaan yang telah ditetapkan.
         </p>
 
         <p>
-            Program ini bertujuan untuk:
+            Perlu kita pahami bersama bahwa tema-tema mingguan ini memiliki muatan esensi yang sangat dalam dan luas, sementara 
+            alokasi waktu untuk narasi pidato pada saat upacara bendera sangatlah sempit dan terbatas. Oleh karena itu, Pembina Upacara 
+            ditiap minggunya dituntut harus <b>lihai meramu dan mengemas materi</b> ini secara singkat, padat, dan jelas, 
+            sehingga esensi pesan dapat tersampaikan dengan kuat, tepat sasaran, dan menggugah hati peserta didik tanpa harus memperpanjang durasi upacara.
         </p>
 
-        <ol class="petunjuk-list">
-            <li>Menanamkan nilai-nilai karakter, integritas, dan kepemimpinan kepada seluruh peserta didik;</li>
-            <li>Membangun semangat dan motivasi belajar yang konsisten sepanjang tahun pelajaran;</li>
-            <li>Memberikan wawasan tentang perkembangan teknologi, literasi digital, dan tantangan zaman;</li>
-            <li>Memperkuat rasa nasionalisme, toleransi, dan kepedulian sosial;</li>
-            <li>Mempersiapkan peserta didik menjadi generasi yang adaptif, kreatif, dan berkarakter.</li>
-        </ol>
+        <p>
+            Lebih daripada itu, pembinaan ini tidak boleh berhenti hanya di lapangan upacara. <b>Selanjutnya menjadi tanggung jawab 
+            setiap sekolah untuk menindaklanjuti tema mingguan tersebut</b> di dalam aktivitas keseharian unit sekolah—baik melalui 
+            sapaan pagi, refleksi wali kelas, integrasi nilai dalam pembelajaran di kelas, maupun pembiasaan budaya sekolah—agar pesan 
+            inspiratif yang disampaikan setiap hari Senin dapat benar-benar dihayati dan diwujudkan dalam perilaku nyata peserta didik sepanjang minggu.
+        </p>
     </div>
 
     <div class="isi-surat">
         <p class="no-indent"><b>Petunjuk Pelaksanaan:</b></p>
         <ol class="petunjuk-list">
-            <li>Setiap unit sekolah <b>wajib</b> melaksanakan upacara bendera setiap hari Senin sesuai jadwal tema yang terlampir;</li>
-            <li>Pembina Upacara menyampaikan amanat berdasarkan <b>tema yang telah ditetapkan</b> pada minggu tersebut;</li>
-            <li>Pembina Upacara diharapkan <b>mengembangkan dan mengontekstualisasikan</b> tema sesuai dengan kondisi dan kebutuhan peserta didik di masing-masing unit;</li>
-            <li>Jika hari Senin bertepatan dengan hari libur nasional atau libur sekolah, tema tersebut dapat disampaikan pada kesempatan terdekat berikutnya;</li>
-            <li>Dokumentasi pelaksanaan upacara (foto/video) dapat dikirimkan ke Yayasan sebagai laporan;</li>
-            <li>Daftar tema lengkap <b>51 minggu</b> terlampir pada halaman berikutnya.</li>
+            <li>Pelaksanaan upacara hari Senin diselenggarakan dalam bentuk <b>Upacara Bendera Bersama</b>, dengan jadwal dan Pembina Upacara yang diatur berdasarkan kesepakatan bersama seluruh Unit Sekolah;</li>
+            <li>Pembina Upacara yang bertugas wajib menyampaikan amanat berdasarkan <b>tema mingguan yang telah ditetapkan</b> dan harus <b>lihai meramu materi secara singkat, padat, dan jelas</b> mengingat terbatasnya waktu upacara;</li>
+            <li>Pembina Upacara diharapkan mengontekstualisasikan materi tema dengan dinamika aktual dan kebutuhan pengembangan karakter peserta didik di lingkungan sekolah;</li>
+            <li><b>Setiap unit sekolah bertanggung jawab penuh menindaklanjuti dan menguatkan tema mingguan</b> tersebut dalam kegiatan keseharian sekolah sepanjang minggu berjalan;</li>
+            <li>Apabila hari Senin bertepatan dengan hari libur nasional atau libur sekolah, maka tema pembinaan dapat disesuaikan pada kesempatan atau forum pembinaan terdekat berikutnya;</li>
+            <li>Daftar jadwal dan tema pembinaan selama <b>51 minggu</b> terlampir pada halaman lampiran surat edaran ini.</li>
         </ol>
     </div>
 
     <div class="isi-surat">
         <p>
-            Demikian surat edaran ini disampaikan. Atas perhatian dan kerja sama seluruh Kepala Sekolah dan Guru 
-            dalam menyukseskan program ini, kami mengucapkan terima kasih.
+            Demikian surat edaran ini disampaikan untuk dijadikan petunjuk serta dilaksanakan dengan penuh komitmen dan kebersamaan. 
+            Atas perhatian dan kerja sama seluruh Kepala Sekolah beserta Guru dan Pegawai dalam menyukseskan program ini, 
+            kami mengucapkan terima kasih.
         </p>
     </div>
-
-    <div class="salam-pembuka"><i>Wassalamu'alaikum Wr. Wb.</i></div>
 
     {{-- Tanda Tangan --}}
     <div class="ttd-section clearfix">
         <div class="ttd-right">
-            <div class="jabatan">Ketua Yayasan Perguruan Pembda Nias,</div>
-            <div class="nama">___________________________</div>
+            <div class="jabatan">Ketua Yayasan,</div>
+            <div class="nama">Yulianus Zega, S.Kom.,M.Pd.T</div>
             <div>Ketua Yayasan</div>
         </div>
     </div>
@@ -339,7 +350,7 @@
         @if(file_exists($logoPath))
             <img src="{{ $logoPath }}" class="logo" alt="Logo Pembda">
         @endif
-        <div class="yayasan-name">Yayasan Perguruan Pembda Nias</div>
+        <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah (Pembda)</div>
         <div class="school-name" style="font-size: 14pt;">Lampiran Surat Edaran</div>
         <div class="address">Program Monday Inspiration — "Keep Moving Forward" — TP 2026/2027</div>
     </div>

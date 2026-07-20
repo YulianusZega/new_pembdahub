@@ -941,6 +941,11 @@ Route::get('/run-migrations', function () {
         echo \Illuminate\Support\Facades\Artisan::output();
         echo "\nTefa Seeder Exit Code: " . $tefaSeederExitCode . "\n\n";
 
+        echo "<h1>=== RUNNING MONDAY INSPIRATION SEEDER ===</h1>\n";
+        $miSeederExitCode = \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'MondayInspirationSeeder', '--force' => true]);
+        echo \Illuminate\Support\Facades\Artisan::output();
+        echo "\nMonday Inspiration Seeder Exit Code: " . $miSeederExitCode . "\n\n";
+
         echo "<h1>=== SYNCING EMPLOYEE ACCOUNTS ===</h1>\n";
         $syncExitCode = \Illuminate\Support\Facades\Artisan::call('employees:sync-accounts');
         echo \Illuminate\Support\Facades\Artisan::output();

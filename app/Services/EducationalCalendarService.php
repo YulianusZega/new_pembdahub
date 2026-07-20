@@ -167,6 +167,11 @@ class EducationalCalendarService
 
     private function getEventColor(EducationalCalendar $event): string
     {
+        // Warna khusus Monday Inspiration (ungu/purple)
+        if ($event->type === 'monday_inspiration') {
+            return '#8b5cf6';
+        }
+
         if ($event->level === 'yayasan') {
             return $event->is_holiday ? '#e3342f' : '#f6993f'; // Red for yayasan holiday, Orange for yayasan event
         }

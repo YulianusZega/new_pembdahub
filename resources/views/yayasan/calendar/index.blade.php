@@ -76,6 +76,14 @@
             </div>
         </div>
 
+        <div class="mb-4 flex flex-wrap gap-4 text-sm">
+            <span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: #8b5cf6;"></span> Monday Inspiration</span>
+            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span> Libur Yayasan</span>
+            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-orange-500 mr-2"></span> Kegiatan Yayasan</span>
+            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span> Libur Sekolah</span>
+            <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-green-500 mr-2"></span> Kegiatan Sekolah</span>
+        </div>
+
         <div id="calendar"></div>
     </div>
 
@@ -134,6 +142,7 @@
                         <option value="holiday">Libur Khusus</option>
                         <option value="national_holiday">Libur Nasional</option>
                         <option value="collective_leave">Cuti Bersama</option>
+                        <option value="monday_inspiration">Monday Inspiration</option>
                     </select>
                 </div>
 

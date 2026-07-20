@@ -51,7 +51,8 @@
 
     <!-- Calendar Container -->
     <div class="bg-white p-5 shadow-sm rounded-sm border border-slate-200">
-        <div class="mb-4 flex gap-4 text-sm">
+        <div class="mb-4 flex flex-wrap gap-4 text-sm">
+            <span class="flex items-center"><span class="w-3 h-3 rounded-full mr-2" style="background-color: #8b5cf6;"></span> Monday Inspiration</span>
             <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span> Libur Yayasan</span>
             <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-orange-500 mr-2"></span> Kegiatan Yayasan</span>
             <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-blue-500 mr-2"></span> Libur Sekolah</span>

@@ -132,15 +132,20 @@
     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden print:mt-0 print:border-none print:shadow-none print:rounded-none">
         
         {{-- Print Title --}}
-        <div class="print-only text-center mb-8 pb-4 border-b-2 border-black">
-            <h1 class="text-xl font-bold uppercase" style="font-family: 'Times New Roman', Times, serif;">Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</h1>
-            <h2 class="text-lg font-bold mt-1" style="font-family: 'Times New Roman', Times, serif;">
-                Keputusan Yayasan Perguruan Pembda Nias tentang Gaji/Honor Guru/Pegawai 
-                {{ $academicYears->firstWhere('id', $yearId)->year ?? '' }}
-            </h2>
-            <h3 class="text-lg font-bold mt-1 uppercase" style="font-family: 'Times New Roman', Times, serif;">
-                {{ $schools->firstWhere('id', $schoolId)->name ?? '' }}
-            </h3>
+        <div class="print-only mb-8 pb-4 border-b-[3px] border-black flex items-center">
+            <div class="w-24 flex-shrink-0">
+                <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo Yayasan" class="w-24 h-auto" style="max-width: 90px;">
+            </div>
+            <div class="flex-grow text-center pr-24">
+                <h1 class="text-xl font-bold uppercase tracking-wide" style="font-family: 'Times New Roman', Times, serif;">Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</h1>
+                <h2 class="text-lg font-bold mt-1 tracking-wide" style="font-family: 'Times New Roman', Times, serif;">
+                    Keputusan Yayasan Perguruan Pembda Nias tentang Gaji/Honor Guru/Pegawai <br>
+                    Tahun Pelajaran {{ $academicYears->firstWhere('id', $yearId)->year ?? '' }}
+                </h2>
+                <h3 class="text-lg font-bold mt-2 uppercase tracking-widest underline" style="font-family: 'Times New Roman', Times, serif;">
+                    {{ $schools->firstWhere('id', $schoolId)->name ?? '' }}
+                </h3>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -284,9 +289,14 @@
             <div class="inline-block text-center mr-16" style="font-family: 'Times New Roman', Times, serif;">
                 <p class="text-md">Gunungsitoli, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
                 <p class="text-md font-bold mt-1">Yayasan Perguruan Pembangunan Daerah Nias</p>
-                <br><br><br><br>
-                <p class="text-md font-bold underline">_________________________</p>
-                <p class="text-md font-bold mt-1">Ketua</p>
+                <p class="text-md font-bold mt-1">Ketua,</p>
+                
+                <div class="relative h-24 mt-2 flex items-center justify-center">
+                    {{-- Ganti URL gambar di bawah dengan path gambar tanda tangan yang sudah diupload --}}
+                    <img src="{{ asset('images/ttd-ketua.png') }}" alt="Tanda Tangan" class="h-24 object-contain absolute z-10" style="mix-blend-mode: multiply;">
+                </div>
+                
+                <p class="text-md font-bold underline relative z-20 uppercase">NAMA KETUA YAYASAN</p>
             </div>
         </div>
     </div>

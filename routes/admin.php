@@ -162,8 +162,17 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
     Route::get('teachers/export-accounts', [App\Http\Controllers\Admin\TeacherController::class, 'exportAccounts'])->name('teachers.export-accounts');
     Route::post('teachers/reset-passwords', [App\Http\Controllers\Admin\TeacherController::class, 'resetPasswords'])->name('teachers.reset-passwords');
     Route::post('teachers/{teacher}/update-rfid', [App\Http\Controllers\Admin\TeacherController::class, 'updateRfid'])->name('teachers.update-rfid');
+
+    // Absensi Manual Guru (oleh Admin) - harus sebelum resource route!
+    Route::prefix('teachers/attendance')->name('teachers.attendance.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\TeacherAttendanceController::class, 'index'])->name('index');
+        Route::get('bulk', [App\Http\Controllers\Admin\TeacherAttendanceController::class, 'bulkInput'])->name('bulk');
+        Route::post('bulk', [App\Http\Controllers\Admin\TeacherAttendanceController::class, 'bulkStore'])->name('bulk.store');
+        Route::get('rekap', [App\Http\Controllers\Admin\TeacherAttendanceController::class, 'rekap'])->name('rekap');
+        Route::delete('{attendance}', [App\Http\Controllers\Admin\TeacherAttendanceController::class, 'destroy'])->name('destroy');
+    });
+
     Route::resource('teachers', App\Http\Controllers\Admin\TeacherController::class);
-    
 
     // ══════ KEPEGAWAIAN MODULE ══════
     Route::prefix('employees')->name('employees.')->group(function () {

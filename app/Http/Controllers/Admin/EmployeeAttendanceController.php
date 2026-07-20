@@ -29,11 +29,13 @@ class EmployeeAttendanceController extends Controller
             $employees = Employee::with('school')
                 ->where('is_active', true)
                 ->where('school_id', $schoolId)
+                ->where('employee_type', '!=', 'guru') // Guru punya menu absensi sendiri
                 ->orderBy('full_name')
                 ->get();
 
             $attendances = EmployeeAttendance::where('date', $date)
                 ->where('school_id', $schoolId)
+                ->whereHas('employee', fn($q) => $q->where('employee_type', '!=', 'guru'))
                 ->get()
                 ->keyBy('employee_id');
 
@@ -81,11 +83,13 @@ class EmployeeAttendanceController extends Controller
         $school = School::findOrFail($schoolId);
         $employees = Employee::where('is_active', true)
             ->where('school_id', $schoolId)
+            ->where('employee_type', '!=', 'guru') // Guru punya menu absensi sendiri
             ->orderBy('full_name')
             ->get();
 
         $existing = EmployeeAttendance::where('date', $date)
             ->where('school_id', $schoolId)
+            ->whereHas('employee', fn($q) => $q->where('employee_type', '!=', 'guru'))
             ->get()
             ->keyBy('employee_id');
 
@@ -147,6 +151,7 @@ class EmployeeAttendanceController extends Controller
         if ($schoolId) {
             $employees = Employee::where('is_active', true)
                 ->where('school_id', $schoolId)
+                ->where('employee_type', '!=', 'guru')
                 ->with(['teacher.schedules'])
                 ->orderBy('full_name')
                 ->get();
@@ -154,6 +159,7 @@ class EmployeeAttendanceController extends Controller
             $attendances = EmployeeAttendance::where('school_id', $schoolId)
                 ->whereYear('date', $year)
                 ->whereMonth('date', $month)
+                ->whereHas('employee', fn($q) => $q->where('employee_type', '!=', 'guru'))
                 ->get();
 
             // Build matrix: employee_id => [day => EmployeeAttendance model]
@@ -185,7 +191,7 @@ class EmployeeAttendanceController extends Controller
         // Daily Stats
         $dailyStatsQuery = EmployeeAttendance::where('date', $date)
             ->whereHas('employee', function ($q) use ($schoolId) {
-                $q->where('is_active', true);
+                $q->where('is_active', true)->where('employee_type', '!=', 'guru');
                 if ($schoolId) {
                     $q->where('school_id', $schoolId);
                 }
@@ -202,7 +208,7 @@ class EmployeeAttendanceController extends Controller
         $dailyStats['total_daily'] = array_sum($dailyStats);
 
         // Active Employee Count
-        $activeEmployeesQuery = Employee::where('is_active', true);
+        $activeEmployeesQuery = Employee::where('is_active', true)->where('employee_type', '!=', 'guru');
         if ($schoolId) {
             $activeEmployeesQuery->where('school_id', $schoolId);
         }
@@ -211,7 +217,7 @@ class EmployeeAttendanceController extends Controller
         // Cumulative Stats (Start of Month)
         $cumulativeStatsQuery = EmployeeAttendance::whereBetween('date', [$startDateOfMonth->format('Y-m-d'), $endDate->format('Y-m-d')])
             ->whereHas('employee', function ($q) use ($schoolId) {
-                $q->where('is_active', true);
+                $q->where('is_active', true)->where('employee_type', '!=', 'guru');
                 if ($schoolId) {
                     $q->where('school_id', $schoolId);
                 }
@@ -228,6 +234,7 @@ class EmployeeAttendanceController extends Controller
         // Calculate dynamic expected Z (total expected attendances) for all active employees
         $totalExpectedAttendances = 0;
         $allActiveEmployees = \App\Models\Employee::where('is_active', true)
+            ->where('employee_type', '!=', 'guru')
             ->when($schoolId, function($q) use ($schoolId) {
                 return $q->where('school_id', $schoolId);
             })
@@ -274,7 +281,7 @@ class EmployeeAttendanceController extends Controller
         $startChart = $endDate->copy()->subDays(13);
         $chartQuery = EmployeeAttendance::whereBetween('date', [$startChart->format('Y-m-d'), $endDate->format('Y-m-d')])
             ->whereHas('employee', function ($q) use ($schoolId) {
-                $q->where('is_active', true);
+                $q->where('is_active', true)->where('employee_type', '!=', 'guru');
                 if ($schoolId) {
                     $q->where('school_id', $schoolId);
                 }
@@ -303,7 +310,7 @@ class EmployeeAttendanceController extends Controller
         $unitStats = [];
         $schools = $isSuperAdmin ? School::where('is_active', true)->orderBy('name')->get() : School::where('id', $user->school_id)->get();
         foreach ($schools as $sch) {
-            $empCount = Employee::where('school_id', $sch->id)->where('is_active', true)->count();
+            $empCount = Employee::where('school_id', $sch->id)->where('is_active', true)->where('employee_type', '!=', 'guru')->count();
             
             // Calculate expected attendances specifically for this school
             $schExpectedAttendances = 0;

@@ -223,9 +223,13 @@
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-400 to-blue-600 flex items-center justify-center text-white"><i class="fas fa-star-half-alt text-[10px]"></i></div>
                 <span>Evaluasi Kinerja</span>
             </a>
+            <a href="{{ route('admin.teachers.attendance.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.teachers.attendance.*') ? $ac : $nc }}">
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white"><i class="fas fa-chalkboard-teacher text-[10px]"></i></div>
+                <span>Absensi Guru</span>
+            </a>
             <a href="{{ route('admin.employees.attendance.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.employees.attendance.*') ? $ac : $nc }}">
-                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-white"><i class="fas fa-fingerprint text-[10px]"></i></div>
-                <span>Absensi Pegawai</span>
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white"><i class="fas fa-fingerprint text-[10px]"></i></div>
+                <span>Absensi Staf</span>
             </a>
             <a href="{{ route('admin.tefa.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.tefa.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center text-white"><i class="fas fa-tools text-[10px]"></i></div>

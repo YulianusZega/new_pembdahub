@@ -219,7 +219,7 @@
         @if(file_exists($logoPath))
             <img src="{{ $logoPath }}" class="logo" alt="Logo Pembda">
         @endif
-        <div style="margin: 0 80px;">
+        <div style="margin-left: 105px; margin-right: 25px;">
             <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias</div>
             <div class="pembda-title">( P E M B D A )</div>
             <div class="address">Jl. Pelita No.9 Kelurahan Ilir, Kota Gunungsitoli, Sumatera Utara (22815)</div>
@@ -352,7 +352,7 @@
         @if(file_exists($logoPath))
             <img src="{{ $logoPath }}" class="logo" alt="Logo Pembda">
         @endif
-        <div style="margin: 0 80px;">
+        <div style="margin-left: 105px; margin-right: 25px;">
             <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias (Pembda)</div>
             <div class="school-name" style="font-size: 14pt;">Lampiran Surat Edaran</div>
             <div class="address">Program Monday Inspiration — "Keep Moving Forward" — TP 2026/2027</div>

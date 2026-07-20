@@ -208,7 +208,7 @@
         @if(file_exists($logoPath))
             <img src="{{ $logoPath }}" class="logo" alt="Logo Pembda">
         @endif
-        <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah</div>
+        <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias</div>
         <div class="pembda-title">( P E M B D A )</div>
         <div class="address">Jl. Pelita No.9 Kelurahan Ilir, Kota Gunungsitoli, Sumatera Utara (22815)</div>
         <div class="website">Website: perguruanpembda.com | Email: perguruanpembdanias@gmail.com</div>
@@ -243,7 +243,7 @@
     <div class="kepada-block">
         Kepada Yth.<br>
         <b>Seluruh Kepala Sekolah beserta Guru dan Pegawai</b><br>
-        di Lingkungan Yayasan Perguruan Pembangunan Daerah (Pembda)<br>
+        di Lingkungan Yayasan Perguruan Pembangunan Daerah Nias (Pembda)<br>
         <div class="di-tempat">di tempat</div>
     </div>
 
@@ -254,7 +254,7 @@
     <div class="isi-surat">
         <p>
             Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa atas berkat dan rahmat-Nya yang senantiasa menyertai 
-            kita semua. Semoga seluruh sivitas akademika Yayasan Perguruan Pembangunan Daerah (Pembda) senantiasa diberikan 
+            kita semua. Semoga seluruh sivitas akademika Yayasan Perguruan Pembangunan Daerah Nias (Pembda) senantiasa diberikan 
             kesehatan, kekuatan, dan semangat dalam menjalankan pengabdian serta tugas pendidikan.
         </p>
 
@@ -269,13 +269,13 @@
 
         <p>
             Atas dasar komitmen kita bersama untuk memperkuat karakter, semangat belajar, serta wawasan kebangsaan anak-anak kita, 
-            Yayasan Perguruan Pembangunan Daerah (Pembda) menghadirkan program pembinaan mingguan:
+            Yayasan Perguruan Pembangunan Daerah Nias (Pembda) menghadirkan program pembinaan mingguan:
         </p>
     </div>
 
     {{-- Box Program --}}
     <div class="program-box">
-        <div class="program-label">Program Yayasan Perguruan Pembangunan Daerah (Pembda)</div>
+        <div class="program-label">Program Yayasan Perguruan Pembangunan Daerah Nias (Pembda)</div>
         <div class="program-title">MONDAY INSPIRATION</div>
         <div class="program-tagline">"KEEP MOVING FORWARD"</div>
         <div class="program-subtitle">Tema Pembinaan Upacara Bendera Hari Senin — Tahun Pelajaran 2026/2027</div>
@@ -350,7 +350,7 @@
         @if(file_exists($logoPath))
             <img src="{{ $logoPath }}" class="logo" alt="Logo Pembda">
         @endif
-        <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah (Pembda)</div>
+        <div class="yayasan-name">Yayasan Perguruan Pembangunan Daerah Nias (Pembda)</div>
         <div class="school-name" style="font-size: 14pt;">Lampiran Surat Edaran</div>
         <div class="address">Program Monday Inspiration — "Keep Moving Forward" — TP 2026/2027</div>
     </div>

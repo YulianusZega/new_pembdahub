@@ -6,16 +6,7 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\Subject;
+use App\Models\TeachingAssignment;
 
-echo "<pre>";
-echo "\nSubjects matching 'AGM':\n";
-$subjects = Subject::where('name', 'like', '%AGM%')
-    ->orWhere('code', 'like', '%AGM%')
-    ->orWhere('subject_name', 'like', '%AGM%')
-    ->get();
-
-foreach ($subjects as $s) {
-    echo "- ID: {$s->id}, Code: " . ($s->code ?? $s->subject_code ?? 'N/A') . ", Name: " . ($s->name ?? $s->subject_name ?? 'N/A') . "\n";
-}
-echo "</pre>";
+$ta = TeachingAssignment::find(6177);
+echo "<pre>TA ID 6177 is_active: " . ($ta->is_active ?? 'NULL') . "</pre>";

@@ -37,7 +37,7 @@ $teacherMapping = [
     'Yelfi'       => 'Yelfi Deliani, S.Sos', 'Elven Nehe'  => 'Elven Hardyus S. Nehe, S.Pd',
     'Oti Laoli'   => 'Otiani Laoli, S.Pd', 'Solid Mend'  => 'Solidarman J. Mendrofa, S.Pd',
     'Resman Har'  => 'Resman H.N. Harefa, S.Pd', 'Hilda Hulu'  => 'Hilda Natalia Hulu, S.Pd',
-    'Okta Zai'    => 'Okta Lena Zai', 'Erwin Mend'  => 'Erwin Setiawan Mendrofa',
+    'Okta Zai'    => 'Oktalena', 'Erwin Mend'  => 'Erwin Setiawan Mendrofa',
     'Firwanus Zg' => 'Firwanus Zega, S.Pd', 'Jul Taf'     => 'Julianus Tafonao, S.PdK',
     'Putra Zeb'   => 'Martperan Putra Zebua, ST', 'Darius Mend' => 'Darius Mendrofa, S.Pd',
     'Herman Tel'  => 'Herman Putra Tel., S.Pd', 'Fil. Hulu'   => 'Filiaro Hulu, ST',
@@ -60,12 +60,27 @@ foreach (Subject::where('school_id', $schoolId)->get() as $s) {
     $subjectCache[$s->code] = $s->id;
 }
 
-function resolveSubject($code, $subjectCache) {
+function resolveSubject($code, &$subjectCache, $schoolId) {
     $code = trim($code);
     if (isset($subjectCache[$code])) return $subjectCache[$code];
+    
     $aliases = ['B.IN D'=>'B.IND', 'B.IN G'=>'B.ING', 'INFO R'=>'INFOR', 'MUL OK'=>'MUL OK', 'PIPA S'=>'PIPAS', 'S EJ'=>'SEJ', 'PAN'=>'PAN C', 'DDPK TKR'=>'DDPK-TKR', 'DDPK TSM'=>'DDPK-TSM', 'DDPK TKJ'=>'DDPK-TKJ', 'KK TKJ'=>'KK-TKJ', 'KK TKR'=>'KK-TKR', 'KK TE'=>'KK-TE', 'KK DPIB'=>'KK-DPIB', 'Digital Marketing'=>'INFOR'];
-    if (isset($aliases[$code]) && isset($subjectCache[$aliases[$code]])) return $subjectCache[$aliases[$code]];
-    return null;
+    $lookupCode = $aliases[$code] ?? $code;
+    
+    if (isset($subjectCache[$lookupCode])) return $subjectCache[$lookupCode];
+    
+    // Auto-create missing subject
+    $newSubject = Subject::create([
+        'school_id' => $schoolId,
+        'code' => $lookupCode,
+        'name' => $lookupCode,
+        'subject_code' => $lookupCode,
+        'subject_name' => $lookupCode,
+        'is_active' => true
+    ]);
+    
+    $subjectCache[$lookupCode] = $newSubject->id;
+    return $newSubject->id;
 }
 
 $timeSlotsDB = TimeSlot::where('school_id', $schoolId)->where('is_teaching_slot', true)->get();
@@ -255,7 +270,7 @@ foreach ($masterData as $className => $slots) {
 
     $assignmentCalculations = [];
     foreach ($slots as $slot) {
-        $subjectId = resolveSubject($slot['mapel'], $subjectCache);
+        $subjectId = resolveSubject($slot['mapel'], $subjectCache, $schoolId);
         $teacherId = $teacherCache[$slot['guru']] ?? null;
         if (!$subjectId || !$teacherId) continue;
         
@@ -278,7 +293,7 @@ foreach ($masterData as $className => $slots) {
     }
 
     foreach ($slots as $slot) {
-        $subjectId = resolveSubject($slot['mapel'], $subjectCache);
+        $subjectId = resolveSubject($slot['mapel'], $subjectCache, $schoolId);
         $teacherId = $teacherCache[$slot['guru']] ?? null;
         if (!$subjectId || !$teacherId) continue;
         

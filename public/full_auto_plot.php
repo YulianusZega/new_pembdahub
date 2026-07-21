@@ -40,7 +40,7 @@ $teacherMapping = [
     'Okta Zai'    => 'Oktalena', 'Erwin Mend'  => 'Erwin Setiawan Mendrofa',
     'Firwanus Zg' => 'Firwanus Zega, S.Pd', 'Jul Taf'     => 'Julianus Tafonao, S.PdK',
     'Putra Zeb'   => 'Martperan Putra Zebua, ST', 'Darius Mend' => 'Darius Mendrofa, S.Pd',
-    'Herman Tel'  => 'Herman Putra Tel., S.Pd', 'Fil. Hulu'   => 'Filiaro Hulu, ST',
+    'Herman Tel'  => 'Herman Putra Tel., S.Pd', 'Fil. Hulu'   => 'Filiaro Hulu, ST', 'Fil Hulu' => 'Filiaro Hulu, ST',
     'Agus Tel'    => 'Agusman J. Telaumb, S.Pd', 'Peniel Zeb'  => 'Peniel Zebua, S.Pd',
     'Desman Tel'  => 'Desman Telaumbanua, S.Pd', 'Nover Tel'   => 'Noverius Telaumbanua, S.Pd',
     'Rian Har'    => 'Rian Perwira Harefa, S.Kom', 'Yamo Tel'    => 'Yamonaha Tel, S.Kom',

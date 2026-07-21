@@ -7,7 +7,6 @@ header('Content-Type: text/plain');
 
 if (($_GET['secret'] ?? '') !== 'pembda99') die('Unauthorized');
 
-// Cek dulu apakah XII TSM 1 sudah ada di TP 5
 $existing = App\Models\Classroom::where('school_id', 3)
     ->where('academic_year_id', 5)
     ->where('class_name', 'XII TSM 1')
@@ -16,29 +15,20 @@ $existing = App\Models\Classroom::where('school_id', 3)
 if ($existing) {
     echo "XII TSM 1 sudah ada! ID: {$existing->id}\n";
 } else {
-    // Ambil contoh dari XII TSM 2 untuk referensi field lain
     $ref = App\Models\Classroom::where('school_id', 3)
         ->where('academic_year_id', 5)
         ->where('class_name', 'XII TSM 2')
         ->first();
     
     if (!$ref) {
-        echo "ERROR: XII TSM 2 juga tidak ditemukan sebagai referensi!\n";
-        exit;
+        die("ERROR: XII TSM 2 tidak ditemukan sebagai referensi!\n");
     }
     
-    echo "Referensi dari XII TSM 2 (ID: {$ref->id}):\n";
-    echo json_encode($ref->toArray(), JSON_PRETTY_PRINT) . "\n\n";
-    
-    $new = App\Models\Classroom::create([
-        'school_id' => 3,
-        'academic_year_id' => 5,
-        'class_name' => 'XII TSM 1',
-        'grade_level' => $ref->grade_level,
-        'major' => $ref->major,
-        'capacity' => $ref->capacity ?? 36,
-        'is_active' => true,
-    ]);
+    $new = $ref->replicate();
+    $new->class_name = 'XII TSM 1';
+    $new->class_code = 'XII-TSM-1';
+    $new->save();
     
     echo "BERHASIL! XII TSM 1 dibuat dengan ID: {$new->id}\n";
+    echo "Referensi dari XII TSM 2 (ID: {$ref->id})\n";
 }

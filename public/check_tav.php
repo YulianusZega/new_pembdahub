@@ -4,17 +4,41 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 header('Content-Type: text/plain');
-use Illuminate\Support\Facades\DB;
 
-$sched = DB::table('schedules')
-    ->join('time_slots', 'schedules.time_slot_id', '=', 'time_slots.id')
-    ->join('classrooms', 'schedules.classroom_id', '=', 'classrooms.id')
-    ->where('classrooms.class_name', 'XII TAV')
-    ->where('schedules.academic_year_id', 5)
-    ->where('schedules.semester_id', 7)
-    ->select('time_slots.day_of_week', 'time_slots.slot_name')
-    ->orderBy('time_slots.day_of_week')
-    ->orderBy('time_slots.start_time')
-    ->get();
-echo "XII TAV schedule (" . $sched->count() . " slots):\n";
-foreach ($sched as $s) echo "  {$s->day_of_week}: {$s->slot_name}\n";
+if (request('secret') !== 'pembda99') die('Unauthorized');
+
+// Cek dulu apakah XII TSM 1 sudah ada di TP 5
+$existing = App\Models\Classroom::where('school_id', 3)
+    ->where('academic_year_id', 5)
+    ->where('class_name', 'XII TSM 1')
+    ->first();
+
+if ($existing) {
+    echo "XII TSM 1 sudah ada! ID: {$existing->id}\n";
+} else {
+    // Ambil contoh dari XII TSM 2 untuk referensi field lain
+    $ref = App\Models\Classroom::where('school_id', 3)
+        ->where('academic_year_id', 5)
+        ->where('class_name', 'XII TSM 2')
+        ->first();
+    
+    if (!$ref) {
+        echo "ERROR: XII TSM 2 juga tidak ditemukan sebagai referensi!\n";
+        exit;
+    }
+    
+    echo "Referensi dari XII TSM 2 (ID: {$ref->id}):\n";
+    echo json_encode($ref->toArray(), JSON_PRETTY_PRINT) . "\n\n";
+    
+    $new = App\Models\Classroom::create([
+        'school_id' => 3,
+        'academic_year_id' => 5,
+        'class_name' => 'XII TSM 1',
+        'grade_level' => $ref->grade_level,
+        'major' => $ref->major,
+        'capacity' => $ref->capacity ?? 36,
+        'is_active' => true,
+    ]);
+    
+    echo "BERHASIL! XII TSM 1 dibuat dengan ID: {$new->id}\n";
+}

@@ -164,7 +164,7 @@
     /* Info side */
     .scard-info { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; padding: 3px 4px; min-width:0; }
     .scard-code { font-size:26px; font-weight:900; line-height:1; letter-spacing:-1.5px; truncate:ellipsis; max-width:100%; overflow:hidden; white-space:nowrap; color: #111827 !important; text-shadow: 0 1px 2px rgba(255,255,255,0.8); }
-    .scard-jam  { font-size:10px; font-weight:700; color: #374151; background: rgba(255,255,255,0.75); border:1px solid rgba(0,0,0,0.12); border-radius:4px; padding:1px 6px; margin-top:3px; display:inline-block; }
+    .scard-jam  { font-size:10px; font-weight:700; color: #374151; margin-top:3px; display:inline-block; }
 
     /* Compact Mode */
     .compact-mode .scard-photo { width: 24px; }
@@ -428,7 +428,17 @@
                                                 </div>
                                                 <div class="scard-info">
                                                     <div class="scard-code text-{{ $scol['text'] }}">{{ $bc->subject->code ?? '-' }}</div>
-                                                    <div class="scard-jam">Jam-{{ $seqHour }}@if($bc->group_code) <span style="color:#7c3aed"> GAB</span>@endif @if($bc->teachingAssignment && $bc->teachingAssignment->block_type == 'all')<span style="color:#2563eb"> KEL. A</span>@elseif($bc->teachingAssignment && $bc->teachingAssignment->block_type == 'split')<span style="color:#ea580c"> KEL. B</span>@endif</div>
+                                                    <div class="scard-jam flex items-center flex-wrap gap-1 mt-1">
+                                                        <span class="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-gray-700">Jam-{{ $seqHour }}</span>
+                                                        @if($bc->group_code) 
+                                                            <span class="px-1 py-0.5 bg-purple-100 border border-purple-300 text-purple-700 rounded font-bold" title="Kelas Gabungan">GAB</span>
+                                                        @endif 
+                                                        @if($bc->teachingAssignment && $bc->teachingAssignment->block_type == 'all')
+                                                            <span class="px-1 py-0.5 bg-blue-100 border border-blue-300 text-blue-700 rounded font-bold shadow-sm" title="Kelompok A (Blok Penuh)">KEL. A</span>
+                                                        @elseif($bc->teachingAssignment && $bc->teachingAssignment->block_type == 'split')
+                                                            <span class="px-1 py-0.5 bg-orange-100 border border-orange-300 text-orange-700 rounded font-bold shadow-sm" title="Kelompok B (Blok Pecah)">KEL. B</span>
+                                                        @endif
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
@@ -454,7 +464,17 @@
                                                     </div>
                                                     <div class="scard-info">
                                                         <div class="scard-code text-{{ $scol['text'] }}">{{ $schedule->subject->code ?? '-' }}</div>
-                                                        <div class="scard-jam">Jam-{{ $seqHour }}@if($schedule->group_code) <span style="color:#7c3aed"> GAB</span>@endif @if($schedule->teachingAssignment && $schedule->teachingAssignment->block_type == 'all')<span style="color:#2563eb"> KEL. A</span>@elseif($schedule->teachingAssignment && $schedule->teachingAssignment->block_type == 'split')<span style="color:#ea580c"> KEL. B</span>@endif</div>
+                                                        <div class="scard-jam flex items-center flex-wrap gap-1 mt-1">
+                                                            <span class="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-gray-700">Jam-{{ $seqHour }}</span>
+                                                            @if($schedule->group_code) 
+                                                                <span class="px-1 py-0.5 bg-purple-100 border border-purple-300 text-purple-700 rounded font-bold" title="Kelas Gabungan">GAB</span>
+                                                            @endif 
+                                                            @if($schedule->teachingAssignment && $schedule->teachingAssignment->block_type == 'all')
+                                                                <span class="px-1 py-0.5 bg-blue-100 border border-blue-300 text-blue-700 rounded font-bold shadow-sm" title="Kelompok A (Blok Penuh)">KEL. A</span>
+                                                            @elseif($schedule->teachingAssignment && $schedule->teachingAssignment->block_type == 'split')
+                                                                <span class="px-1 py-0.5 bg-orange-100 border border-orange-300 text-orange-700 rounded font-bold shadow-sm" title="Kelompok B (Blok Pecah)">KEL. B</span>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
                                             @elseif($timeSlot->is_teaching_slot)

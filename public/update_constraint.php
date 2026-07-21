@@ -8,12 +8,22 @@ if (php_sapi_name() !== 'cli' && request('secret') !== 'pembda99') die('Unauthor
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
-Schema::table('teaching_assignments', function (Blueprint $table) {
-    // Drop the old unique constraint
-    $table->dropUnique('unique_teaching_assignment_semester');
-    
-    // Add the new unique constraint including block_type
-    $table->unique(['academic_year_id', 'semester_id', 'classroom_id', 'subject_id', 'teacher_id', 'block_type'], 'unique_teaching_assignment_block');
-});
+try {
+    Schema::table('teaching_assignments', function (Blueprint $table) {
+        $table->dropUnique('unique_teaching_assignment_semester');
+    });
+    echo "Dropped old constraint.<br>";
+} catch (\Exception $e) {
+    echo "Error dropping old constraint: " . $e->getMessage() . "<br>";
+}
 
-echo "Unique constraint updated successfully!";
+try {
+    Schema::table('teaching_assignments', function (Blueprint $table) {
+        $table->unique(['academic_year_id', 'semester_id', 'classroom_id', 'subject_id', 'teacher_id', 'block_type'], 'unique_teaching_assignment_block');
+    });
+    echo "Added new constraint.<br>";
+} catch (\Exception $e) {
+    echo "Error adding new constraint: " . $e->getMessage() . "<br>";
+}
+
+echo "Done!";

@@ -3,10 +3,10 @@ require __DIR__.'/../vendor/autoload.php';
 $app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
+header('Content-Type: text/plain');
 
 $classes = App\Models\Classroom::where('school_id', 3)->where('class_name', 'XII TAV')->get();
 
-echo "<pre>";
 foreach ($classes as $c) {
     echo "Class ID: {$c->id}, Name: {$c->class_name}, TP: {$c->academic_year_id}\n";
     
@@ -28,4 +28,3 @@ foreach ($classes as $c) {
         }
     }
 }
-echo "</pre>";

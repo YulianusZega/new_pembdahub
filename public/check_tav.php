@@ -9,16 +9,22 @@ $classes = App\Models\Classroom::where('school_id', 3)->where('class_name', 'XII
 echo "<pre>";
 foreach ($classes as $c) {
     echo "Class ID: {$c->id}, Name: {$c->class_name}, TP: {$c->academic_year_id}\n";
-    $ta = App\Models\TeachingAssignment::where('classroom_id', $c->id)
-        ->where('academic_year_id', 5)
-        ->where('semester_id', 7)
-        ->with('subject', 'teacher')->get();
-    echo "  Assignments (TP5 Sem7): " . $ta->count() . "\n";
-    $blocks = App\Models\BlockSchedule::whereIn('teaching_assignment_id', $ta->pluck('id'))->with('timeSlot')->get();
-    echo "  Blocks (Senin): \n";
-    foreach ($blocks as $b) {
-        if (strtolower($b->timeSlot->day_of_week) == 'senin') {
-            echo "    " . $b->timeSlot->slot_name . " -> " . $b->teachingAssignment->subject->name . "\n";
+    
+    $schedules = DB::table('schedules')
+        ->join('time_slots', 'schedules.time_slot_id', '=', 'time_slots.id')
+        ->join('subjects', 'schedules.subject_id', '=', 'subjects.id')
+        ->where('schedules.classroom_id', $c->id)
+        ->where('schedules.academic_year_id', 5)
+        ->where('schedules.semester_id', 7)
+        ->select('time_slots.day_of_week', 'time_slots.slot_name', 'subjects.name as subject_name')
+        ->orderBy('time_slots.day_of_week')
+        ->orderBy('time_slots.start_time')
+        ->get();
+        
+    echo "  Schedules (TP5 Sem7): " . $schedules->count() . "\n";
+    foreach ($schedules as $s) {
+        if (strtolower($s->day_of_week) == 'senin') {
+            echo "    Senin: {$s->slot_name} -> {$s->subject_name}\n";
         }
     }
 }

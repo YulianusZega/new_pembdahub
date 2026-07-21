@@ -5,21 +5,12 @@ $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 header('Content-Type: text/plain');
 
-// List all classrooms for school 3, TP 5
-$classes = App\Models\Classroom::where('school_id', 3)->where('academic_year_id', 5)->get();
-echo "Total classrooms (school=3, TP=5): " . $classes->count() . "\n\n";
-foreach ($classes as $c) {
-    echo "ID: {$c->id}, Name: {$c->class_name}\n";
-}
+$classes = App\Models\Classroom::where('school_id', 3)->where('academic_year_id', 5)
+    ->orderBy('class_name')
+    ->pluck('class_name', 'id');
+echo "TP5 (" . $classes->count() . "): " . json_encode($classes, JSON_PRETTY_PRINT) . "\n";
 
-echo "\n--- XII TAV search ---\n";
-$tav = App\Models\Classroom::where('school_id', 3)->where('class_name', 'like', '%TAV%')->get();
-foreach ($tav as $c) {
-    echo "ID: {$c->id}, Name: {$c->class_name}, TP: {$c->academic_year_id}\n";
-}
-
-echo "\n--- XII TE search ---\n";
-$te = App\Models\Classroom::where('school_id', 3)->where('class_name', 'like', '%TE%')->get();
-foreach ($te as $c) {
-    echo "ID: {$c->id}, Name: {$c->class_name}, TP: {$c->academic_year_id}\n";
-}
+$classesAll = App\Models\Classroom::where('school_id', 3)
+    ->where('class_name', 'like', 'X %')
+    ->pluck('class_name', 'id');
+echo "\nAll X classes: " . json_encode($classesAll, JSON_PRETTY_PRINT);

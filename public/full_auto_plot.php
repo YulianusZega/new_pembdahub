@@ -355,7 +355,7 @@ foreach ($schedulePlacements as $day => $startSlots) {
                         Schedule::create([
                             'school_id' => $schoolId, 'academic_year_id' => $academicYearId, 'semester' => 'ganjil', 'semester_id' => 7,
                             'classroom_id' => $c['classroom_id'], 'subject_id' => $c['subject_id'], 'teacher_id' => $teacherId,
-                            'time_slot_id' => $timeSlotId, 'day_of_week' => $day, 'duration_slots' => $c['duration'],
+                            'time_slot_id' => $timeSlotId, 'day_of_week' => $day, 'duration_slots' => 1,
                             'teaching_assignment_id' => $c['ta_id'], 'group_code' => $groupCode,
                             'block_type' => $c['tipe'] ?? 'all'
                         ]);

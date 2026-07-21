@@ -11,14 +11,11 @@ $schedules = DB::table('schedules')
     ->where('schedules.classroom_id', 281)
     ->where('schedules.academic_year_id', 5)
     ->where('schedules.semester_id', 7)
-    ->select('time_slots.day_of_week', 'time_slots.slot_name', 'subjects.name as subject_name')
-    ->orderBy('time_slots.day_of_week')
-    ->orderBy('time_slots.start_time')
+    ->select('time_slots.day_of_week')
     ->get();
     
-echo "Monday Schedules for 281:\n";
-foreach ($schedules as $s) {
-    if (strtolower($s->day_of_week) == 'monday') {
-        echo "{$s->slot_name} -> {$s->subject_name}\n";
-    }
+$counts = $schedules->groupBy('day_of_week')->map(function($g) { return $g->count(); });
+echo "Schedule counts per day for 281:\n";
+foreach ($counts as $day => $count) {
+    echo "{$day}: {$count}\n";
 }

@@ -293,12 +293,32 @@ foreach ($masterData as $pdfClassName => $slots) {
     }
 
     $taIds = [];
+    $classroomId = $classroom->id;
     foreach ($assignmentCalculations as $key => $data) {
-        $ta = TeachingAssignment::firstOrCreate([
-            'academic_year_id' => $academicYearId, 'semester_id' => 7,
-            'classroom_id' => $classroom->id, 'subject_id' => $data['subject_id'],
-            'teacher_id' => $data['teacher_id'], 'block_type' => $data['tipe']
-        ], ['hours_per_week' => $data['jp']]);
+        $subjectId = $data['subject_id'];
+        $teacherId = $data['teacher_id'];
+        $ta = null;
+        try {
+            $ta = TeachingAssignment::firstOrCreate([
+                'academic_year_id' => $academicYearId,
+                'semester_id' => 7,
+                'classroom_id' => $classroomId,
+                'subject_id' => $subjectId,
+                'teacher_id' => $teacherId,
+                'block_type' => $data['tipe'],
+            ], [
+                'hours_per_week' => $data['jp']
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            $ta = TeachingAssignment::where([
+                'academic_year_id' => $academicYearId,
+                'semester_id' => 7,
+                'classroom_id' => $classroomId,
+                'subject_id' => $subjectId,
+                'teacher_id' => $teacherId,
+            ])->first();
+            if (!$ta) throw $e;
+        }
         $taIds[$key] = $ta->id;
     }
 

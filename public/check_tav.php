@@ -6,13 +6,14 @@ $kernel->bootstrap();
 header('Content-Type: text/plain');
 
 $schedules = DB::table('schedules')
-    ->where('academic_year_id', 5)
-    ->where('semester_id', 7)
-    ->select('classroom_id')
-    ->distinct()
+    ->join('time_slots', 'schedules.time_slot_id', '=', 'time_slots.id')
+    ->join('classrooms', 'schedules.classroom_id', '=', 'classrooms.id')
+    ->where('classrooms.class_name', 'XII TKJ')
+    ->where('schedules.academic_year_id', 5)
+    ->where('schedules.semester_id', 7)
+    ->where('time_slots.day_of_week', 'monday')
+    ->select('time_slots.slot_name')
     ->get();
     
-echo "Classroom IDs in schedules:\n";
-foreach ($schedules as $s) {
-    echo "{$s->classroom_id}\n";
-}
+echo "XII TKJ Senin:\n";
+foreach ($schedules as $s) echo "{$s->slot_name}\n";

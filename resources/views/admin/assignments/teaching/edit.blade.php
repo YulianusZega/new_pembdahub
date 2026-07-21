@@ -220,7 +220,7 @@
                         <span class="text-sm font-bold text-amber-800">Mode Edit</span>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                        <div class="md:col-span-3">
+                        <div class="md:col-span-2">
                             <label class="block text-sm font-bold text-gray-700 mb-1">Mata Pelajaran</label>
                             <select name="subject_id" class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all text-sm">
                                 @foreach($subjects as $subject)
@@ -228,7 +228,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="md:col-span-3">
+                        <div class="md:col-span-2">
                             <label class="block text-sm font-bold text-gray-700 mb-1">Kelas</label>
                             <select name="classroom_id" class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all text-sm">
                                 @foreach($classrooms as $classroom)
@@ -262,7 +262,15 @@
                             <input type="text" name="group_code" value="{{ $assignment->group_code }}" 
                                    class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm" placeholder="GRP-001">
                         </div>
-                        <div class="md:col-span-1 flex items-end gap-2 text-right">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-bold text-gray-700 mb-1">Tipe Blok</label>
+                            <select name="block_type" class="w-full px-3 py-2.5 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all text-sm">
+                                <option value="none" {{ $assignment->block_type == 'none' ? 'selected' : '' }}>Tidak Ada</option>
+                                <option value="all" {{ $assignment->block_type == 'all' ? 'selected' : '' }}>Kel. A (Semua)</option>
+                                <option value="split" {{ $assignment->block_type == 'split' ? 'selected' : '' }}>Kel. B (Split)</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 flex items-end gap-2 text-right">
                             <button type="submit" class="flex-1 inline-flex items-center justify-center px-3 py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl font-medium hover:from-emerald-600 hover:to-emerald-700 transition-all shadow-md text-sm">
                                 <i class="fas fa-save mr-1"></i> Simpan
                             </button>

@@ -86,12 +86,13 @@ class ScheduleGridController extends Controller
         $schedules = Schedule::where('school_id', $selectedSchoolId)
             ->where('academic_year_id', $selectedYearId)
             ->where('semester', $semester)
-            ->select('id', 'teacher_id', 'subject_id', 'classroom_id', 'time_slot_id', 'day_of_week', 'duration_slots', 'school_id', 'academic_year_id', 'semester', 'group_code')
+            ->select('id', 'teacher_id', 'subject_id', 'classroom_id', 'time_slot_id', 'day_of_week', 'duration_slots', 'school_id', 'academic_year_id', 'semester', 'group_code', 'teaching_assignment_id')
             ->with([
                 'teacher:id,full_name,photo,school_id',
                 'subject:id,name,subject_name,code,school_id',
                 'classroom:id,class_name,school_id',
-                'timeSlot:id,slot_name,start_time,end_time,slot_order,day_of_week,is_teaching_slot,school_id'
+                'timeSlot:id,slot_name,start_time,end_time,slot_order,day_of_week,is_teaching_slot,school_id',
+                'teachingAssignment:id,block_type'
             ])
             ->get();
         
@@ -247,23 +248,7 @@ class ScheduleGridController extends Controller
             abort(403, 'Unauthorized');
         }
         
-        // Check conflicts and multi-duration slot availability
-        $conflictError = $this->checkConflicts(
-            $validated['academic_year_id'],
-            $validated['semester'],
-            $validated['day_of_week'],
-            $validated['time_slot_id'],
-            $validated['classroom_id'],
-            $validated['teacher_id'],
-            $validated['duration_slots'],
-            $groupCode
-        );
-        
-        if ($conflictError) {
-            return back()->with('error', "Jadwal bentrok atau bermasalah: {$conflictError}")->withInput();
-        }
-        
-        // STRICT LIMITATION VALIDATION
+        // STRICT LIMITATION VALIDATION & GET ASSIGNMENT (Moved up before checkConflicts)
         $assignmentId = $validated['teaching_assignment_id'] ?? null;
         $assignment = null;
 
@@ -290,6 +275,26 @@ class ScheduleGridController extends Controller
         } else {
             // Tolak jika belum ada Penugasan Mengajar
             return back()->with('error', "Validasi Ketat: Guru {$teacher->full_name} belum ditugaskan mengajar {$subject->subject_name} di kelas ini. Silakan tambahkan di menu Penugasan Mengajar terlebih dahulu dengan jumlah JP yang sesuai.")->withInput();
+        }
+
+        $blockType = $assignment->block_type ?? 'none';
+
+        // Check conflicts and multi-duration slot availability
+        $conflictError = $this->checkConflicts(
+            $validated['academic_year_id'],
+            $validated['semester'],
+            $validated['day_of_week'],
+            $validated['time_slot_id'],
+            $validated['classroom_id'],
+            $validated['teacher_id'],
+            $validated['duration_slots'],
+            $groupCode,
+            null,
+            $blockType
+        );
+        
+        if ($conflictError) {
+            return back()->with('error', "Jadwal bentrok atau bermasalah: {$conflictError}")->withInput();
         }
 
         Schedule::create([
@@ -353,8 +358,9 @@ class ScheduleGridController extends Controller
         
         $durationSlots = $validated['duration_slots'] ?? $schedule->duration_slots;
         
-        // STRICT LIMITATION VALIDATION
+        // STRICT LIMITATION VALIDATION & GET ASSIGNMENT
         $assignmentId = $validated['teaching_assignment_id'] ?? $schedule->teaching_assignment_id;
+        $assignment = null;
         if ($assignmentId) {
             $assignment = TeachingAssignment::find($assignmentId);
             if ($assignment) {
@@ -369,6 +375,8 @@ class ScheduleGridController extends Controller
             }
         }
         
+        $blockType = $assignment ? ($assignment->block_type ?? 'none') : 'none';
+        
         // Check conflicts and multi-duration slot availability (exclude current)
         $conflictError = $this->checkConflicts(
             $schedule->academic_year_id,
@@ -379,7 +387,8 @@ class ScheduleGridController extends Controller
             $validated['teacher_id'],
             $durationSlots,
             $validated['group_code'] ?? $schedule->group_code,
-            $schedule->id
+            $schedule->id,
+            $blockType
         );
         
         if ($conflictError) {
@@ -533,6 +542,7 @@ class ScheduleGridController extends Controller
                     'is_complete' => $plottedJP >= $assignment->hours_per_week,
                     'photo' => $assignment->teacher->photo ?? null,
                     'group_code' => $assignment->group_code,
+                    'block_type' => $assignment->block_type ?? 'none',
                 ];
             })->values();
         }
@@ -657,7 +667,7 @@ class ScheduleGridController extends Controller
     /**
      * Check for schedule conflicts (teacher or classroom occupancy) across the duration of slots.
      */
-    private function checkConflicts($academicYearId, $semester, $dayOfWeek, $timeSlotId, $classroomId, $teacherId, $durationSlots, $groupCode = null, $excludeScheduleId = null)
+    private function checkConflicts($academicYearId, $semester, $dayOfWeek, $timeSlotId, $classroomId, $teacherId, $durationSlots, $groupCode = null, $excludeScheduleId = null, $incomingBlockType = 'none')
     {
         $timeSlot = TimeSlot::find($timeSlotId);
         if (!$timeSlot) {
@@ -718,10 +728,25 @@ class ScheduleGridController extends Controller
             });
         }
 
-        $conflict = $conflictQuery->with(['teacher', 'subject', 'classroom'])->first();
+        // Block scheduling: allow split+split in same classroom slot
+        // Load teachingAssignment to check existing block_type
+        $conflict = $conflictQuery->with(['teacher', 'subject', 'classroom', 'teachingAssignment'])->first();
 
         if ($conflict) {
             if ($conflict->classroom_id == $classroomId) {
+                // Block type check for classroom conflicts
+                $existingBlockType = $conflict->teachingAssignment ? ($conflict->teachingAssignment->block_type ?? 'none') : 'none';
+                
+                // Allow if both are 'split' (different student groups, different places)
+                if ($incomingBlockType === 'split' && $existingBlockType === 'split') {
+                    // Check if teacher is different. If teacher is same, it's still a conflict (teacher can't be in 2 places).
+                    // Actually, if teacher is the same and they are teaching two splits at the same time, is that possible? No.
+                    // But if teacher is different, then it's fine.
+                    if ($conflict->teacher_id != $teacherId) {
+                        return null; // Bypass conflict!
+                    }
+                }
+                
                 return "Kelas ini sudah ada jadwal {$conflict->subject->subject_name} ({$conflict->teacher->full_name}) pada slot " . ($conflict->timeSlot->slot_name ?? 'yang sama') . ".";
             } else {
                 return "Guru {$conflict->teacher->full_name} sudah mengajar {$conflict->subject->subject_name} di kelas {$conflict->classroom->class_name} pada slot " . ($conflict->timeSlot->slot_name ?? 'yang sama') . ".";

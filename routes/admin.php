@@ -157,6 +157,18 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
     // Schedules
     Route::resource('schedules', App\Http\Controllers\Admin\ScheduleController::class);
     
+    // Block Schedule Management (Sistem Blok - khusus SMK)
+    Route::prefix('block-schedule')->name('block-schedule.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\BlockScheduleController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\BlockScheduleController::class, 'store'])->name('store');
+        Route::put('/{blockSchedule}', [App\Http\Controllers\Admin\BlockScheduleController::class, 'update'])->name('update');
+        Route::get('/groups/{classroom}', [App\Http\Controllers\Admin\BlockScheduleController::class, 'manageGroups'])->name('groups');
+        Route::post('/groups/{classroom}/auto', [App\Http\Controllers\Admin\BlockScheduleController::class, 'autoAssignGroups'])->name('groups.auto');
+        Route::post('/groups/{classroom}', [App\Http\Controllers\Admin\BlockScheduleController::class, 'saveGroups'])->name('groups.save');
+        Route::get('/view', [App\Http\Controllers\Admin\BlockScheduleController::class, 'viewSchedule'])->name('view');
+        Route::get('/swap-calendar', [App\Http\Controllers\Admin\BlockScheduleController::class, 'swapCalendar'])->name('swap-calendar');
+    });
+
     // Teachers (Guru)
     Route::get('teachers/print-accounts', [App\Http\Controllers\Admin\TeacherController::class, 'printAccounts'])->name('teachers.print-accounts');
     Route::get('teachers/export-accounts', [App\Http\Controllers\Admin\TeacherController::class, 'exportAccounts'])->name('teachers.export-accounts');

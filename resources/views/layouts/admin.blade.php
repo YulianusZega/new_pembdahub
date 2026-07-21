@@ -196,6 +196,12 @@
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center text-white"><i class="fas fa-calendar-days text-[10px]"></i></div>
                 <span>Jadwal Pelajaran</span>
             </a>
+            @if($isSMK || $isSA)
+            <a href="{{ route('admin.block-schedule.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.block-schedule.*') ? $ac : $nc }}">
+                <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-400 to-amber-600 flex items-center justify-center text-white"><i class="fas fa-cubes text-[10px]"></i></div>
+                <span>Sistem Blok</span>
+            </a>
+            @endif
             <a href="{{ route('admin.calendar.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('admin.calendar.*') ? $ac : $nc }}">
                 <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-white"><i class="fas fa-calendar-alt text-[10px]"></i></div>
                 <span>Kalender Pendidikan</span>

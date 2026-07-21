@@ -436,7 +436,7 @@
                                                 </div>
                                                 <div class="scard-info">
                                                     <div class="scard-code text-{{ $scol['text'] }}">{{ $bc->subject->code ?? '-' }}</div>
-                                                    <div class="scard-jam">Jam-{{ $seqHour }}@if($bc->group_code) <span style="color:#7c3aed"> GAB</span>@endif</div>
+                                                    <div class="scard-jam">Jam-{{ $seqHour }}@if($bc->group_code) <span style="color:#7c3aed"> GAB</span>@endif @if($bc->teachingAssignment && $bc->teachingAssignment->block_type == 'all')<span style="color:#2563eb"> KEL. A</span>@elseif($bc->teachingAssignment && $bc->teachingAssignment->block_type == 'split')<span style="color:#ea580c"> KEL. B</span>@endif</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -463,7 +463,7 @@
                                                     </div>
                                                     <div class="scard-info">
                                                         <div class="scard-code text-{{ $scol['text'] }}">{{ $schedule->subject->code ?? '-' }}</div>
-                                                        <div class="scard-jam">Jam-{{ $seqHour }}@if($schedule->group_code) <span style="color:#7c3aed"> GAB</span>@endif</div>
+                                                        <div class="scard-jam">Jam-{{ $seqHour }}@if($schedule->group_code) <span style="color:#7c3aed"> GAB</span>@endif @if($schedule->teachingAssignment && $schedule->teachingAssignment->block_type == 'all')<span style="color:#2563eb"> KEL. A</span>@elseif($schedule->teachingAssignment && $schedule->teachingAssignment->block_type == 'split')<span style="color:#ea580c"> KEL. B</span>@endif</div>
                                                     </div>
                                                 </div>
                                             @elseif($timeSlot->is_teaching_slot)
@@ -810,6 +810,8 @@ async function openScheduleModal(day, timeSlotId, classroomId, scheduleId) {
                                 <span class="font-bold ${assignment.is_complete ? 'text-gray-500' : 'text-gray-900'} text-sm truncate">${assignment.subject_name}</span>
                                 ${assignment.subject_code ? `<span class="text-xs text-gray-400">(${assignment.subject_code})</span>` : ''}
                                 ${assignment.group_code ? `<span class="text-[10px] bg-purple-600 text-white px-1.5 py-0.5 rounded font-bold ml-1 shadow-sm"><i class="fas fa-layer-group text-[9px]"></i> GAB</span>` : ''}
+                                ${assignment.block_type === 'all' ? `<span class="text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded font-bold ml-1 shadow-sm"><i class="fas fa-users text-[9px]"></i> KEL. A</span>` : ''}
+                                ${assignment.block_type === 'split' ? `<span class="text-[10px] bg-orange-600 text-white px-1.5 py-0.5 rounded font-bold ml-1 shadow-sm"><i class="fas fa-columns text-[9px]"></i> KEL. B</span>` : ''}
                                 ${completeBadge}
                             </div>
                             <div class="flex items-center gap-2 mt-1">

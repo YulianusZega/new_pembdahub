@@ -23,6 +23,7 @@ class TeachingAssignment extends Model
         'teaching_allowance',
         'sk_reference',
         'group_code',
+        'block_type',
     ];
 
     protected $casts = [
@@ -37,6 +38,12 @@ class TeachingAssignment extends Model
         'wajib' => 'Wajib',
         'tambahan' => 'Tambahan',
         'pengganti' => 'Pengganti',
+    ];
+
+    public const BLOCK_TYPES = [
+        'none' => 'Tidak Ada',
+        'all' => 'Kelompok A (Semua Siswa)',
+        'split' => 'Kelompok B (Split Grup)',
     ];
 
     // Relationships
@@ -84,6 +91,11 @@ class TeachingAssignment extends Model
         return self::LOAD_TYPES[$this->teaching_load_type] ?? $this->teaching_load_type;
     }
 
+    public function getBlockTypeLabelAttribute(): string
+    {
+        return self::BLOCK_TYPES[$this->block_type] ?? $this->block_type;
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -103,5 +115,15 @@ class TeachingAssignment extends Model
     public function scopeBySemester($query, $semesterId)
     {
         return $query->where('semester_id', $semesterId);
+    }
+
+    public function scopeBlockAll($query)
+    {
+        return $query->where('block_type', 'all');
+    }
+
+    public function scopeBlockSplit($query)
+    {
+        return $query->where('block_type', 'split');
     }
 }

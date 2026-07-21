@@ -231,7 +231,7 @@
                         </button>
 
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                            <div class="md:col-span-4">
+                            <div class="md:col-span-3">
                                 <label class="block text-sm font-bold text-gray-700 mb-2">
                                     <i class="fas fa-book mr-1 text-purple-500"></i> Mata Pelajaran <span class="text-red-500">*</span>
                                 </label>
@@ -247,7 +247,7 @@
                                     <p class="mt-1 text-xs text-amber-700">Mapel tidak muncul? <a href="{{ route('admin.teachers.competencies', $selectedTeacher->id) }}" target="_blank" class="underline font-bold">Atur Kompetensi Guru</a></p>
                                 @endif
                             </div>
-                            <div class="md:col-span-4">
+                            <div class="md:col-span-3">
                                 <label class="block text-sm font-bold text-gray-700 mb-2">
                                     <i class="fas fa-door-open mr-1 text-emerald-500"></i> Kelas <span class="text-red-500">*</span>
                                 </label>
@@ -276,7 +276,22 @@
                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-center font-semibold transition-all" 
                                        min="1" max="40" value="2" required>
                             </div>
+                            @if($isSMK ?? false)
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">
+                                    <i class="fas fa-cubes mr-1 text-orange-500"></i> Tipe Blok
+                                </label>
+                                <select :name="'assignments[' + index + '][block_type]'" 
+                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm transition-all">
+                                    <option value="none">Tidak Ada</option>
+                                    <option value="all">Kel. A (Semua)</option>
+                                    <option value="split">Kel. B (Split)</option>
+                                </select>
+                            </div>
                             <div class="md:col-span-2 text-center">
+                            @else
+                            <div class="md:col-span-4 text-center">
+                            @endif
                                 <label class="block text-sm font-bold text-gray-700 mb-2">
                                     <i class="fas fa-star mr-1 text-yellow-500"></i> Guru Utama
                                 </label>

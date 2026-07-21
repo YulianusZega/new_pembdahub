@@ -5,7 +5,7 @@ $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 header('Content-Type: text/plain');
 
-if (request('secret') !== 'pembda99') die('Unauthorized');
+if (($_GET['secret'] ?? '') !== 'pembda99') die('Unauthorized');
 
 // Cek dulu apakah XII TSM 1 sudah ada di TP 5
 $existing = App\Models\Classroom::where('school_id', 3)

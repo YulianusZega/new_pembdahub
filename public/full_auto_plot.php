@@ -20,7 +20,7 @@ use App\Models\TimeSlot;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
-$schoolId = 2; // SMKS Pembda Nias
+$schoolId = 3; // SMKS Pembda Nias
 $academicYearId = 5; // TP. 2026/2027
 $semester = 'ganjil';
 
@@ -28,8 +28,11 @@ echo "<pre style='font-family: monospace; font-size: 12px; line-height: 1.4;'>";
 echo "<h2>Memulai FULL AUTO PLOT Jadwal SMK...</h2>\n";
 
 // 1. Wipe existing schedules & assignments for SMK to start fresh
-DB::table('schedules')->where('school_id', $schoolId)->where('academic_year_id', $academicYearId)->where('semester', $semester)->delete();
-DB::table('teaching_assignments')->where('school_id', $schoolId)->where('academic_year_id', $academicYearId)->where('semester', $semester)->delete();
+DB::table('schedules')->where('school_id', $schoolId)->where('academic_year_id', $academicYearId)->where('semester_id', 7)->delete();
+
+DB::table('teaching_assignments')->whereIn('classroom_id', function($q) use ($schoolId) {
+    $q->select('id')->from('classrooms')->where('school_id', $schoolId);
+})->where('academic_year_id', $academicYearId)->where('semester_id', 7)->delete();
 echo "[INFO] Semua jadwal dan penugasan mengajar lama telah dihapus untuk SMK TP Ini.\n\n";
 
 // 2. Teacher Mapping
@@ -268,16 +271,14 @@ foreach ($masterData as $className => $slots) {
     $taIds = [];
     foreach ($assignmentCalculations as $key => $data) {
         $ta = TeachingAssignment::firstOrCreate([
-            'school_id' => $schoolId,
             'academic_year_id' => $academicYearId,
-            'semester' => $semester,
+            'semester_id' => 7,
             'classroom_id' => $classroom->id,
             'subject_id' => $data['subject_id'],
             'teacher_id' => $data['teacher_id'],
             'block_type' => $data['tipe']
         ], [
-            'hours_per_week' => $data['jp'],
-            'is_complete' => false
+            'hours_per_week' => $data['jp']
         ]);
         
         $taIds[$key] = $ta->id;
@@ -319,7 +320,8 @@ foreach ($schedulePlacements as $day => $startSlots) {
                 Schedule::create([
                     'school_id' => $schoolId,
                     'academic_year_id' => $academicYearId,
-                    'semester' => $semester,
+                    'semester' => 'ganjil',
+                    'semester_id' => 7,
                     'classroom_id' => $c['classroom_id'],
                     'subject_id' => $c['subject_id'],
                     'teacher_id' => $teacherId,
@@ -335,13 +337,7 @@ foreach ($schedulePlacements as $day => $startSlots) {
     }
 }
 
-DB::statement("UPDATE teaching_assignments ta 
-    SET is_complete = (
-        SELECT COALESCE(SUM(duration_slots), 0) >= ta.hours_per_week 
-        FROM schedules s 
-        WHERE s.teaching_assignment_id = ta.id
-    )
-    WHERE school_id = $schoolId AND academic_year_id = $academicYearId");
+// Selesai
 
 echo "<h3>BERHASIL! 🎉</h3>";
 echo "Total $plotCount blok jadwal telah dipetakan ke dalam Grid. <br>";

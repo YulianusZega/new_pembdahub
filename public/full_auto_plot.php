@@ -264,9 +264,40 @@ $masterData = [
 $schedulePlacements = [];
 $allClassrooms = Classroom::where('school_id', $schoolId)->where('academic_year_id', $academicYearId)->get();
 
-foreach ($masterData as $className => $slots) {
-    $classroom = $allClassrooms->first(function($c) use ($className) { return stripos($c->class_name, $className) !== false; });
-    if (!$classroom) continue;
+function normalizeClassName($name) {
+    $name = strtoupper($name);
+    $name = str_replace(['.','-','_'], ' ', $name);
+    $name = preg_replace('/\s+/', ' ', $name);
+    // Aliases translation
+    $name = str_replace(' TJKT', ' TKJ', $name);
+    $name = str_replace(' TE', ' TAV', $name); // TE is TAV
+    
+    // Sometimes TKR 1 is called TKR INDUSTRI, we can handle it if needed
+    // But let's just make both variants match.
+    return trim($name);
+}
+
+foreach ($masterData as $pdfClassName => $slots) {
+    $normPdf = normalizeClassName($pdfClassName);
+    
+    // Special cases
+    if ($normPdf == 'X TKJ INDUSTRI') $normPdf = 'X TKJ';
+    if ($normPdf == 'X TKR 1') $normPdf = 'X TKR INDUSTRI';
+    
+    $classroom = $allClassrooms->first(function($c) use ($normPdf) {
+        $dbName = normalizeClassName($c->class_name);
+        // If DB is "X TKJ" and pdf is "X TKJ", it matches perfectly.
+        if ($dbName === $normPdf) return true;
+        // Also allow contains if one is longer
+        if (strpos($dbName, $normPdf) !== false || strpos($normPdf, $dbName) !== false) return true;
+        
+        return false;
+    });
+
+    if (!$classroom) {
+        echo "[WARNING] Kelas tidak ditemukan di DB: $pdfClassName (Mencari: $normPdf)\n";
+        continue;
+    }
 
     $assignmentCalculations = [];
     foreach ($slots as $slot) {

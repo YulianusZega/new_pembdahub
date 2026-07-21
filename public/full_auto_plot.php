@@ -347,15 +347,23 @@ foreach ($schedulePlacements as $day => $startSlots) {
             $groupCode = $isGabungan ? 'GAB-' . strtoupper(Str::random(4)) : null;
 
             foreach ($classes as $c) {
-                $timeSlotId = $timeSlotMap[$day][$start] ?? null;
-                if (!$timeSlotId) continue;
-                Schedule::create([
-                    'school_id' => $schoolId, 'academic_year_id' => $academicYearId, 'semester' => 'ganjil', 'semester_id' => 7,
-                    'classroom_id' => $c['classroom_id'], 'subject_id' => $c['subject_id'], 'teacher_id' => $teacherId,
-                    'time_slot_id' => $timeSlotId, 'day_of_week' => $day, 'duration_slots' => $c['duration'],
-                    'teaching_assignment_id' => $c['ta_id'], 'group_code' => $groupCode
-                ]);
-                $plotCount++;
+                // Insert a schedule record for EACH individual time slot in the range
+                for ($jamKe = $start; $jamKe < $start + $c['duration']; $jamKe++) {
+                    $timeSlotId = $timeSlotMap[$day][$jamKe] ?? null;
+                    if (!$timeSlotId) continue;
+                    try {
+                        Schedule::create([
+                            'school_id' => $schoolId, 'academic_year_id' => $academicYearId, 'semester' => 'ganjil', 'semester_id' => 7,
+                            'classroom_id' => $c['classroom_id'], 'subject_id' => $c['subject_id'], 'teacher_id' => $teacherId,
+                            'time_slot_id' => $timeSlotId, 'day_of_week' => $day, 'duration_slots' => $c['duration'],
+                            'teaching_assignment_id' => $c['ta_id'], 'group_code' => $groupCode,
+                            'block_type' => $c['tipe'] ?? 'all'
+                        ]);
+                        $plotCount++;
+                    } catch (\Exception $e) {
+                        // Skip duplicate entries silently
+                    }
+                }
             }
         }
     }

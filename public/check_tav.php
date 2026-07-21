@@ -5,26 +5,18 @@ $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 header('Content-Type: text/plain');
 
-$classes = App\Models\Classroom::where('school_id', 3)->where('class_name', 'XII TAV')->get();
-
-foreach ($classes as $c) {
-    echo "Class ID: {$c->id}, Name: {$c->class_name}, TP: {$c->academic_year_id}\n";
+$schedules = DB::table('schedules')
+    ->join('time_slots', 'schedules.time_slot_id', '=', 'time_slots.id')
+    ->join('subjects', 'schedules.subject_id', '=', 'subjects.id')
+    ->where('schedules.classroom_id', 281)
+    ->where('schedules.academic_year_id', 5)
+    ->where('schedules.semester_id', 7)
+    ->select('time_slots.day_of_week', 'time_slots.slot_name', 'subjects.name as subject_name')
+    ->orderBy('time_slots.day_of_week')
+    ->orderBy('time_slots.start_time')
+    ->get();
     
-    $schedules = DB::table('schedules')
-        ->join('time_slots', 'schedules.time_slot_id', '=', 'time_slots.id')
-        ->join('subjects', 'schedules.subject_id', '=', 'subjects.id')
-        ->where('schedules.classroom_id', $c->id)
-        ->where('schedules.academic_year_id', 5)
-        ->where('schedules.semester_id', 7)
-        ->select('time_slots.day_of_week', 'time_slots.slot_name', 'subjects.name as subject_name')
-        ->orderBy('time_slots.day_of_week')
-        ->orderBy('time_slots.start_time')
-        ->get();
-        
-    echo "  Schedules (TP5 Sem7): " . $schedules->count() . "\n";
-    foreach ($schedules as $s) {
-        if (strtolower($s->day_of_week) == 'senin') {
-            echo "    Senin: {$s->slot_name} -> {$s->subject_name}\n";
-        }
-    }
+echo "Total Schedules for 281: " . $schedules->count() . "\n";
+foreach ($schedules as $s) {
+    echo "{$s->day_of_week}: {$s->slot_name} -> {$s->subject_name}\n";
 }

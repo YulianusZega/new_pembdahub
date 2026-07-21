@@ -335,25 +335,18 @@
                             'Sabtu' => 'saturday'
                         ];
                         
-                        // Color palette for subjects (Pastel Colors)
-                        $subjectColors = [
-                            ['from' => 'emerald-100', 'to' => 'emerald-50', 'border' => 'emerald-300', 'text' => 'emerald-900', 'badge' => 'emerald-700'],
-                            ['from' => 'blue-100', 'to' => 'blue-50', 'border' => 'blue-300', 'text' => 'blue-900', 'badge' => 'blue-700'],
-                            ['from' => 'purple-100', 'to' => 'purple-50', 'border' => 'purple-300', 'text' => 'purple-900', 'badge' => 'purple-700'],
-                            ['from' => 'pink-100', 'to' => 'pink-50', 'border' => 'pink-300', 'text' => 'pink-900', 'badge' => 'pink-700'],
-                            ['from' => 'rose-100', 'to' => 'rose-50', 'border' => 'rose-300', 'text' => 'rose-900', 'badge' => 'rose-700'],
-                            ['from' => 'orange-100', 'to' => 'orange-50', 'border' => 'orange-300', 'text' => 'orange-900', 'badge' => 'orange-700'],
-                            ['from' => 'amber-100', 'to' => 'amber-50', 'border' => 'amber-300', 'text' => 'amber-900', 'badge' => 'amber-700'],
-                            ['from' => 'indigo-100', 'to' => 'indigo-50', 'border' => 'indigo-300', 'text' => 'indigo-900', 'badge' => 'indigo-700'],
-                            ['from' => 'teal-100', 'to' => 'teal-50', 'border' => 'teal-300', 'text' => 'teal-900', 'badge' => 'teal-700'],
-                            ['from' => 'cyan-100', 'to' => 'cyan-50', 'border' => 'cyan-300', 'text' => 'cyan-900', 'badge' => 'cyan-700'],
-                            ['from' => 'lime-100', 'to' => 'lime-50', 'border' => 'lime-300', 'text' => 'lime-900', 'badge' => 'lime-700'],
-                            ['from' => 'fuchsia-100', 'to' => 'fuchsia-50', 'border' => 'fuchsia-300', 'text' => 'fuchsia-900', 'badge' => 'fuchsia-700'],
+                        // Clean uniform style for all subjects to avoid color clutter
+                        $scol = [
+                            'from' => 'white', 
+                            'to' => 'gray-50', 
+                            'border' => 'indigo-400', 
+                            'text' => 'gray-800', 
+                            'badge' => 'indigo-600'
                         ];
                         
                         // Function to get color for subject
-                        $getSubjectColor = function($subjectId) use ($subjectColors) {
-                            return $subjectColors[$subjectId % count($subjectColors)];
+                        $getSubjectColor = function($subjectId) use ($scol) {
+                            return $scol;
                         };
 
                         // NEW: Helper for non-teaching slot styles
@@ -422,11 +415,10 @@
                                         @endphp
                                         @php
                                             $bc = $blockedByPrevious; $scol = $colors;
-                                            $scBg = "bg-gradient-to-br from-{$scol['from']} to-{$scol['to']}";
                                             $seqHour = $hourSequences[$bc->id] ?? 1;
                                         @endphp
                                         <td class="cell-content border-r border-purple-50" style="border-color:#f5eeff;">
-                                            <div class="scard {{ $scBg }}" style="border-color: var(--tw-border-opacity,1)" title="{{ $bc->subject->name ?? '-' }} — {{ $bc->teacher->full_name ?? '-' }}">
+                                            <div class="scard relative group flex flex-col justify-between h-full p-2 bg-gradient-to-br from-{{ $scol['from'] }} to-{{ $scol['to'] }} border-l-[3px] border-l-{{ $scol['border'] }} border-t border-r border-b border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer overflow-hidden" title="{{ $bc->subject->name ?? '-' }} — {{ $bc->teacher->full_name ?? '-' }}">
                                                 <div class="scard-photo" style="background: linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.2));">
                                                     @if($bc->teacher && $bc->teacher->photo)
                                                         <img src="{{ asset('storage/'.$bc->teacher->photo) }}" alt="">
@@ -449,11 +441,10 @@
                                             @if($schedule)
                                                 @php
                                                     $colors = $getSubjectColor($schedule->subject_id);
-                                                    $hourCacheKey = $dayEnglish . '_' . $schedule->time_slot_id;
-                                                    $currentHourNumber = $hourNumberCache[$hourCacheKey] ?? 1;
+                                                    $scol = $colors;
+                                                    $seqHour = $hourSequences[$schedule->id] ?? 1;
                                                 @endphp
-                                                @php $seqHour = $hourSequences[$schedule->id] ?? 1; $scol = $colors; @endphp
-                                                <div class="scard bg-gradient-to-br from-{{ $scol['from'] }} to-{{ $scol['to'] }} {{ $schedule->duration_slots>1 ? 'ring-2 ring-'.$scol['border'] : '' }}" title="{{ $schedule->subject->name ?? '-' }} — {{ $schedule->teacher->full_name ?? '-' }}">
+                                                <div class="scard relative group flex flex-col justify-between h-full p-2 bg-gradient-to-br from-{{ $scol['from'] }} to-{{ $scol['to'] }} border-l-[3px] border-l-{{ $scol['border'] }} border-t border-r border-b border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer overflow-hidden" title="{{ $schedule->subject->name ?? '-' }} — {{ $schedule->teacher->full_name ?? '-' }}">
                                                     <div class="scard-photo" style="background:linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.2));">
                                                         @if($schedule->teacher && $schedule->teacher->photo)
                                                             <img src="{{ asset('storage/'.$schedule->teacher->photo) }}" alt="">

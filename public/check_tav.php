@@ -7,16 +7,13 @@ header('Content-Type: text/plain');
 
 $schedules = DB::table('schedules')
     ->join('time_slots', 'schedules.time_slot_id', '=', 'time_slots.id')
-    ->join('subjects', 'schedules.subject_id', '=', 'subjects.id')
-    ->where('schedules.classroom_id', 281)
+    ->join('classrooms', 'schedules.classroom_id', '=', 'classrooms.id')
+    ->where('classrooms.class_name', 'XII TKJ')
     ->where('schedules.academic_year_id', 5)
     ->where('schedules.semester_id', 7)
-    ->select('time_slots.day_of_week', 'time_slots.slot_name', 'subjects.name as subject_name')
-    ->orderBy('time_slots.day_of_week')
-    ->orderBy('time_slots.start_time')
+    ->where('time_slots.day_of_week', 'Senin')
+    ->select('time_slots.slot_name')
     ->get();
     
-echo "Total Schedules for 281: " . $schedules->count() . "\n";
-foreach ($schedules as $s) {
-    echo "{$s->day_of_week}: {$s->slot_name} -> {$s->subject_name}\n";
-}
+echo "XII TKJ Senin:\n";
+foreach ($schedules as $s) echo "{$s->slot_name}\n";

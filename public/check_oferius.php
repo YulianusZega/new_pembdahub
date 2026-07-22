@@ -8,7 +8,7 @@ if (request('secret') !== 'pembda99') die('Unauthorized');
 
 use App\Models\TeachingAssignment;
 
-$tas = TeachingAssignment::with('subject')->where('classroom_id', 353)->where('teacher_id', 195)->get();
+$tas = TeachingAssignment::with(['subject', 'classroom'])->where('teacher_id', 195)->get();
 foreach($tas as $ta) {
-    echo "ID: " . $ta->id . " | Subj: " . $ta->subject->name . " | JP: " . $ta->hours_per_week . "\n";
+    echo "ID: " . $ta->id . " | Subj: " . ($ta->subject->name ?? '') . " | Class: " . ($ta->classroom->class_name ?? '') . " | JP: " . $ta->hours_per_week . "\n";
 }

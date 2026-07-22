@@ -278,15 +278,15 @@
                             </div>
                             @if($isSMK ?? false)
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-bold text-gray-700 mb-2">
-                                    <i class="fas fa-cubes mr-1 text-orange-500"></i> Tipe Blok
-                                </label>
-                                <select :name="'assignments[' + index + '][block_type]'" 
-                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm transition-all">
-                                    <option value="none">Tidak Ada</option>
-                                    <option value="all">Kel. A (Semua)</option>
-                                    <option value="split">Kel. B (Split)</option>
-                                </select>
+                                  <label class="block text-sm font-bold text-gray-700 mb-2">
+                                      <i class="fas fa-cubes mr-1 text-orange-500"></i> Tipe Blok
+                                  </label>
+                                  <select :name="'assignments[' + index + '][block_type]'" 
+                                          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-sm transition-all">
+                                      <option value="none">Reguler (Semua Siswa)</option>
+                                      <option value="all">Sistem Blok - Kelompok A</option>
+                                      <option value="split">Sistem Blok - Kelompok B</option>
+                                  </select>
                             </div>
                             <div class="md:col-span-2 text-center">
                             @else

@@ -41,9 +41,9 @@ class TeachingAssignment extends Model
     ];
 
     public const BLOCK_TYPES = [
-        'none' => 'Tidak Ada',
-        'all' => 'Kelompok A (Semua Siswa)',
-        'split' => 'Kelompok B (Split Grup)',
+        'none' => 'Reguler (Semua Siswa)',
+        'all' => 'Sistem Blok - Kelompok A',
+        'split' => 'Sistem Blok - Kelompok B',
     ];
 
     // Relationships

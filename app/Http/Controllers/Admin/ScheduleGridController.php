@@ -711,11 +711,8 @@ class ScheduleGridController extends Controller
             $query->where('id', '!=', $excludeScheduleId);
         }
 
-        $existingSchedules = $query->with(['teacher', 'subject', 'classroom', 'timeSlot'])->get();
+        $existingSchedules = $query->with(['teacher', 'subject', 'classroom', 'timeSlot', 'teachingAssignment'])->get();
         
-        // Track how many schedules exist per slot in this classroom
-        $classOccupancy = array_fill_keys($targetSlotIds, 0);
-
         foreach ($existingSchedules as $schedule) {
             if (!$schedule->timeSlot) continue;
             
@@ -734,32 +731,38 @@ class ScheduleGridController extends Controller
             $overlap = array_intersect($targetSlotIds, $coveredSlotIds);
             
             if (!empty($overlap)) {
-                // There is an overlap!
-                
+                $slotName = $allDaySlots->firstWhere('id', current($overlap))->slot_name ?? '';
+
                 // A. Check teacher conflict
                 if ($schedule->teacher_id == $teacherId) {
-                    // Check group code exception
+                    // Check group code exception (Gabungan antar kelas)
                     if ($groupCode && $schedule->group_code === $groupCode) {
                         // It's allowed to overlap for the same teacher if group code matches (Gabungan)
                     } else {
                         if ($schedule->classroom_id == $classroomId) {
-                            return "Guru ini sudah memiliki jadwal pada kelas yang sama di waktu yang bersinggungan.";
+                            return "Guru ini sudah memiliki jadwal pada kelas yang sama di waktu yang bersinggungan ($slotName).";
                         }
-                        return "Guru {$schedule->teacher->full_name} sudah mengajar {$schedule->subject->subject_name} di kelas {$schedule->classroom->class_name} pada waktu yang bersinggungan.";
+                        return "Guru {$schedule->teacher->full_name} sudah mengajar {$schedule->subject->subject_name} di kelas {$schedule->classroom->class_name} pada waktu yang bersinggungan ($slotName).";
                     }
                 }
                 
-                // B. Check classroom conflict
+                // B. Check classroom conflict (BLOCK SYSTEM LOGIC)
                 if ($schedule->classroom_id == $classroomId) {
-                    foreach ($overlap as $slotId) {
-                        if (isset($classOccupancy[$slotId])) {
-                            $classOccupancy[$slotId]++;
-                            if ($classOccupancy[$slotId] >= 2) {
-                                $slotName = $allDaySlots->firstWhere('id', $slotId)->slot_name ?? '';
-                                return "Kelas ini sudah penuh (maksimal 2 jadwal blok). Waktu bersinggungan di slot: " . $slotName;
-                            }
-                        }
+                    $existingBlockType = $schedule->teachingAssignment->block_type ?? 'none';
+                    
+                    if ($incomingBlockType === 'none' || $existingBlockType === 'none') {
+                        return "Jadwal Reguler (Semua Siswa) tidak bisa berjalan bersamaan dengan jadwal lain di kelas ini ($slotName).";
                     }
+
+                    if ($incomingBlockType === 'all' && $existingBlockType === 'all') {
+                        return "Kelompok A sudah memiliki jadwal lain di waktu bersinggungan ($slotName).";
+                    }
+
+                    if ($incomingBlockType === 'split' && $existingBlockType === 'split') {
+                        return "Kelompok B sudah memiliki jadwal lain di waktu bersinggungan ($slotName).";
+                    }
+                    
+                    // If one is 'all' and the other is 'split', it is ALLOWED.
                 }
             }
         }

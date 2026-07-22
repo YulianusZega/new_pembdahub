@@ -184,7 +184,7 @@ class BlockScheduleController extends Controller
             ->where('academic_year_id', $academicYear->id)
             ->where('status', 'aktif')
             ->get()
-            ->sortBy(fn($sc) => $sc->student->name ?? '');
+            ->sortBy(fn($sc) => $sc->student->full_name ?? '');
 
         // Ambil pembagian grup yang sudah ada
         $existingGroups = BlockStudentGroup::where('block_schedule_id', $blockSchedule->id)

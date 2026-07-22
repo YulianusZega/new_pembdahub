@@ -156,9 +156,9 @@
                     @if($sc->student)
                     <div class="student-card w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.33%-0.5rem)] lg:w-[calc(25%-0.5rem)]" draggable="true" data-id="{{ $sc->student_id }}">
                         <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
-                        <div class="avatar">{{ strtoupper(substr($sc->student->name ?? '', 0, 1)) }}</div>
+                        <div class="avatar">{{ strtoupper(substr($sc->student->full_name ?? '', 0, 1)) }}</div>
                         <div class="student-info">
-                            <div class="student-name" title="{{ $sc->student->name }}">{{ $sc->student->name }}</div>
+                            <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                             <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                         </div>
                     </div>
@@ -182,9 +182,9 @@
                         @if($sc->student)
                         <div class="student-card" draggable="true" data-id="{{ $sc->student_id }}">
                             <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
-                            <div class="avatar">{{ strtoupper(substr($sc->student->name ?? '', 0, 1)) }}</div>
+                            <div class="avatar">{{ strtoupper(substr($sc->student->full_name ?? '', 0, 1)) }}</div>
                             <div class="student-info">
-                                <div class="student-name" title="{{ $sc->student->name }}">{{ $sc->student->name }}</div>
+                                <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                                 <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                             </div>
                         </div>
@@ -206,9 +206,9 @@
                         @if($sc->student)
                         <div class="student-card" draggable="true" data-id="{{ $sc->student_id }}">
                             <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
-                            <div class="avatar">{{ strtoupper(substr($sc->student->name ?? '', 0, 1)) }}</div>
+                            <div class="avatar">{{ strtoupper(substr($sc->student->full_name ?? '', 0, 1)) }}</div>
                             <div class="student-info">
-                                <div class="student-name" title="{{ $sc->student->name }}">{{ $sc->student->name }}</div>
+                                <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                                 <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                             </div>
                         </div>

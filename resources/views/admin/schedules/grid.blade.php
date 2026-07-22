@@ -395,89 +395,103 @@
 
                                 @foreach($classrooms as $classroom)
                                     @php
-                                        // OPTIMIZED: O(1) lookup instead of O(n) filter
                                         $lookupKey = $dayEnglish . '_' . $timeSlot->id . '_' . $classroom->id;
-                                        $schedule = $scheduleGrid[$lookupKey] ?? null;
                                         
-                                        // OPTIMIZED: Check blocked slots with pre-calculated array
-                                        $blockedByScheduleId = $blockedSlots[$lookupKey] ?? null;
-                                        $blockedByPrevious = $blockedByScheduleId ? $schedules->firstWhere('id', $blockedByScheduleId) : null;
+                                        $schedulesInCell = $scheduleGrid[$lookupKey] ?? [];
+                                        if (!is_array($schedulesInCell) && $schedulesInCell) {
+                                            $schedulesInCell = [$schedulesInCell];
+                                        }
+                                        
+                                        $blockedByScheduleIds = $blockedSlots[$lookupKey] ?? [];
+                                        if (!is_array($blockedByScheduleIds) && $blockedByScheduleIds) {
+                                            $blockedByScheduleIds = [$blockedByScheduleIds];
+                                        }
+                                        
+                                        $blockedByPrevious = [];
+                                        foreach($blockedByScheduleIds as $bsId) {
+                                            $found = $schedules->firstWhere('id', $bsId);
+                                            if ($found) $blockedByPrevious[] = $found;
+                                        }
+                                        
+                                        $itemsToDisplay = [];
+                                        foreach($blockedByPrevious as $b) {
+                                            $itemsToDisplay[] = ['type' => 'blocked', 'schedule' => $b];
+                                        }
+                                        foreach($schedulesInCell as $s) {
+                                            $itemsToDisplay[] = ['type' => 'start', 'schedule' => $s];
+                                        }
                                     @endphp
                                     
-                                    @if($blockedByPrevious && $timeSlot->is_teaching_slot)
-                                        {{-- Slot blocked by multi-duration schedule - show continuation --}}
-                                        @php
-                                            $colors = $getSubjectColor($blockedByPrevious->subject_id);
+                                    @if(count($itemsToDisplay) > 0 && $timeSlot->is_teaching_slot)
+                                        <td class="cell-content border-r border-purple-50 p-1" style="border-color:#f5eeff; vertical-align: top;"
+                                            onclick="openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, null)">
                                             
-                                            // OPTIMIZED: Use pre-calculated hour number
-                                            $hourCacheKey = $dayEnglish . '_' . $timeSlot->id;
-                                            $hourNumber = $hourNumberCache[$hourCacheKey] ?? 1;
-                                        @endphp
-                                        @php
-                                            $bc = $blockedByPrevious; $scol = $colors;
-                                            $seqHour = $hourSequences[$bc->id] ?? 1;
-                                        @endphp
-                                        <td class="cell-content border-r border-purple-50" style="border-color:#f5eeff;">
-                                            <div class="scard relative group flex flex-col justify-between h-full p-2 bg-gradient-to-br from-{{ $scol['from'] }} to-{{ $scol['to'] }} border-l-[3px] border-l-{{ $scol['border'] }} border-t border-r border-b border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer overflow-hidden" title="{{ $bc->subject->name ?? '-' }} — {{ $bc->teacher->full_name ?? '-' }}">
-                                                <div class="scard-photo" style="background: linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.2));">
-                                                    @if($bc->teacher && $bc->teacher->photo)
-                                                        <img src="{{ asset('storage/'.$bc->teacher->photo) }}" alt="">
-                                                    @else
-                                                        <div class="scard-initials" style="background:transparent; opacity:0.9;">{{ strtoupper(substr($bc->teacher->full_name ?? 'G',0,2)) }}</div>
-                                                    @endif
-                                                </div>
-                                                <div class="scard-info">
-                                                    <div class="scard-code text-{{ $scol['text'] }}">{{ $bc->subject->code ?? '-' }}</div>
-                                                    <div class="scard-jam flex items-center flex-wrap gap-1 mt-1">
-                                                        <span class="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-gray-700">Jam-{{ $seqHour }}</span>
-                                                        @if($bc->group_code) 
-                                                            <span class="px-1 py-0.5 bg-purple-100 border border-purple-300 text-purple-700 rounded font-bold" title="Kelas Gabungan">GAB</span>
-                                                        @endif 
-                                                        @if($bc->teachingAssignment && $bc->teachingAssignment->block_type == 'all')
-                                                            <span class="px-1 py-0.5 bg-blue-100 border border-blue-300 text-blue-700 rounded font-bold shadow-sm" title="Kelompok A (Blok Penuh)">KEL. A</span>
-                                                        @elseif($bc->teachingAssignment && $bc->teachingAssignment->block_type == 'split')
-                                                            <span class="px-1 py-0.5 bg-orange-100 border border-orange-300 text-orange-700 rounded font-bold shadow-sm" title="Kelompok B (Blok Pecah)">KEL. B</span>
-                                                        @endif
+                                            <div class="flex {{ count($itemsToDisplay) > 1 ? 'flex-row' : 'flex-col' }} gap-1 h-full w-full">
+                                                @foreach($itemsToDisplay as $item)
+                                                    @php
+                                                        $bc = $item['schedule'];
+                                                        $colors = $getSubjectColor($bc->subject_id);
+                                                        $scol = $colors;
+                                                        
+                                                        // Get specific hour sequence if blocked/continuation vs start
+                                                        if ($item['type'] === 'blocked') {
+                                                            $seqHour = $hourSequences[$bc->id] ?? 1;
+                                                        } else {
+                                                            $seqHour = $hourSequences[$bc->id] ?? 1;
+                                                        }
+                                                        
+                                                        // Badge for Block System
+                                                        $blockBadge = '';
+                                                        $blockTitle = '';
+                                                        $blockColor = '';
+                                                        if($bc->teachingAssignment) {
+                                                            if($bc->teachingAssignment->block_type == 'all') {
+                                                                $blockBadge = 'K.UMUM'; // Kelas Umum
+                                                                $blockTitle = 'Kelompok A (Kelas Umum)';
+                                                                $blockColor = 'bg-blue-100 border-blue-300 text-blue-700';
+                                                            } elseif($bc->teachingAssignment->block_type == 'split') {
+                                                                $blockBadge = 'R.PRAKTEK'; // Ruang Praktek
+                                                                $blockTitle = 'Kelompok B (Ruang Praktek)';
+                                                                $blockColor = 'bg-orange-100 border-orange-300 text-orange-700';
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    
+                                                    <div class="flex-1 min-w-0 scard relative group flex flex-col justify-between h-full p-1.5 bg-gradient-to-br from-{{ $scol['from'] }} to-{{ $scol['to'] }} border-l-[3px] border-l-{{ $scol['border'] }} border-t border-r border-b border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer overflow-hidden" 
+                                                         title="{{ $bc->subject->name ?? '-' }} — {{ $bc->teacher->full_name ?? '-' }}"
+                                                         onclick="event.stopPropagation(); openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, {{ $bc->id }})">
+                                                         
+                                                        <div class="scard-photo" style="background: linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.2)); width:24px; height:24px; top:4px; right:4px;">
+                                                            @if($bc->teacher && $bc->teacher->photo)
+                                                                <img src="{{ asset('storage/'.$bc->teacher->photo) }}" alt="" style="width:100%; height:100%;">
+                                                            @else
+                                                                <div class="scard-initials" style="background:transparent; opacity:0.9; font-size:10px;">{{ strtoupper(substr($bc->teacher->full_name ?? 'G',0,2)) }}</div>
+                                                            @endif
+                                                        </div>
+                                                        <div class="scard-info">
+                                                            <div class="scard-code text-{{ $scol['text'] }} truncate pr-6 font-bold" style="font-size: 11px;">{{ $bc->subject->code ?? '-' }}</div>
+                                                            <div class="scard-jam flex items-center flex-wrap gap-0.5 mt-1">
+                                                                <span class="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-gray-700" style="font-size: 9px;">J-{{ $seqHour }}</span>
+                                                                @if($bc->group_code) 
+                                                                    <span class="px-1 py-0.5 bg-purple-100 border border-purple-300 text-purple-700 rounded font-bold" title="Kelas Gabungan" style="font-size: 9px;">GAB</span>
+                                                                @endif 
+                                                                @if($blockBadge)
+                                                                    <span class="px-1 py-0.5 {{ $blockColor }} border rounded font-bold shadow-sm" title="{{ $blockTitle }}" style="font-size: 9px;">{{ $blockBadge }}</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @endforeach
                                             </div>
                                         </td>
                                     @else
                                         <td class="cell-content {{ $timeSlot->is_teaching_slot ? 'cell-empty' : 'cell-break '.$nonTeachingStyle['bg'] }} border-r"
                                             style="border-color:#f5eeff;"
                                             @if($timeSlot->is_teaching_slot)
-                                                onclick="openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, {{ $schedule ? $schedule->id : 'null' }})"
+                                                onclick="openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, null)"
                                             @endif>
-                                            @if($schedule)
-                                                @php
-                                                    $colors = $getSubjectColor($schedule->subject_id);
-                                                    $scol = $colors;
-                                                    $seqHour = $hourSequences[$schedule->id] ?? 1;
-                                                @endphp
-                                                <div class="scard relative group flex flex-col justify-between h-full p-2 bg-gradient-to-br from-{{ $scol['from'] }} to-{{ $scol['to'] }} border-l-[3px] border-l-{{ $scol['border'] }} border-t border-r border-b border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer overflow-hidden" title="{{ $schedule->subject->name ?? '-' }} — {{ $schedule->teacher->full_name ?? '-' }}">
-                                                    <div class="scard-photo" style="background:linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.2));">
-                                                        @if($schedule->teacher && $schedule->teacher->photo)
-                                                            <img src="{{ asset('storage/'.$schedule->teacher->photo) }}" alt="">
-                                                        @else
-                                                            <div class="scard-initials">{{ strtoupper(substr($schedule->teacher->full_name ?? 'G',0,2)) }}</div>
-                                                        @endif
-                                                    </div>
-                                                    <div class="scard-info">
-                                                        <div class="scard-code text-{{ $scol['text'] }}">{{ $schedule->subject->code ?? '-' }}</div>
-                                                        <div class="scard-jam flex items-center flex-wrap gap-1 mt-1">
-                                                            <span class="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-gray-700">Jam-{{ $seqHour }}</span>
-                                                            @if($schedule->group_code) 
-                                                                <span class="px-1 py-0.5 bg-purple-100 border border-purple-300 text-purple-700 rounded font-bold" title="Kelas Gabungan">GAB</span>
-                                                            @endif 
-                                                            @if($schedule->teachingAssignment && $schedule->teachingAssignment->block_type == 'all')
-                                                                <span class="px-1 py-0.5 bg-blue-100 border border-blue-300 text-blue-700 rounded font-bold shadow-sm" title="Kelompok A (Blok Penuh)">KEL. A</span>
-                                                            @elseif($schedule->teachingAssignment && $schedule->teachingAssignment->block_type == 'split')
-                                                                <span class="px-1 py-0.5 bg-orange-100 border border-orange-300 text-orange-700 rounded font-bold shadow-sm" title="Kelompok B (Blok Pecah)">KEL. B</span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @elseif($timeSlot->is_teaching_slot)
+                                            
+                                            @if($timeSlot->is_teaching_slot)
                                                 <div class="cell-plus"><i class="fas fa-plus"></i></div>
                                             @else
                                                 <div class="flex flex-col items-center justify-center h-full gap-1.5 p-1">

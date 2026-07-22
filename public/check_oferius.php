@@ -6,16 +6,9 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\Schedule;
+use App\Models\Teacher;
 
-$schedules = Schedule::with(['classroom', 'teachingAssignment.subject'])
-    ->where('day_of_week', 'tuesday')
-    ->whereHas('teachingAssignment', function($q) {
-        $q->where('teacher_id', 204); // Adiyusu Zai
-    })
-    ->get();
-
-echo "Adiyusu Zai Tuesday Schedules:\n";
-foreach($schedules as $s) {
-    echo "Class: " . $s->classroom->class_name . " | Time: " . $s->time_slot_id . " | Subj: " . $s->teachingAssignment->subject->name . "\n";
+$teachers = Teacher::where('school_id', 3)->where('full_name', 'LIKE', '%Guru TKJ%')->orWhere('full_name', 'LIKE', '%(42)%')->get();
+foreach($teachers as $t) {
+    echo "ID: " . $t->id . " | Name: " . $t->full_name . "\n";
 }

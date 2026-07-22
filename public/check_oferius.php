@@ -6,18 +6,22 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
+use App\Models\Subject;
 use App\Models\TeachingAssignment;
 
-$tas = TeachingAssignment::with(['teacher', 'subject', 'classroom'])
-    ->whereHas('classroom', function($q) {
-        $q->where('class_name', 'LIKE', '%X DPIB%');
-    })
-    ->whereHas('teacher', function($q) {
-        $q->where('full_name', 'LIKE', '%Herman%');
-    })
-    ->get();
-    
-echo "Herman TAs for X DPIB:\n";
-foreach($tas as $ta) {
-    echo "ID: " . $ta->id . " | Subj: " . ($ta->subject->subject_name ?? '') . " | Sem: " . $ta->semester_id . " | AY: " . $ta->academic_year_id . " | Active: " . $ta->is_active . " | JP: " . $ta->hours_per_week . "\n";
+$subjectDdpk = Subject::where('school_id', 3)->where('subject_name', 'LIKE', '%DDPK-DPIB%')->first();
+
+if (!$subjectDdpk) {
+    echo "Subject DDPK-DPIB not found!\n";
+    die();
+}
+
+$ta = TeachingAssignment::find(6555); // Martperan's TA I just created
+if ($ta) {
+    $ta->academic_year_id = 5; // Revert back to 5
+    $ta->subject_id = $subjectDdpk->id; // Fix subject to DDPK-DPIB
+    $ta->save();
+    echo "SUCCESS: Updated Martperan TA. Set Subj to " . $subjectDdpk->subject_name . " and AY back to 5.\n";
+} else {
+    echo "TA 6555 not found.\n";
 }

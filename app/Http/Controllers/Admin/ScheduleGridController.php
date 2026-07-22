@@ -717,10 +717,13 @@ class ScheduleGridController extends Controller
                 $existingBlockType = $conflict->teachingAssignment ? ($conflict->teachingAssignment->block_type ?? 'none') : 'none';
                 
                 // Allow if both are 'split' (different student groups, different places)
-                if ($incomingBlockType === 'split' && $existingBlockType === 'split') {
+                // OR if one is 'all' (Kelompok A) and the other is 'split' (Kelompok B) since they happen in alternating block weeks
+                if (
+                    ($incomingBlockType === 'split' && $existingBlockType === 'split') ||
+                    ($incomingBlockType === 'all' && $existingBlockType === 'split') ||
+                    ($incomingBlockType === 'split' && $existingBlockType === 'all')
+                ) {
                     // Check if teacher is different. If teacher is same, it's still a conflict (teacher can't be in 2 places).
-                    // Actually, if teacher is the same and they are teaching two splits at the same time, is that possible? No.
-                    // But if teacher is different, then it's fine.
                     if ($conflict->teacher_id != $teacherId) {
                         return null; // Bypass conflict!
                     }

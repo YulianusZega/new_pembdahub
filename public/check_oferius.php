@@ -15,6 +15,8 @@ try {
         'school_id' => 3,
         'gender' => 'L',
         'is_active' => 1,
+        'tmt_date' => '2026-07-01', // Provide default
+        'employee_type' => 'guru',
     ]);
     
     // 2. Create Teacher

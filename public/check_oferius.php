@@ -6,28 +6,16 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\Teacher;
-use App\Models\TeachingAssignment;
+use App\Models\Schedule;
 
-$teacher = Teacher::where('full_name', 'LIKE', '%Yelfi%')->first();
-if ($teacher) {
-    echo "Found Teacher: " . $teacher->full_name . " (ID: " . $teacher->id . ")\n";
-    
-    $tas = TeachingAssignment::with(['classroom', 'subject'])
-        ->where('teacher_id', $teacher->id)
-        ->get();
-        
-    foreach($tas as $ta) {
-        $plotted = \App\Models\Schedule::where('teaching_assignment_id', $ta->id)->sum('duration_slots');
-        echo "TA ID: " . $ta->id . 
-             " | Class: " . ($ta->classroom->class_name ?? 'N/A') . 
-             " | Subj: " . ($ta->subject->subject_name ?? 'N/A') . 
-             " | Hours: " . $ta->hours_per_week . 
-             " | Plotted: " . $plotted . 
-             " | Active: " . $ta->is_active . 
-             " | Sem: " . $ta->semester_id . 
-             " | AY: " . $ta->academic_year_id . "\n";
-    }
-} else {
-    echo "Teacher Yelfi not found.\n";
+$total = Schedule::count();
+$nullSchool = Schedule::whereNull('school_id')->count();
+echo "Total Schedules: " . $total . "\n";
+echo "Null school_id: " . $nullSchool . "\n";
+
+if (request('confirm') === 'yes') {
+    $count = Schedule::whereHas('classroom', function($q) {
+        $q->where('school_id', 3);
+    })->delete();
+    echo "Deleted schedules via classroom school_id 3: " . $count . "\n";
 }

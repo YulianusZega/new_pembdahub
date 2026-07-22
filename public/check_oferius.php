@@ -17,7 +17,11 @@ $schedules = Schedule::with(['subject', 'teacher', 'timeSlot', 'classroom'])
 
 $out = "TUESDAY SCHEDULES FOR X TSM 2\n=================================\n";
 foreach ($schedules as $s) {
-    $out .= "ID: {$s->id} | TS: {$s->time_slot_id} | TS Period: " . ($s->timeSlot->period_number ?? 'N/A') . " | TS Time: " . ($s->timeSlot->start_time ?? 'N/A') . " - " . ($s->timeSlot->end_time ?? 'N/A') . " | Mapel: " . ($s->subject->subject_name ?? $s->subject->name ?? 'N/A') . " | Guru: " . ($s->teacher->full_name ?? 'N/A') . "\n";
+    $ts_per = optional($s->timeSlot)->period_number ?? 'N/A';
+    $ts_start = optional($s->timeSlot)->start_time ?? 'N/A';
+    $mapel = optional($s->subject)->subject_name ?? optional($s->subject)->name ?? 'N/A';
+    $guru = optional($s->teacher)->full_name ?? 'N/A';
+    $out .= "ID: {$s->id} | TS: {$s->time_slot_id} | TS Period: {$ts_per} | TS Time: {$ts_start} | Mapel: {$mapel} | Guru: {$guru}\n";
 }
 
 file_put_contents(__DIR__ . '/dump.txt', $out);

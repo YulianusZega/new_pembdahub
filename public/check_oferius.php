@@ -8,11 +8,16 @@ if (request('secret') !== 'pembda99') die('Unauthorized');
 
 use App\Models\TeachingAssignment;
 
-$ta = TeachingAssignment::find(6555); // Martperan's TA I just created
-if ($ta) {
-    $ta->academic_year_id = 1;
-    $ta->save();
-    echo "SUCCESS: Updated Martperan TA to AY = 1. Now it matches Herman Putra!\n";
-} else {
-    echo "TA 6555 not found.\n";
+$tas = TeachingAssignment::with(['teacher', 'subject', 'classroom'])
+    ->whereHas('classroom', function($q) {
+        $q->where('class_name', 'LIKE', '%X DPIB%');
+    })
+    ->whereHas('teacher', function($q) {
+        $q->where('full_name', 'LIKE', '%Herman%');
+    })
+    ->get();
+    
+echo "Herman TAs for X DPIB:\n";
+foreach($tas as $ta) {
+    echo "ID: " . $ta->id . " | Subj: " . ($ta->subject->subject_name ?? '') . " | Sem: " . $ta->semester_id . " | AY: " . $ta->academic_year_id . " | Active: " . $ta->is_active . " | JP: " . $ta->hours_per_week . "\n";
 }

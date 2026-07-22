@@ -6,19 +6,27 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\Schedule;
-use App\Models\TimeSlot;
-use App\Models\Classroom;
+use Illuminate\Support\Facades\DB;
 
-echo "<pre>";
-$classroom = Classroom::where('class_name', 'X TSM 2')->where('academic_year_id', 5)->first();
-$schedules = Schedule::with(['subject', 'teacher'])
+$classroom = DB::table('classrooms')->where('class_name', 'X TSM 2')->where('academic_year_id', 5)->first();
+
+$schedules = DB::table('schedules')
     ->where('classroom_id', $classroom->id)
     ->where('day_of_week', 'tuesday')
     ->get();
 
+$out = [];
 foreach ($schedules as $s) {
-    $ts = TimeSlot::find($s->time_slot_id);
-    echo "ID: {$s->id}, TS Period: {$ts->period_number}, Mapel: " . ($s->subject->subject_name ?? 'N/A') . ", Guru: " . ($s->teacher->full_name ?? 'N/A') . "\n";
+    $ts = DB::table('time_slots')->where('id', $s->time_slot_id)->first();
+    $sub = DB::table('subjects')->where('id', $s->subject_id)->first();
+    $out[] = [
+        'id' => $s->id,
+        'ts_id' => $s->time_slot_id,
+        'period' => $ts ? $ts->period_number : 'NULL',
+        'is_teaching' => $ts ? $ts->is_teaching_slot : 'NULL',
+        'sub' => $sub ? ($sub->subject_code ?? $sub->name) : 'NULL',
+    ];
 }
-echo "</pre>";
+
+header('Content-Type: application/json');
+echo json_encode($out, JSON_PRETTY_PRINT);

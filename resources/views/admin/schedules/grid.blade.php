@@ -426,7 +426,7 @@
                                         <td class="cell-content border-r border-purple-50 p-1" style="border-color:#f5eeff; vertical-align: top;"
                                             onclick="openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, null)">
                                             
-                                            <div class="flex flex-col gap-1 h-full w-full">
+                                            <div class="flex flex-col gap-1 min-h-full w-full">
                                                 @foreach($itemsToDisplay as $item)
                                                     @php
                                                         $bc = $item['schedule'];

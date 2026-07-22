@@ -249,7 +249,7 @@ class BlockScheduleController extends Controller
     public function saveGroups(Request $request, Classroom $classroom)
     {
         $request->validate([
-            'groups' => 'required|array',
+            'groups' => 'nullable|array',
             'groups.*' => 'in:A,B',
         ]);
 
@@ -263,17 +263,27 @@ class BlockScheduleController extends Controller
         }
 
         DB::transaction(function () use ($request, $blockSchedule, $classroom) {
-            foreach ($request->groups as $studentId => $group) {
-                BlockStudentGroup::updateOrCreate(
-                    [
-                        'block_schedule_id' => $blockSchedule->id,
-                        'student_id' => $studentId,
-                    ],
-                    [
-                        'classroom_id' => $classroom->id,
-                        'group' => $group,
-                    ]
-                );
+            $submittedStudentIds = $request->has('groups') ? array_keys($request->groups) : [];
+            
+            // Hapus siswa yang tidak dicentang (Belum Dibagi)
+            BlockStudentGroup::where('block_schedule_id', $blockSchedule->id)
+                ->where('classroom_id', $classroom->id)
+                ->whereNotIn('student_id', $submittedStudentIds)
+                ->delete();
+
+            if ($request->has('groups')) {
+                foreach ($request->groups as $studentId => $group) {
+                    BlockStudentGroup::updateOrCreate(
+                        [
+                            'block_schedule_id' => $blockSchedule->id,
+                            'student_id' => $studentId,
+                        ],
+                        [
+                            'classroom_id' => $classroom->id,
+                            'group' => $group,
+                        ]
+                    );
+                }
             }
         });
 

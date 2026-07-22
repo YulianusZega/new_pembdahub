@@ -20,39 +20,28 @@
     .btn-back { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); text-decoration: none; }
     .btn-back:hover { background: rgba(255,255,255,0.3); color: white; }
 
-    .dropzone { min-height: 200px; border-radius: 12px; padding: 12px; transition: all 0.2s; }
-    .dropzone-unassigned { background: #f8fafc; border: 2px dashed #cbd5e1; max-height: 280px; overflow-y: auto; align-items: flex-start; align-content: flex-start; }
-    .dropzone-a { background: #eff6ff; border: 2px dashed #93c5fd; }
-    .dropzone-b { background: #fff7ed; border: 2px dashed #fdba74; }
+    .student-row { background: white; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; transition: all 0.2s; gap: 16px; flex-wrap: wrap; }
+    .student-row:hover { border-color: #e2e8f0; background: #f8fafc; }
     
-    .group-options { display: flex; width: 100%; gap: 16px; background: #f8fafc; padding: 6px 10px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 4px; justify-content: center; }
-    .group-options label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; cursor: pointer; color: #475569; }
-    .group-options label:hover { color: #0f172a; }
-    
-    .dropzone.drag-over { border-style: solid; background-color: rgba(255,255,255,0.8); }
-    .dropzone-a.drag-over { border-color: #3b82f6; }
-    .dropzone-b.drag-over { border-color: #f97316; }
-
-    .student-card { background: white; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: grab; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: all 0.2s; user-select: none; flex-wrap: wrap; }
-    .student-card:active { cursor: grabbing; transform: scale(0.98); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    .student-card:hover { border-color: #e2e8f0; }
-    
-    .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #64748b; flex-shrink: 0; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: #64748b; flex-shrink: 0; }
     
     .student-info { flex: 1; min-width: 0; }
-    .student-name { font-size: 13px; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .student-nis { font-size: 11px; color: #64748b; }
-    
-    .drag-handle { color: #cbd5e1; cursor: grab; }
+    .student-name { font-size: 14px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .student-nis { font-size: 12px; color: #64748b; margin-top: 2px; }
 
-    .panel { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: 100%; }
-    .panel-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .panel-header-a { background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: white; }
-    .panel-header-b { background: linear-gradient(135deg, #9a3412, #f97316); color: white; }
-    .panel-header-u { background: #f1f5f9; color: #334155; border-bottom: 1px solid #e2e8f0; }
+    .checkbox-group { display: flex; align-items: center; gap: 20px; background: #f8fafc; padding: 8px 20px; border-radius: 12px; border: 1px solid #e2e8f0; margin-left: auto; }
+    .checkbox-group label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: color 0.2s; }
+    .chk-a-label { color: #1e40af; }
+    .chk-b-label { color: #9a3412; }
+    .chk-a-label:hover { color: #1d4ed8; }
+    .chk-b-label:hover { color: #c2410c; }
     
-    .count-badge { background: rgba(255,255,255,0.2); padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; backdrop-filter: blur(4px); }
-    .panel-header-u .count-badge { background: #e2e8f0; color: #475569; }
+    .custom-checkbox { width: 20px; height: 20px; border-radius: 6px; border: 2px solid #cbd5e1; cursor: pointer; accent-color: currentColor; }
+
+    .panel { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+    .panel-header { padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+    
+    .count-badge { background: #e2e8f0; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 800; }
 </style>
 
 <div class="group-page">
@@ -88,9 +77,13 @@
     <!-- Summary Stats -->
     @php
         $totalStudents = $studentClasses->count();
-        $groupAStudents = $studentClasses->filter(fn($sc) => isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'A');
-        $groupBStudents = $studentClasses->filter(fn($sc) => isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'B');
-        $unassignedStudents = $studentClasses->filter(fn($sc) => !isset($existingGroups[$sc->student_id]));
+        $groupACount = 0;
+        $groupBCount = 0;
+        foreach($existingGroups as $grp) {
+            if ($grp === 'A') $groupACount++;
+            if ($grp === 'B') $groupBCount++;
+        }
+        $unassignedCount = $totalStudents - $groupACount - $groupBCount;
     @endphp
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -98,28 +91,30 @@
             <div class="stat-icon bg-gray-100 text-gray-600"><i class="fas fa-users"></i></div>
             <div>
                 <div class="text-xs font-bold text-gray-500 uppercase">Total Siswa</div>
-                <div class="text-xl font-black text-gray-800" id="stat-total">{{ $totalStudents }}</div>
+                <div class="text-xl font-black text-gray-800">{{ $totalStudents }}</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon bg-blue-100 text-blue-600"><i class="fas fa-users-viewfinder"></i></div>
             <div>
                 <div class="text-xs font-bold text-gray-500 uppercase">Grup A</div>
-                <div class="text-xl font-black text-blue-700" id="stat-a">0</div>
+                <div class="text-xl font-black text-blue-700" id="stat-a">{{ $groupACount }}</div>
             </div>
         </div>
         <div class="stat-card">
             <div class="stat-icon bg-orange-100 text-orange-600"><i class="fas fa-book-reader"></i></div>
             <div>
                 <div class="text-xs font-bold text-gray-500 uppercase">Grup B</div>
-                <div class="text-xl font-black text-orange-700" id="stat-b">0</div>
+                <div class="text-xl font-black text-orange-700" id="stat-b">{{ $groupBCount }}</div>
             </div>
         </div>
-        <div class="stat-card" id="stat-card-u">
+        <div class="stat-card" id="stat-card-u" style="{{ $unassignedCount == 0 ? 'border-color: #a7f3d0; background: rgba(236,253,245,0.3);' : '' }}">
             <div class="stat-icon bg-red-100 text-red-600"><i class="fas fa-user-clock"></i></div>
             <div>
-                <div class="text-xs font-bold text-red-500 uppercase" id="label-u">Belum Dibagi</div>
-                <div class="text-xl font-black text-red-700" id="stat-u">0</div>
+                <div class="text-xs font-bold uppercase {{ $unassignedCount == 0 ? 'text-emerald-600' : 'text-red-500' }}" id="label-u">
+                    {{ $unassignedCount == 0 ? 'Selesai ✓' : 'Belum Dibagi' }}
+                </div>
+                <div class="text-xl font-black {{ $unassignedCount == 0 ? 'text-emerald-700' : 'text-red-700' }}" id="stat-u">{{ $unassignedCount }}</div>
             </div>
         </div>
     </div>
@@ -127,8 +122,8 @@
     <!-- Actions & Form -->
     <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6 flex flex-wrap justify-between items-center gap-4">
         <div>
-            <h3 class="font-bold text-gray-800 text-sm">Metode Pembagian</h3>
-            <p class="text-xs text-gray-500">Tarik nama siswa (Drag & Drop) atau gunakan tombol otomatis.</p>
+            <h3 class="font-bold text-gray-800 text-sm">Daftar Siswa</h3>
+            <p class="text-xs text-gray-500">Centang kotak Group A atau Group B pada masing-masing siswa.</p>
         </div>
         <div class="flex gap-3">
             <form action="{{ route('admin.block-schedule.groups.auto', $classroom->id) }}" method="POST" class="inline" id="autoAssignForm">
@@ -138,260 +133,57 @@
                 </button>
             </form>
             
-            <form action="{{ route('admin.block-schedule.groups.save', $classroom->id) }}" method="POST" id="saveGroupsForm">
-                @csrf
-                <div id="hiddenInputsContainer"></div>
-                <button type="submit" class="btn-action btn-save">
-                    <i class="fas fa-save"></i> Simpan Pembagian
-                </button>
-            </form>
+            <button type="button" class="btn-action btn-save" onclick="document.getElementById('saveGroupsForm').submit()">
+                <i class="fas fa-save"></i> Simpan Pembagian
+            </button>
         </div>
     </div>
 
-    <!-- Unassigned Pool -->
-    <div class="panel mb-6 border border-gray-200">
-        <div class="panel-header panel-header-u">
-            <h3 class="font-bold"><i class="fas fa-users mr-2"></i> Belum Dibagi</h3>
-            <div class="count-badge" id="badge-u">0</div>
-        </div>
-        <div class="p-4 bg-gray-50">
-            <div class="dropzone dropzone-unassigned flex flex-wrap gap-2" id="pool-u" data-group="u">
-                @foreach($unassignedStudents as $sc)
+    <!-- Student List Panel -->
+    <div class="panel mb-6">
+        <form action="{{ route('admin.block-schedule.groups.save', $classroom->id) }}" method="POST" id="saveGroupsForm">
+            @csrf
+            
+            <div class="p-4 bg-gray-50/50">
+                @foreach($studentClasses as $sc)
                     @if($sc->student)
-                    <div class="student-card w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.33%-0.5rem)] lg:w-[calc(25%-0.5rem)]" draggable="true" data-id="{{ $sc->student_id }}">
-                        <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
-                        <div class="avatar">{{ strtoupper(substr($sc->student->full_name ?? '', 0, 1)) }}</div>
-                        <div class="student-info">
-                            <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
-                            <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
+                    @php
+                        $group = $existingGroups[$sc->student_id] ?? null;
+                    @endphp
+                    <div class="student-row">
+                        <div class="flex items-center gap-4 flex-1">
+                            <div class="avatar">{{ strtoupper(substr($sc->student->full_name ?? '', 0, 1)) }}</div>
+                            <div class="student-info">
+                                <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
+                                <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
+                            </div>
                         </div>
-                        <div class="group-options" onclick="event.stopPropagation()">
-                            <label class="text-blue-700">Group A <input type="checkbox" class="w-4 h-4 text-blue-600 rounded chk-a" value="pool-a" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'A') ? 'checked' : '' }}></label>
+                        
+                        <div class="checkbox-group">
+                            <label class="chk-a-label">
+                                Group A 
+                                <input type="checkbox" name="groups[{{ $sc->student_id }}]" value="A" class="custom-checkbox chk-a" data-id="{{ $sc->student_id }}" onchange="toggleCheck(this)" {{ $group === 'A' ? 'checked' : '' }}>
+                            </label>
                             <span class="text-gray-300">|</span>
-                            <label class="text-orange-700">Group B <input type="checkbox" class="w-4 h-4 text-orange-600 rounded chk-b" value="pool-b" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'B') ? 'checked' : '' }}></label>
+                            <label class="chk-b-label">
+                                Group B 
+                                <input type="checkbox" name="groups[{{ $sc->student_id }}]" value="B" class="custom-checkbox chk-b" data-id="{{ $sc->student_id }}" onchange="toggleCheck(this)" {{ $group === 'B' ? 'checked' : '' }}>
+                            </label>
                         </div>
                     </div>
                     @endif
                 @endforeach
             </div>
-        </div>
-    </div>
-
-    <!-- Group Panels A & B -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Group A -->
-        <div class="panel border border-blue-200">
-            <div class="panel-header panel-header-a">
-                <h3 class="font-bold"><i class="fas fa-users-viewfinder mr-2"></i> GRUP A</h3>
-                <div class="count-badge" id="badge-a">0</div>
-            </div>
-            <div class="p-4 bg-blue-50/30 flex-1">
-                <div class="dropzone dropzone-a h-full" id="pool-a" data-group="A">
-                    @foreach($groupAStudents as $sc)
-                        @if($sc->student)
-                        <div class="student-card" draggable="true" data-id="{{ $sc->student_id }}">
-                            <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
-                            <div class="avatar">{{ strtoupper(substr($sc->student->full_name ?? '', 0, 1)) }}</div>
-                            <div class="student-info">
-                                <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
-                                <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
-                            </div>
-                            <div class="group-options" onclick="event.stopPropagation()">
-                                <label class="text-blue-700">Group A <input type="checkbox" class="w-4 h-4 text-blue-600 rounded chk-a" value="pool-a" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'A') ? 'checked' : '' }}></label>
-                                <span class="text-gray-300">|</span>
-                                <label class="text-orange-700">Group B <input type="checkbox" class="w-4 h-4 text-orange-600 rounded chk-b" value="pool-b" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'B') ? 'checked' : '' }}></label>
-                            </div>
-                        </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-        <!-- Group B -->
-        <div class="panel border border-orange-200">
-            <div class="panel-header panel-header-b">
-                <h3 class="font-bold"><i class="fas fa-book-reader mr-2"></i> GRUP B</h3>
-                <div class="count-badge" id="badge-b">0</div>
-            </div>
-            <div class="p-4 bg-orange-50/30 flex-1">
-                <div class="dropzone dropzone-b h-full" id="pool-b" data-group="B">
-                    @foreach($groupBStudents as $sc)
-                        @if($sc->student)
-                        <div class="student-card" draggable="true" data-id="{{ $sc->student_id }}">
-                            <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
-                            <div class="avatar">{{ strtoupper(substr($sc->student->full_name ?? '', 0, 1)) }}</div>
-                            <div class="student-info">
-                                <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
-                                <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
-                            </div>
-                            <div class="group-options" onclick="event.stopPropagation()">
-                                <label class="text-blue-700">Group A <input type="checkbox" class="w-4 h-4 text-blue-600 rounded chk-a" value="pool-a" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'A') ? 'checked' : '' }}></label>
-                                <span class="text-gray-300">|</span>
-                                <label class="text-orange-700">Group B <input type="checkbox" class="w-4 h-4 text-orange-600 rounded chk-b" value="pool-b" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'B') ? 'checked' : '' }}></label>
-                            </div>
-                        </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const dropzones = document.querySelectorAll('.dropzone');
-        let draggedItem = null;
-
-        // Attach drag events to ALL student cards (including initial ones)
-        function initDraggable(card) {
-            card.addEventListener('dragstart', function() {
-                draggedItem = this;
-                setTimeout(() => this.style.opacity = '0.5', 0);
-            });
-            card.addEventListener('dragend', function() {
-                setTimeout(() => {
-                    this.style.opacity = '1';
-                    draggedItem = null;
-                }, 0);
-                
-                // Update checkboxes when dragged
-                const parentDropzone = this.closest('.dropzone');
-                if (parentDropzone) {
-                    const chkA = this.querySelector('.chk-a');
-                    const chkB = this.querySelector('.chk-b');
-                    
-                    if (parentDropzone.id === 'pool-a') {
-                        if (chkA) chkA.checked = true;
-                        if (chkB) chkB.checked = false;
-                    } else if (parentDropzone.id === 'pool-b') {
-                        if (chkA) chkA.checked = false;
-                        if (chkB) chkB.checked = true;
-                    } else {
-                        if (chkA) chkA.checked = false;
-                        if (chkB) chkB.checked = false;
-                    }
-                }
-                
-                window.updateCounts();
-            });
-        }
-
-        document.querySelectorAll('.student-card').forEach(card => initDraggable(card));
-
-        // Dropzone events
-        dropzones.forEach(zone => {
-            zone.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.classList.add('drag-over');
-            });
-            zone.addEventListener('dragleave', function() {
-                this.classList.remove('drag-over');
-            });
-            zone.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('drag-over');
-                if (draggedItem) {
-                    if (this.id === 'pool-u') {
-                        draggedItem.className = 'student-card w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.33%-0.5rem)] lg:w-[calc(25%-0.5rem)]';
-                    } else {
-                        draggedItem.className = 'student-card';
-                    }
-                    draggedItem.setAttribute('draggable', 'true');
-                    this.appendChild(draggedItem);
-                    
-                    // Update checkboxes when dropped
-                    const chkA = draggedItem.querySelector('.chk-a');
-                    const chkB = draggedItem.querySelector('.chk-b');
-                    
-                    if (this.id === 'pool-a') {
-                        if (chkA) chkA.checked = true;
-                        if (chkB) chkB.checked = false;
-                    } else if (this.id === 'pool-b') {
-                        if (chkA) chkA.checked = false;
-                        if (chkB) chkB.checked = true;
-                    } else {
-                        if (chkA) chkA.checked = false;
-                        if (chkB) chkB.checked = false;
-                    }
-                    
-                    updateCounts();
-                }
-            });
-        });
-
-        // Save form handler — inject hidden inputs before submit
-        document.getElementById('saveGroupsForm').addEventListener('submit', function(e) {
-            const container = document.getElementById('hiddenInputsContainer');
-            container.innerHTML = '';
-
-            const cardsA = document.querySelectorAll('#pool-a .student-card');
-            const cardsB = document.querySelectorAll('#pool-b .student-card');
-
-            if (cardsA.length === 0 && cardsB.length === 0) {
-                e.preventDefault();
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire('Perhatian', 'Belum ada siswa yang dibagi ke Grup A atau B.', 'warning');
-                } else {
-                    alert('Belum ada siswa yang dibagi ke Grup A atau B.');
-                }
-                return;
-            }
-
-            cardsA.forEach(card => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = `groups[${card.dataset.id}]`;
-                input.value = 'A';
-                container.appendChild(input);
-            });
-
-            cardsB.forEach(card => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = `groups[${card.dataset.id}]`;
-                input.value = 'B';
-                container.appendChild(input);
-            });
-        });
-
-        window.updateCounts = function updateCounts() {
-            const countA = document.getElementById('pool-a').querySelectorAll('.student-card').length;
-            const countB = document.getElementById('pool-b').querySelectorAll('.student-card').length;
-            const countU = document.getElementById('pool-u').querySelectorAll('.student-card').length;
-
-            document.getElementById('stat-a').innerText = countA;
-            document.getElementById('stat-b').innerText = countB;
-            document.getElementById('stat-u').innerText = countU;
-            
-            document.getElementById('badge-a').innerText = countA;
-            document.getElementById('badge-b').innerText = countB;
-            document.getElementById('badge-u').innerText = countU;
-
-            const statCardU = document.getElementById('stat-card-u');
-            if (countU === 0) {
-                statCardU.style.borderColor = '#a7f3d0';
-                statCardU.style.background = 'rgba(236,253,245,0.3)';
-                document.getElementById('label-u').innerText = 'Selesai ✓';
-                document.getElementById('label-u').className = 'text-xs font-bold text-emerald-600 uppercase';
-                document.getElementById('stat-u').className = 'text-xl font-black text-emerald-700';
-            } else {
-                statCardU.style.borderColor = '';
-                statCardU.style.background = '';
-                document.getElementById('label-u').innerText = 'Belum Dibagi';
-                document.getElementById('label-u').className = 'text-xs font-bold text-red-500 uppercase';
-                document.getElementById('stat-u').className = 'text-xl font-black text-red-700';
-            }
-        }
-
-        updateCounts();
-    });
-
     function confirmAutoAssign() {
         Swal.fire({
             title: 'Bagi Otomatis (50:50)?',
-            text: "Ini akan mengatur ulang semua grup A dan B. Lanjutkan?",
+            text: "Ini akan mengatur ulang semua grup A dan B berdasarkan urutan nama. Lanjutkan?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#7c3aed',
@@ -405,35 +197,64 @@
         });
     }
 
-    // Fungsi toggle checkbox untuk pindah grup cepat
-    window.toggleGroup = function(checkbox) {
-        const card = checkbox.closest('.student-card');
-        const isChecked = checkbox.checked;
+    // Toggle behavior: Ensure only one checkbox is checked per student
+    window.toggleCheck = function(checkbox) {
+        const groupContainer = checkbox.closest('.checkbox-group');
+        const otherCheckbox = groupContainer.querySelector('input[type="checkbox"]:not([value="' + checkbox.value + '"])');
         
-        // Uncheck the other checkbox
-        const allCheckboxes = card.querySelectorAll('input[type="checkbox"]');
-        allCheckboxes.forEach(chk => {
-            if (chk !== checkbox) chk.checked = false;
+        if (checkbox.checked) {
+            otherCheckbox.checked = false;
+        }
+        
+        updateCounts();
+    };
+
+    function updateCounts() {
+        let countA = 0;
+        let countB = 0;
+        const total = {{ $totalStudents }};
+        
+        document.querySelectorAll('.chk-a').forEach(chk => {
+            if (chk.checked) countA++;
+        });
+        document.querySelectorAll('.chk-b').forEach(chk => {
+            if (chk.checked) countB++;
         });
         
-        // Tentukan target
-        let targetId = 'pool-u';
-        if (isChecked) {
-            targetId = checkbox.value;
-        }
+        let countU = total - countA - countB;
+        if (countU < 0) countU = 0;
         
-        const targetDropzone = document.getElementById(targetId);
-        if (targetDropzone && card) {
-            targetDropzone.appendChild(card);
-            
-            if (targetId === 'pool-u') {
-                card.className = 'student-card w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.33%-0.5rem)] lg:w-[calc(25%-0.5rem)]';
-            } else {
-                card.className = 'student-card';
-            }
-            
-            window.updateCounts();
+        document.getElementById('stat-a').innerText = countA;
+        document.getElementById('stat-b').innerText = countB;
+        document.getElementById('stat-u').innerText = countU;
+        
+        const statCardU = document.getElementById('stat-card-u');
+        if (countU === 0) {
+            statCardU.style.borderColor = '#a7f3d0';
+            statCardU.style.background = 'rgba(236,253,245,0.3)';
+            document.getElementById('label-u').innerText = 'Selesai ✓';
+            document.getElementById('label-u').className = 'text-xs font-bold text-emerald-600 uppercase';
+            document.getElementById('stat-u').className = 'text-xl font-black text-emerald-700';
+        } else {
+            statCardU.style.borderColor = 'rgba(0,0,0,0.05)';
+            statCardU.style.background = 'white';
+            document.getElementById('label-u').innerText = 'Belum Dibagi';
+            document.getElementById('label-u').className = 'text-xs font-bold text-red-500 uppercase';
+            document.getElementById('stat-u').className = 'text-xl font-black text-red-700';
         }
-    };
+    }
+    
+    // Prevent form submission if no student is selected
+    document.getElementById('saveGroupsForm').addEventListener('submit', function(e) {
+        let hasAnyChecked = false;
+        document.querySelectorAll('.custom-checkbox').forEach(chk => {
+            if (chk.checked) hasAnyChecked = true;
+        });
+        
+        if (!hasAnyChecked) {
+            e.preventDefault();
+            Swal.fire('Perhatian', 'Belum ada siswa yang dibagi ke Grup A atau B.', 'warning');
+        }
+    });
 </script>
 @endsection

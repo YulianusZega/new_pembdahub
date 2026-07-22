@@ -54,7 +54,8 @@
             </div>
         </div>
 
-        {{-- Alur Panduan 4 Tahapan Utama (Selalu Muncul di Bagian Atas / Master Guide) --}}
+        @if($contracts->isEmpty())
+        {{-- Alur Panduan 4 Tahapan Utama (Muncul saat belum ada pengajuan sebagai panduan) --}}
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-slate-200">
             <div class="mb-6 pb-5 border-b-2 border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
@@ -124,7 +125,6 @@
             </div>
         </div>
 
-        @if($contracts->isEmpty())
         <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl border-2 border-slate-200 text-center space-y-5">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-800 border-2 border-slate-300 text-2xl shadow-sm">
                 <i class="fas fa-folder-open"></i>

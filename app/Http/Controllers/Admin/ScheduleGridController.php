@@ -205,7 +205,7 @@ class ScheduleGridController extends Controller
             'subject_id' => 'required|exists:subjects,id',
             'classroom_id' => 'required|exists:classrooms,id',
             'time_slot_id' => 'required|exists:time_slots,id',
-            'duration_slots' => 'required|integer|min:1|max:4',
+            'duration_slots' => 'required|integer|min:1|max:12',
             'day_of_week' => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,monday,tuesday,wednesday,thursday,friday,saturday',
             'academic_year_id' => 'required|exists:academic_years,id',
             'semester' => 'required|in:ganjil,genap',
@@ -349,7 +349,7 @@ class ScheduleGridController extends Controller
         $validated = $request->validate([
             'teacher_id' => 'required|exists:teachers,id',
             'subject_id' => 'required|exists:subjects,id',
-            'duration_slots' => 'nullable|integer|min:1|max:4',
+            'duration_slots' => 'nullable|integer|min:1|max:12',
             'teaching_assignment_id' => 'nullable|exists:teaching_assignments,id',
             'group_code' => 'nullable|string|max:50',
         ]);
@@ -669,87 +669,98 @@ class ScheduleGridController extends Controller
             return 'Time slot tidak ditemukan.';
         }
 
-        $occupiedSlotIds = [$timeSlotId];
-        if ($durationSlots > 1) {
-            $currentSlotOrder = $timeSlot->slot_order;
-            $schoolId = $timeSlot->school_id;
-            $dayOfWeekEnglish = $this->mapDayToEnglish($dayOfWeek);
+        $schoolId = $timeSlot->school_id;
+        $dayOfWeekEnglish = $this->mapDayToEnglish($dayOfWeek);
 
-            $requiredSlots = $durationSlots - 1;
-            $foundSlots = 0;
-            $searchOrder = $currentSlotOrder;
+        // Fetch ALL time slots for this school and day, ordered
+        $allDaySlots = TimeSlot::where('school_id', $schoolId)
+            ->where('academic_year_id', $academicYearId)
+            ->where('day_of_week', $dayOfWeekEnglish)
+            ->where('is_teaching_slot', true)
+            ->orderBy('slot_order')
+            ->get();
 
-            while ($foundSlots < $requiredSlots) {
-                $searchOrder++;
-                $nextSlot = TimeSlot::where('school_id', $schoolId)
-                    ->where('academic_year_id', $academicYearId)
-                    ->where('day_of_week', $dayOfWeekEnglish)
-                    ->where('slot_order', $searchOrder)
-                    ->first();
-
-                if (!$nextSlot) {
-                    return "Tidak cukup slot tersedia. Hanya ada " . ($foundSlots + 1) . " slot (termasuk istirahat).";
-                }
-
-                if (!$nextSlot->is_teaching_slot) {
-                    continue;
-                }
-
-                $occupiedSlotIds[] = $nextSlot->id;
-                $foundSlots++;
+        // 1. Target slots covered by the incoming schedule
+        $targetSlotIds = [];
+        $currentOrder = $timeSlot->slot_order;
+        
+        foreach ($allDaySlots as $slot) {
+            if ($slot->slot_order >= $currentOrder && count($targetSlotIds) < $durationSlots) {
+                $targetSlotIds[] = $slot->id;
             }
         }
 
-        // Query conflicts for ALL occupied slots
-        $conflictQuery = Schedule::where('academic_year_id', $academicYearId)
+        if (count($targetSlotIds) < $durationSlots) {
+            return "Tidak cukup slot tersedia. Hanya ada " . count($targetSlotIds) . " slot (termasuk istirahat).";
+        }
+
+        // 2. Fetch ALL schedules on this day for the classroom or teacher
+        $query = Schedule::where('academic_year_id', $academicYearId)
             ->where('semester', $semester)
-            ->where('day_of_week', $dayOfWeek)
-            ->whereIn('time_slot_id', $occupiedSlotIds);
+            ->where('day_of_week', $dayOfWeekEnglish)
+            ->where(function($q) use ($teacherId, $classroomId, $groupCode) {
+                $q->where('teacher_id', $teacherId)
+                  ->orWhere('classroom_id', $classroomId);
+                  
+                if ($groupCode) {
+                    $q->orWhere('group_code', $groupCode);
+                }
+            });
 
         if ($excludeScheduleId) {
-            $conflictQuery->where('id', '!=', $excludeScheduleId);
+            $query->where('id', '!=', $excludeScheduleId);
         }
 
-        $conflictQuery->where(function($query) use ($teacherId, $classroomId) {
-            $query->where('teacher_id', $teacherId)
-                  ->orWhere('classroom_id', $classroomId);
-        });
+        $existingSchedules = $query->with(['teacher', 'subject', 'classroom', 'timeSlot'])->get();
+        
+        // Track how many schedules exist per slot in this classroom
+        $classOccupancy = array_fill_keys($targetSlotIds, 0);
 
-        // If group_code is set, allow teacher conflicts if they share the same group code
-        if ($groupCode) {
-            $conflictQuery->where(function($q) use ($groupCode) {
-                $q->whereNull('group_code')
-                  ->orWhere('group_code', '!=', $groupCode);
-            });
-        }
-
-        // Fetch all conflicts to handle multiple schedules in the same slot (for Block System)
-        $conflicts = $conflictQuery->with(['teacher', 'subject', 'classroom', 'teachingAssignment', 'timeSlot'])->get();
-
-        if ($conflicts->count() > 0) {
-            // First, check if the SAME teacher is already teaching anywhere at this time
-            $teacherConflict = $conflicts->where('teacher_id', $teacherId)->first();
-            if ($teacherConflict) {
-                if ($teacherConflict->classroom_id == $classroomId) {
-                    return "Guru ini sudah memiliki jadwal pada kelas yang sama di slot ini.";
+        foreach ($existingSchedules as $schedule) {
+            if (!$schedule->timeSlot) continue;
+            
+            $startOrder = $schedule->timeSlot->slot_order;
+            $duration = $schedule->duration_slots;
+            
+            // Calculate covered slots for this existing schedule
+            $coveredSlotIds = [];
+            foreach ($allDaySlots as $slot) {
+                if ($slot->slot_order >= $startOrder && count($coveredSlotIds) < $duration) {
+                    $coveredSlotIds[] = $slot->id;
                 }
-                return "Guru {$teacherConflict->teacher->full_name} sudah mengajar {$teacherConflict->subject->subject_name} di kelas {$teacherConflict->classroom->class_name} pada slot " . ($teacherConflict->timeSlot->slot_name ?? 'yang sama') . ".";
             }
+
+            // Check intersection with target slots
+            $overlap = array_intersect($targetSlotIds, $coveredSlotIds);
             
-            // Second, check classroom conflicts
-            $classroomConflicts = $conflicts->where('classroom_id', $classroomId);
-            
-            if ($classroomConflicts->count() > 0) {
-                // A classroom can only have a MAX of 2 schedules in the same slot (Group A and Group B)
-                if ($classroomConflicts->count() >= 2) {
-                    return "Kelas ini sudah penuh (maksimal 2 jadwal blok pada waktu bersamaan).";
+            if (!empty($overlap)) {
+                // There is an overlap!
+                
+                // A. Check teacher conflict
+                if ($schedule->teacher_id == $teacherId) {
+                    // Check group code exception
+                    if ($groupCode && $schedule->group_code === $groupCode) {
+                        // It's allowed to overlap for the same teacher if group code matches (Gabungan)
+                    } else {
+                        if ($schedule->classroom_id == $classroomId) {
+                            return "Guru ini sudah memiliki jadwal pada kelas yang sama di waktu yang bersinggungan.";
+                        }
+                        return "Guru {$schedule->teacher->full_name} sudah mengajar {$schedule->subject->subject_name} di kelas {$schedule->classroom->class_name} pada waktu yang bersinggungan.";
+                    }
                 }
                 
-                // If there is exactly 1 schedule in the classroom, we allow it.
-                // This accommodates the Block System (Group A and Group B) seamlessly
-                // even if the user hasn't strictly configured the block_type in Teaching Assignments.
-                // The teacher conflict is already checked above, so this guarantees different teachers.
-                return null;
+                // B. Check classroom conflict
+                if ($schedule->classroom_id == $classroomId) {
+                    foreach ($overlap as $slotId) {
+                        if (isset($classOccupancy[$slotId])) {
+                            $classOccupancy[$slotId]++;
+                            if ($classOccupancy[$slotId] >= 2) {
+                                $slotName = $allDaySlots->firstWhere('id', $slotId)->slot_name ?? '';
+                                return "Kelas ini sudah penuh (maksimal 2 jadwal blok). Waktu bersinggungan di slot: " . $slotName;
+                            }
+                        }
+                    }
+                }
             }
         }
 

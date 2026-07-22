@@ -3,25 +3,22 @@
 @section('content')
 <div class="space-y-8 pb-12">
     {{-- Header Banner Section --}}
-    <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-emerald-950/20 border border-emerald-700/40 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div class="absolute -right-12 -top-12 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        
-        <div class="relative z-10 space-y-2">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-emerald-200 text-xs sm:text-sm font-bold uppercase tracking-wider">
-                <i class="fas fa-file-signature text-amber-400"></i>
+    <div class="bg-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border-2 border-slate-800 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div class="space-y-3 relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-emerald-500 text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider shadow-sm">
+                <i class="fas fa-file-signature"></i>
                 <span>Modul Kinerja Guru & Staff</span>
             </div>
-            <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
-                <span>Perjanjian Kinerja Saya</span>
+            <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                Perjanjian Kinerja Saya
             </h2>
-            <p class="text-emerald-100/90 font-medium text-sm sm:text-base max-w-2xl leading-relaxed">
+            <p class="text-slate-200 font-bold text-sm sm:text-base max-w-2xl leading-relaxed">
                 Kelola dokumen komitmen kinerja riil, pantau tahapan verifikasi secara langsung, serta periksa hasil evaluasi akhir Anda.
             </p>
         </div>
         
         <div class="relative z-10 shrink-0">
-            <a href="{{ route('guru.performance_contracts.create') }}" class="inline-flex items-center gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-5 py-3.5 rounded-2xl text-sm sm:text-base font-black transition-all shadow-lg shadow-emerald-600/30 hover:shadow-xl hover:-translate-y-0.5 border border-emerald-400/50">
+            <a href="{{ route('guru.performance_contracts.create') }}" class="inline-flex items-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 hover:text-white px-6 py-4 rounded-2xl text-sm sm:text-base font-black transition-all shadow-lg shadow-emerald-500/30 border-2 border-emerald-400">
                 <i class="fas fa-plus text-base"></i> Buat Kontrak Baru
             </a>
         </div>
@@ -29,19 +26,19 @@
 
     {{-- Alerts --}}
     @if(session('success'))
-        <div class="bg-emerald-50 border-2 border-emerald-300 text-emerald-900 px-5 py-4 rounded-2xl flex items-center gap-4 shadow-sm">
-            <div class="bg-emerald-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 shadow-md shadow-emerald-600/30">
+        <div class="bg-emerald-100 border-2 border-emerald-500 text-emerald-950 px-5 py-4 rounded-2xl flex items-center gap-4 shadow-sm font-bold text-sm sm:text-base">
+            <div class="bg-emerald-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 shadow-md">
                 <i class="fas fa-check"></i>
             </div>
-            <p class="font-bold text-sm sm:text-base">{{ session('success') }}</p>
+            <p>{{ session('success') }}</p>
         </div>
     @endif
     @if(session('error'))
-        <div class="bg-rose-50 border-2 border-rose-300 text-rose-900 px-5 py-4 rounded-2xl flex items-center gap-4 shadow-sm">
-            <div class="bg-rose-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 shadow-md shadow-rose-600/30">
+        <div class="bg-rose-100 border-2 border-rose-500 text-rose-950 px-5 py-4 rounded-2xl flex items-center gap-4 shadow-sm font-bold text-sm sm:text-base">
+            <div class="bg-rose-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 shadow-md">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
-            <p class="font-bold text-sm sm:text-base">{{ session('error') }}</p>
+            <p>{{ session('error') }}</p>
         </div>
     @endif
 
@@ -49,27 +46,97 @@
     <div class="space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
             <div>
-                <h3 class="text-lg sm:text-xl font-black text-gray-900 flex items-center gap-2.5">
+                <h3 class="text-lg sm:text-xl font-black text-slate-900 flex items-center gap-2.5">
                     <i class="fas fa-tasks text-emerald-600"></i>
                     <span>Tahapan & Progress Pengajuan Perjanjian Kinerja</span>
                 </h3>
-                <p class="text-sm sm:text-base text-gray-600 font-medium mt-1">Pantau posisi status dan riwayat tahapan dari setiap dokumen perjanjian yang telah Anda ajukan.</p>
+                <p class="text-sm sm:text-base text-slate-700 font-bold mt-1">Pantau posisi status dan riwayat tahapan dari setiap dokumen perjanjian yang telah Anda ajukan.</p>
+            </div>
+        </div>
+
+        {{-- Alur Panduan 4 Tahapan Utama (Selalu Muncul di Bagian Atas / Master Guide) --}}
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-slate-200">
+            <div class="mb-6 pb-5 border-b-2 border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <span class="text-xs font-black px-3 py-1 bg-indigo-100 text-indigo-900 rounded-lg uppercase tracking-wider block w-fit mb-1 border border-indigo-300">Panduan Alur Verifikasi</span>
+                    <h4 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                        <i class="fas fa-sitemap text-indigo-600"></i>
+                        <span>4 Tahapan Proses Pengajuan & Verifikasi Perjanjian Kinerja</span>
+                    </h4>
+                </div>
+                <div class="text-xs sm:text-sm font-black text-slate-800 bg-slate-100 px-3.5 py-2 rounded-xl border border-slate-300">
+                    <i class="fas fa-info-circle text-indigo-600 mr-1"></i> Setiap perjanjian yang diajukan akan diproses melalui 4 tahapan ini
+                </div>
+            </div>
+
+            {{-- Visual Stepper Horizontal Lingkaran Bulat --}}
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 relative pt-2">
+                {{-- Garis Penghubung Horizontal (Membelah Tengah Lingkaran di Desktop) --}}
+                <div class="hidden sm:block absolute top-7 left-[12%] right-[12%] h-1.5 bg-slate-300 rounded-full z-0"></div>
+
+                {{-- [1] Pengajuan --}}
+                <div class="relative z-10 flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-2.5">
+                    <div class="w-12 h-12 rounded-full bg-slate-900 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-100 border-2 border-slate-700">
+                        1
+                    </div>
+                    <div>
+                        <span class="text-xs font-black text-slate-900 uppercase tracking-wider block mb-0.5">[1] Tahap 1</span>
+                        <h5 class="font-black text-base sm:text-lg text-slate-900">Pengajuan Kinerja</h5>
+                        <p class="text-xs sm:text-sm font-bold text-slate-700 mt-1">Guru menyusun komitmen & mengajukan form perjanjian ke sistem.</p>
+                    </div>
+                </div>
+
+                {{-- [2] Persetujuan Kasek --}}
+                <div class="relative z-10 flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-2.5">
+                    <div class="w-12 h-12 rounded-full bg-slate-900 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-100 border-2 border-slate-700">
+                        2
+                    </div>
+                    <div>
+                        <span class="text-xs font-black text-slate-900 uppercase tracking-wider block mb-0.5">[2] Tahap 2</span>
+                        <h5 class="font-black text-base sm:text-lg text-slate-900">Persetujuan Kasek</h5>
+                        <p class="text-xs sm:text-sm font-bold text-slate-700 mt-1">Kepala Sekolah memeriksa, memverifikasi, & menyetujui pengajuan.</p>
+                    </div>
+                </div>
+
+                {{-- [3] Persetujuan Yayasan --}}
+                <div class="relative z-10 flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-2.5">
+                    <div class="w-12 h-12 rounded-full bg-slate-900 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-100 border-2 border-slate-700">
+                        3
+                    </div>
+                    <div>
+                        <span class="text-xs font-black text-slate-900 uppercase tracking-wider block mb-0.5">[3] Tahap 3</span>
+                        <h5 class="font-black text-base sm:text-lg text-slate-900">Persetujuan Yayasan</h5>
+                        <p class="text-xs sm:text-sm font-bold text-slate-700 mt-1">Yayasan memberikan persetujuan akhir agar dokumen resmi berlaku.</p>
+                    </div>
+                </div>
+
+                {{-- [4] Evaluasi --}}
+                <div class="relative z-10 flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-2.5">
+                    <div class="w-12 h-12 rounded-full bg-slate-900 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-100 border-2 border-slate-700">
+                        4
+                    </div>
+                    <div>
+                        <span class="text-xs font-black text-slate-900 uppercase tracking-wider block mb-0.5">[4] Tahap 4</span>
+                        <h5 class="font-black text-base sm:text-lg text-slate-900">Evaluasi & Penilaian</h5>
+                        <p class="text-xs sm:text-sm font-bold text-slate-700 mt-1">Penilaian kinerja akhir oleh pimpinan di akhir tahun pelajaran.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         @if($contracts->isEmpty())
-        <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl border-2 border-dashed border-gray-300 text-center space-y-5">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 text-2xl shadow-inner">
-                <i class="fas fa-layer-group"></i>
+        <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-xl border-2 border-slate-200 text-center space-y-5">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-800 border-2 border-slate-300 text-2xl shadow-sm">
+                <i class="fas fa-folder-open"></i>
             </div>
             <div class="max-w-xl mx-auto space-y-2">
-                <h4 class="text-lg sm:text-xl font-black text-gray-900">Belum Ada Pengajuan Perjanjian Kinerja</h4>
-                <p class="text-gray-600 font-medium text-sm sm:text-base leading-relaxed">
-                    Setiap perjanjian kinerja akan melalui 4 (empat) tahapan utama: <strong class="text-gray-900">[1] Pengajuan Kinerja &rarr; [2] Persetujuan Kasek &rarr; [3] Persetujuan Yayasan &rarr; [4] Evaluasi</strong>. Silakan buat kontrak baru terlebih dahulu.
+                <h4 class="text-lg sm:text-xl font-black text-slate-900">Belum Ada Dokumen Perjanjian Kinerja yang Diajukan</h4>
+                <p class="text-slate-700 font-bold text-sm sm:text-base leading-relaxed">
+                    Anda belum membuat dokumen perjanjian kinerja untuk tahun pelajaran ini. Silakan klik tombol di bawah untuk menyusun dan mengajukan komitmen kinerja baru.
                 </p>
             </div>
             <div>
-                <a href="{{ route('guru.performance_contracts.create') }}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base px-6 py-3 rounded-2xl shadow-md transition-all">
+                <a href="{{ route('guru.performance_contracts.create') }}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-sm sm:text-base px-6 py-3.5 rounded-2xl shadow-md transition-all border-2 border-emerald-500">
                     <i class="fas fa-plus"></i> Buat Perjanjian Sekarang
                 </a>
             </div>

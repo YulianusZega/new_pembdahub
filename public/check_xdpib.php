@@ -3,12 +3,12 @@ require 'vendor/autoload.php';
 $app = require_once 'bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
-$results = \Illuminate\Support\Facades\DB::table('schedules as s')
+$results = $app['db']->table('schedules as s')
     ->join('time_slots as ts', 's.time_slot_id', '=', 'ts.id')
     ->leftJoin('teaching_assignments as ta', 's.teaching_assignment_id', '=', 'ta.id')
     ->leftJoin('subjects as sub', 'ta.subject_id', '=', 'sub.id')
     ->leftJoin('teachers as t', 'ta.teacher_id', '=', 't.id')
-    ->whereIn('s.classroom_id', \Illuminate\Support\Facades\DB::table('classrooms')->where('class_name', 'like', '%X DPIB%')->pluck('id'))
+    ->whereIn('s.classroom_id', $app['db']->table('classrooms')->where('class_name', 'like', '%X DPIB%')->pluck('id'))
     ->select('s.id', 's.day_of_week', 'ts.slot_order', 'sub.name as mapel_name', 't.full_name as guru_name')
     ->orderBy('s.day_of_week')
     ->orderBy('ts.slot_order')

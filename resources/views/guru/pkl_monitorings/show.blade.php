@@ -208,7 +208,8 @@
                         
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Tanggal Monitoring <span class="text-rose-500">*</span></label>
-                            <input type="date" name="monitoring_date" required value="{{ date('Y-m-d') }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all">
+                            <input type="date" id="monitoring_date_input" name="monitoring_date" required value="{{ date('Y-m-d') }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all">
+                            <p id="period_indicator" class="text-xs text-indigo-600 font-semibold mt-2" style="display: none;">Laporan ini akan masuk sebagai: <span class="bg-indigo-100 px-2 py-0.5 rounded uppercase tracking-wider">Periode Ke-<span id="period_number">1</span></span></p>
                         </div>
 
                         <div>
@@ -237,4 +238,51 @@
 
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('monitoring_date_input');
+    const indicator = document.getElementById('period_indicator');
+    const periodNumberSpan = document.getElementById('period_number');
+
+    function calculatePeriod(dateString) {
+        if (!dateString) return null;
+        
+        const selectedDate = new Date(dateString);
+        // Base date is July 20, 2026
+        const baseDate = new Date('2026-07-20T00:00:00');
+        
+        // Reset time to start of day for accurate day diff
+        selectedDate.setHours(0,0,0,0);
+        baseDate.setHours(0,0,0,0);
+        
+        if (selectedDate < baseDate) {
+            return 1;
+        }
+        
+        const diffTime = Math.abs(selectedDate - baseDate);
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+        
+        // 13 days per period
+        let period = Math.floor(diffDays / 13) + 1;
+        return Math.min(8, period);
+    }
+
+    function updatePeriodIndicator() {
+        const period = calculatePeriod(dateInput.value);
+        if (period !== null) {
+            periodNumberSpan.textContent = period;
+            indicator.style.display = 'block';
+        } else {
+            indicator.style.display = 'none';
+        }
+    }
+
+    if (dateInput) {
+        dateInput.addEventListener('change', updatePeriodIndicator);
+        // Trigger on load
+        updatePeriodIndicator();
+    }
+});
+</script>
 @endsection

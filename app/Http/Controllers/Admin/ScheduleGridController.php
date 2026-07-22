@@ -723,31 +723,44 @@ class ScheduleGridController extends Controller
             });
         }
 
-        // Block scheduling: allow split+split in same classroom slot
-        // Load teachingAssignment to check existing block_type
-        $conflict = $conflictQuery->with(['teacher', 'subject', 'classroom', 'teachingAssignment'])->first();
+        // Fetch all conflicts to handle multiple schedules in the same slot (for Block System)
+        $conflicts = $conflictQuery->with(['teacher', 'subject', 'classroom', 'teachingAssignment', 'timeSlot'])->get();
 
-        if ($conflict) {
-            if ($conflict->classroom_id == $classroomId) {
-                // Block type check for classroom conflicts
+        if ($conflicts->count() > 0) {
+            // First, check if the SAME teacher is already teaching anywhere at this time
+            $teacherConflict = $conflicts->where('teacher_id', $teacherId)->first();
+            if ($teacherConflict) {
+                if ($teacherConflict->classroom_id == $classroomId) {
+                    return "Guru ini sudah memiliki jadwal pada kelas yang sama di slot ini.";
+                }
+                return "Guru {$teacherConflict->teacher->full_name} sudah mengajar {$teacherConflict->subject->subject_name} di kelas {$teacherConflict->classroom->class_name} pada slot " . ($teacherConflict->timeSlot->slot_name ?? 'yang sama') . ".";
+            }
+            
+            // Second, check classroom conflicts
+            $classroomConflicts = $conflicts->where('classroom_id', $classroomId);
+            
+            if ($classroomConflicts->count() > 0) {
+                // A classroom can only have a MAX of 2 schedules in the same slot (Group A and Group B)
+                if ($classroomConflicts->count() >= 2) {
+                    return "Kelas ini sudah penuh (maksimal 2 jadwal blok pada waktu bersamaan).";
+                }
+                
+                // If there is exactly 1 schedule in the classroom, check block type compatibility
+                $conflict = $classroomConflicts->first();
                 $existingBlockType = $conflict->teachingAssignment ? ($conflict->teachingAssignment->block_type ?? 'none') : 'none';
                 
                 // Allow if both are 'split' (different student groups, different places)
-                // OR if one is 'all' (Kelompok A) and the other is 'split' (Kelompok B) since they happen in alternating block weeks
+                // OR if one is 'all' (Kelompok A/Utama) and the other is 'split' (Kelompok B/Praktek)
                 if (
                     ($incomingBlockType === 'split' && $existingBlockType === 'split') ||
                     ($incomingBlockType === 'all' && $existingBlockType === 'split') ||
                     ($incomingBlockType === 'split' && $existingBlockType === 'all')
                 ) {
-                    // Check if teacher is different. If teacher is same, it's still a conflict (teacher can't be in 2 places).
-                    if ($conflict->teacher_id != $teacherId) {
-                        return null; // Bypass conflict!
-                    }
+                    // Bypass conflict! (Teacher is different, checked above)
+                    return null;
                 }
                 
                 return "Kelas ini sudah ada jadwal {$conflict->subject->subject_name} ({$conflict->teacher->full_name}) pada slot " . ($conflict->timeSlot->slot_name ?? 'yang sama') . ".";
-            } else {
-                return "Guru {$conflict->teacher->full_name} sudah mengajar {$conflict->subject->subject_name} di kelas {$conflict->classroom->class_name} pada slot " . ($conflict->timeSlot->slot_name ?? 'yang sama') . ".";
             }
         }
 

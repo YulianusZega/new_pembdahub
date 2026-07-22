@@ -106,7 +106,7 @@ class ScheduleExport implements FromArray, WithTitle, WithStyles, WithColumnWidt
                 $daySchedules->where('classroom_id', $this->classroomId);
             }
             
-            $schedules[$day] = $daySchedules->get()->keyBy('time_slot_id');
+            $schedules[$day] = $daySchedules->get()->groupBy('time_slot_id');
         }
         
         // Build grid rows - iterate through all possible slot orders
@@ -134,20 +134,23 @@ class ScheduleExport implements FromArray, WithTitle, WithStyles, WithColumnWidt
                 $timeSlot = $allTimeSlots[$day][$slotOrder] ?? null;
                 
                 if ($timeSlot) {
-                    $schedule = $schedules[$day][$timeSlot->id] ?? null;
+                    $schedulesInSlot = $schedules[$day][$timeSlot->id] ?? null;
                     
-                    if ($schedule) {
-                        $subjectName = $schedule->subject->name ?? $schedule->subject->subject_name ?? '-';
-                        $teacherName = $schedule->teacher->full_name ?? '-';
-                        $classroomName = $schedule->classroom->class_name ?? '-';
-                        $duration = $schedule->duration_slots > 1 ? " ({$schedule->duration_slots} jam)" : "";
+                    if ($schedulesInSlot && $schedulesInSlot->count() > 0) {
+                        $cellContents = [];
+                        foreach ($schedulesInSlot as $schedule) {
+                            $subjectName = $schedule->subject->name ?? $schedule->subject->subject_name ?? '-';
+                            $teacherName = $schedule->teacher->full_name ?? '-';
+                            $classroomName = $schedule->classroom->class_name ?? '-';
+                            $duration = $schedule->duration_slots > 1 ? " ({$schedule->duration_slots} jam)" : "";
+                            
+                            $cellContents[] = $subjectName . "\n" . 
+                                         $teacherName . "\n" . 
+                                         $classroomName . 
+                                         $duration;
+                        }
                         
-                        $cellContent = $subjectName . "\n" . 
-                                     $teacherName . "\n" . 
-                                     $classroomName . 
-                                     $duration;
-                        
-                        $row[] = $cellContent;
+                        $row[] = implode("\n---\n", $cellContents);
                     } else {
                         $row[] = '-';
                     }

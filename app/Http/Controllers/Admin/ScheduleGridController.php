@@ -117,7 +117,11 @@ class ScheduleGridController extends Controller
         
         foreach ($schedules as $schedule) {
             $key = $schedule->day_of_week . '_' . $schedule->time_slot_id . '_' . $schedule->classroom_id;
-            $scheduleGrid[$key] = $schedule;
+            
+            if (!isset($scheduleGrid[$key])) {
+                $scheduleGrid[$key] = [];
+            }
+            $scheduleGrid[$key][] = $schedule;
             
             // Pre-calculate blocked slots for multi-duration schedules
             if ($schedule->duration_slots > 1 && $schedule->timeSlot) {
@@ -130,7 +134,10 @@ class ScheduleGridController extends Controller
                 
                 foreach ($daySlots as $slot) {
                     $blockKey = $schedule->day_of_week . '_' . $slot->id . '_' . $schedule->classroom_id;
-                    $blockedSlots[$blockKey] = $schedule->id;
+                    if (!isset($blockedSlots[$blockKey])) {
+                        $blockedSlots[$blockKey] = [];
+                    }
+                    $blockedSlots[$blockKey][] = $schedule->id;
                 }
             }
         }
@@ -162,6 +169,14 @@ class ScheduleGridController extends Controller
         // Teachers and subjects will be loaded via AJAX when modal opens
         // This significantly improves initial page load time
         
+        // Get current rotation for block schedule
+        $blockSchedule = \App\Models\BlockSchedule::where('school_id', $selectedSchoolId)
+            ->where('academic_year_id', $selectedYearId)
+            ->where('semester_id', Semester::where('academic_year_id', $selectedYearId)->where('is_active', true)->first()->id ?? 0)
+            ->first();
+            
+        $currentRotation = $blockSchedule ? $blockSchedule->getActiveRotationForDate(\Carbon\Carbon::now()) : 'normal';
+        
         return view('admin.schedules.grid', compact(
             'academicYears',
             'schools',
@@ -176,7 +191,8 @@ class ScheduleGridController extends Controller
             'selectedSchoolId',
             'semester',
             'availableGrades',
-            'selectedGradeLevel'
+            'selectedGradeLevel',
+            'currentRotation'
         ));
     }
     

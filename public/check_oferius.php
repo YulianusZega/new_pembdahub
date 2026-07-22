@@ -7,18 +7,8 @@ $kernel->handle(Illuminate\Http\Request::capture());
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
 use App\Models\TeachingAssignment;
-use App\Models\Schedule;
 
-$tas = TeachingAssignment::with('subject')->where('classroom_id', 353)->get();
-$out = [];
+$tas = TeachingAssignment::with('subject')->where('classroom_id', 353)->where('teacher_id', 195)->get();
 foreach($tas as $ta) {
-    $plotted = Schedule::where('teaching_assignment_id', $ta->id)->sum('duration_slots');
-    $out[] = [
-        'id' => $ta->id,
-        'subject' => $ta->subject->code ?? $ta->subject->name ?? '',
-        'active' => $ta->is_active,
-        'jp' => $ta->hours_per_week,
-        'plotted' => $plotted
-    ];
+    echo "ID: " . $ta->id . " | Subj: " . $ta->subject->name . " | JP: " . $ta->hours_per_week . "\n";
 }
-echo json_encode($out);

@@ -89,7 +89,10 @@
                         <div class="p-5 hover:bg-slate-50 transition-colors">
                             <div class="flex flex-col sm:flex-row justify-between gap-4">
                                 <div>
-                                    <h4 class="font-bold text-slate-800">{{ $mon->monitoring_date->format('l, d F Y') }}</h4>
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="font-bold text-slate-800">{{ $mon->monitoring_date->format('l, d F Y') }}</h4>
+                                        <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] font-bold uppercase rounded-md tracking-wider">Periode Ke-{{ $mon->periode_ke }}</span>
+                                    </div>
                                     <p class="text-xs text-indigo-600 font-semibold mt-1"><i class="fas fa-building mr-1"></i> {{ $mon->dudi->name ?? 'Unknown' }} (Shift: {{ $mon->shift ?: '-' }})</p>
                                     <p class="text-sm text-slate-600 mt-3">{{ $mon->notes ?? 'Tidak ada catatan monitoring.' }}</p>
                                 </div>

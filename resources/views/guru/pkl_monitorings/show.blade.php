@@ -104,7 +104,10 @@
                     @forelse($monitorings as $mon)
                         <div class="p-5 border-b border-slate-100 last:border-0 flex flex-col sm:flex-row justify-between gap-4">
                             <div>
-                                <h4 class="font-bold text-slate-800">{{ $mon->monitoring_date->format('d F Y') }}</h4>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-bold text-slate-800">{{ $mon->monitoring_date->format('d F Y') }}</h4>
+                                    <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[10px] font-bold uppercase rounded-md tracking-wider">Periode Ke-{{ $mon->periode_ke }}</span>
+                                </div>
                                 <p class="text-sm text-slate-600 mt-1">{{ $mon->notes ?? 'Tidak ada catatan' }}</p>
                             </div>
                               <div class="flex gap-3 shrink-0">

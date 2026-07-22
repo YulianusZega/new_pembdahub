@@ -172,7 +172,7 @@ class ScheduleGridController extends Controller
         // Get current rotation for block schedule
         $blockSchedule = \App\Models\BlockSchedule::where('school_id', $selectedSchoolId)
             ->where('academic_year_id', $selectedYearId)
-            ->where('semester_id', Semester::where('academic_year_id', $selectedYearId)->where('is_active', true)->first()->id ?? 0)
+            ->where('semester_id', \App\Models\Semester::where('academic_year_id', $selectedYearId)->where('is_active', true)->first()->id ?? 0)
             ->first();
             
         $currentRotation = $blockSchedule ? $blockSchedule->getActiveRotationForDate(\Carbon\Carbon::now()) : 'normal';

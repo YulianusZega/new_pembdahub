@@ -20,10 +20,6 @@ $results = Illuminate\Support\Facades\DB::select("
     ORDER BY s.day_of_week, ts.slot_order
 ");
 
-echo "<pre>";
-echo "Jadwal Kelas X DPIB (SELURUH HARI) - RAW SQL\n";
-echo "============================\n";
-foreach ($results as $r) {
-    echo 'Hari: ' . $r->day_of_week . ' | Slot: ' . $r->slot_order . ' (' . $r->slot_name . ') | Mapel: ' . ($r->mapel_name ?: 'N/A') . ' | Guru: ' . ($r->guru_name ?: 'N/A') . "\n";
-}
-echo "</pre>";
+header('Content-Type: application/json');
+echo json_encode($results, JSON_PRETTY_PRINT);
+exit;

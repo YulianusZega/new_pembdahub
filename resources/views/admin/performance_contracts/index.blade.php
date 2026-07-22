@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 
 @section('content')
+@php
+    $routePrefix = ($isYayasanView ?? (auth()->user()->isSuperAdmin() || auth()->user()->isYayasan() || request()->routeIs('yayasan.*'))) ? 'yayasan.' : 'admin.';
+@endphp
 <div class="space-y-6">
     {{-- Header Section --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -23,6 +26,59 @@
             <p class="font-medium text-sm">{{ session('error') }}</p>
         </div>
     @endif
+
+    {{-- Navigation Tabs --}}
+    <div class="bg-white rounded-2xl p-2 sm:p-2.5 shadow-sm border border-gray-100 flex items-center gap-2 overflow-x-auto">
+        {{-- Semua --}}
+        <a href="{{ route($routePrefix . 'performance_contracts.index', ['tab' => 'all']) }}" 
+           class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 {{ ($tab ?? 'all') === 'all' ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-md shadow-gray-900/20' : 'bg-gray-50/80 hover:bg-gray-100 text-gray-600 hover:text-gray-900 border border-gray-200/60' }}">
+            <i class="fas fa-layer-group text-xs {{ ($tab ?? 'all') === 'all' ? 'text-gray-300' : 'text-gray-400' }}"></i>
+            <span>Semua</span>
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-black {{ ($tab ?? 'all') === 'all' ? 'bg-white/20 text-white' : 'bg-gray-200/80 text-gray-700' }}">
+                {{ $statusCounts['all'] ?? 0 }}
+            </span>
+        </a>
+
+        {{-- Setuju Yayasan --}}
+        <a href="{{ route($routePrefix . 'performance_contracts.index', ['tab' => 'approved_by_yayasan']) }}" 
+           class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 {{ ($tab ?? '') === 'approved_by_yayasan' ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20' : 'bg-gray-50/80 hover:bg-emerald-50 text-gray-600 hover:text-emerald-700 border border-gray-200/60 hover:border-emerald-200' }}">
+            <i class="fas fa-check-double text-xs {{ ($tab ?? '') === 'approved_by_yayasan' ? 'text-emerald-200' : 'text-emerald-500' }}"></i>
+            <span>Setuju Yayasan</span>
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-black {{ ($tab ?? '') === 'approved_by_yayasan' ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800' }}">
+                {{ $statusCounts['approved_by_yayasan'] ?? 0 }}
+            </span>
+        </a>
+
+        {{-- Setuju Kepala Sekolah --}}
+        <a href="{{ route($routePrefix . 'performance_contracts.index', ['tab' => 'approved_by_kepsek']) }}" 
+           class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 {{ ($tab ?? '') === 'approved_by_kepsek' ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/20' : 'bg-gray-50/80 hover:bg-blue-50 text-gray-600 hover:text-blue-700 border border-gray-200/60 hover:border-blue-200' }}">
+            <i class="fas fa-check-circle text-xs {{ ($tab ?? '') === 'approved_by_kepsek' ? 'text-blue-200' : 'text-blue-500' }}"></i>
+            <span>Setuju Kepala Sekolah</span>
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-black {{ ($tab ?? '') === 'approved_by_kepsek' ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-800' }}">
+                {{ $statusCounts['approved_by_kepsek'] ?? 0 }}
+            </span>
+        </a>
+
+        {{-- Di Ajukan --}}
+        <a href="{{ route($routePrefix . 'performance_contracts.index', ['tab' => 'submitted_to_kepsek']) }}" 
+           class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 {{ ($tab ?? '') === 'submitted_to_kepsek' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/20' : 'bg-gray-50/80 hover:bg-amber-50 text-gray-600 hover:text-amber-700 border border-gray-200/60 hover:border-amber-200' }}">
+            <i class="fas fa-paper-plane text-xs {{ ($tab ?? '') === 'submitted_to_kepsek' ? 'text-amber-200' : 'text-amber-500' }}"></i>
+            <span>Di Ajukan</span>
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-black {{ ($tab ?? '') === 'submitted_to_kepsek' ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-800' }}">
+                {{ $statusCounts['submitted_to_kepsek'] ?? 0 }}
+            </span>
+        </a>
+
+        {{-- Di Tolak --}}
+        <a href="{{ route($routePrefix . 'performance_contracts.index', ['tab' => 'rejected']) }}" 
+           class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 {{ ($tab ?? '') === 'rejected' ? 'bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-md shadow-rose-500/20' : 'bg-gray-50/80 hover:bg-rose-50 text-gray-600 hover:text-rose-700 border border-gray-200/60 hover:border-rose-200' }}">
+            <i class="fas fa-times-circle text-xs {{ ($tab ?? '') === 'rejected' ? 'text-rose-200' : 'text-rose-500' }}"></i>
+            <span>Di Tolak</span>
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-black {{ ($tab ?? '') === 'rejected' ? 'bg-white/20 text-white' : 'bg-rose-100 text-rose-800' }}">
+                {{ $statusCounts['rejected'] ?? 0 }}
+            </span>
+        </a>
+    </div>
 
     {{-- Table Card --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -75,7 +131,6 @@
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-2">
-                                @php $routePrefix = auth()->user()->isSuperAdmin() ? 'yayasan.' : 'admin.'; @endphp
                                 <a href="{{ route($routePrefix . 'performance_contracts.show', $contract->id) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 hover:border-indigo-600 transition-colors font-semibold text-xs shadow-sm">
                                     <i class="fas fa-search"></i> Periksa
                                 </a>
@@ -91,12 +146,46 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-5 py-12 text-center">
-                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-50 mb-4">
-                                <i class="fas fa-folder-open text-2xl text-gray-300"></i>
+                        <td colspan="6" class="px-5 py-16 text-center">
+                            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-50 border border-gray-100 mb-4">
+                                @if(($tab ?? 'all') === 'approved_by_yayasan')
+                                    <i class="fas fa-check-double text-2xl text-emerald-400"></i>
+                                @elseif(($tab ?? 'all') === 'approved_by_kepsek')
+                                    <i class="fas fa-check-circle text-2xl text-blue-400"></i>
+                                @elseif(($tab ?? 'all') === 'submitted_to_kepsek')
+                                    <i class="fas fa-paper-plane text-2xl text-amber-400"></i>
+                                @elseif(($tab ?? 'all') === 'rejected')
+                                    <i class="fas fa-times-circle text-2xl text-rose-400"></i>
+                                @else
+                                    <i class="fas fa-folder-open text-2xl text-gray-300"></i>
+                                @endif
                             </div>
-                            <h3 class="text-gray-900 font-semibold mb-1">Belum Ada Pengajuan</h3>
-                            <p class="text-gray-500 text-sm mb-4">Belum ada data pengajuan perjanjian kinerja untuk saat ini.</p>
+                            <h3 class="text-gray-900 font-bold mb-1">
+                                @if(($tab ?? 'all') === 'approved_by_yayasan')
+                                    Belum Ada Kontrak Disetujui Yayasan
+                                @elseif(($tab ?? 'all') === 'approved_by_kepsek')
+                                    Belum Ada Kontrak Disetujui Kepala Sekolah
+                                @elseif(($tab ?? 'all') === 'submitted_to_kepsek')
+                                    Belum Ada Kontrak yang Diajukan
+                                @elseif(($tab ?? 'all') === 'rejected')
+                                    Belum Ada Kontrak Ditolak
+                                @else
+                                    Belum Ada Pengajuan
+                                @endif
+                            </h3>
+                            <p class="text-gray-500 text-sm mb-4 max-w-md mx-auto">
+                                @if(($tab ?? 'all') === 'approved_by_yayasan')
+                                    Saat ini belum ada dokumen perjanjian kinerja yang telah mendapat persetujuan akhir dari Ketua Yayasan.
+                                @elseif(($tab ?? 'all') === 'approved_by_kepsek')
+                                    Saat ini belum ada dokumen perjanjian kinerja yang berstatus disetujui oleh Kepala Sekolah dan menunggu verifikasi Yayasan.
+                                @elseif(($tab ?? 'all') === 'submitted_to_kepsek')
+                                    Saat ini belum ada pengajuan baru dari guru yang menunggu pemeriksaan Kepala Sekolah.
+                                @elseif(($tab ?? 'all') === 'rejected')
+                                    Saat ini tidak ada pengajuan perjanjian kinerja yang dikembalikan atau ditolak.
+                                @else
+                                    Belum ada data pengajuan perjanjian kinerja untuk saat ini.
+                                @endif
+                            </p>
                         </td>
                     </tr>
                     @endforelse

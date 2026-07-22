@@ -3,12 +3,16 @@
 @section('content')
 <div class="space-y-6 max-w-5xl mx-auto pb-10">
     {{-- Header --}}
+@php
+    $isYayasanView = $isYayasanView ?? (auth()->user()->isSuperAdmin() || auth()->user()->isYayasan() || request()->routeIs('yayasan.*'));
+    $routePrefix = $isYayasanView ? 'yayasan.' : 'admin.';
+@endphp
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h2 class="text-2xl font-bold text-gray-800">Pemeriksaan Perjanjian Kinerja</h2>
             <p class="text-sm text-gray-500 mt-1">Evaluasi dokumen perjanjian kinerja yang diajukan oleh guru.</p>
         </div>
-        <a href="{{ route('admin.performance_contracts.index') }}" class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm">
+        <a href="{{ route($routePrefix . 'performance_contracts.index') }}" class="inline-flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
     </div>
@@ -75,9 +79,9 @@
                 $user = auth()->user();
                 $canApprove = false;
                 
-                if ($user->isSuperAdmin() && $contract->status == 'approved_by_kepsek') {
+                if ($isYayasanView && $contract->status == 'approved_by_kepsek') {
                     $canApprove = true; // Yayasan memproses setelah Kepsek
-                } elseif (!$user->isSuperAdmin() && $contract->status == 'submitted_to_kepsek') {
+                } elseif (!$isYayasanView && $contract->status == 'submitted_to_kepsek') {
                     $canApprove = true; // Kepsek memproses yang baru masuk
                 }
             @endphp
@@ -90,7 +94,7 @@
                         <i class="fas fa-gavel text-indigo-500"></i> Tindakan Persetujuan
                     </h3>
                     
-                    <form action="{{ route('admin.performance_contracts.process', $contract->id) }}" method="POST" id="approvalForm">
+                    <form action="{{ route($routePrefix . 'performance_contracts.process', $contract->id) }}" method="POST" id="approvalForm">
                         @csrf
                         <input type="hidden" name="action" id="actionInput" value="">
                         

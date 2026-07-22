@@ -577,9 +577,9 @@
                         <label class="block text-sm font-semibold text-purple-800 mb-3">
                             <i class="fas fa-clock mr-1"></i> Jumlah Jam Pelajaran (Berturut-turut)
                         </label>
-                        <div class="grid grid-cols-6 gap-2">
+                        <div class="flex overflow-x-auto gap-2 pb-2 hide-scrollbar">
                             @for($i=1; $i<=12; $i++)
-                            <label class="relative">
+                            <label class="relative flex-shrink-0" style="width: 60px;">
                                 <input type="radio" name="duration_slots" value="{{ $i }}" {{ $i == 1 ? 'checked' : '' }} 
                                     class="peer sr-only" onchange="checkDurationAvailability()">
                                 <div class="p-2 border-2 border-gray-300 rounded-lg text-center cursor-pointer peer-checked:border-purple-600 peer-checked:bg-purple-100 peer-checked:text-purple-800 hover:border-purple-400 transition-all">
@@ -589,6 +589,22 @@
                             </label>
                             @endfor
                         </div>
+                        <style>
+                            .hide-scrollbar::-webkit-scrollbar {
+                                height: 6px;
+                            }
+                            .hide-scrollbar::-webkit-scrollbar-track {
+                                background: #f1f1f1; 
+                                border-radius: 10px;
+                            }
+                            .hide-scrollbar::-webkit-scrollbar-thumb {
+                                background: #d8b4fe; 
+                                border-radius: 10px;
+                            }
+                            .hide-scrollbar::-webkit-scrollbar-thumb:hover {
+                                background: #c084fc; 
+                            }
+                        </style>
                         <div id="durationWarning" class="hidden mt-2 text-xs text-red-600">
                             <i class="fas fa-exclamation-triangle"></i> <span id="durationWarningText"></span>
                         </div>

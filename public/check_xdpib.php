@@ -17,17 +17,16 @@ if (!$classroom) {
 
 $schedules = App\Models\Schedule::with(['teachingAssignment.subject', 'teachingAssignment.teacher', 'timeSlot'])
     ->where('classroom_id', $classroom->id)
-    ->whereIn('day_of_week', ['Senin', 'monday', 'Monday'])
     ->get();
 
 echo "<pre>";
-echo "Jadwal Kelas X DPIB - Senin\n";
+echo "Jadwal Kelas X DPIB (SELURUH HARI)\n";
 echo "============================\n";
 $sorted = $schedules->sortBy(function($s) {
-    return $s->timeSlot->slot_order ?? 99;
+    return $s->day_of_week . ' - ' . ($s->timeSlot->slot_order ?? 99);
 });
 
 foreach ($sorted as $s) {
-    echo 'Slot: ' . ($s->timeSlot->slot_order ?? '?') . ' (' . ($s->timeSlot->slot_name ?? '?') . ') | Mapel: ' . ($s->teachingAssignment ? $s->teachingAssignment->subject->name : 'N/A') . ' | Guru: ' . ($s->teachingAssignment ? $s->teachingAssignment->teacher->full_name : 'N/A') . "\n";
+    echo 'Hari: ' . $s->day_of_week . ' | Slot: ' . ($s->timeSlot->slot_order ?? '?') . ' (' . ($s->timeSlot->slot_name ?? '?') . ') | Mapel: ' . ($s->teachingAssignment ? $s->teachingAssignment->subject->name : 'N/A') . ' | Guru: ' . ($s->teachingAssignment ? $s->teachingAssignment->teacher->full_name : 'N/A') . "\n";
 }
 echo "</pre>";

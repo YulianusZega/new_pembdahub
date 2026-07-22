@@ -6,27 +6,19 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use Illuminate\Support\Facades\DB;
+use App\Models\Schedule;
 
-$classroom = DB::table('classrooms')->where('class_name', 'X TSM 2')->where('academic_year_id', 5)->first();
-
-$schedules = DB::table('schedules')
-    ->where('classroom_id', $classroom->id)
+$schedules = Schedule::with(['subject', 'teacher', 'timeSlot', 'classroom'])
+    ->whereHas('classroom', function($q) {
+        $q->where('class_name', 'X TSM 2');
+    })
     ->where('day_of_week', 'tuesday')
     ->get();
 
-$out = [];
+$out = "TUESDAY SCHEDULES FOR X TSM 2\n=================================\n";
 foreach ($schedules as $s) {
-    $ts = DB::table('time_slots')->where('id', $s->time_slot_id)->first();
-    $sub = DB::table('subjects')->where('id', $s->subject_id)->first();
-    $out[] = [
-        'id' => $s->id,
-        'ts_id' => $s->time_slot_id,
-        'period' => $ts ? $ts->period_number : 'NULL',
-        'is_teaching' => $ts ? $ts->is_teaching_slot : 'NULL',
-        'sub' => $sub ? ($sub->subject_code ?? $sub->name) : 'NULL',
-    ];
+    $out .= "ID: {$s->id} | TS: {$s->time_slot_id} | TS Period: " . ($s->timeSlot->period_number ?? 'N/A') . " | TS Time: " . ($s->timeSlot->start_time ?? 'N/A') . " - " . ($s->timeSlot->end_time ?? 'N/A') . " | Mapel: " . ($s->subject->subject_name ?? $s->subject->name ?? 'N/A') . " | Guru: " . ($s->teacher->full_name ?? 'N/A') . "\n";
 }
 
-header('Content-Type: application/json');
-echo json_encode($out, JSON_PRETTY_PRINT);
+file_put_contents(__DIR__ . '/dump.txt', $out);
+echo "Dumped to dump.txt";

@@ -6,12 +6,10 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
+use App\Models\Subject;
 use Illuminate\Support\Facades\DB;
 
-$slots = DB::table('time_slots')
-    ->whereIn('id', [515, 517, 519])
-    ->get();
-
-foreach($slots as $s) {
-    echo $s->id . " => " . $s->name . "\n";
+$subjects = Subject::where('school_id', 3)->get();
+foreach($subjects as $s) {
+    echo $s->id . " | " . $s->subject_name . " | " . $s->name . " | " . $s->code . "\n";
 }

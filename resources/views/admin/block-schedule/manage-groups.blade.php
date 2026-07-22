@@ -25,21 +25,15 @@
     .dropzone-a { background: #eff6ff; border: 2px dashed #93c5fd; }
     .dropzone-b { background: #fff7ed; border: 2px dashed #fdba74; }
     
-    .quick-actions { margin-left: auto; display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
-    .student-card:hover .quick-actions { opacity: 1; }
-    .btn-quick { width: 24px; height: 24px; border-radius: 6px; border: none; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .btn-quick-a { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; }
-    .btn-quick-a:hover { background: #3b82f6; color: white; }
-    .btn-quick-b { background: #fff7ed; color: #f97316; border: 1px solid #fed7aa; }
-    .btn-quick-b:hover { background: #f97316; color: white; }
-    .btn-quick-u { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
-    .btn-quick-u:hover { background: #64748b; color: white; }
+    .group-options { display: flex; gap: 8px; background: #f8fafc; padding: 4px 10px; border-radius: 20px; border: 1px solid #e2e8f0; margin-left: auto; }
+    .group-options label { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; cursor: pointer; color: #64748b; }
+    .group-options label:hover { color: #0f172a; }
     
     .dropzone.drag-over { border-style: solid; background-color: rgba(255,255,255,0.8); }
     .dropzone-a.drag-over { border-color: #3b82f6; }
     .dropzone-b.drag-over { border-color: #f97316; }
 
-    .student-card { background: white; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: grab; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: all 0.2s; user-select: none; }
+    .student-card { background: white; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; cursor: grab; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: all 0.2s; user-select: none; flex-wrap: wrap; }
     .student-card:active { cursor: grabbing; transform: scale(0.98); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
     .student-card:hover { border-color: #e2e8f0; }
     
@@ -171,9 +165,10 @@
                             <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                             <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                         </div>
-                        <div class="quick-actions">
-                            <button type="button" class="btn-quick btn-quick-a" onclick="moveToGroup(this, 'pool-a')" title="Pindah ke Grup A">A</button>
-                            <button type="button" class="btn-quick btn-quick-b" onclick="moveToGroup(this, 'pool-b')" title="Pindah ke Grup B">B</button>
+                        <div class="group-options" onclick="event.stopPropagation()">
+                            <label title="Belum Dibagi"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-u" onchange="moveToGroup(this.closest('.student-card'), this.value)" checked> -</label>
+                            <label title="Grup A" class="text-blue-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-a" onchange="moveToGroup(this.closest('.student-card'), this.value)"> A</label>
+                            <label title="Grup B" class="text-orange-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-b" onchange="moveToGroup(this.closest('.student-card'), this.value)"> B</label>
                         </div>
                     </div>
                     @endif
@@ -201,9 +196,10 @@
                                 <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                                 <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                             </div>
-                            <div class="quick-actions">
-                                <button type="button" class="btn-quick btn-quick-b" onclick="moveToGroup(this, 'pool-b')" title="Pindah ke Grup B">B</button>
-                                <button type="button" class="btn-quick btn-quick-u" onclick="moveToGroup(this, 'pool-u')" title="Kembalikan ke Belum Dibagi"><i class="fas fa-undo"></i></button>
+                            <div class="group-options" onclick="event.stopPropagation()">
+                                <label title="Belum Dibagi"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-u" onchange="moveToGroup(this.closest('.student-card'), this.value)"> -</label>
+                                <label title="Grup A" class="text-blue-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-a" onchange="moveToGroup(this.closest('.student-card'), this.value)" checked> A</label>
+                                <label title="Grup B" class="text-orange-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-b" onchange="moveToGroup(this.closest('.student-card'), this.value)"> B</label>
                             </div>
                         </div>
                         @endif
@@ -229,9 +225,10 @@
                                 <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                                 <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                             </div>
-                            <div class="quick-actions">
-                                <button type="button" class="btn-quick btn-quick-a" onclick="moveToGroup(this, 'pool-a')" title="Pindah ke Grup A">A</button>
-                                <button type="button" class="btn-quick btn-quick-u" onclick="moveToGroup(this, 'pool-u')" title="Kembalikan ke Belum Dibagi"><i class="fas fa-undo"></i></button>
+                            <div class="group-options" onclick="event.stopPropagation()">
+                                <label title="Belum Dibagi"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-u" onchange="moveToGroup(this.closest('.student-card'), this.value)"> -</label>
+                                <label title="Grup A" class="text-blue-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-a" onchange="moveToGroup(this.closest('.student-card'), this.value)"> A</label>
+                                <label title="Grup B" class="text-orange-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-b" onchange="moveToGroup(this.closest('.student-card'), this.value)" checked> B</label>
                             </div>
                         </div>
                         @endif
@@ -258,7 +255,15 @@
                     this.style.opacity = '1';
                     draggedItem = null;
                 }, 0);
-                updateCounts();
+                
+                // Update radio checklist when dragged
+                const parentDropzone = this.closest('.dropzone');
+                if (parentDropzone) {
+                    const radio = this.querySelector(`input[value="${parentDropzone.id}"]`);
+                    if (radio) radio.checked = true;
+                }
+                
+                window.updateCounts();
             });
         }
 
@@ -284,6 +289,11 @@
                     }
                     draggedItem.setAttribute('draggable', 'true');
                     this.appendChild(draggedItem);
+                    
+                    // Update radio when dropped
+                    const radio = draggedItem.querySelector(`input[value="${this.id}"]`);
+                    if (radio) radio.checked = true;
+                    
                     updateCounts();
                 }
             });
@@ -373,38 +383,23 @@
         });
     }
 
-    // Fungsi klik tombol untuk pindah grup cepat
-    window.moveToGroup = function(btn, targetId) {
-        const card = btn.closest('.student-card');
+    // Fungsi klik radio button untuk pindah grup cepat
+    window.moveToGroup = function(card, targetId) {
         const targetDropzone = document.getElementById(targetId);
         if (targetDropzone && card) {
             targetDropzone.appendChild(card);
             
-            // Perbarui tombol quick actions di dalam card
-            let newButtons = '';
             if (targetId === 'pool-u') {
                 card.className = 'student-card w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.33%-0.5rem)] lg:w-[calc(25%-0.5rem)]';
-                newButtons = `
-                    <button type="button" class="btn-quick btn-quick-a" onclick="moveToGroup(this, 'pool-a')" title="Pindah ke Grup A">A</button>
-                    <button type="button" class="btn-quick btn-quick-b" onclick="moveToGroup(this, 'pool-b')" title="Pindah ke Grup B">B</button>
-                `;
             } else {
                 card.className = 'student-card';
-                if (targetId === 'pool-a') {
-                    newButtons = `
-                        <button type="button" class="btn-quick btn-quick-b" onclick="moveToGroup(this, 'pool-b')" title="Pindah ke Grup B">B</button>
-                        <button type="button" class="btn-quick btn-quick-u" onclick="moveToGroup(this, 'pool-u')" title="Kembalikan ke Belum Dibagi"><i class="fas fa-undo"></i></button>
-                    `;
-                } else if (targetId === 'pool-b') {
-                    newButtons = `
-                        <button type="button" class="btn-quick btn-quick-a" onclick="moveToGroup(this, 'pool-a')" title="Pindah ke Grup A">A</button>
-                        <button type="button" class="btn-quick btn-quick-u" onclick="moveToGroup(this, 'pool-u')" title="Kembalikan ke Belum Dibagi"><i class="fas fa-undo"></i></button>
-                    `;
-                }
             }
-            card.querySelector('.quick-actions').innerHTML = newButtons;
             
-            updateCounts();
+            // Perbarui radio yang ter-check agar sinkron jika method ini dipanggil langsung
+            const radio = card.querySelector(`input[value="${targetId}"]`);
+            if (radio) radio.checked = true;
+            
+            window.updateCounts();
         }
     };
 </script>

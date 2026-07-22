@@ -6,21 +6,21 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\TimeSlot;
+use Illuminate\Support\Facades\DB;
 
-$timeSlots = TimeSlot::where('school_id', 3)
+$slots = DB::table('time_slots')
+    ->where('school_id', 3)
     ->where('day_of_week', 'tuesday')
     ->orderBy('start_time')
+    ->select('id', 'period_number', 'is_teaching_slot', 'start_time')
     ->get();
 
-$out = "<pre>TimeSlots for Tuesday School 3:\n";
-$teachingPeriod = 1;
-foreach ($timeSlots as $ts) {
-    if ($ts->is_teaching_slot) {
-        $out .= "Period $teachingPeriod => ID: {$ts->id}, Time: {$ts->start_time} - {$ts->end_time}\n";
-        $teachingPeriod++;
+$out = [];
+$c = 1;
+foreach($slots as $s) {
+    if ($s->is_teaching_slot) {
+        $out["Jam_$c"] = $s->id . "_" . $s->start_time;
+        $c++;
     }
 }
-$out .= "</pre>";
-
-echo $out;
+echo json_encode($out);

@@ -9,18 +9,9 @@ if (request('secret') !== 'pembda99') die('Unauthorized');
 use Illuminate\Support\Facades\DB;
 
 $slots = DB::table('time_slots')
-    ->where('school_id', 3)
-    ->where('day_of_week', 'tuesday')
-    ->orderBy('start_time')
-    ->select('id', 'period_number', 'is_teaching_slot', 'start_time')
+    ->whereIn('id', [515, 517, 519])
     ->get();
 
-$out = [];
-$c = 1;
 foreach($slots as $s) {
-    if ($s->is_teaching_slot) {
-        $out["Jam_$c"] = $s->id . "_" . $s->start_time;
-        $c++;
-    }
+    echo $s->id . " => " . $s->name . "\n";
 }
-echo json_encode($out);

@@ -22,18 +22,11 @@ class BlockScheduleController extends Controller
     {
         $user = auth()->user();
         
-        // Handle school selection matching ScheduleGridController
-        if ($user->isSuperAdmin()) {
-            $selectedSchoolId = request('school_id', session('selected_school_id'));
-            if (!$selectedSchoolId) {
-                $firstSchool = \App\Models\School::where('is_active', 1)->first();
-                $selectedSchoolId = $firstSchool ? $firstSchool->id : null;
-            }
-            if (request()->has('school_id')) {
-                session(['selected_school_id' => $selectedSchoolId]);
-            }
-            $school = \App\Models\School::find($selectedSchoolId);
-        } else {
+        // Sesuai permintaan: Sistem Blok hanya berlaku untuk unit SMK
+        $school = \App\Models\School::where('type', 'SMK')->orWhere('name', 'like', '%SMK%')->first();
+        
+        // Fallback jika unit SMK tidak ditemukan
+        if (!$school) {
             $school = $user->school;
         }
         

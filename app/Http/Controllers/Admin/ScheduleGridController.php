@@ -409,27 +409,6 @@ class ScheduleGridController extends Controller
             abort(403, 'Unauthorized');
         }
         
-        // Update linked teaching assignment hours
-        if ($schedule->teaching_assignment_id) {
-            $assignment = TeachingAssignment::find($schedule->teaching_assignment_id);
-            if ($assignment) {
-                $newHours = max(0, $assignment->hours_per_week - ($schedule->duration_slots ?? 1));
-                if ($newHours <= 0) {
-                    // Check if there are other schedules linked to this assignment
-                    $otherSchedules = Schedule::where('teaching_assignment_id', $assignment->id)
-                        ->where('id', '!=', $schedule->id)
-                        ->count();
-                    if ($otherSchedules === 0) {
-                        $assignment->delete();
-                    } else {
-                        $assignment->update(['hours_per_week' => $newHours]);
-                    }
-                } else {
-                    $assignment->update(['hours_per_week' => $newHours]);
-                }
-            }
-        }
-        
         $schedule->delete();
         
         return back()->with('success', 'Jadwal berhasil dihapus!');

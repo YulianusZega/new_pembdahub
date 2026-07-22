@@ -9,29 +9,21 @@ if ($secret !== 'pembda99') {
     die("Unauthorized");
 }
 
-$classrooms = App\Models\Classroom::where('class_name', 'like', '%X DPIB%')->get();
-if ($classrooms->isEmpty()) {
-    echo "Classroom not found\n";
-    exit;
+$results = Illuminate\Support\Facades\DB::select("
+    SELECT s.day_of_week, ts.slot_order, ts.slot_name, sub.name as mapel_name, t.full_name as guru_name
+    FROM schedules s
+    JOIN time_slots ts ON s.time_slot_id = ts.id
+    LEFT JOIN teaching_assignments ta ON s.teaching_assignment_id = ta.id
+    LEFT JOIN subjects sub ON ta.subject_id = sub.id
+    LEFT JOIN teachers t ON ta.teacher_id = t.id
+    WHERE s.classroom_id IN (SELECT id FROM classrooms WHERE class_name LIKE '%X DPIB%')
+    ORDER BY s.day_of_week, ts.slot_order
+");
+
+echo "<pre>";
+echo "Jadwal Kelas X DPIB (SELURUH HARI) - RAW SQL\n";
+echo "============================\n";
+foreach ($results as $r) {
+    echo 'Hari: ' . $r->day_of_week . ' | Slot: ' . $r->slot_order . ' (' . $r->slot_name . ') | Mapel: ' . ($r->mapel_name ?: 'N/A') . ' | Guru: ' . ($r->guru_name ?: 'N/A') . "\n";
 }
-
-foreach ($classrooms as $classroom) {
-    echo "Classroom: " . $classroom->class_name . " (ID: " . $classroom->id . ")\n";
-    $schedules = App\Models\Schedule::with(['teachingAssignment.subject', 'teachingAssignment.teacher', 'timeSlot'])
-        ->where('classroom_id', $classroom->id)
-        ->get();
-
-    echo "<pre>";
-    echo "Jadwal Kelas " . $classroom->class_name . " (SELURUH HARI)\n";
-    echo "============================\n";
-    $sorted = $schedules->sortBy(function($s) {
-        return $s->day_of_week . ' - ' . ($s->timeSlot->slot_order ?? 99);
-    });
-
-    foreach ($sorted as $s) {
-        $mapel = $s->teachingAssignment?->subject?->name ?? 'N/A';
-        $guru = $s->teachingAssignment?->teacher?->full_name ?? 'N/A';
-        echo 'Hari: ' . $s->day_of_week . ' | Slot: ' . ($s->timeSlot->slot_order ?? '?') . ' (' . ($s->timeSlot->slot_name ?? '?') . ') | Mapel: ' . $mapel . ' | Guru: ' . $guru . "\n";
-    }
-    echo "</pre>";
-}
+echo "</pre>";

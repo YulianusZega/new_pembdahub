@@ -21,7 +21,22 @@ class BlockScheduleController extends Controller
     private function getContext()
     {
         $user = auth()->user();
-        $school = $user->school;
+        
+        // Handle school selection matching ScheduleGridController
+        if ($user->isSuperAdmin()) {
+            $selectedSchoolId = request('school_id', session('selected_school_id'));
+            if (!$selectedSchoolId) {
+                $firstSchool = \App\Models\School::where('is_active', 1)->first();
+                $selectedSchoolId = $firstSchool ? $firstSchool->id : null;
+            }
+            if (request()->has('school_id')) {
+                session(['selected_school_id' => $selectedSchoolId]);
+            }
+            $school = \App\Models\School::find($selectedSchoolId);
+        } else {
+            $school = $user->school;
+        }
+        
         $academicYear = AcademicYear::where('is_active', true)->first();
         $semester = $academicYear
             ? Semester::where('academic_year_id', $academicYear->id)->where('is_active', true)->first()

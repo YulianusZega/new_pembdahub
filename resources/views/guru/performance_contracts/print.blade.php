@@ -97,20 +97,60 @@
 
         <p>Dengan ini menyatakan komitmen dan kesanggupan untuk mencapai target kinerja berikut selama Tahun Pelajaran {{ $contract->academicYear->year }}:</p>
         
-        <div style="border: 1px solid #000; padding: 15px; margin-bottom: 20px; background: #fdfdfd;">
-            @if($contract->contract_type == 'pkg_kejuruan')
-                <p><strong>1. Target TEFA / Praktik:</strong></p>
-                <p style="padding-left: 15px;">{{ $contract->target_data['tefa_target'] ?? '-' }}</p>
-                <p><strong>2. Komitmen Penegakan SOP (5R):</strong></p>
-                <p style="padding-left: 15px;">{{ $contract->target_data['sop_commitment'] ?? '-' }}</p>
-            @elseif($contract->contract_type == 'pkg_umum')
-                <p><strong>Rencana Implementasi Pembelajaran Berbasis Proyek (PBL):</strong></p>
-                <p style="padding-left: 15px;">{{ $contract->target_data['pbl_plan'] ?? '-' }}</p>
-            @else
-                <p><strong>Target Output Riil Jabatan:</strong></p>
-                <p style="padding-left: 15px; white-space: pre-line;">{{ $contract->target_data['jabatan_targets'] ?? '-' }}</p>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;" border="1">
+            @if(in_array($contract->contract_type, ['pkg_kejuruan', 'pkg_umum']))
+                <thead>
+                    <tr>
+                        <th style="padding: 8px; text-align: center; background-color: #f8fafc;" width="5%">No</th>
+                        <th style="padding: 8px; text-align: left; background-color: #f8fafc;" width="35%">Pilar Perjanjian Kinerja</th>
+                        <th style="padding: 8px; text-align: left; background-color: #f8fafc;" width="60%">Rencana Bukti Fisik Nyata (Target)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; text-align: center;">1</td>
+                        <td style="padding: 8px;"><strong>{{ $contract->contract_type == 'pkg_kejuruan' ? 'Kompetensi Praktik (30%)' : 'Kompetensi Relevansi Praktik (30%)' }}</strong></td>
+                        <td style="padding: 8px;">{{ $contract->target_data['pilar_1'] ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; text-align: center;">2</td>
+                        <td style="padding: 8px;"><strong>{{ $contract->contract_type == 'pkg_kejuruan' ? 'Kontribusi Program (30%)' : 'Kontribusi Program/TEFA (30%)' }}</strong></td>
+                        <td style="padding: 8px;">{{ $contract->target_data['pilar_2'] ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; text-align: center;">3</td>
+                        <td style="padding: 8px;"><strong>Kolaborasi (20%)</strong></td>
+                        <td style="padding: 8px;">{{ $contract->target_data['pilar_3'] ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; text-align: center;">4</td>
+                        <td style="padding: 8px;"><strong>Budaya Industri 5R (20%)</strong></td>
+                        <td style="padding: 8px;">{{ $contract->target_data['pilar_4'] ?? '-' }}</td>
+                    </tr>
+                </tbody>
+            @elseif($contract->contract_type == 'jabatan_tambahan')
+                <thead>
+                    <tr>
+                        <th style="padding: 8px; text-align: center; background-color: #f8fafc;" width="5%">No</th>
+                        <th style="padding: 8px; text-align: left; background-color: #f8fafc;" width="95%">Deskripsi Target Pekerjaan (Harus Bisa Diukur)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 8px; text-align: center;">1</td>
+                        <td style="padding: 8px;">{{ $contract->target_data['target_1'] ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; text-align: center;">2</td>
+                        <td style="padding: 8px;">{{ $contract->target_data['target_2'] ?? '-' }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; text-align: center;">3</td>
+                        <td style="padding: 8px;">{{ $contract->target_data['target_3'] ?? '-' }}</td>
+                    </tr>
+                </tbody>
             @endif
-        </div>
+        </table>
 
         <p>Apabila saya terbukti tidak sungguh-sungguh atau gagal mencapai target komitmen yang tertuang di atas, maka saya <strong>bersedia dicabut penugasan mengajar/jabatan saya</strong> pada semester berikutnya, serta menerima sanksi administratif sesuai peraturan Yayasan Perguruan Pembda Nias.</p>
         <p>Demikian Pakta Integritas ini saya buat dengan penuh kesadaran dan tanpa paksaan dari pihak mana pun.</p>

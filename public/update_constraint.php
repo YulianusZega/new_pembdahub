@@ -5,25 +5,28 @@ $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $kernel->handle(Illuminate\Http\Request::capture());
 if (php_sapi_name() !== 'cli' && request('secret') !== 'pembda99') die('Unauthorized');
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 
 try {
-    Schema::table('teaching_assignments', function (Blueprint $table) {
-        $table->dropUnique('unique_teaching_assignment_semester');
-    });
-    echo "Dropped old constraint.<br>";
+    DB::statement('ALTER TABLE teaching_assignments DROP INDEX unique_teaching_assignment_semester');
+    echo "Dropped index unique_teaching_assignment_semester<br>";
 } catch (\Exception $e) {
-    echo "Error dropping old constraint: " . $e->getMessage() . "<br>";
+    echo "Error drop index: " . $e->getMessage() . "<br>";
 }
 
 try {
-    Schema::table('teaching_assignments', function (Blueprint $table) {
-        $table->unique(['academic_year_id', 'semester_id', 'classroom_id', 'subject_id', 'teacher_id', 'block_type'], 'unique_teaching_assignment_block');
-    });
-    echo "Added new constraint.<br>";
+    DB::statement('ALTER TABLE teaching_assignments DROP INDEX teaching_assignments_academic_year_id_semester_id_classroom_id_subject_id_teacher_id_unique');
+    echo "Dropped auto-generated index<br>";
 } catch (\Exception $e) {
-    echo "Error adding new constraint: " . $e->getMessage() . "<br>";
+    echo "Error drop auto index: " . $e->getMessage() . "<br>";
+}
+
+try {
+    // Add the new constraint using raw SQL to ensure it works
+    DB::statement('ALTER TABLE teaching_assignments ADD UNIQUE INDEX unique_teaching_assignment_block (academic_year_id, semester_id, classroom_id, subject_id, teacher_id, block_type)');
+    echo "Added new constraint<br>";
+} catch (\Exception $e) {
+    echo "Error add constraint: " . $e->getMessage() . "<br>";
 }
 
 echo "Done!";

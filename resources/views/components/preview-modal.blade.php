@@ -92,7 +92,7 @@ class="relative z-[9999]">
                     {{-- Image Preview --}}
                     <template x-if="fileType === 'image'">
                         <div class="max-w-full max-h-full flex items-center justify-center p-2">
-                            <img :src="fileUrl" @load="isLoading = false" @error="isLoading = false" class="max-h-[72vh] w-auto object-contain rounded-xl shadow-lg border border-gray-300 bg-white" alt="Preview Image">
+                            <img :src="fileUrl" @load="isLoading = false" x-on:error="isLoading = false" class="max-h-[72vh] w-auto object-contain rounded-xl shadow-lg border border-gray-300 bg-white" alt="Preview Image">
                         </div>
                     </template>
 

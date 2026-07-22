@@ -446,11 +446,11 @@
                                                         $blockColor = '';
                                                         if($bc->teachingAssignment) {
                                                             if($bc->teachingAssignment->block_type == 'all') {
-                                                                $blockBadge = 'K.UMUM'; // Kelas Umum
+                                                                $blockBadge = 'GROUP A'; // Group A
                                                                 $blockTitle = 'Kelompok A (Kelas Umum)';
                                                                 $blockColor = 'bg-blue-100 border-blue-300 text-blue-700';
                                                             } elseif($bc->teachingAssignment->block_type == 'split') {
-                                                                $blockBadge = 'R.PRAKTEK'; // Ruang Praktek
+                                                                $blockBadge = 'GROUP B'; // Group B
                                                                 $blockTitle = 'Kelompok B (Ruang Praktek)';
                                                                 $blockColor = 'bg-orange-100 border-orange-300 text-orange-700';
                                                             }

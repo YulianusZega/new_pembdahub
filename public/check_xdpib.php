@@ -14,10 +14,9 @@ $results = $app['db']->table('schedules as s')
     ->orderBy('ts.slot_order')
     ->get();
 
-$out = "Jadwal X DPIB di DB:\n";
+echo "<pre>Jadwal X DPIB di DB:\n";
 foreach ($results as $r) {
-    $out .= "ID: {$r->id} | Hari: {$r->day_of_week} | Slot: {$r->slot_order} | Mapel: {$r->mapel_name} | Guru: {$r->guru_name}\n";
+    echo "ID: {$r->id} | Hari: {$r->day_of_week} | Slot: {$r->slot_order} | Mapel: {$r->mapel_name} | Guru: {$r->guru_name}\n";
 }
-file_put_contents('xdpib_dump.txt', $out);
-echo "DONE! https://perguruanpembda.com/xdpib_dump.txt";
+echo "</pre>";
 

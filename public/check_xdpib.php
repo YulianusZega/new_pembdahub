@@ -1,22 +1,25 @@
 <?php
-require 'vendor/autoload.php';
-$app = require_once 'bootstrap/app.php';
-$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+$env = parse_ini_file(__DIR__ . '/../.env');
+$pdo = new PDO("mysql:host=" . $env['DB_HOST'] . ";dbname=" . $env['DB_DATABASE'], $env['DB_USERNAME'], $env['DB_PASSWORD']);
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$results = $app['db']->table('schedules as s')
-    ->join('time_slots as ts', 's.time_slot_id', '=', 'ts.id')
-    ->leftJoin('teaching_assignments as ta', 's.teaching_assignment_id', '=', 'ta.id')
-    ->leftJoin('subjects as sub', 'ta.subject_id', '=', 'sub.id')
-    ->leftJoin('teachers as t', 'ta.teacher_id', '=', 't.id')
-    ->whereIn('s.classroom_id', $app['db']->table('classrooms')->where('class_name', 'like', '%X DPIB%')->pluck('id'))
-    ->select('s.id', 's.day_of_week', 'ts.slot_order', 'sub.name as mapel_name', 't.full_name as guru_name')
-    ->orderBy('s.day_of_week')
-    ->orderBy('ts.slot_order')
-    ->get();
+$stmt = $pdo->query("
+    SELECT s.id, s.day_of_week, ts.slot_order, ts.slot_name, sub.name as mapel_name, t.full_name as guru_name
+    FROM schedules s
+    JOIN time_slots ts ON s.time_slot_id = ts.id
+    LEFT JOIN teaching_assignments ta ON s.teaching_assignment_id = ta.id
+    LEFT JOIN subjects sub ON ta.subject_id = sub.id
+    LEFT JOIN teachers t ON ta.teacher_id = t.id
+    WHERE s.classroom_id IN (SELECT id FROM classrooms WHERE class_name LIKE '%X DPIB%')
+    ORDER BY s.day_of_week, ts.slot_order
+");
+
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 echo "<pre>Jadwal X DPIB di DB:\n";
 foreach ($results as $r) {
-    echo "ID: {$r->id} | Hari: {$r->day_of_week} | Slot: {$r->slot_order} | Mapel: {$r->mapel_name} | Guru: {$r->guru_name}\n";
+    echo "ID: {$r['id']} | Hari: {$r['day_of_week']} | Slot: {$r['slot_order']} ({$r['slot_name']}) | Mapel: {$r['mapel_name']} | Guru: {$r['guru_name']}\n";
 }
 echo "</pre>";
+
 

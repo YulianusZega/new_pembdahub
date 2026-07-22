@@ -6,18 +6,13 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\TeachingAssignment;
 use App\Models\Schedule;
+use App\Models\TimeSlot;
 
-$ta = TeachingAssignment::find(6177);
 echo "<pre>";
-echo "TA ID: 6177\n";
-echo "Hours per week: {$ta->hours_per_week}\n";
-$plottedJP = Schedule::where('teaching_assignment_id', $ta->id)->sum('duration_slots');
-echo "Plotted JP: {$plottedJP}\n";
-
-$schedules = Schedule::where('teaching_assignment_id', $ta->id)->get();
+$schedules = Schedule::where('teaching_assignment_id', 6177)->get();
 foreach ($schedules as $s) {
-    echo "- Schedule ID: {$s->id}, Day: {$s->day_of_week}, Start: {$s->time_slot_id}, Duration: {$s->duration_slots}\n";
+    $ts = TimeSlot::find($s->time_slot_id);
+    echo "- Schedule ID: {$s->id}, Day: {$s->day_of_week}, Start TS ID: {$s->time_slot_id}, TS Name: " . ($ts->name ?? 'N/A') . ", Period: " . ($ts->period_number ?? 'N/A') . ", Duration: {$s->duration_slots}\n";
 }
 echo "</pre>";

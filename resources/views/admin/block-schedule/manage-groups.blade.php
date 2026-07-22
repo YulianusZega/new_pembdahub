@@ -25,8 +25,8 @@
     .dropzone-a { background: #eff6ff; border: 2px dashed #93c5fd; }
     .dropzone-b { background: #fff7ed; border: 2px dashed #fdba74; }
     
-    .group-options { display: flex; gap: 8px; background: #f8fafc; padding: 4px 10px; border-radius: 20px; border: 1px solid #e2e8f0; margin-left: auto; }
-    .group-options label { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; cursor: pointer; color: #64748b; }
+    .group-options { display: flex; width: 100%; gap: 16px; background: #f8fafc; padding: 6px 10px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 4px; justify-content: center; }
+    .group-options label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; cursor: pointer; color: #475569; }
     .group-options label:hover { color: #0f172a; }
     
     .dropzone.drag-over { border-style: solid; background-color: rgba(255,255,255,0.8); }
@@ -166,9 +166,9 @@
                             <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                         </div>
                         <div class="group-options" onclick="event.stopPropagation()">
-                            <label title="Belum Dibagi"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-u" onchange="moveToGroup(this.closest('.student-card'), this.value)" checked> -</label>
-                            <label title="Grup A" class="text-blue-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-a" onchange="moveToGroup(this.closest('.student-card'), this.value)"> A</label>
-                            <label title="Grup B" class="text-orange-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-b" onchange="moveToGroup(this.closest('.student-card'), this.value)"> B</label>
+                            <label class="text-blue-700">Group A <input type="checkbox" class="w-4 h-4 text-blue-600 rounded chk-a" value="pool-a" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'A') ? 'checked' : '' }}></label>
+                            <span class="text-gray-300">|</span>
+                            <label class="text-orange-700">Group B <input type="checkbox" class="w-4 h-4 text-orange-600 rounded chk-b" value="pool-b" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'B') ? 'checked' : '' }}></label>
                         </div>
                     </div>
                     @endif
@@ -197,9 +197,9 @@
                                 <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                             </div>
                             <div class="group-options" onclick="event.stopPropagation()">
-                                <label title="Belum Dibagi"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-u" onchange="moveToGroup(this.closest('.student-card'), this.value)"> -</label>
-                                <label title="Grup A" class="text-blue-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-a" onchange="moveToGroup(this.closest('.student-card'), this.value)" checked> A</label>
-                                <label title="Grup B" class="text-orange-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-b" onchange="moveToGroup(this.closest('.student-card'), this.value)"> B</label>
+                                <label class="text-blue-700">Group A <input type="checkbox" class="w-4 h-4 text-blue-600 rounded chk-a" value="pool-a" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'A') ? 'checked' : '' }}></label>
+                                <span class="text-gray-300">|</span>
+                                <label class="text-orange-700">Group B <input type="checkbox" class="w-4 h-4 text-orange-600 rounded chk-b" value="pool-b" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'B') ? 'checked' : '' }}></label>
                             </div>
                         </div>
                         @endif
@@ -226,9 +226,9 @@
                                 <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                             </div>
                             <div class="group-options" onclick="event.stopPropagation()">
-                                <label title="Belum Dibagi"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-u" onchange="moveToGroup(this.closest('.student-card'), this.value)"> -</label>
-                                <label title="Grup A" class="text-blue-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-a" onchange="moveToGroup(this.closest('.student-card'), this.value)"> A</label>
-                                <label title="Grup B" class="text-orange-600"><input type="radio" name="grp_{{ $sc->student_id }}" value="pool-b" onchange="moveToGroup(this.closest('.student-card'), this.value)" checked> B</label>
+                                <label class="text-blue-700">Group A <input type="checkbox" class="w-4 h-4 text-blue-600 rounded chk-a" value="pool-a" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'A') ? 'checked' : '' }}></label>
+                                <span class="text-gray-300">|</span>
+                                <label class="text-orange-700">Group B <input type="checkbox" class="w-4 h-4 text-orange-600 rounded chk-b" value="pool-b" onchange="toggleGroup(this)" {{ (isset($existingGroups[$sc->student_id]) && $existingGroups[$sc->student_id] === 'B') ? 'checked' : '' }}></label>
                             </div>
                         </div>
                         @endif
@@ -256,11 +256,22 @@
                     draggedItem = null;
                 }, 0);
                 
-                // Update radio checklist when dragged
+                // Update checkboxes when dragged
                 const parentDropzone = this.closest('.dropzone');
                 if (parentDropzone) {
-                    const radio = this.querySelector(`input[value="${parentDropzone.id}"]`);
-                    if (radio) radio.checked = true;
+                    const chkA = this.querySelector('.chk-a');
+                    const chkB = this.querySelector('.chk-b');
+                    
+                    if (parentDropzone.id === 'pool-a') {
+                        if (chkA) chkA.checked = true;
+                        if (chkB) chkB.checked = false;
+                    } else if (parentDropzone.id === 'pool-b') {
+                        if (chkA) chkA.checked = false;
+                        if (chkB) chkB.checked = true;
+                    } else {
+                        if (chkA) chkA.checked = false;
+                        if (chkB) chkB.checked = false;
+                    }
                 }
                 
                 window.updateCounts();
@@ -290,9 +301,20 @@
                     draggedItem.setAttribute('draggable', 'true');
                     this.appendChild(draggedItem);
                     
-                    // Update radio when dropped
-                    const radio = draggedItem.querySelector(`input[value="${this.id}"]`);
-                    if (radio) radio.checked = true;
+                    // Update checkboxes when dropped
+                    const chkA = draggedItem.querySelector('.chk-a');
+                    const chkB = draggedItem.querySelector('.chk-b');
+                    
+                    if (this.id === 'pool-a') {
+                        if (chkA) chkA.checked = true;
+                        if (chkB) chkB.checked = false;
+                    } else if (this.id === 'pool-b') {
+                        if (chkA) chkA.checked = false;
+                        if (chkB) chkB.checked = true;
+                    } else {
+                        if (chkA) chkA.checked = false;
+                        if (chkB) chkB.checked = false;
+                    }
                     
                     updateCounts();
                 }
@@ -383,8 +405,23 @@
         });
     }
 
-    // Fungsi klik radio button untuk pindah grup cepat
-    window.moveToGroup = function(card, targetId) {
+    // Fungsi toggle checkbox untuk pindah grup cepat
+    window.toggleGroup = function(checkbox) {
+        const card = checkbox.closest('.student-card');
+        const isChecked = checkbox.checked;
+        
+        // Uncheck the other checkbox
+        const allCheckboxes = card.querySelectorAll('input[type="checkbox"]');
+        allCheckboxes.forEach(chk => {
+            if (chk !== checkbox) chk.checked = false;
+        });
+        
+        // Tentukan target
+        let targetId = 'pool-u';
+        if (isChecked) {
+            targetId = checkbox.value;
+        }
+        
         const targetDropzone = document.getElementById(targetId);
         if (targetDropzone && card) {
             targetDropzone.appendChild(card);
@@ -394,10 +431,6 @@
             } else {
                 card.className = 'student-card';
             }
-            
-            // Perbarui radio yang ter-check agar sinkron jika method ini dipanggil langsung
-            const radio = card.querySelector(`input[value="${targetId}"]`);
-            if (radio) radio.checked = true;
             
             window.updateCounts();
         }

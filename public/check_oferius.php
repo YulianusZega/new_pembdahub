@@ -9,22 +9,17 @@ if (request('secret') !== 'pembda99') die('Unauthorized');
 use App\Models\Teacher;
 use App\Models\TeachingAssignment;
 
-// Add TA for Adis Zai -> Informatika in Class 353
-$t_adis = Teacher::where('school_id', 3)->where('full_name', 'LIKE', '%Adis%')->first();
-$s_infor = \App\Models\Subject::where('school_id', 3)->where('subject_name', 'LIKE', '%Informatika%')->first();
-if ($t_adis && $s_infor) {
-    $ta2 = TeachingAssignment::firstOrCreate([
-        'academic_year_id' => 5,
-        'semester_id' => 7,
-        'classroom_id' => 353,
-        'subject_id' => $s_infor->id,
-        'teacher_id' => $t_adis->id,
-    ], [
-        'hours_per_week' => 4,
-        'is_active' => 1,
-        'block_type' => 'all'
-    ]);
-    echo "TA Informatika created: " . $ta2->id . "\n";
-} else {
-    echo "Teacher or Subject INFOR not found\n";
+$teachers = Teacher::where('school_id', 3)->where('full_name', 'LIKE', '%Ofer%')->get();
+foreach($teachers as $t) {
+    echo "Oferius ID: " . $t->id . " | Name: " . $t->full_name . "\n";
+}
+
+$tas = TeachingAssignment::with('teacher')->where('classroom_id', 353)->where('subject_id', 212)->get();
+foreach($tas as $ta) {
+    echo "TA 212 -> Teacher: " . ($ta->teacher->full_name ?? '') . " (ID: ".$ta->teacher_id.") | is_active: " . $ta->is_active . " | JP: " . $ta->hours_per_week . "\n";
+}
+
+$t_otiani = Teacher::where('school_id', 3)->where('full_name', 'LIKE', '%Otiani%')->first();
+if ($t_otiani) {
+    echo "Otiani ID: " . $t_otiani->id . "\n";
 }

@@ -65,9 +65,19 @@
     <button onclick="window.print()" style="padding: 10px 20px; background: #000; color: #fff; cursor: pointer; border: none; margin-bottom: 20px;">🖨️ Cetak Dokumen</button>
 
     <div class="kop-surat">
-        <h3>YAYASAN PERGURUAN PEMBDA NIAS</h3>
-        <h2>{{ $contract->school->name ?? 'SMKS PEMBDA NIAS' }}</h2>
-        <p style="font-size: 10pt; margin: 5px 0 0 0;">Alamat: Jl. Pendidikan No. 1, Nias. Email: info@perguruanpembda.com</p>
+        <table style="width: 100%; border: none;">
+            <tr>
+                <td style="width: 15%; text-align: center; vertical-align: middle;">
+                    <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo Yayasan" style="width: 80px; height: auto;">
+                </td>
+                <td style="width: 70%; text-align: center; vertical-align: middle;">
+                    <h3>YAYASAN PERGURUAN PEMBDA NIAS</h3>
+                    <h2>{{ $contract->school->name ?? 'SMKS PEMBDA NIAS' }}</h2>
+                    <p style="font-size: 10pt; margin: 5px 0 0 0;">Alamat: Jl. Pelita No.09 Kelurahan Ilir Kota Gunungsitoli<br>Email: perguruanpembdanias@gmail.com</p>
+                </td>
+                <td style="width: 15%;"></td>
+            </tr>
+        </table>
     </div>
 
     <div class="title">

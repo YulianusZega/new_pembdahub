@@ -20,6 +20,6 @@ $results = Illuminate\Support\Facades\DB::select("
     ORDER BY s.day_of_week, ts.slot_order
 ");
 
-header('Content-Type: application/json');
-echo json_encode($results, JSON_PRETTY_PRINT);
+file_put_contents('xdpib_schedules.json', json_encode($results, JSON_PRETTY_PRINT));
+echo "DONE! Access it at: https://perguruanpembda.com/xdpib_schedules.json";
 exit;

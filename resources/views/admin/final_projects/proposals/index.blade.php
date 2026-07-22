@@ -44,7 +44,7 @@
 <div x-data="proposalManager()" class="space-y-6">
 
     {{-- Header Bar --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white rounded-3xl shadow-md border border-gray-250 px-6 py-5">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white rounded-3xl shadow-md border border-gray-250 px-6 py-5">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-800 flex items-center justify-center text-lg border border-indigo-300 shadow-sm">
                 <i class="fas fa-flask"></i>
@@ -53,6 +53,11 @@
                 <h1 class="text-lg md:text-xl font-extrabold text-gray-900 tracking-tight">{{ $pageTitle }}</h1>
                 <p class="text-xs text-gray-700 mt-0.5 font-medium">Daftar pengajuan judul bagi siswa kelas XII. Lakukan verifikasi judul, abstrak, dan tentukan guru pembimbing.</p>
             </div>
+        </div>
+        <div class="flex-shrink-0">
+            <a href="{{ route('admin.final-projects.proposals.create') }}" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+                <i class="fas fa-plus"></i> Buat Kelompok Baru
+            </a>
         </div>
     </div>
 

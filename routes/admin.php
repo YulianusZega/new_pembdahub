@@ -447,6 +447,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
         Route::delete('/formats/{format}', [App\Http\Controllers\Admin\FinalProjectAdminController::class, 'formatsDestroy'])->name('formats.destroy');
 
         Route::get('/proposals', [App\Http\Controllers\Admin\FinalProjectAdminController::class, 'proposalsIndex'])->name('proposals.index');
+        Route::get('/proposals/create', [App\Http\Controllers\Admin\FinalProjectAdminController::class, 'proposalsCreate'])->name('proposals.create');
+        Route::post('/proposals/store', [App\Http\Controllers\Admin\FinalProjectAdminController::class, 'proposalsStore'])->name('proposals.store');
         Route::post('/proposals/{project}/assign', [App\Http\Controllers\Admin\FinalProjectAdminController::class, 'proposalsAssign'])->name('proposals.assign');
 
         Route::get('/exams', [App\Http\Controllers\Admin\FinalProjectAdminController::class, 'examsIndex'])->name('exams.index');

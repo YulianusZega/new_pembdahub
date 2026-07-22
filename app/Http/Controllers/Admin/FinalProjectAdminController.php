@@ -7,9 +7,13 @@ use App\Models\FinalProject;
 use App\Models\FinalProjectFormat;
 use App\Models\School;
 use App\Models\Teacher;
+use App\Models\Student;
+use App\Models\Classroom;
+use App\Models\AcademicYear;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class FinalProjectAdminController extends Controller
 {
@@ -153,6 +157,117 @@ class FinalProjectAdminController extends Controller
         $schools = School::whereIn('type', ['SMA', 'SMK'])->get();
 
         return view('admin.final_projects.proposals.index', compact('projects', 'teachers', 'schools', 'isSA'));
+    }
+
+    public function proposalsCreate(Request $request)
+    {
+        $isSA = $this->isSuperAdmin();
+        $schoolId = $this->getSchoolId();
+
+        // Get class 12 from SMA and SMK
+        $activeYear = AcademicYear::where('is_active', true)->first();
+        if (!$activeYear) {
+            return redirect()->route('admin.final-projects.proposals.index')->with('error', 'Tidak ada Tahun Pelajaran aktif.');
+        }
+
+        $classroomsQuery = Classroom::with('school')
+            ->where('academic_year_id', $activeYear->id)
+            ->where('grade_level', 12)
+            ->whereHas('school', function($q) {
+                $q->whereIn('type', ['SMA', 'SMK']);
+            });
+
+        if (!$isSA) {
+            $classroomsQuery->where('school_id', $schoolId);
+        }
+
+        $classrooms = $classroomsQuery->get();
+
+        $selectedClassroom = null;
+        $students = [];
+        if ($request->filled('classroom_id')) {
+            $selectedClassroom = Classroom::find($request->classroom_id);
+            if ($selectedClassroom && ($isSA || $selectedClassroom->school_id == $schoolId)) {
+                $students = $selectedClassroom->students()
+                    ->whereDoesntHave('finalProjectMemberships')
+                    ->orderBy('full_name')
+                    ->get();
+            }
+        }
+
+        // Get teachers for advisor dropdown
+        $teachersQuery = Teacher::with(['user', 'school']);
+        if (!$isSA) {
+            $teachersQuery->where('school_id', $schoolId);
+        } else {
+            if ($selectedClassroom) {
+                $teachersQuery->where('school_id', $selectedClassroom->school_id);
+            } else {
+                $smaSmkSchoolIds = School::whereIn('type', ['SMA', 'SMK'])->pluck('id');
+                $teachersQuery->whereIn('school_id', $smaSmkSchoolIds);
+            }
+        }
+        $teachers = $teachersQuery->get();
+
+        return view('admin.final_projects.proposals.create', compact('classrooms', 'selectedClassroom', 'students', 'teachers', 'isSA'));
+    }
+
+    public function proposalsStore(Request $request)
+    {
+        $isSA = $this->isSuperAdmin();
+        $schoolId = $this->getSchoolId();
+
+        $validated = $request->validate([
+            'classroom_id' => 'required|exists:classrooms,id',
+            'title' => 'required|string|max:255',
+            'abstract' => 'nullable|string',
+            'advisor_id' => 'required|exists:teachers,id',
+            'member_ids' => 'required|array|min:1',
+            'member_ids.*' => 'exists:students,id',
+        ]);
+
+        $classroom = Classroom::with('school')->findOrFail($validated['classroom_id']);
+
+        if (!$isSA && $classroom->school_id != $schoolId) {
+            abort(403);
+        }
+
+        $activeYear = AcademicYear::where('is_active', true)->first();
+
+        $type = $classroom->school->type === 'SMA' ? 'penelitian_ilmiah' : 'project_akhir';
+
+        DB::beginTransaction();
+        try {
+            // First member will be considered as leader implicitly (or explicit in role)
+            $leaderId = $validated['member_ids'][0];
+
+            $project = FinalProject::create([
+                'student_id' => $leaderId,
+                'academic_year_id' => $activeYear->id ?? $classroom->academic_year_id,
+                'type' => $type,
+                'title' => $validated['title'],
+                'abstract' => $validated['abstract'] ?? 'Deskripsi ditentukan oleh Panitia',
+                'advisor_id' => $validated['advisor_id'],
+                'status' => 'approved', // Directly approved by Panitia
+            ]);
+
+            foreach ($validated['member_ids'] as $index => $memberId) {
+                $student = Student::find($memberId);
+                if ($student && !$student->currentFinalProject()) {
+                    \App\Models\FinalProjectMember::create([
+                        'final_project_id' => $project->id,
+                        'student_id' => $memberId,
+                        'role' => ($index === 0) ? 'leader' : 'member'
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('admin.final-projects.proposals.index')->with('success', 'Kelompok berhasil dibentuk dan Judul ditetapkan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal membentuk kelompok: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function proposalsAssign(Request $request, $id)

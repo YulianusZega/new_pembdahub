@@ -63,6 +63,10 @@ class FinalProjectStudentController extends Controller
             return redirect()->route('siswa.final-project.index')->with('error', 'Anda sudah bergabung dalam kelompok Tugas Akhir.');
         }
 
+        if ($student->school->type === 'SMK') {
+            return redirect()->route('siswa.final-project.index')->with('error', 'Untuk siswa SMK, judul dan kelompok ditentukan oleh Panitia.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'abstract' => 'required|string',

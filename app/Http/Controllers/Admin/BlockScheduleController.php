@@ -59,7 +59,6 @@ class BlockScheduleController extends Controller
         // Ambil semua kelas untuk sekolah ini di tahun ajaran aktif
         $classrooms = Classroom::where('school_id', $school->id)
             ->where('academic_year_id', $academicYear->id)
-            ->where('is_active', true)
             ->orderBy('grade_level')
             ->orderBy('class_name')
             ->get();
@@ -285,7 +284,6 @@ class BlockScheduleController extends Controller
 
         $classrooms = Classroom::where('school_id', $school->id)
             ->where('academic_year_id', $academicYear->id)
-            ->where('is_active', true)
             ->orderBy('grade_level')
             ->orderBy('class_name')
             ->get();

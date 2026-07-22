@@ -6,16 +6,18 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
+use App\Models\Classroom;
 use App\Models\TeachingAssignment;
 
-$tas = TeachingAssignment::with(['subject', 'teacher'])
-    ->where('classroom_id', 377) // X DPIB ID is 377 probably? Let's check class name instead
-    ->whereHas('classroom', function($q){
-        $q->where('class_name', 'LIKE', '%X DPIB%');
-    })
-    ->get();
-    
-echo "Penugasan Mengajar for X DPIB:\n";
-foreach($tas as $ta) {
-    echo "- Subj: " . ($ta->subject->subject_name ?? 'N/A') . " | Guru: " . ($ta->teacher->full_name ?? 'N/A') . " | JP: " . $ta->hours_per_week . "\n";
+$cls = Classroom::where('school_id', 3)->where('class_name', 'LIKE', '%X DPIB%')->first();
+if ($cls) {
+    echo "Class: " . $cls->class_name . " (ID: " . $cls->id . ")\n";
+    $tas = TeachingAssignment::with(['subject', 'teacher'])
+        ->where('classroom_id', $cls->id)
+        ->get();
+    echo "Total TA: " . count($tas) . "\n";
+    foreach($tas as $ta) {
+        $subjType = $ta->subject->subject_group ?? 'N/A';
+        echo "- Subj: " . ($ta->subject->subject_name ?? 'N/A') . " ($subjType) | JP: " . $ta->hours_per_week . "\n";
+    }
 }

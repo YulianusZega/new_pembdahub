@@ -8,23 +8,15 @@ if (request('secret') !== 'pembda99') die('Unauthorized');
 
 use App\Models\TimeSlot;
 use App\Models\Schedule;
+use Illuminate\Support\Facades\DB;
 
-$schoolId = 3; // SMK
 echo "<pre>";
-$ts = TimeSlot::where('school_id', $schoolId)
-    ->where('day_of_week', 'tuesday')
-    ->where('is_teaching_slot', 1)
-    ->orderBy('period_number')
-    ->get();
-    
-echo "TimeSlots for Tuesday School 3:\n";
-foreach ($ts as $t) {
-    echo "ID: {$t->id}, Period: {$t->period_number}, Time: {$t->start_time} - {$t->end_time}\n";
-}
-
-echo "\nSchedules for TA 6177 (AGM X TSM 2):\n";
-$schedules = Schedule::where('teaching_assignment_id', 6177)->get();
+$schedules = DB::select("SELECT * FROM schedules WHERE teaching_assignment_id = 6177");
 foreach ($schedules as $s) {
     echo "Schedule ID: {$s->id}, TS_ID: {$s->time_slot_id}\n";
+    $ts = DB::select("SELECT * FROM time_slots WHERE id = ?", [$s->time_slot_id]);
+    if (!empty($ts)) {
+        echo "  -> Period: {$ts[0]->period_number}, Time: {$ts[0]->start_time} - {$ts[0]->end_time}\n";
+    }
 }
 echo "</pre>";

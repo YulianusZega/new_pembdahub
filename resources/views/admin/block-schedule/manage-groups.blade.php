@@ -21,9 +21,19 @@
     .btn-back:hover { background: rgba(255,255,255,0.3); color: white; }
 
     .dropzone { min-height: 200px; border-radius: 12px; padding: 12px; transition: all 0.2s; }
-    .dropzone-unassigned { background: #f8fafc; border: 2px dashed #cbd5e1; }
+    .dropzone-unassigned { background: #f8fafc; border: 2px dashed #cbd5e1; max-height: 280px; overflow-y: auto; align-items: flex-start; align-content: flex-start; }
     .dropzone-a { background: #eff6ff; border: 2px dashed #93c5fd; }
     .dropzone-b { background: #fff7ed; border: 2px dashed #fdba74; }
+    
+    .quick-actions { margin-left: auto; display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+    .student-card:hover .quick-actions { opacity: 1; }
+    .btn-quick { width: 24px; height: 24px; border-radius: 6px; border: none; font-size: 11px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .btn-quick-a { background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; }
+    .btn-quick-a:hover { background: #3b82f6; color: white; }
+    .btn-quick-b { background: #fff7ed; color: #f97316; border: 1px solid #fed7aa; }
+    .btn-quick-b:hover { background: #f97316; color: white; }
+    .btn-quick-u { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+    .btn-quick-u:hover { background: #64748b; color: white; }
     
     .dropzone.drag-over { border-style: solid; background-color: rgba(255,255,255,0.8); }
     .dropzone-a.drag-over { border-color: #3b82f6; }
@@ -161,6 +171,10 @@
                             <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                             <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                         </div>
+                        <div class="quick-actions">
+                            <button type="button" class="btn-quick btn-quick-a" onclick="moveToGroup(this, 'pool-a')" title="Pindah ke Grup A">A</button>
+                            <button type="button" class="btn-quick btn-quick-b" onclick="moveToGroup(this, 'pool-b')" title="Pindah ke Grup B">B</button>
+                        </div>
                     </div>
                     @endif
                 @endforeach
@@ -187,6 +201,10 @@
                                 <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                                 <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
                             </div>
+                            <div class="quick-actions">
+                                <button type="button" class="btn-quick btn-quick-b" onclick="moveToGroup(this, 'pool-b')" title="Pindah ke Grup B">B</button>
+                                <button type="button" class="btn-quick btn-quick-u" onclick="moveToGroup(this, 'pool-u')" title="Kembalikan ke Belum Dibagi"><i class="fas fa-undo"></i></button>
+                            </div>
                         </div>
                         @endif
                     @endforeach
@@ -210,6 +228,10 @@
                             <div class="student-info">
                                 <div class="student-name" title="{{ $sc->student->full_name }}">{{ $sc->student->full_name }}</div>
                                 <div class="student-nis">{{ $sc->student->nis ?? $sc->student->nisn ?? '-' }}</div>
+                            </div>
+                            <div class="quick-actions">
+                                <button type="button" class="btn-quick btn-quick-a" onclick="moveToGroup(this, 'pool-a')" title="Pindah ke Grup A">A</button>
+                                <button type="button" class="btn-quick btn-quick-u" onclick="moveToGroup(this, 'pool-u')" title="Kembalikan ke Belum Dibagi"><i class="fas fa-undo"></i></button>
                             </div>
                         </div>
                         @endif
@@ -302,7 +324,7 @@
             });
         });
 
-        function updateCounts() {
+        window.updateCounts = function updateCounts() {
             const countA = document.getElementById('pool-a').querySelectorAll('.student-card').length;
             const countB = document.getElementById('pool-b').querySelectorAll('.student-card').length;
             const countU = document.getElementById('pool-u').querySelectorAll('.student-card').length;
@@ -335,26 +357,55 @@
     });
 
     function confirmAutoAssign() {
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                title: 'Bagi Otomatis (50:50)',
-                text: 'Siswa akan dibagi berdasarkan urutan nama. Pembagian yang sudah ada akan ditimpa.',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#8b5cf6',
-                cancelButtonColor: '#6b7280',
-                confirmButtonText: 'Ya, Bagi Otomatis',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('autoAssignForm').submit();
-                }
-            });
-        } else {
-            if (confirm('Siswa akan dibagi berdasarkan urutan nama. Pembagian yang sudah ada akan ditimpa. Lanjutkan?')) {
+        Swal.fire({
+            title: 'Bagi Otomatis (50:50)?',
+            text: "Ini akan mengatur ulang semua grup A dan B. Lanjutkan?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#7c3aed',
+            cancelButtonColor: '#94a3b8',
+            confirmButtonText: 'Ya, Bagi Otomatis',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 document.getElementById('autoAssignForm').submit();
             }
-        }
+        });
     }
+
+    // Fungsi klik tombol untuk pindah grup cepat
+    window.moveToGroup = function(btn, targetId) {
+        const card = btn.closest('.student-card');
+        const targetDropzone = document.getElementById(targetId);
+        if (targetDropzone && card) {
+            targetDropzone.appendChild(card);
+            
+            // Perbarui tombol quick actions di dalam card
+            let newButtons = '';
+            if (targetId === 'pool-u') {
+                card.className = 'student-card w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.33%-0.5rem)] lg:w-[calc(25%-0.5rem)]';
+                newButtons = `
+                    <button type="button" class="btn-quick btn-quick-a" onclick="moveToGroup(this, 'pool-a')" title="Pindah ke Grup A">A</button>
+                    <button type="button" class="btn-quick btn-quick-b" onclick="moveToGroup(this, 'pool-b')" title="Pindah ke Grup B">B</button>
+                `;
+            } else {
+                card.className = 'student-card';
+                if (targetId === 'pool-a') {
+                    newButtons = `
+                        <button type="button" class="btn-quick btn-quick-b" onclick="moveToGroup(this, 'pool-b')" title="Pindah ke Grup B">B</button>
+                        <button type="button" class="btn-quick btn-quick-u" onclick="moveToGroup(this, 'pool-u')" title="Kembalikan ke Belum Dibagi"><i class="fas fa-undo"></i></button>
+                    `;
+                } else if (targetId === 'pool-b') {
+                    newButtons = `
+                        <button type="button" class="btn-quick btn-quick-a" onclick="moveToGroup(this, 'pool-a')" title="Pindah ke Grup A">A</button>
+                        <button type="button" class="btn-quick btn-quick-u" onclick="moveToGroup(this, 'pool-u')" title="Kembalikan ke Belum Dibagi"><i class="fas fa-undo"></i></button>
+                    `;
+                }
+            }
+            card.querySelector('.quick-actions').innerHTML = newButtons;
+            
+            updateCounts();
+        }
+    };
 </script>
 @endsection

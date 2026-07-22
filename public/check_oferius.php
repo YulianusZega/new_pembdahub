@@ -8,14 +8,8 @@ if (request('secret') !== 'pembda99') die('Unauthorized');
 
 use App\Models\Schedule;
 
-$total = Schedule::count();
-$nullSchool = Schedule::whereNull('school_id')->count();
-echo "Total Schedules: " . $total . "\n";
-echo "Null school_id: " . $nullSchool . "\n";
-
-if (request('confirm') === 'yes') {
-    $count = Schedule::whereHas('classroom', function($q) {
-        $q->where('school_id', 3);
-    })->delete();
-    echo "Deleted schedules via classroom school_id 3: " . $count . "\n";
+$s = Schedule::all();
+echo "Total Schedules exactly now: " . count($s) . "\n";
+foreach($s as $sch) {
+    echo "ID: " . $sch->id . " TA: " . $sch->teaching_assignment_id . "\n";
 }

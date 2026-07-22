@@ -6,11 +6,11 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\Schedule;
+use App\Models\TimeSlot;
 
 echo "<pre>";
-$schedules = Schedule::where('teaching_assignment_id', 6177)->get();
-foreach ($schedules as $s) {
-    echo "Schedule ID: {$s->id}, Day: {$s->day_of_week}, TS_ID: {$s->time_slot_id}, Duration: {$s->duration_slots}\n";
+$ts = TimeSlot::where('day_of_week', 'tuesday')->orderBy('start_time')->get();
+foreach ($ts as $t) {
+    echo "ID: {$t->id}, Name: {$t->name}, Period: {$t->period_number}, Teaching: {$t->is_teaching_slot}, Time: {$t->start_time} - {$t->end_time}\n";
 }
 echo "</pre>";

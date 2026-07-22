@@ -316,7 +316,7 @@ class User extends Authenticatable
 
     public function isPanitiaProyek(): bool
     {
-        return $this->hasRole('panitia_ta') || $this->hasSpecialDuty(['PROYEK', 'TA', 'TUGAS AKHIR', 'TUGAS-AKHIR']);
+        return $this->hasRole('panitia_ta') || $this->hasSpecialDuty(['PROYEK', 'PROJECT', 'PROJEK', 'TA', 'TUGAS AKHIR', 'TUGAS-AKHIR']);
     }
 
     public function isPksOrPiket(): bool

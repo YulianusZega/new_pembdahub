@@ -745,22 +745,11 @@ class ScheduleGridController extends Controller
                     return "Kelas ini sudah penuh (maksimal 2 jadwal blok pada waktu bersamaan).";
                 }
                 
-                // If there is exactly 1 schedule in the classroom, check block type compatibility
-                $conflict = $classroomConflicts->first();
-                $existingBlockType = $conflict->teachingAssignment ? ($conflict->teachingAssignment->block_type ?? 'none') : 'none';
-                
-                // Allow if both are 'split' (different student groups, different places)
-                // OR if one is 'all' (Kelompok A/Utama) and the other is 'split' (Kelompok B/Praktek)
-                if (
-                    ($incomingBlockType === 'split' && $existingBlockType === 'split') ||
-                    ($incomingBlockType === 'all' && $existingBlockType === 'split') ||
-                    ($incomingBlockType === 'split' && $existingBlockType === 'all')
-                ) {
-                    // Bypass conflict! (Teacher is different, checked above)
-                    return null;
-                }
-                
-                return "Kelas ini sudah ada jadwal {$conflict->subject->subject_name} ({$conflict->teacher->full_name}) pada slot " . ($conflict->timeSlot->slot_name ?? 'yang sama') . ".";
+                // If there is exactly 1 schedule in the classroom, we allow it.
+                // This accommodates the Block System (Group A and Group B) seamlessly
+                // even if the user hasn't strictly configured the block_type in Teaching Assignments.
+                // The teacher conflict is already checked above, so this guarantees different teachers.
+                return null;
             }
         }
 

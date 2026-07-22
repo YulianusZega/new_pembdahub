@@ -487,9 +487,11 @@
                                                 @endforeach
                                                 
                                                 <!-- Add button for block scheduling -->
-                                                <div class="mt-1 text-center flex-1 flex flex-col justify-end">
-                                                    <div onclick="event.stopPropagation(); openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, null)" class="text-[10px] text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded border border-transparent hover:border-purple-200 cursor-pointer font-semibold py-0.5 transition-all">
-                                                        <i class="fas fa-plus"></i> Tambah Jadwal
+                                                <div class="mt-1.5 text-center w-full">
+                                                    <div onclick="event.stopPropagation(); openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, null)" 
+                                                         class="text-[10px] bg-purple-50 text-purple-600 border border-purple-200 hover:bg-purple-600 hover:text-white hover:border-purple-600 rounded cursor-pointer font-bold py-1 px-2 transition-all shadow-sm flex items-center justify-center gap-1 w-full"
+                                                         title="Tambah jadwal lain di jam ini (Sistem Blok)">
+                                                        <i class="fas fa-plus"></i> Tambah Jadwal Blok
                                                     </div>
                                                 </div>
                                             </div>
@@ -545,6 +547,15 @@
         <form id="scheduleForm" method="POST">
             @csrf
             <input type="hidden" name="_method" id="formMethod" value="POST">
+            
+            <div id="editWarning" class="hidden mx-6 mt-4 p-3 bg-amber-50 border border-amber-300 rounded-xl text-amber-800 text-sm shadow-sm flex items-start gap-3">
+                <i class="fas fa-exclamation-triangle mt-0.5 text-amber-600"></i>
+                <div>
+                    <strong>Anda sedang dalam mode UBAH (Edit).</strong><br>
+                    Menyimpan form ini akan <u>MENGGANTI</u> jadwal yang sudah ada. Jika Anda ingin menambah jadwal baru di jam yang sama (Sistem Blok / Grouping), silakan tutup form ini dan klik tombol <strong>"+ Tambah Jadwal Blok"</strong> di jadwal kelas.
+                </div>
+            </div>
+
             <input type="hidden" name="day_of_week" id="modalDay">
             <input type="hidden" name="time_slot_id" id="modalTimeSlot">
             <input type="hidden" name="classroom_id" id="modalClassroom">
@@ -725,12 +736,14 @@ async function openScheduleModal(day, timeSlotId, classroomId, scheduleId) {
         form.action = `{{ url('admin/schedules') }}/${scheduleId}/update-grid`;
         document.getElementById('formMethod').value = 'PUT';
         deleteBtn.classList.remove('hidden');
+        document.getElementById('editWarning').classList.remove('hidden');
     } else {
         // Create mode
         title.textContent = 'Tambah Jadwal';
         form.action = '{{ route("admin.schedules.store-grid") }}';
         document.getElementById('formMethod').value = 'POST';
         deleteBtn.classList.add('hidden');
+        document.getElementById('editWarning').classList.add('hidden');
     }
     
     // Reset assignment selection

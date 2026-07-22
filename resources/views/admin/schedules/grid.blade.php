@@ -485,6 +485,13 @@
                                                         </div>
                                                     </div>
                                                 @endforeach
+                                                
+                                                <!-- Add button for block scheduling -->
+                                                <div class="mt-1 text-center flex-1 flex flex-col justify-end">
+                                                    <div onclick="event.stopPropagation(); openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, null)" class="text-[10px] text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded border border-transparent hover:border-purple-200 cursor-pointer font-semibold py-0.5 transition-all">
+                                                        <i class="fas fa-plus"></i> Tambah Jadwal
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                     @else

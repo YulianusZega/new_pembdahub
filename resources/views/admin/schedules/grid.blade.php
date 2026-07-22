@@ -426,7 +426,7 @@
                                         <td class="cell-content border-r border-purple-50 p-1" style="border-color:#f5eeff; vertical-align: top;"
                                             onclick="openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, null)">
                                             
-                                            <div class="flex {{ count($itemsToDisplay) > 1 ? 'flex-row' : 'flex-col' }} gap-1 h-full w-full">
+                                            <div class="flex flex-col gap-1 h-full w-full">
                                                 @foreach($itemsToDisplay as $item)
                                                     @php
                                                         $bc = $item['schedule'];
@@ -434,11 +434,7 @@
                                                         $scol = $colors;
                                                         
                                                         // Get specific hour sequence if blocked/continuation vs start
-                                                        if ($item['type'] === 'blocked') {
-                                                            $seqHour = $hourSequences[$bc->id] ?? 1;
-                                                        } else {
-                                                            $seqHour = $hourSequences[$bc->id] ?? 1;
-                                                        }
+                                                        $seqHour = $hourSequences[$bc->id] ?? 1;
                                                         
                                                         // Badge for Block System
                                                         $blockBadge = '';
@@ -458,28 +454,32 @@
                                                                 $blockColor = 'bg-orange-100 border-orange-300 text-orange-700';
                                                             }
                                                         }
+                                                        
+                                                        // If multiple items, make font smaller
+                                                        $isMulti = count($itemsToDisplay) > 1;
                                                     @endphp
                                                     
-                                                    <div class="flex-1 min-w-0 scard relative group flex flex-col justify-between h-full p-1.5 bg-gradient-to-br from-{{ $scol['from'] }} to-{{ $scol['to'] }} border-l-[3px] border-l-{{ $scol['border'] }} border-t border-r border-b border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer overflow-hidden" 
+                                                    <div class="flex-1 min-h-[50px] scard relative group flex flex-col justify-between p-1.5 bg-gradient-to-br from-{{ $scol['from'] }} to-{{ $scol['to'] }} border-l-[3px] border-l-{{ $scol['border'] }} border-t border-r border-b border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer overflow-hidden" 
+                                                         style="height: auto;"
                                                          title="{{ $bc->subject->name ?? '-' }} — {{ $bc->teacher->full_name ?? '-' }}"
                                                          onclick="event.stopPropagation(); openScheduleModal('{{ $day }}', {{ $timeSlot->id }}, {{ $classroom->id }}, {{ $bc->id }})">
                                                          
-                                                        <div class="scard-photo" style="background: linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.2)); width:24px; height:24px; top:4px; right:4px;">
+                                                        <div class="scard-photo absolute rounded-full shadow-sm" style="background: linear-gradient(180deg,rgba(0,0,0,0.08),rgba(0,0,0,0.2)); width:20px; height:20px; top:4px; right:4px;">
                                                             @if($bc->teacher && $bc->teacher->photo)
-                                                                <img src="{{ asset('storage/'.$bc->teacher->photo) }}" alt="" style="width:100%; height:100%;">
+                                                                <img src="{{ asset('storage/'.$bc->teacher->photo) }}" alt="" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
                                                             @else
-                                                                <div class="scard-initials" style="background:transparent; opacity:0.9; font-size:10px;">{{ strtoupper(substr($bc->teacher->full_name ?? 'G',0,2)) }}</div>
+                                                                <div class="scard-initials" style="background:transparent; opacity:0.9; font-size:9px;">{{ strtoupper(substr($bc->teacher->full_name ?? 'G',0,2)) }}</div>
                                                             @endif
                                                         </div>
-                                                        <div class="scard-info">
-                                                            <div class="scard-code text-{{ $scol['text'] }} truncate pr-6 font-bold" style="font-size: 11px;">{{ $bc->subject->code ?? '-' }}</div>
-                                                            <div class="scard-jam flex items-center flex-wrap gap-0.5 mt-1">
-                                                                <span class="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-gray-700" style="font-size: 9px;">J-{{ $seqHour }}</span>
+                                                        <div class="scard-info flex flex-col justify-start w-full pr-5">
+                                                            <div class="text-{{ $scol['text'] }} truncate font-extrabold" style="font-size: {{ $isMulti ? '10px' : '11px' }}; letter-spacing: -0.5px;">{{ $bc->subject->code ?? '-' }}</div>
+                                                            <div class="flex items-center flex-wrap gap-0.5 mt-0.5">
+                                                                <span class="px-1 py-[1px] bg-white border border-gray-200 rounded text-gray-700 shadow-sm" style="font-size: 8px; font-weight:700;">J-{{ $seqHour }}</span>
                                                                 @if($bc->group_code) 
-                                                                    <span class="px-1 py-0.5 bg-purple-100 border border-purple-300 text-purple-700 rounded font-bold" title="Kelas Gabungan" style="font-size: 9px;">GAB</span>
+                                                                    <span class="px-1 py-[1px] bg-purple-100 border border-purple-300 text-purple-700 rounded font-bold shadow-sm" title="Kelas Gabungan" style="font-size: 8px;">GAB</span>
                                                                 @endif 
                                                                 @if($blockBadge)
-                                                                    <span class="px-1 py-0.5 {{ $blockColor }} border rounded font-bold shadow-sm" title="{{ $blockTitle }}" style="font-size: 9px;">{{ $blockBadge }}</span>
+                                                                    <span class="px-1 py-[1px] {{ $blockColor }} border rounded font-bold shadow-sm" title="{{ $blockTitle }}" style="font-size: 8px;">{{ $blockBadge }}</span>
                                                                 @endif
                                                             </div>
                                                         </div>

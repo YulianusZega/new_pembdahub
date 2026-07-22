@@ -8,12 +8,13 @@ if (request('secret') !== 'pembda99') die('Unauthorized');
 
 use Illuminate\Support\Facades\DB;
 
-$classroom = DB::table('classrooms')->where('class_name', 'X TSM 2')->where('academic_year_id', 5)->first();
-
 $schedules = DB::table('schedules')
-    ->where('classroom_id', $classroom->id)
+    ->where('classroom_id', 353)
     ->where('day_of_week', 'tuesday')
+    ->select('id', 'time_slot_id', 'subject_id', 'teaching_assignment_id')
+    ->orderBy('time_slot_id')
     ->get();
 
-file_put_contents(__DIR__ . '/dump.txt', json_encode($schedules, JSON_PRETTY_PRINT));
-echo "Dumped to dump.txt using DB facade";
+foreach($schedules as $s) {
+    echo $s->id . "," . $s->time_slot_id . "," . $s->subject_id . "," . $s->teaching_assignment_id . "\n";
+}

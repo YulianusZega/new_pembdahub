@@ -6,10 +6,9 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\Subject;
-use Illuminate\Support\Facades\DB;
+use App\Models\TeachingAssignment;
 
-$subjects = Subject::where('school_id', 3)->get();
-foreach($subjects as $s) {
-    echo $s->id . " | " . $s->subject_name . " | " . $s->name . " | " . $s->code . "\n";
+$tas = TeachingAssignment::where('classroom_id', 353)->get();
+foreach($tas as $ta) {
+    echo $ta->id . " | " . $ta->subject->name . " | is_active: " . $ta->is_active . " | semester: " . $ta->semester_id . "\n";
 }

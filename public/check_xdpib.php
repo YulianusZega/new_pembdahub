@@ -29,7 +29,9 @@ foreach ($classrooms as $classroom) {
     });
 
     foreach ($sorted as $s) {
-        echo 'Hari: ' . $s->day_of_week . ' | Slot: ' . ($s->timeSlot->slot_order ?? '?') . ' (' . ($s->timeSlot->slot_name ?? '?') . ') | Mapel: ' . ($s->teachingAssignment ? $s->teachingAssignment->subject->name : 'N/A') . ' | Guru: ' . ($s->teachingAssignment ? $s->teachingAssignment->teacher->full_name : 'N/A') . "\n";
+        $mapel = $s->teachingAssignment?->subject?->name ?? 'N/A';
+        $guru = $s->teachingAssignment?->teacher?->full_name ?? 'N/A';
+        echo 'Hari: ' . $s->day_of_week . ' | Slot: ' . ($s->timeSlot->slot_order ?? '?') . ' (' . ($s->timeSlot->slot_name ?? '?') . ') | Mapel: ' . $mapel . ' | Guru: ' . $guru . "\n";
     }
     echo "</pre>";
 }

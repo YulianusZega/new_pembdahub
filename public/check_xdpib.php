@@ -1,5 +1,13 @@
 <?php
-$env = parse_ini_file(__DIR__ . '/../.env');
+$env_file = file_get_contents(__DIR__ . '/../.env');
+$lines = explode("\n", $env_file);
+$env = [];
+foreach ($lines as $line) {
+    if (strpos($line, '=') !== false && strpos(trim($line), '#') !== 0) {
+        list($k, $v) = explode('=', $line, 2);
+        $env[trim($k)] = trim($v);
+    }
+}
 $pdo = new PDO("mysql:host=" . $env['DB_HOST'] . ";dbname=" . $env['DB_DATABASE'], $env['DB_USERNAME'], $env['DB_PASSWORD']);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -15,6 +23,7 @@ $stmt = $pdo->query("
 ");
 
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 echo "<pre>Jadwal X DPIB di DB:\n";
 foreach ($results as $r) {

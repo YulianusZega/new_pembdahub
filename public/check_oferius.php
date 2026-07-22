@@ -6,9 +6,13 @@ $kernel->handle(Illuminate\Http\Request::capture());
 
 if (request('secret') !== 'pembda99') die('Unauthorized');
 
-use App\Models\Classroom;
+use App\Models\TeachingAssignment;
 
-$cls = Classroom::where('class_name', 'LIKE', '%X DPIB%')->get();
-foreach($cls as $c) {
-    echo "ID: " . $c->id . " | Name: " . $c->class_name . " | School: " . $c->school_id . "\n";
+$ta = TeachingAssignment::find(6555); // Martperan's TA I just created
+if ($ta) {
+    $ta->classroom_id = 346; // Fix classroom to match Herman Putra's
+    $ta->save();
+    echo "SUCCESS: Updated Martperan TA. Set Classroom to 346.\n";
+} else {
+    echo "TA 6555 not found.\n";
 }

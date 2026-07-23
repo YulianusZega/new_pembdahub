@@ -156,7 +156,7 @@ class PerformanceContractController extends Controller
             abort(403, 'Akses Ditolak.');
         }
 
-        $contract->items()->delete();
+        $contract->evaluations()->delete();
         $contract->delete();
 
         return redirect()->route($isYayasanView ? 'yayasan.performance_contracts.index' : 'admin.performance_contracts.index')

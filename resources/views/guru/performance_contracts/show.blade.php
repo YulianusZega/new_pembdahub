@@ -90,38 +90,53 @@
         }
     @endphp
 
+    @php
+        $headerBgClass = 'bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-l-8 border-indigo-500';
+        $iconBgClass = 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/30';
+        if ($contract->contract_type == 'pkg_kejuruan') {
+            $headerBgClass = 'bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white border-l-8 border-cyan-400';
+            $iconBgClass = 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-2 border-cyan-300 shadow-lg shadow-cyan-500/30';
+        } elseif ($contract->contract_type == 'pkg_umum') {
+            $headerBgClass = 'bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 text-white border-l-8 border-indigo-400';
+            $iconBgClass = 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/30';
+        } else {
+            $headerBgClass = 'bg-gradient-to-r from-amber-900 via-orange-950 to-slate-900 text-white border-l-8 border-amber-400';
+            $iconBgClass = 'bg-gradient-to-br from-amber-500 to-orange-600 text-white border-2 border-amber-300 shadow-lg shadow-amber-500/30';
+        }
+    @endphp
+
     {{-- Progress Tracker Card Khusus Dokumen Ini --}}
-    <div class="bg-white rounded-3xl shadow-xl border-2 {{ $st == 'rejected' ? 'border-rose-300' : 'border-indigo-100' }} overflow-hidden">
-        <div class="bg-gradient-to-r from-slate-100 via-emerald-50/50 to-slate-100 border-b-2 border-gray-200 px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-white border-2 border-gray-300 flex items-center justify-center text-xl shadow-sm shrink-0">
-                    <i class="fas {{ $typeIcon }}"></i>
+    <div class="bg-white rounded-3xl shadow-xl border-2 {{ $st == 'rejected' ? 'border-rose-400 ring-4 ring-rose-50' : 'border-slate-200 ring-4 ring-slate-100' }} overflow-hidden transition-all duration-300 hover:shadow-2xl">
+        <div class="{{ $headerBgClass }} border-b-2 border-slate-700 px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl {{ $iconBgClass }} flex items-center justify-center text-2xl shrink-0">
+                    <i class="fas {{ $typeIcon }} text-white"></i>
                 </div>
                 <div>
-                    <div class="text-xs font-black text-gray-500 uppercase tracking-wider">Status Tahapan Pengajuan</div>
-                    <h3 class="text-lg sm:text-xl font-black text-gray-900">{{ $contractTitle }}</h3>
-                    <div class="text-xs sm:text-sm font-bold text-indigo-600 mt-0.5">
-                        <i class="fas fa-calendar-alt mr-1"></i> Tahun Pelajaran {{ $contract->academicYear->year ?? '-' }}
+                    <div class="text-xs font-black text-amber-300 uppercase tracking-wider">Status Tahapan Pengajuan</div>
+                    <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">{{ $contractTitle }}</h3>
+                    <div class="text-xs sm:text-sm font-bold text-slate-200 mt-1 flex items-center gap-2">
+                        <span class="bg-white/20 px-2.5 py-0.5 rounded-lg border border-white/30"><i class="fas fa-calendar-alt mr-1"></i> TP. {{ $contract->academicYear->year ?? '-' }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="flex items-center gap-3 shrink-0 self-start sm:self-center">
                 @if($st == 'submitted_to_kepsek')
-                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black bg-amber-100 text-amber-900 border-2 border-amber-400 shadow-sm">
-                        <i class="fas fa-clock text-amber-600 animate-pulse"></i> Menunggu Kasek
+                    <span class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-black bg-gradient-to-r from-amber-400 to-orange-500 text-slate-950 border-2 border-amber-200 shadow-lg shadow-amber-500/30">
+                        <i class="fas fa-clock animate-pulse"></i> Menunggu Kasek
                     </span>
                 @elseif($st == 'approved_by_kepsek')
-                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black bg-blue-100 text-blue-900 border-2 border-blue-400 shadow-sm">
-                        <i class="fas fa-spinner text-blue-600 animate-spin"></i> Menunggu Yayasan
+                    <span class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-black bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-2 border-blue-300 shadow-lg shadow-blue-500/30">
+                        <i class="fas fa-spinner animate-spin"></i> Menunggu Yayasan
                     </span>
                 @elseif($st == 'approved_by_yayasan')
-                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black bg-emerald-100 text-emerald-900 border-2 border-emerald-400 shadow-sm">
-                        <i class="fas fa-check-circle text-emerald-600"></i> ACC Yayasan
+                    <span class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-black bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-2 border-emerald-300 shadow-lg shadow-emerald-500/30">
+                        <i class="fas fa-check-circle"></i> ACC Yayasan
                     </span>
                 @elseif($st == 'rejected')
-                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black bg-rose-100 text-rose-900 border-2 border-rose-400 shadow-sm">
-                        <i class="fas fa-times-circle text-rose-600"></i> Dikembalikan
+                    <span class="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-black bg-gradient-to-r from-rose-500 to-red-600 text-white border-2 border-rose-300 shadow-lg shadow-rose-500/30">
+                        <i class="fas fa-times-circle"></i> Dikembalikan
                     </span>
                 @else
                     <span class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-gray-100 text-gray-700 border border-gray-300">
@@ -132,10 +147,10 @@
         </div>
 
         {{-- 4 Tahapan Progress Tracker Bulat & Kontras Tinggi --}}
-        <div class="p-6 sm:p-8 bg-slate-50/50">
+        <div class="p-6 sm:p-8 bg-gradient-to-b from-slate-50 via-white to-slate-50/80">
             <div class="grid grid-cols-1 sm:grid-cols-4 gap-6 relative">
                 {{-- Line connector horizontal --}}
-                <div class="hidden sm:block absolute top-6 left-[12%] right-[12%] h-1.5 bg-slate-200 rounded-full z-0">
+                <div class="hidden sm:block absolute top-7 left-[12%] right-[12%] h-2 bg-slate-200 border border-slate-300 rounded-full z-0 shadow-inner">
                     @php
                         $progressWidth = '0%';
                         if ($step4Status == 'done') { $progressWidth = '100%'; }
@@ -143,19 +158,19 @@
                         elseif ($step2Status == 'done' || $step3Status == 'active') { $progressWidth = '50%'; }
                         elseif ($step1Status == 'done' || $step2Status == 'active') { $progressWidth = '25%'; }
                     @endphp
-                    <div class="h-full bg-gradient-to-r from-emerald-500 via-indigo-600 to-purple-600 rounded-full transition-all duration-500 shadow-sm" style="width: {{ $progressWidth }}"></div>
+                    <div class="h-full bg-gradient-to-r from-emerald-500 via-indigo-500 to-purple-600 rounded-full transition-all duration-700 shadow-md" style="width: {{ $progressWidth }}"></div>
                 </div>
 
                 {{-- [1] Pengajuan Kinerja --}}
                 <div class="relative z-10 flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-2.5">
-                    <div class="w-12 h-12 rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-emerald-100 border-2 border-emerald-600">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-emerald-100 border-2 border-emerald-400">
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
                         <span class="text-xs font-black text-emerald-700 uppercase tracking-wider block mb-0.5">[1] Tahap 1</span>
                         <h5 class="font-black text-base sm:text-lg text-slate-900">Pengajuan Kinerja</h5>
                         <div class="mt-1">
-                            <span class="text-xs sm:text-sm font-bold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-300 inline-block">{{ $step1Text }}</span>
+                            <span class="text-xs sm:text-sm font-black text-emerald-950 bg-emerald-100 px-3.5 py-1 rounded-full border border-emerald-400 inline-block shadow-sm">{{ $step1Text }}</span>
                         </div>
                         <span class="text-xs font-bold text-slate-600 block mt-1">{{ $step1Date }}</span>
                     </div>
@@ -164,19 +179,19 @@
                 {{-- [2] Persetujuan Kasek --}}
                 <div class="relative z-10 flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-2.5">
                     @if($step2Status == 'done')
-                        <div class="w-12 h-12 rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-emerald-100 border-2 border-emerald-600">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-emerald-100 border-2 border-emerald-400">
                             <i class="fas fa-check"></i>
                         </div>
                     @elseif($step2Status == 'active')
-                        <div class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-indigo-200 border-2 border-indigo-600 animate-pulse">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-xl shadow-indigo-500/40 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-indigo-200 border-2 border-indigo-400 animate-pulse scale-110">
                             <i class="fas fa-clock"></i>
                         </div>
                     @elseif($step2Status == 'rejected')
-                        <div class="w-12 h-12 rounded-full bg-rose-600 text-white shadow-lg shadow-rose-600/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-rose-100 border-2 border-rose-600">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-600 to-red-700 text-white shadow-lg shadow-rose-500/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-rose-100 border-2 border-rose-400">
                             <i class="fas fa-times"></i>
                         </div>
                     @else
-                        <div class="w-12 h-12 rounded-full bg-slate-800 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-200 border-2 border-slate-700">
+                        <div class="w-12 h-12 rounded-full bg-slate-800 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-200 border-2 border-slate-600">
                             2
                         </div>
                     @endif
@@ -185,13 +200,13 @@
                         <h5 class="font-black text-base sm:text-lg text-slate-900">Persetujuan Kasek</h5>
                         <div class="mt-1">
                             @if($step2Status == 'done')
-                                <span class="text-xs sm:text-sm font-bold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-300 inline-block">{{ $step2Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-emerald-950 bg-emerald-100 px-3.5 py-1 rounded-full border border-emerald-400 inline-block shadow-sm">{{ $step2Text }}</span>
                             @elseif($step2Status == 'active')
-                                <span class="text-xs sm:text-sm font-black text-indigo-900 bg-indigo-100 px-3 py-1 rounded-full border border-indigo-300 inline-block animate-pulse">{{ $step2Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-white bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-1.5 rounded-full border border-indigo-300 inline-block shadow-md shadow-indigo-500/20 animate-pulse">{{ $step2Text }}</span>
                             @elseif($step2Status == 'rejected')
-                                <span class="text-xs sm:text-sm font-bold text-rose-800 bg-rose-100 px-3 py-1 rounded-full border border-rose-300 inline-block">{{ $step2Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-white bg-gradient-to-r from-rose-500 to-red-600 px-3.5 py-1 rounded-full border border-rose-400 inline-block shadow-sm">{{ $step2Text }}</span>
                             @else
-                                <span class="text-xs sm:text-sm font-bold text-slate-800 bg-slate-200 px-3 py-1 rounded-full border border-slate-400 inline-block">{{ $step2Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-slate-800 bg-white px-3.5 py-1 rounded-full border-2 border-slate-300 inline-block shadow-sm">{{ $step2Text }}</span>
                             @endif
                         </div>
                     </div>
@@ -200,34 +215,34 @@
                 {{-- [3] Persetujuan Yayasan --}}
                 <div class="relative z-10 flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-2.5">
                     @if($step3Status == 'done')
-                        <div class="w-12 h-12 rounded-full bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-emerald-100 border-2 border-emerald-600">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-emerald-100 border-2 border-emerald-400">
                             <i class="fas fa-check"></i>
                         </div>
                     @elseif($step3Status == 'active')
-                        <div class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-indigo-200 border-2 border-indigo-600 animate-pulse">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-xl shadow-amber-500/40 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-amber-200 border-2 border-amber-400 animate-pulse scale-110">
                             <i class="fas fa-clock"></i>
                         </div>
                     @elseif($step3Status == 'rejected')
-                        <div class="w-12 h-12 rounded-full bg-rose-600 text-white shadow-lg shadow-rose-600/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-rose-100 border-2 border-rose-600">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-600 to-red-700 text-white shadow-lg shadow-rose-500/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-rose-100 border-2 border-rose-400">
                             <i class="fas fa-times"></i>
                         </div>
                     @else
-                        <div class="w-12 h-12 rounded-full bg-slate-800 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-200 border-2 border-slate-700">
+                        <div class="w-12 h-12 rounded-full bg-slate-800 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-200 border-2 border-slate-600">
                             3
                         </div>
                     @endif
                     <div>
-                        <span class="text-xs font-black {{ $step3Status == 'done' ? 'text-emerald-700' : ($step3Status == 'active' ? 'text-indigo-700' : ($step3Status == 'rejected' ? 'text-rose-700' : 'text-slate-700')) }} uppercase tracking-wider block mb-0.5">[3] Tahap 3</span>
+                        <span class="text-xs font-black {{ $step3Status == 'done' ? 'text-emerald-700' : ($step3Status == 'active' ? 'text-amber-700' : ($step3Status == 'rejected' ? 'text-rose-700' : 'text-slate-700')) }} uppercase tracking-wider block mb-0.5">[3] Tahap 3</span>
                         <h5 class="font-black text-base sm:text-lg text-slate-900">Persetujuan Yayasan</h5>
                         <div class="mt-1">
                             @if($step3Status == 'done')
-                                <span class="text-xs sm:text-sm font-bold text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full border border-emerald-300 inline-block">{{ $step3Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-emerald-950 bg-emerald-100 px-3.5 py-1 rounded-full border border-emerald-400 inline-block shadow-sm">{{ $step3Text }}</span>
                             @elseif($step3Status == 'active')
-                                <span class="text-xs sm:text-sm font-black text-indigo-900 bg-indigo-100 px-3 py-1 rounded-full border border-indigo-300 inline-block animate-pulse">{{ $step3Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-slate-950 bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-1.5 rounded-full border border-amber-300 inline-block shadow-md shadow-amber-500/20 animate-pulse">{{ $step3Text }}</span>
                             @elseif($step3Status == 'rejected')
-                                <span class="text-xs sm:text-sm font-bold text-rose-800 bg-rose-100 px-3 py-1 rounded-full border border-rose-300 inline-block">{{ $step3Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-white bg-gradient-to-r from-rose-500 to-red-600 px-3.5 py-1 rounded-full border border-rose-400 inline-block shadow-sm">{{ $step3Text }}</span>
                             @else
-                                <span class="text-xs sm:text-sm font-bold text-slate-800 bg-slate-200 px-3 py-1 rounded-full border border-slate-400 inline-block">{{ $step3Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-slate-800 bg-white px-3.5 py-1 rounded-full border-2 border-slate-300 inline-block shadow-sm">{{ $step3Text }}</span>
                             @endif
                         </div>
                     </div>
@@ -236,11 +251,11 @@
                 {{-- [4] Evaluasi --}}
                 <div class="relative z-10 flex flex-row sm:flex-col items-center sm:text-center gap-4 sm:gap-2.5">
                     @if($step4Status == 'done')
-                        <div class="w-12 h-12 rounded-full bg-purple-600 text-white shadow-lg shadow-purple-600/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-purple-100 border-2 border-purple-600">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-indigo-700 text-white shadow-lg shadow-purple-500/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-purple-100 border-2 border-purple-400">
                             <i class="fas fa-star text-amber-300"></i>
                         </div>
                     @elseif($step4Status == 'active')
-                        <div class="w-12 h-12 rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/40 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-indigo-200 border-2 border-indigo-600 animate-pulse">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-xl shadow-purple-500/40 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-purple-200 border-2 border-purple-400 animate-pulse scale-110">
                             <i class="fas fa-chart-line"></i>
                         </div>
                     @elseif($step4Status == 'rejected')
@@ -248,22 +263,22 @@
                             <i class="fas fa-ban"></i>
                         </div>
                     @else
-                        <div class="w-12 h-12 rounded-full bg-slate-800 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-200 border-2 border-slate-700">
+                        <div class="w-12 h-12 rounded-full bg-slate-800 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-200 border-2 border-slate-600">
                             4
                         </div>
                     @endif
                     <div>
-                        <span class="text-xs font-black {{ $step4Status == 'done' ? 'text-purple-700' : ($step4Status == 'active' ? 'text-indigo-700' : 'text-slate-700') }} uppercase tracking-wider block mb-0.5">[4] Tahap 4</span>
+                        <span class="text-xs font-black {{ $step4Status == 'done' ? 'text-purple-700' : ($step4Status == 'active' ? 'text-purple-700' : 'text-slate-700') }} uppercase tracking-wider block mb-0.5">[4] Tahap 4</span>
                         <h5 class="font-black text-base sm:text-lg text-slate-900">Evaluasi & Penilaian</h5>
                         <div class="mt-1">
                             @if($step4Status == 'done')
-                                <span class="text-xs sm:text-sm font-bold text-purple-900 bg-purple-100 px-3 py-1 rounded-full border border-purple-300 inline-block">{{ $step4Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-white bg-gradient-to-r from-purple-600 to-indigo-600 px-3.5 py-1 rounded-full border border-purple-400 inline-block shadow-sm">{{ $step4Text }}</span>
                             @elseif($step4Status == 'active')
-                                <span class="text-xs sm:text-sm font-black text-indigo-900 bg-indigo-100 px-3 py-1 rounded-full border border-indigo-300 inline-block animate-pulse">{{ $step4Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-white bg-gradient-to-r from-purple-500 to-indigo-600 px-4 py-1.5 rounded-full border border-purple-300 inline-block shadow-md shadow-purple-500/20 animate-pulse">{{ $step4Text }}</span>
                             @elseif($step4Status == 'rejected')
-                                <span class="text-xs sm:text-sm font-bold text-slate-700 bg-slate-200 px-3 py-1 rounded-full border border-slate-400 inline-block">-</span>
+                                <span class="text-xs sm:text-sm font-black text-slate-800 bg-white px-3.5 py-1 rounded-full border-2 border-slate-300 inline-block shadow-sm">-</span>
                             @else
-                                <span class="text-xs sm:text-sm font-bold text-slate-800 bg-slate-200 px-3 py-1 rounded-full border border-slate-400 inline-block">{{ $step4Text }}</span>
+                                <span class="text-xs sm:text-sm font-black text-slate-800 bg-white px-3.5 py-1 rounded-full border-2 border-slate-300 inline-block shadow-sm">{{ $step4Text }}</span>
                             @endif
                         </div>
                     </div>

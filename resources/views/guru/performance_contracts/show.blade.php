@@ -91,32 +91,44 @@
     @endphp
 
     @php
-        $headerBgClass = 'bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-l-8 border-indigo-500';
-        $iconBgClass = 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/30';
+        $headerBgClass = 'bg-gradient-to-r from-indigo-50 via-purple-50/50 to-white text-slate-900 border-l-8 border-indigo-600';
+        $iconBgClass = 'bg-indigo-600 text-white border-2 border-indigo-300 shadow-md shadow-indigo-500/20';
+        $titleTextClass = 'text-indigo-950';
+        $badgeTextClass = 'text-indigo-700';
+        $yearBadgeClass = 'bg-indigo-100/80 text-indigo-900 border border-indigo-300';
         if ($contract->contract_type == 'pkg_kejuruan') {
-            $headerBgClass = 'bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white border-l-8 border-cyan-400';
-            $iconBgClass = 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-2 border-cyan-300 shadow-lg shadow-cyan-500/30';
+            $headerBgClass = 'bg-gradient-to-r from-blue-50 via-cyan-50/50 to-white text-slate-900 border-l-8 border-blue-600';
+            $iconBgClass = 'bg-blue-600 text-white border-2 border-blue-300 shadow-md shadow-blue-500/20';
+            $titleTextClass = 'text-blue-950';
+            $badgeTextClass = 'text-blue-700';
+            $yearBadgeClass = 'bg-blue-100/80 text-blue-900 border border-blue-300';
         } elseif ($contract->contract_type == 'pkg_umum') {
-            $headerBgClass = 'bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 text-white border-l-8 border-indigo-400';
-            $iconBgClass = 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/30';
+            $headerBgClass = 'bg-gradient-to-r from-indigo-50 via-purple-50/50 to-white text-slate-900 border-l-8 border-indigo-600';
+            $iconBgClass = 'bg-indigo-600 text-white border-2 border-indigo-300 shadow-md shadow-indigo-500/20';
+            $titleTextClass = 'text-indigo-950';
+            $badgeTextClass = 'text-indigo-700';
+            $yearBadgeClass = 'bg-indigo-100/80 text-indigo-900 border border-indigo-300';
         } else {
-            $headerBgClass = 'bg-gradient-to-r from-amber-900 via-orange-950 to-slate-900 text-white border-l-8 border-amber-400';
-            $iconBgClass = 'bg-gradient-to-br from-amber-500 to-orange-600 text-white border-2 border-amber-300 shadow-lg shadow-amber-500/30';
+            $headerBgClass = 'bg-gradient-to-r from-amber-50 via-orange-50/50 to-white text-slate-900 border-l-8 border-amber-500';
+            $iconBgClass = 'bg-amber-600 text-white border-2 border-amber-300 shadow-md shadow-amber-500/20';
+            $titleTextClass = 'text-amber-950';
+            $badgeTextClass = 'text-amber-800';
+            $yearBadgeClass = 'bg-amber-100/80 text-amber-900 border border-amber-300';
         }
     @endphp
 
     {{-- Progress Tracker Card Khusus Dokumen Ini --}}
     <div class="bg-white rounded-3xl shadow-xl border-2 {{ $st == 'rejected' ? 'border-rose-400 ring-4 ring-rose-50' : 'border-slate-200 ring-4 ring-slate-100' }} overflow-hidden transition-all duration-300 hover:shadow-2xl">
-        <div class="{{ $headerBgClass }} border-b-2 border-slate-700 px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="{{ $headerBgClass }} border-b-2 border-slate-200 px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="w-14 h-14 rounded-2xl {{ $iconBgClass }} flex items-center justify-center text-2xl shrink-0">
                     <i class="fas {{ $typeIcon }} text-white"></i>
                 </div>
                 <div>
-                    <div class="text-xs font-black text-amber-300 uppercase tracking-wider">Status Tahapan Pengajuan</div>
-                    <h3 class="text-lg sm:text-2xl font-black text-white tracking-tight">{{ $contractTitle }}</h3>
-                    <div class="text-xs sm:text-sm font-bold text-slate-200 mt-1 flex items-center gap-2">
-                        <span class="bg-white/20 px-2.5 py-0.5 rounded-lg border border-white/30"><i class="fas fa-calendar-alt mr-1"></i> TP. {{ $contract->academicYear->year ?? '-' }}</span>
+                    <div class="text-xs font-black {{ $badgeTextClass }} uppercase tracking-wider">Status Tahapan Pengajuan</div>
+                    <h3 class="text-lg sm:text-2xl font-black {{ $titleTextClass }} tracking-tight">{{ $contractTitle }}</h3>
+                    <div class="text-xs sm:text-sm font-bold mt-1 flex items-center gap-2">
+                        <span class="{{ $yearBadgeClass }} font-black px-3 py-0.5 rounded-lg"><i class="fas fa-calendar-alt mr-1"></i> TP. {{ $contract->academicYear->year ?? '-' }}</span>
                     </div>
                 </div>
             </div>

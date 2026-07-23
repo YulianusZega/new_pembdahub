@@ -3,22 +3,22 @@
 @section('content')
 <div class="space-y-8 pb-12">
     {{-- Header Banner Section --}}
-    <div class="bg-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border-2 border-slate-800 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+    <div class="bg-gradient-to-r from-emerald-50 via-teal-50/50 to-white rounded-3xl p-6 sm:p-8 text-slate-900 shadow-xl border-2 border-emerald-300 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div class="space-y-3 relative z-10">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-emerald-500 text-slate-950 text-xs sm:text-sm font-black uppercase tracking-wider shadow-sm">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-emerald-600 text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-sm">
                 <i class="fas fa-file-signature"></i>
                 <span>Modul Kinerja Guru & Staff</span>
             </div>
-            <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 Perjanjian Kinerja Saya
             </h2>
-            <p class="text-slate-200 font-bold text-sm sm:text-base max-w-2xl leading-relaxed">
+            <p class="text-slate-700 font-bold text-sm sm:text-base max-w-2xl leading-relaxed">
                 Kelola dokumen komitmen kinerja riil, pantau tahapan verifikasi secara langsung, serta periksa hasil evaluasi akhir Anda.
             </p>
         </div>
         
         <div class="relative z-10 shrink-0">
-            <a href="{{ route('guru.performance_contracts.create') }}" class="inline-flex items-center gap-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 hover:text-white px-6 py-4 rounded-2xl text-sm sm:text-base font-black transition-all shadow-lg shadow-emerald-500/30 border-2 border-emerald-400">
+            <a href="{{ route('guru.performance_contracts.create') }}" class="inline-flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-2xl text-sm sm:text-base font-black transition-all shadow-lg shadow-emerald-600/30 border-2 border-emerald-500">
                 <i class="fas fa-plus text-base"></i> Buat Kontrak Baru
             </a>
         </div>
@@ -224,32 +224,44 @@
                 @endphp
 
                 @php
-                    $headerBgClass = 'bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border-l-8 border-indigo-500';
-                    $iconBgClass = 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/30';
+                    $headerBgClass = 'bg-gradient-to-r from-indigo-50 via-purple-50/50 to-white text-slate-900 border-l-8 border-indigo-600';
+                    $iconBgClass = 'bg-indigo-600 text-white border-2 border-indigo-300 shadow-md shadow-indigo-500/20';
+                    $titleTextClass = 'text-indigo-950';
+                    $badgeTextClass = 'text-indigo-700';
+                    $yearBadgeClass = 'bg-indigo-100/80 text-indigo-900 border border-indigo-300';
                     if ($contract->contract_type == 'pkg_kejuruan') {
-                        $headerBgClass = 'bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white border-l-8 border-cyan-400';
-                        $iconBgClass = 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-2 border-cyan-300 shadow-lg shadow-cyan-500/30';
+                        $headerBgClass = 'bg-gradient-to-r from-blue-50 via-cyan-50/50 to-white text-slate-900 border-l-8 border-blue-600';
+                        $iconBgClass = 'bg-blue-600 text-white border-2 border-blue-300 shadow-md shadow-blue-500/20';
+                        $titleTextClass = 'text-blue-950';
+                        $badgeTextClass = 'text-blue-700';
+                        $yearBadgeClass = 'bg-blue-100/80 text-blue-900 border border-blue-300';
                     } elseif ($contract->contract_type == 'pkg_umum') {
-                        $headerBgClass = 'bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 text-white border-l-8 border-indigo-400';
-                        $iconBgClass = 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white border-2 border-indigo-300 shadow-lg shadow-indigo-500/30';
+                        $headerBgClass = 'bg-gradient-to-r from-indigo-50 via-purple-50/50 to-white text-slate-900 border-l-8 border-indigo-600';
+                        $iconBgClass = 'bg-indigo-600 text-white border-2 border-indigo-300 shadow-md shadow-indigo-500/20';
+                        $titleTextClass = 'text-indigo-950';
+                        $badgeTextClass = 'text-indigo-700';
+                        $yearBadgeClass = 'bg-indigo-100/80 text-indigo-900 border border-indigo-300';
                     } else {
-                        $headerBgClass = 'bg-gradient-to-r from-amber-900 via-orange-950 to-slate-900 text-white border-l-8 border-amber-400';
-                        $iconBgClass = 'bg-gradient-to-br from-amber-500 to-orange-600 text-white border-2 border-amber-300 shadow-lg shadow-amber-500/30';
+                        $headerBgClass = 'bg-gradient-to-r from-amber-50 via-orange-50/50 to-white text-slate-900 border-l-8 border-amber-500';
+                        $iconBgClass = 'bg-amber-600 text-white border-2 border-amber-300 shadow-md shadow-amber-500/20';
+                        $titleTextClass = 'text-amber-950';
+                        $badgeTextClass = 'text-amber-800';
+                        $yearBadgeClass = 'bg-amber-100/80 text-amber-900 border border-amber-300';
                     }
                 @endphp
 
                 <div class="bg-white rounded-3xl shadow-xl border-2 {{ $st == 'rejected' ? 'border-rose-400 ring-4 ring-rose-50' : 'border-slate-200 ring-4 ring-slate-100' }} overflow-hidden transition-all duration-300 hover:shadow-2xl">
                     {{-- Header Top Bar dari Card Progress --}}
-                    <div class="{{ $headerBgClass }} border-b-2 border-slate-700 px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="{{ $headerBgClass }} border-b-2 border-slate-200 px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div class="flex items-center gap-4">
                             <div class="w-14 h-14 rounded-2xl {{ $iconBgClass }} flex items-center justify-center text-2xl shrink-0">
                                 <i class="fas {{ $typeIcon }} text-white"></i>
                             </div>
                             <div>
-                                <div class="text-xs font-black text-amber-300 uppercase tracking-wider">Title Progres Pengajuan</div>
-                                <h4 class="text-lg sm:text-2xl font-black text-white tracking-tight">{{ $contractTitle }}</h4>
-                                <div class="text-xs sm:text-sm font-bold text-slate-200 mt-1 flex items-center gap-2">
-                                    <span class="bg-white/20 px-2.5 py-0.5 rounded-lg border border-white/30"><i class="fas fa-calendar-alt mr-1"></i> TP. {{ $contract->academicYear->year ?? '-' }}</span>
+                                <div class="text-xs font-black {{ $badgeTextClass }} uppercase tracking-wider">Title Progres Pengajuan</div>
+                                <h4 class="text-lg sm:text-2xl font-black {{ $titleTextClass }} tracking-tight">{{ $contractTitle }}</h4>
+                                <div class="text-xs sm:text-sm font-bold mt-1 flex items-center gap-2">
+                                    <span class="{{ $yearBadgeClass }} font-black px-3 py-0.5 rounded-lg"><i class="fas fa-calendar-alt mr-1"></i> TP. {{ $contract->academicYear->year ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>

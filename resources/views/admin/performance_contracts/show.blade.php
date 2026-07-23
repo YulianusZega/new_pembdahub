@@ -279,7 +279,34 @@
                     @elseif($step4Status == 'active')
                         <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-xl shadow-purple-500/40 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-purple-200 border-2 border-purple-400 animate-pulse scale-110">
                             <i class="fas fa-chart-line"></i>
-
+                        </div>
+                    @elseif($step4Status == 'rejected')
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-600 to-red-700 text-white shadow-lg shadow-rose-500/30 flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-rose-100 border-2 border-rose-400">
+                            <i class="fas fa-times"></i>
+                        </div>
+                    @else
+                        <div class="w-12 h-12 rounded-full bg-slate-800 text-white shadow-md flex items-center justify-center text-lg font-black shrink-0 ring-4 ring-slate-200 border-2 border-slate-600">
+                            4
+                        </div>
+                    @endif
+                    <div>
+                        <span class="text-xs font-black {{ $step4Status == 'done' ? 'text-purple-700' : ($step4Status == 'active' ? 'text-indigo-700' : ($step4Status == 'rejected' ? 'text-rose-700' : 'text-slate-700')) }} uppercase tracking-wider block mb-0.5">[4] Tahap 4</span>
+                        <h5 class="font-black text-base sm:text-lg text-slate-900">Evaluasi Kinerja</h5>
+                        <div class="mt-1">
+                            @if($step4Status == 'done')
+                                <span class="text-xs sm:text-sm font-black text-purple-950 bg-purple-100 px-3.5 py-1 rounded-full border border-purple-400 inline-block shadow-sm">{{ $step4Text }}</span>
+                            @elseif($step4Status == 'active')
+                                <span class="text-xs sm:text-sm font-black text-white bg-gradient-to-r from-purple-500 to-indigo-600 px-4 py-1.5 rounded-full border border-purple-300 inline-block shadow-md shadow-purple-500/20 animate-pulse">{{ $step4Text }}</span>
+                            @elseif($step4Status == 'rejected')
+                                <span class="text-xs sm:text-sm font-black text-white bg-gradient-to-r from-rose-500 to-red-600 px-3.5 py-1 rounded-full border border-rose-400 inline-block shadow-sm">{{ $step4Text }}</span>
+                            @else
+                                <span class="text-xs sm:text-sm font-black text-slate-800 bg-white px-3.5 py-1 rounded-full border-2 border-slate-300 inline-block shadow-sm">{{ $step4Text }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         

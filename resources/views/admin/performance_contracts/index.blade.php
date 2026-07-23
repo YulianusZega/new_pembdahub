@@ -6,32 +6,32 @@
 @endphp
 <div class="space-y-8 pb-12">
     {{-- Header Banner Section --}}
-    <div class="bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-950/20 border border-indigo-700/40 relative overflow-hidden">
-        <div class="absolute -right-12 -top-12 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="bg-gradient-to-r from-emerald-50 via-teal-50/50 to-white rounded-3xl p-6 sm:p-8 text-slate-900 shadow-xl border-2 border-emerald-300 relative overflow-hidden">
+        <div class="absolute -right-12 -top-12 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
         
         <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div class="space-y-2">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-indigo-200 text-xs sm:text-sm font-bold uppercase tracking-wider">
-                    <i class="fas fa-layer-group text-amber-400"></i>
+            <div class="space-y-3">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-emerald-600 text-white text-xs sm:text-sm font-black uppercase tracking-wider shadow-sm">
+                    <i class="fas fa-layer-group"></i>
                     <span>Modul Manajemen Kinerja</span>
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-3">
-                    <i class="fas fa-file-signature text-amber-400"></i>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                    <i class="fas fa-file-signature text-emerald-600"></i>
                     <span>{{ $viewTitle }}</span>
                 </h2>
-                <p class="text-indigo-100/90 font-medium text-sm sm:text-base max-w-2xl leading-relaxed">
+                <p class="text-slate-700 font-bold text-sm sm:text-base max-w-2xl leading-relaxed">
                     Kelola, periksa, dan evaluasi seluruh pengajuan dokumen perjanjian kinerja secara efektif sesuai tahapan proses yang berlangsung.
                 </p>
             </div>
             <div class="flex items-center shrink-0">
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 px-5 py-3.5 rounded-2xl flex items-center gap-3.5 shadow-inner">
-                    <div class="w-11 h-11 rounded-xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300 text-lg font-bold">
+                <div class="bg-white border-2 border-emerald-200 px-5 py-3.5 rounded-2xl flex items-center gap-3.5 shadow-sm">
+                    <div class="w-11 h-11 rounded-xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-600 text-lg font-black">
                         <i class="fas fa-calendar-alt"></i>
                     </div>
                     <div>
-                        <div class="text-xs font-bold text-indigo-200 uppercase tracking-wider">Tahun Pelajaran</div>
-                        <div class="text-lg font-black text-white tracking-wide">{{ $currentYear->year ?? '-' }}</div>
+                        <div class="text-xs font-black text-emerald-700 uppercase tracking-wider">Tahun Pelajaran</div>
+                        <div class="text-lg font-black text-slate-900 tracking-wide">{{ $currentYear->year ?? '-' }}</div>
                     </div>
                 </div>
             </div>

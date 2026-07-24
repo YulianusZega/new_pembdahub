@@ -166,11 +166,11 @@
             line-height: 1.4;
         }
 
-        /* Tanda Tangan 3 Pihak */
+        /* Tanda Tangan 2 Pihak (Hanya Kasek & Yang Bersangkutan) */
         .ttd-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 25px;
+            margin-top: 30px;
             page-break-inside: avoid;
             font-size: 10.5pt;
         }
@@ -178,15 +178,15 @@
         .ttd-table td {
             vertical-align: top;
             text-align: center;
-            width: 33.33%;
+            width: 50%;
         }
 
         .ttd-box {
-            padding: 0 5px;
+            padding: 0 10px;
         }
 
         .nama-ttd {
-            margin-top: 60px;
+            margin-top: 65px;
             font-weight: bold;
             text-decoration: underline;
         }
@@ -241,9 +241,9 @@
         </div>
 
         <!-- Keterangan Persetujuan Resmi -->
-        <div style="border: 1.5px solid #059669; background-color: #f0fdf4; color: #166534; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; font-size: 10pt; text-align: center; line-height: 1.4;">
+        <div style="border: 1.5px solid #059669; background-color: #f0fdf4; color: #166534; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; font-size: 9.5pt; text-align: center; line-height: 1.4;">
             <strong>✓ DOKUMEN RESMI DISERAHKAN & DI-ACC:</strong><br>
-            Perjanjian Kinerja ini telah <strong>DISETUJUI oleh Kepala Sekolah {{ $contract->school->name ?? '' }}</strong> dan <strong>DISAHKAN oleh Ketua Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</strong>.
+            Perjanjian Kinerja ini telah <strong>DISETUJUI oleh Kepala Sekolah {{ $contract->school->name ?? '' }}</strong> dan <strong>DISAHKAN oleh Pengurus Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</strong>.
         </div>
 
         <!-- Detail Identitas -->
@@ -347,7 +347,7 @@
             </div>
         </div>
 
-        <!-- Tanda Tangan 3 Pihak Resmi -->
+        <!-- Tanda Tangan 2 Pihak (Hanya Kasek & Yang Bersangkutan) -->
         @php
             $kepalaSekolahName = \App\Models\Employee::where('school_id', $contract->school_id)
                 ->whereHas('activePositions', function($q) use ($contract) {
@@ -360,25 +360,19 @@
 
         <table class="ttd-table">
             <tr>
-                <td style="width: 33%;">
+                <td style="width: 50%;">
                     <div class="ttd-box">
+                        <p>Gunungsitoli, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
                         <p>Yang Membuat Pernyataan,</p>
                         <p><strong>Pegawai / Guru</strong></p>
                         <p class="nama-ttd">{{ $contract->employee->full_name }}</p>
                     </div>
                 </td>
-                <td style="width: 34%;">
+                <td style="width: 50%;">
                     <div class="ttd-box">
                         <p>Disetujui Oleh,</p>
-                        <p><strong>Kepala Sekolah</strong></p>
+                        <p><strong>Kepala Sekolah {{ $contract->school->name ?? '' }}</strong></p>
                         <p class="nama-ttd">{{ $kepalaSekolahName }}</p>
-                    </div>
-                </td>
-                <td style="width: 33%;">
-                    <div class="ttd-box">
-                        <p>Disahkan Oleh,</p>
-                        <p><strong>Ketua Yayasan</strong></p>
-                        <p class="nama-ttd">{{ $ketuaYayasanName }}</p>
                     </div>
                 </td>
             </tr>

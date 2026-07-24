@@ -59,6 +59,12 @@
         <span class="text-sm flex-1 font-semibold">Monitoring PKL (Guru)</span>
     </a>
 
+    <!-- Saldo Kontribusi Unit Sekolah -->
+    <a href="{{ route('yayasan.contribution_balance.index') }}" class="menu-item flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('yayasan.contribution_balance.*') ? $ac : 'text-gray-700 hover:bg-gray-50' }}">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-purple-800 flex items-center justify-center text-white shadow"><i class="fas fa-calculator text-xs"></i></div>
+        <span class="text-sm flex-1 font-semibold">Saldo Kontribusi Unit</span>
+    </a>
+
     <!-- ════════════════ GROUP: SDM & KEPEGAWAIAN ════════════════ -->
     <div class="pt-4" data-menu-group="payroll">
         <button class="menu-group-toggle open w-full flex items-center justify-between px-3 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider hover:text-gray-600" onclick="toggleGroup(this)">

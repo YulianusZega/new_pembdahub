@@ -34,6 +34,13 @@ Route::prefix('yayasan')->name('yayasan.')->middleware('auth', 'yayasan')->group
         Route::delete('/{id}', [App\Http\Controllers\Admin\PerformanceContractController::class, 'destroy'])->name('destroy');
     });
 
+    // Saldo Kontribusi Akhir Unit Sekolah (Yayasan)
+    Route::prefix('saldo-kontribusi')->name('contribution_balance.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Yayasan\ContributionBalanceController::class, 'index'])->name('index');
+        Route::post('/save', [App\Http\Controllers\Yayasan\ContributionBalanceController::class, 'store'])->name('store');
+        Route::get('/export-pdf', [App\Http\Controllers\Yayasan\ContributionBalanceController::class, 'exportPdf'])->name('export_pdf');
+    });
+
     // Evaluasi Perjanjian Kinerja Akhir Semester (Satu Controller dengan Admin)
     Route::get('/performance-evaluations', [App\Http\Controllers\Admin\PerformanceEvaluationController::class, 'index'])->name('performance_evaluations.index');
     Route::get('/performance-evaluations/{contractId}/{semesterId}/evaluate', [App\Http\Controllers\Admin\PerformanceEvaluationController::class, 'evaluate'])->name('performance_evaluations.evaluate');

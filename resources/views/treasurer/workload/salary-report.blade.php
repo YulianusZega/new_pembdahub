@@ -34,6 +34,16 @@
 @endpush
 
 @section('content')
+@php
+    $ketuaYayasanUser = \App\Models\User::where('role', 'ketua_yayasan')->first()
+        ?? \App\Models\User::where('username', 'yulzega')->first();
+    $ketuaYayasanName = $ketuaYayasanUser?->full_name 
+        ?? $ketuaYayasanUser?->name 
+        ?? \App\Models\Setting::getValue('ketua_yayasan_name') 
+        ?? \App\Models\Setting::getValue('sambutan_ketua_nama') 
+        ?? 'YULIANUS ZEGA, S.Kom., M.Pd.T';
+@endphp
+
 <div class="space-y-6">
     <div class="mb-8 no-print">
         <div class="flex items-center justify-between">
@@ -131,16 +141,28 @@
     <!-- Report Table -->
     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden print:mt-0 print:border-none print:shadow-none print:rounded-none">
         
-        {{-- Print Title --}}
-        <div class="print-only text-center mb-8 pb-4 border-b-2 border-black">
-            <h1 class="text-xl font-bold uppercase" style="font-family: 'Times New Roman', Times, serif;">Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</h1>
-            <h2 class="text-lg font-bold mt-1" style="font-family: 'Times New Roman', Times, serif;">
-                Keputusan Yayasan Perguruan Pembda Nias tentang Gaji/Honor Guru/Pegawai 
-                {{ $academicYears->firstWhere('id', $yearId)->year ?? '' }}
-            </h2>
-            <h3 class="text-lg font-bold mt-1 uppercase" style="font-family: 'Times New Roman', Times, serif;">
-                {{ $schools->firstWhere('id', $schoolId)->name ?? '' }}
-            </h3>
+        {{-- Print Kop Surat (Sejajar dengan Logo Yayasan) --}}
+        <div class="print-only mb-6 pb-4 border-b-[3px] border-black">
+            <table class="w-full border-collapse">
+                <tr>
+                    <td class="text-left align-middle" style="width: 90px;">
+                        <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo Yayasan" class="w-20 h-auto" style="max-width: 80px;">
+                    </td>
+                    <td class="text-center align-middle">
+                        <h1 class="text-xl font-bold uppercase tracking-wide" style="font-family: 'Times New Roman', Times, serif; font-size: 16pt; margin: 0;">
+                            Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)
+                        </h1>
+                        <h2 class="text-base font-bold mt-1 tracking-wide" style="font-family: 'Times New Roman', Times, serif; font-size: 13pt; margin: 2px 0 0 0;">
+                            Keputusan Yayasan Perguruan Pembda Nias tentang Gaji/Honor Guru/Pegawai<br>
+                            Tahun Pelajaran {{ $academicYears->firstWhere('id', $yearId)->year ?? '' }}
+                        </h2>
+                        <h3 class="text-base font-bold mt-2 uppercase tracking-widest underline" style="font-family: 'Times New Roman', Times, serif; font-size: 13pt; margin: 4px 0 0 0;">
+                            {{ $schools->firstWhere('id', $schoolId)->name ?? '' }}
+                        </h3>
+                    </td>
+                    <td style="width: 90px;"></td>
+                </tr>
+            </table>
         </div>
 
         <div class="overflow-x-auto">
@@ -280,18 +302,24 @@
         </div>
 
         {{-- Print Signature --}}
-        <div class="print-only mt-12 text-right">
-            <div class="inline-block text-center mr-16" style="font-family: 'Times New Roman', Times, serif;">
+        <div class="print-only mt-10 text-right">
+            <div class="inline-block text-center mr-12" style="font-family: 'Times New Roman', Times, serif;">
                 <p class="text-md">Gunungsitoli, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-                <p class="text-md font-bold mt-1">Yayasan Perguruan Pembangunan Daerah Nias</p>
-                <br><br><br><br>
-                <p class="text-md font-bold underline">_________________________</p>
-                <p class="text-md font-bold mt-1">Ketua</p>
+                <p class="text-md font-bold mt-1">Pengurus Yayasan Perguruan Pembangunan Daerah Nias</p>
+                <p class="text-md font-bold mt-1">Ketua,</p>
+                
+                @if(file_exists(public_path('images/ttd-ketua.png')))
+                    <div class="relative h-20 mt-2 flex items-center justify-center">
+                        <img src="{{ asset('images/ttd-ketua.png') }}" alt="Tanda Tangan" class="h-20 object-contain absolute z-10" style="mix-blend-mode: multiply;">
+                    </div>
+                @else
+                    <div class="h-20"></div>
+                @endif
+                
+                <p class="text-md font-bold underline relative z-20 uppercase">{{ $ketuaYayasanName }}</p>
             </div>
         </div>
     </div>
     @endif
 </div>
 @endsection
-
-

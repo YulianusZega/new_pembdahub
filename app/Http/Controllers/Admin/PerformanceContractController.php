@@ -162,4 +162,29 @@ class PerformanceContractController extends Controller
         return redirect()->route($isYayasanView ? 'yayasan.performance_contracts.index' : 'admin.performance_contracts.index')
             ->with('success', 'Perjanjian Kinerja berhasil dihapus.');
     }
+
+    /**
+     * Cetak dokumen resmi Perjanjian Kinerja
+     */
+    public function print(Request $request, $id)
+    {
+        $user = auth()->user();
+        $isYayasanView = $user->isSuperAdmin() || $user->isYayasan() || $request->routeIs('yayasan.*');
+        
+        $contract = PerformanceContract::with(['employee', 'academicYear', 'position', 'school'])->findOrFail($id);
+
+        if (!$isYayasanView && $contract->school_id !== $user->school_id && !$user->isGuru()) {
+            abort(403, 'Akses Ditolak.');
+        }
+
+        $ketuaYayasanUser = \App\Models\User::where('role', 'ketua_yayasan')->first()
+            ?? \App\Models\User::where('username', 'yulzega')->first();
+        $ketuaYayasanName = $ketuaYayasanUser?->full_name 
+            ?? $ketuaYayasanUser?->name 
+            ?? \App\Models\Setting::getValue('ketua_yayasan_name') 
+            ?? 'YULIANUS ZEGA, S.Kom., M.Pd.T';
+
+        return view('admin.performance_contracts.print', compact('contract', 'ketuaYayasanName'));
+    }
 }
+

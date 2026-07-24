@@ -30,6 +30,7 @@ Route::prefix('yayasan')->name('yayasan.')->middleware('auth', 'yayasan')->group
     Route::prefix('performance-contracts')->name('performance_contracts.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\PerformanceContractController::class, 'index'])->name('index');
         Route::get('/{id}', [App\Http\Controllers\Admin\PerformanceContractController::class, 'show'])->name('show');
+        Route::get('/{id}/print', [App\Http\Controllers\Admin\PerformanceContractController::class, 'print'])->name('print');
         Route::post('/{id}/process', [App\Http\Controllers\Admin\PerformanceContractController::class, 'process'])->name('process');
         Route::delete('/{id}', [App\Http\Controllers\Admin\PerformanceContractController::class, 'destroy'])->name('destroy');
     });

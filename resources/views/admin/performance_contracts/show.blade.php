@@ -20,7 +20,10 @@
             <p class="text-slate-700 font-bold text-sm sm:text-base max-w-xl leading-relaxed">Evaluasi dan tinjau rincian target kinerja riil yang diajukan oleh guru atau tenaga kependidikan.</p>
         </div>
         
-        <div class="relative z-10 shrink-0">
+        <div class="relative z-10 shrink-0 flex flex-wrap items-center gap-3">
+            <a href="{{ route($routePrefix . 'performance_contracts.print', $contract->id) }}" target="_blank" class="inline-flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3.5 rounded-2xl text-sm sm:text-base font-black transition-all shadow-md shadow-emerald-600/30">
+                <i class="fas fa-print"></i> Cetak Dokumen Resmi
+            </a>
             <a href="{{ route($routePrefix . 'performance_contracts.index') }}" class="inline-flex items-center gap-2.5 bg-white hover:bg-emerald-50 text-emerald-950 px-5 py-3.5 rounded-2xl text-sm sm:text-base font-black transition-all shadow-sm border-2 border-emerald-200">
                 <i class="fas fa-arrow-left text-emerald-600"></i> Kembali ke Daftar
             </a>

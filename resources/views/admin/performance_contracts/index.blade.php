@@ -202,14 +202,17 @@
                             @endif
                         </td>
                         <td class="px-6 py-5">
-                            <div class="flex items-center justify-end gap-2.5">
-                                <a href="{{ route($routePrefix . 'performance_contracts.show', $contract->id) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all font-bold text-sm shadow-md shadow-indigo-600/20 hover:shadow-lg hover:-translate-y-0.5">
+                            <div class="flex items-center justify-end gap-2">
+                                <a href="{{ route($routePrefix . 'performance_contracts.print', $contract->id) }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition-all font-bold text-xs shadow-sm" title="Cetak Perjanjian Kinerja Resmi">
+                                    <i class="fas fa-print"></i> Cetak
+                                </a>
+                                <a href="{{ route($routePrefix . 'performance_contracts.show', $contract->id) }}" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all font-bold text-xs shadow-sm">
                                     <i class="fas fa-search"></i> Periksa
                                 </a>
                                 <form action="{{ route($routePrefix . 'performance_contracts.destroy', $contract->id) }}" method="POST" class="m-0 p-0 inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kontrak kinerja ini secara permanen?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border-2 border-rose-200 hover:border-rose-600 transition-all font-bold text-sm shadow-sm hover:shadow-md">
+                                    <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border border-rose-200 transition-all font-bold text-xs">
                                         <i class="fas fa-trash-alt"></i> Hapus
                                     </button>
                                 </form>

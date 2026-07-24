@@ -316,7 +316,100 @@
         @endforeach
     </div>
 
+    <!-- ════════════════ TABLE REKAPITULASI KONTRIBUSI SELURUH UNIT SEKOLAH ════════════════ -->
+    <div class="bg-white rounded-2xl border border-gray-200/80 shadow-md overflow-hidden mt-8">
+        <div class="bg-gradient-to-r from-violet-800 via-purple-800 to-indigo-900 px-6 py-4 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <h3 class="text-base font-extrabold flex items-center gap-2">
+                    <i class="fas fa-table-list text-amber-300"></i> Rekapitulasi Kontribusi Seluruh Unit Sekolah & Saldo Akhir
+                </h3>
+                <p class="text-xs text-violet-200 mt-0.5">
+                    Ringkasan total pendapatan, pengeluaran, dan saldo kontribusi gabungan seluruh unit pendidikan di bawah Yayasan.
+                </p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded-full bg-white/15 text-white font-bold text-xs backdrop-blur-sm border border-white/20">
+                    TP {{ $currentYear->year ?? '-' }}
+                </span>
+                <span class="px-3 py-1 rounded-full bg-amber-400 text-amber-950 font-extrabold text-xs shadow-sm">
+                    {{ $periodMode === 'annual' ? '12 Bulan (Full Year)' : '1 Bulan' }}
+                </span>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto p-6">
+            <table class="w-full text-xs text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-100/80 text-gray-700 font-bold uppercase tracking-wider border-b border-gray-200">
+                        <th class="px-3 py-3 rounded-l-lg text-center w-12">No</th>
+                        <th class="px-4 py-3">Nama Unit Sekolah</th>
+                        <th class="px-3 py-3 text-center">Total Siswa</th>
+                        <th class="px-4 py-3 text-right">Pendapatan SPP</th>
+                        <th class="px-4 py-3 text-right">Gaji Guru & Pegawai</th>
+                        <th class="px-4 py-3 text-right">Belanja Otorisasi</th>
+                        <th class="px-4 py-3 text-right">Total Pengeluaran</th>
+                        <th class="px-4 py-3 text-right">Saldo Kontribusi Akhir</th>
+                        <th class="px-3 py-3 rounded-r-lg text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach($schoolData as $index => $item)
+                        @php
+                            $s = $item['school'];
+                            $isSurplus = $item['is_surplus'];
+                        @endphp
+                        <tr class="hover:bg-violet-50/40 transition">
+                            <td class="px-3 py-3.5 text-center font-bold text-gray-500">{{ $index + 1 }}</td>
+                            <td class="px-4 py-3.5 font-extrabold text-gray-900">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-md bg-violet-100 text-violet-700 flex items-center justify-center font-black text-[10px]">
+                                        {{ strtoupper(substr($s->type, 0, 3)) }}
+                                    </div>
+                                    <span>{{ $s->name }}</span>
+                                </div>
+                            </td>
+                            <td class="px-3 py-3.5 text-center font-semibold text-gray-700">{{ $item['total_students'] }} siswa</td>
+                            <td class="px-4 py-3.5 text-right font-bold text-emerald-700">Rp {{ number_format($item['income_total'], 0, ',', '.') }}</td>
+                            <td class="px-4 py-3.5 text-right font-semibold text-gray-800">Rp {{ number_format($item['salary_total'], 0, ',', '.') }}</td>
+                            <td class="px-4 py-3.5 text-right font-semibold text-amber-700">Rp {{ number_format($item['authorized_expense_total'], 0, ',', '.') }}</td>
+                            <td class="px-4 py-3.5 text-right font-bold text-red-600">Rp {{ number_format($item['expense_total'], 0, ',', '.') }}</td>
+                            <td class="px-4 py-3.5 text-right font-black text-sm {{ $isSurplus ? 'text-emerald-700' : 'text-red-700' }}">
+                                {{ $isSurplus ? '+' : '' }}Rp {{ number_format($item['saldo'], 0, ',', '.') }}
+                            </td>
+                            <td class="px-3 py-3.5 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider {{ $isSurplus ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200' }}">
+                                    {{ $isSurplus ? 'SURPLUS' : 'DEFISIT' }}
+                                </span>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+                <tfoot class="border-t-2 border-violet-200 bg-violet-50/70 font-black text-xs">
+                    <tr>
+                        <td colspan="2" class="px-4 py-4 text-violet-900 font-extrabold text-sm uppercase">GRAND TOTAL YAYASAN</td>
+                        <td class="px-3 py-4 text-center text-violet-900 font-bold">
+                            {{ array_sum(array_column($schoolData, 'total_students')) }} siswa
+                        </td>
+                        <td class="px-4 py-4 text-right text-emerald-800 text-sm">Rp {{ number_format($grandTotalIncome, 0, ',', '.') }}</td>
+                        <td class="px-4 py-4 text-right text-gray-900 text-sm">Rp {{ number_format($grandTotalGaji, 0, ',', '.') }}</td>
+                        <td class="px-4 py-4 text-right text-amber-800 text-sm">Rp {{ number_format($grandTotalOtorisasi, 0, ',', '.') }}</td>
+                        <td class="px-4 py-4 text-right text-red-700 text-sm">Rp {{ number_format($grandTotalExpense, 0, ',', '.') }}</td>
+                        <td class="px-4 py-4 text-right text-base {{ $grandTotalSaldo >= 0 ? 'text-emerald-800' : 'text-red-800' }}">
+                            {{ $grandTotalSaldo >= 0 ? '+' : '' }}Rp {{ number_format($grandTotalSaldo, 0, ',', '.') }}
+                        </td>
+                        <td class="px-3 py-4 text-center">
+                            <span class="px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider {{ $grandTotalSaldo >= 0 ? 'bg-emerald-500 text-white shadow-sm' : 'bg-red-500 text-white shadow-sm' }}">
+                                {{ $grandTotalSaldo >= 0 ? 'SURPLUS' : 'DEFISIT' }}
+                            </span>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
 </div>
+
 
 <!-- Modal Input / Edit Belanja Otorisasi & SPP -->
 <div id="editModal" class="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">

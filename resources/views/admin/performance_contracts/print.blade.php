@@ -97,13 +97,13 @@
 
         .garis-kop {
             border-bottom: 3px double #000;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         /* Judul Dokumen */
         .doc-title {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .doc-title h3 {
@@ -124,7 +124,7 @@
         .info-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             font-size: 11pt;
         }
 
@@ -138,7 +138,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             font-size: 10.5pt;
         }
 
@@ -238,6 +238,12 @@
                     <strong>Form 4 — Perjanjian Kinerja Jabatan ({{ $contract->position->position_name ?? 'Tugas Tambahan' }})</strong>
                 @endif
             </p>
+        </div>
+
+        <!-- Keterangan Persetujuan Resmi -->
+        <div style="border: 1.5px solid #059669; background-color: #f0fdf4; color: #166534; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; font-size: 10pt; text-align: center; line-height: 1.4;">
+            <strong>✓ DOKUMEN RESMI DISERAHKAN & DI-ACC:</strong><br>
+            Perjanjian Kinerja ini telah <strong>DISETUJUI oleh Kepala Sekolah {{ $contract->school->name ?? '' }}</strong> dan <strong>DISAHKAN oleh Ketua Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</strong>.
         </div>
 
         <!-- Detail Identitas -->

@@ -2,29 +2,34 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Surat Keputusan & Lampiran Rekapitulasi Gaji (Workload) Pembda Nias 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Keputusan Penetapan Gaji & Otorisasi Pembda Nias 2026</title>
     <style>
         @page {
-            size: A4 landscape;
-            margin: 10mm 15mm 10mm 15mm;
+            size: A4 portrait;
+            margin: 15mm 20mm 15mm 25mm;
         }
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 10pt;
-            line-height: 1.35;
+            font-size: 11pt;
+            line-height: 1.45;
             color: #000;
             background-color: #ffffff;
             margin: 0;
-            padding: 10px;
+            padding: 15px;
         }
 
         .no-print-bar {
+            max-width: 210mm;
+            margin: 0 auto 15px auto;
             background: #1e1b4b;
             color: #fff;
-            padding: 10px 15px;
+            padding: 10px 18px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-family: sans-serif;
             font-size: 13px;
         }
@@ -33,26 +38,32 @@
             background: #10b981;
             color: white;
             border: none;
-            padding: 6px 14px;
-            border-radius: 5px;
+            padding: 7px 16px;
+            border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
-            float: right;
+            font-size: 13px;
+        }
+
+        .btn-print:hover {
+            background: #059669;
         }
 
         .page-container {
             width: 100%;
+            max-width: 210mm;
+            margin: 0 auto;
             background: #ffffff;
             box-sizing: border-box;
         }
 
-        /* Kop Surat Tabel */
+        /* Kop Surat Table */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
             border-bottom: 3px double #000;
             padding-bottom: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .kop-table td {
@@ -68,6 +79,7 @@
             font-size: 14pt;
             font-weight: bold;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .kop-title h1 {
@@ -75,6 +87,7 @@
             font-size: 20pt;
             font-weight: bold;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .kop-title p {
@@ -86,59 +99,60 @@
         /* Judul SK */
         .judul-sk {
             text-align: center;
-            margin-top: 10px;
-            margin-bottom: 15px;
+            margin-top: 15px;
+            margin-bottom: 20px;
         }
 
         .judul-sk h3 {
             margin: 0;
-            font-size: 12pt;
+            font-size: 13pt;
             font-weight: bold;
             text-transform: uppercase;
             text-decoration: underline;
+            letter-spacing: 0.5px;
         }
 
         .judul-sk p {
-            margin: 2px 0 0 0;
-            font-size: 10pt;
+            margin: 3px 0 0 0;
+            font-size: 11pt;
             font-weight: bold;
         }
 
         .judul-sk .tentang {
-            margin-top: 8px;
+            margin-top: 12px;
             text-transform: uppercase;
             font-weight: bold;
-            font-size: 10.5pt;
-            line-height: 1.3;
+            font-size: 11pt;
+            line-height: 1.35;
         }
 
         .jabatan-header {
             text-align: center;
             font-weight: bold;
-            font-size: 10.5pt;
-            margin-bottom: 12px;
+            font-size: 11pt;
+            margin-bottom: 15px;
         }
 
-        /* Tabel Menimbang & Mengingat */
+        /* Tabel Legal Menimbang & Mengingat */
         .legal-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
-            font-size: 10pt;
+            margin-bottom: 15px;
+            font-size: 11pt;
         }
 
         .legal-table td {
             vertical-align: top;
-            padding: 2px 0;
+            padding: 3px 0;
         }
 
         .legal-table td.col-label {
-            width: 90px;
+            width: 100px;
             font-weight: bold;
         }
 
         .legal-table td.col-sep {
-            width: 12px;
+            width: 15px;
             font-weight: bold;
         }
 
@@ -149,14 +163,14 @@
         }
 
         .legal-list li {
-            margin-bottom: 3px;
+            margin-bottom: 5px;
         }
 
         .memutuskan-text {
             text-align: center;
             font-weight: bold;
-            font-size: 11pt;
-            margin: 12px 0 8px 0;
+            font-size: 12pt;
+            margin: 20px 0 12px 0;
             letter-spacing: 1px;
         }
 
@@ -164,22 +178,22 @@
         .diktum-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
-            font-size: 10pt;
+            margin-bottom: 15px;
+            font-size: 11pt;
         }
 
         .diktum-table td {
             vertical-align: top;
-            padding: 3px 0;
+            padding: 4px 0;
         }
 
         .diktum-table td.diktum-key {
-            width: 100px;
+            width: 110px;
             font-weight: bold;
         }
 
         .diktum-table td.diktum-sep {
-            width: 12px;
+            width: 15px;
             font-weight: bold;
         }
 
@@ -187,11 +201,11 @@
             text-align: justify;
         }
 
-        /* Tanda Tangan */
+        /* Tanda Tangan Table */
         .ttd-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 25px;
             page-break-inside: avoid;
         }
 
@@ -200,86 +214,28 @@
         }
 
         .tembusan-box {
-            font-size: 9pt;
+            font-size: 10pt;
         }
 
         .tembusan-box h5 {
-            margin: 0 0 3px 0;
-            font-size: 9pt;
+            margin: 0 0 4px 0;
+            font-size: 10pt;
             font-weight: bold;
         }
 
         .tembusan-box ol {
             margin: 0;
-            padding-left: 15px;
+            padding-left: 16px;
         }
 
         .ttd-box {
             text-align: left;
-            font-size: 10pt;
+            font-size: 11pt;
         }
 
         .ttd-box p {
-            margin: 1px 0;
+            margin: 2px 0;
         }
-
-        /* Lampiran Halaman 2 */
-        .page-break {
-            page-break-before: always;
-        }
-
-        .lampiran-head {
-            border-bottom: 2px solid #000;
-            padding-bottom: 6px;
-            margin-bottom: 12px;
-        }
-
-        .lampiran-head h4 {
-            margin: 0;
-            font-size: 10.5pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .lampiran-head p {
-            margin: 1px 0 0 0;
-            font-size: 9pt;
-        }
-
-        .workload-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            font-size: 8.5pt;
-        }
-
-        .workload-table th {
-            background-color: #e5e7eb;
-            border: 1px solid #000;
-            padding: 5px 4px;
-            text-align: center;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 8.5pt;
-        }
-
-        .workload-table td {
-            border: 1px solid #000;
-            padding: 4px 5px;
-            vertical-align: top;
-        }
-
-        .unit-header-row {
-            background-color: #dbeafe;
-            font-weight: bold;
-            font-size: 9pt;
-        }
-
-        .text-right { text-align: right; }
-        .text-center { text-align: center; }
-        .font-bold { font-weight: bold; }
-        .sub-text { font-size: 7.5pt; color: #4b5563; }
 
         @media print {
             .no-print-bar { display: none !important; }
@@ -289,14 +245,15 @@
 </head>
 <body>
 
-    <!-- Bar Tombol Cetak -->
+    <!-- Bar Tombol Cetak (Tidak ikut tercetak) -->
     <div class="no-print-bar">
+        <span><strong>Surat Keputusan (SK) Yayasan Perguruan Pembda Nias</strong> — Format A4 Portrait</span>
         <button class="btn-print" onclick="window.print()">Cetak / Simpan PDF</button>
-        <strong>Surat Keputusan (SK) & Lampiran Rekapitulasi Gaji (Workload) Pembda Nias</strong>
     </div>
 
-    <!-- HALAMAN 1: SURAT KEPUTUSAN -->
+    <!-- DOKUMEN SURAT KEPUTUSAN (A4 PORTRAIT) -->
     <div class="page-container">
+        
         <!-- Kop Surat Table -->
         <table class="kop-table">
             <tr>
@@ -320,11 +277,11 @@
         <div class="judul-sk">
             <h3>SURAT KEPUTUSAN</h3>
             <p>KETUA YAYASAN PERGURUAN PEMBANGUNAN DAERAH NIAS</p>
-            <p style="margin-top: 3px;">NOMOR : 028/SK-YPD/VII/2026</p>
+            <p style="margin-top: 4px;">NOMOR : 028/SK-YPD/VII/2026</p>
 
             <div class="tentang">
                 TENTANG<br>
-                PENETAPAN DAFTAR BEBAN KERJA DAN REKAPITULASI PENGGAJIAN GURU DAN PEGAWAI<br>
+                PENETAPAN GAJI GURU, PEGAWAI, DAN BELANJA OTORISASI UNIT SEKOLAH<br>
                 DI LINGKUNGAN YAYASAN PERGURUAN PEMBANGUNAN DAERAH NIAS<br>
                 TAHUN PELAJARAN 2026/2027
             </div>
@@ -334,16 +291,16 @@
             Ketua Yayasan Perguruan Pembangunan Daerah Nias,
         </div>
 
-        <!-- Legal Tables -->
+        <!-- Pertimbangan Legal -->
         <table class="legal-table">
             <tr>
                 <td class="col-label">Menimbang</td>
                 <td class="col-sep">:</td>
                 <td>
                     <ul class="legal-list" style="list-style-type: lower-alpha;">
-                        <li>Bahwa dalam rangka efektivitas penyelenggaraan pendidikan, kepastian hak kepegawaian, dan pembinaan beban kerja guru/pegawai di lingkungan Yayasan Perguruan Pembangunan Daerah Nias, perlu menetapkan Rekapitulasi Penggajian Guru dan Pegawai untuk Tahun Pelajaran 2026/2027;</li>
-                        <li>Bahwa besaran Gaji Pokok, Tunjangan Jabatan, Honor Mengajar, dan Tunjangan Yayasan untuk masing-masing guru dan pegawai telah dihitung berdasarkan beban kerja (workload) serta peraturan kepegawaian yang berlaku;</li>
-                        <li>Bahwa berdasarkan pertimbangan sebagaimana dimaksud pada huruf a dan b, perlu menetapkan Surat Keputusan Ketua Yayasan Perguruan Pembangunan Daerah Nias tentang Penetapan Daftar Beban Kerja dan Rekapitulasi Penggajian Guru dan Pegawai.</li>
+                        <li>Bahwa dalam rangka menjaga kelancaran, efektivitas penyelenggaraan pendidikan, serta ketertiban administrasi keuangan di lingkungan Yayasan Perguruan Pembangunan Daerah Nias, perlu menetapkan besaran Gaji Guru, Pegawai, dan Belanja Otorisasi masing-masing unit sekolah;</li>
+                        <li>Bahwa besaran Gaji Guru/Pegawai dan alokasi Belanja Otorisasi Unit Sekolah telah disesuaikan dengan kemampuan keuangan dan struktur anggaran Yayasan serta unit pendidikan di bawah naungannya untuk Tahun Pelajaran 2026/2027;</li>
+                        <li>Bahwa berdasarkan pertimbangan sebagaimana dimaksud pada huruf a dan b di atas, perlu menetapkan Keputusan Ketua Yayasan Perguruan Pembangunan Daerah Nias tentang Penetapan Gaji Guru, Pegawai, dan Belanja Otorisasi Unit Sekolah.</li>
                     </ul>
                 </td>
             </tr>
@@ -356,7 +313,7 @@
                         <li>Undang-Undang Nomor 14 Tahun 2005 tentang Guru dan Dosen;</li>
                         <li>Peraturan Pemerintah Nomor 19 Tahun 2005 tentang Standar Nasional Pendidikan;</li>
                         <li>Anggaran Dasar dan Anggaran Rumah Tangga (AD/ART) Yayasan Perguruan Pembangunan Daerah Nias;</li>
-                        <li>Ketentuan dan Peraturan Internal Penggajian (Payroll & Workload) Yayasan Perguruan Pembangunan Daerah Nias.</li>
+                        <li>Ketentuan dan Peraturan Internal Keuangan Yayasan Perguruan Pembangunan Daerah Nias.</li>
                     </ol>
                 </td>
             </tr>
@@ -375,21 +332,21 @@
                 <td class="diktum-key">KESATU</td>
                 <td class="diktum-sep">:</td>
                 <td class="diktum-body">
-                    Menetapkan Daftar Beban Kerja dan Rekapitulasi Penggajian (Take Home Pay / THP) Guru dan Pegawai di lingkungan Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA) untuk Tahun Pelajaran 2026/2027 sebagaimana tercantum dalam Lampiran Keputusan ini.
+                    Menetapkan besaran Gaji Guru, Pegawai, dan Belanja Otorisasi Unit Sekolah di lingkungan Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA) untuk Tahun Pelajaran 2026/2027 sebagaimana tercantum dalam dokumen Rekapitulasi Penggajian PembdaHUB.
                 </td>
             </tr>
             <tr>
                 <td class="diktum-key">KEDUA</td>
                 <td class="diktum-sep">:</td>
                 <td class="diktum-body">
-                    Lampiran Keputusan ini yang memuat Rincian Gaji Pokok, Tunjangan Jabatan, Honor Mengajar, Tunjangan Yayasan (Keluarga, Anak, Beras), serta Total Take Home Pay (THP) per guru dan pegawai pada masing-masing unit sekolah (SMP Swasta Pembda 2, SMA Swasta Pembda 1, dan SMK Swasta Pembda Gunungsitoli) merupakan bagian yang sah dan tidak terpisahkan dari Surat Keputusan ini.
+                    Daftar Rekapitulasi Penggajian Guru/Pegawai dan Belanja Otorisasi masing-masing unit sekolah (SMP Swasta Pembda 2 Gunungsitoli, SMA Swasta Pembda 1 Gunungsitoli, dan SMK Swasta Pembda Gunungsitoli) ditarik dari sistem PembdaHUB dan merupakan bagian yang sah serta tidak terpisahkan dari Surat Keputusan ini.
                 </td>
             </tr>
             <tr>
                 <td class="diktum-key">KETIGA</td>
                 <td class="diktum-sep">:</td>
                 <td class="diktum-body">
-                    Beban keuangan atas pembayaran gaji dan tunjangan sebagaimana dimaksud pada Diktum KESATU dibebankan pada Anggaran Pendapatan dan Belanja Sekolah (APBS) serta Kas Yayasan yang sah.
+                    Beban keuangan dan pembayaran gaji guru/pegawai serta alokasi belanja otorisasi sebagaimana dimaksud pada Diktum KESATU dibebankan pada Anggaran Pendapatan dan Belanja Sekolah (APBS) masing-masing unit sekolah serta Kas Yayasan yang sah.
                 </td>
             </tr>
             <tr>
@@ -404,7 +361,7 @@
         <!-- TTD & Tembusan Table -->
         <table class="ttd-table">
             <tr>
-                <td style="width: 55%;">
+                <td style="width: 50%;">
                     <div class="tembusan-box">
                         <h5>Tembusan :</h5>
                         <ol>
@@ -417,7 +374,7 @@
                         </ol>
                     </div>
                 </td>
-                <td style="width: 45%;">
+                <td style="width: 50%;">
                     <div class="ttd-box">
                         <p>Ditetapkan di : <strong>Gunungsitoli</strong></p>
                         <p>Pada tanggal : <strong>24 Juli 2026</strong></p>
@@ -425,190 +382,13 @@
                         <p>Pengurus Yayasan</p>
                         <p>Perguruan Pembangunan Daerah Nias</p>
                         <p><strong>Ketua,</strong></p>
-                        <br><br><br>
+                        <br><br><br><br>
                         <p><u><strong>YULIANUS ZEGA, S.Kom., M.Pd.T</strong></u></p>
                     </div>
                 </td>
             </tr>
         </table>
-    </div>
 
-    <!-- HALAMAN 2: LAMPIRAN WORKLOAD & SALARY REPORT -->
-    <div class="page-container page-break">
-        <div class="lampiran-head">
-            <h4>LAMPIRAN SURAT KEPUTUSAN KETUA YAYASAN PERGURUAN PEMBANGUNAN DAERAH NIAS</h4>
-            <p>NOMOR : 028/SK-YPD/VII/2026 | TANGGAL : 24 JULI 2026</p>
-            <p><strong>TENTANG : REKAPITULASI PENGGAJIAN DAN BEBAN KERJA GURU / PEGAWAI (WORKLOAD REPORT) TP 2026/2027</strong></p>
-        </div>
-
-        <h3 style="text-align: center; font-size: 11pt; font-weight: bold; margin: 10px 0; text-transform: uppercase;">
-            DAFTAR REKAPITULASI PENGGAJIAN GURU DAN PEGAWAI UNIT SEKOLAH<br>
-            SISTEM BEBAN KERJA & PAYROLL PEMBDAHUB (https://perguruanpembda.com/admin/workload)
-        </h3>
-
-        <!-- Workload Table Precision Fit -->
-        <table class="workload-table">
-            <thead>
-                <tr>
-                    <th style="width: 4%;">No</th>
-                    <th style="width: 25%;">Nama Pegawai / NIP / Status</th>
-                    <th style="width: 12%;">Gaji Pokok</th>
-                    <th style="width: 20%;">Tunjangan Jabatan</th>
-                    <th style="width: 15%;">Honor Mengajar</th>
-                    <th style="width: 12%;">Tunjangan Yayasan</th>
-                    <th style="width: 12%;">THP (Gaji Bersih)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- UNIT SMP -->
-                <tr class="unit-header-row">
-                    <td colspan="7">UNIT SEKOLAH: SMP SWASTA PEMBDA 2 GUNUNGSITOLI</td>
-                </tr>
-                <tr>
-                    <td class="text-center">1</td>
-                    <td>
-                        <strong>Drs. Bezisokhi Zebua</strong><br>
-                        <span class="sub-text">NIP. 196805121994031005 • <strong>PNS</strong></span>
-                    </td>
-                    <td class="text-right">Rp 0<br><span class="sub-text">(Instansi Asal)</span></td>
-                    <td>
-                        <span class="sub-text">• Kepala Sekolah: <strong>Rp 1.500.000</strong></span>
-                    </td>
-                    <td>
-                        <span class="sub-text">Jam: 12 | Wajib: 22 | Honor: 0</span><br>
-                        <span class="sub-text">Tarif: Rp 65.000/jam</span><br>
-                        <strong class="text-right">Rp 0</strong>
-                    </td>
-                    <td><span class="sub-text">-</span></td>
-                    <td class="text-right font-bold">Rp 1.500.000</td>
-                </tr>
-                <tr>
-                    <td class="text-center">2</td>
-                    <td>
-                        <strong>Noverman Zega, S.Pd.</strong><br>
-                        <span class="sub-text">PEG-SMP-002 • <strong>GTY (Yayasan)</strong></span>
-                    </td>
-                    <td class="text-right">Rp 2.100.000</td>
-                    <td>
-                        <span class="sub-text">• Wakasek Kurikulum: <strong>Rp 750.000</strong></span><br>
-                        <span class="sub-text">• Wali Kelas VII-A: <strong>Rp 250.000</strong></span>
-                    </td>
-                    <td>
-                        <span class="sub-text">Jam: 28 | Wajib: 22 | Honor: 6</span><br>
-                        <span class="sub-text">Tarif: Rp 65.000/jam</span><br>
-                        <strong class="text-right">Rp 390.000</strong>
-                    </td>
-                    <td>
-                        <span class="sub-text">• Keluarga: Rp 210.000</span><br>
-                        <span class="sub-text">• Anak (2): Rp 210.000</span><br>
-                        <span class="sub-text">• Beras: Rp 150.000</span>
-                    </td>
-                    <td class="text-right font-bold">Rp 4.060.000</td>
-                </tr>
-                <tr>
-                    <td class="text-center">3</td>
-                    <td>
-                        <strong>Agustina Harefa, S.Pd.</strong><br>
-                        <span class="sub-text">PEG-SMP-005 • <strong>Honorer</strong></span>
-                    </td>
-                    <td class="text-right">Rp 0</td>
-                    <td>
-                        <span class="sub-text">• Guru Piket: <strong>Rp 150.000</strong></span>
-                    </td>
-                    <td>
-                        <span class="sub-text">Jam: 24 | Wajib: 0 | Honor: 24</span><br>
-                        <span class="sub-text">Tarif: Rp 65.000/jam</span><br>
-                        <strong class="text-right">Rp 1.560.000</strong>
-                    </td>
-                    <td><span class="sub-text">-</span></td>
-                    <td class="text-right font-bold">Rp 1.710.000</td>
-                </tr>
-
-                <!-- UNIT SMA -->
-                <tr class="unit-header-row">
-                    <td colspan="7">UNIT SEKOLAH: SMA SWASTA PEMBDA 1 GUNUNGSITOLI</td>
-                </tr>
-                <tr>
-                    <td class="text-center">4</td>
-                    <td>
-                        <strong>Idaman Zega, M.Pd.</strong><br>
-                        <span class="sub-text">PEG-SMA-001 • <strong>GTY (Yayasan)</strong></span>
-                    </td>
-                    <td class="text-right">Rp 2.400.000</td>
-                    <td>
-                        <span class="sub-text">• Kepala Sekolah: <strong>Rp 1.800.000</strong></span>
-                    </td>
-                    <td>
-                        <span class="sub-text">Jam: 10 | Wajib: 22 | Honor: 0</span><br>
-                        <span class="sub-text">Tarif: Rp 70.000/jam</span><br>
-                        <strong class="text-right">Rp 0</strong>
-                    </td>
-                    <td>
-                        <span class="sub-text">• Keluarga: Rp 240.000</span><br>
-                        <span class="sub-text">• Anak (2): Rp 240.000</span><br>
-                        <span class="sub-text">• Beras: Rp 150.000</span>
-                    </td>
-                    <td class="text-right font-bold">Rp 4.830.000</td>
-                </tr>
-
-                <!-- UNIT SMK -->
-                <tr class="unit-header-row">
-                    <td colspan="7">UNIT SEKOLAH: SMK SWASTA PEMBDA GUNUNGSITOLI</td>
-                </tr>
-                <tr>
-                    <td class="text-center">5</td>
-                    <td>
-                        <strong>Karisman Zega, S.T.</strong><br>
-                        <span class="sub-text">PEG-SMK-001 • <strong>PTY (Yayasan)</strong></span>
-                    </td>
-                    <td class="text-right">Rp 2.250.000</td>
-                    <td>
-                        <span class="sub-text">• Kepala Sekolah: <strong>Rp 1.800.000</strong></span><br>
-                        <span class="sub-text">• Ka. Bengkel TEFA: <strong>Rp 500.000</strong></span>
-                    </td>
-                    <td>
-                        <span class="sub-text">Jam: 14 | Wajib: 22 | Honor: 0</span><br>
-                        <span class="sub-text">Tarif: Rp 70.000/jam</span><br>
-                        <strong class="text-right">Rp 0</strong>
-                    </td>
-                    <td>
-                        <span class="sub-text">• Keluarga: Rp 225.000</span><br>
-                        <span class="sub-text">• Anak (2): Rp 225.000</span><br>
-                        <span class="sub-text">• Beras: Rp 150.000</span>
-                    </td>
-                    <td class="text-right font-bold">Rp 5.150.000</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr style="background-color: #f3f4f6; font-weight: bold;">
-                    <td colspan="2" class="text-center">TOTAL REKAPITULASI PENGGAJIAN SELURUH UNIT</td>
-                    <td class="text-right">Rp 68.450.000</td>
-                    <td class="text-right">Rp 35.800.000</td>
-                    <td class="text-right">Rp 21.450.000</td>
-                    <td class="text-right">Rp 11.700.000</td>
-                    <td class="text-right" style="color: #047857; font-size: 10pt;">Rp 137.400.000</td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <!-- TTD Lampiran -->
-        <table class="ttd-table" style="margin-top: 15px;">
-            <tr>
-                <td style="width: 55%;"></td>
-                <td style="width: 45%;">
-                    <div class="ttd-box">
-                        <p>Ditetapkan di : <strong>Gunungsitoli</strong></p>
-                        <p>Pada tanggal : <strong>24 Juli 2026</strong></p>
-                        <br>
-                        <p>Pengurus Yayasan</p>
-                        <p>Perguruan Pembangunan Daerah Nias</p>
-                        <p><strong>Ketua,</strong></p>
-                        <br><br><br>
-                        <p><u><strong>YULIANUS ZEGA, S.Kom., M.Pd.T</strong></u></p>
-                    </div>
-                </td>
-            </tr>
-        </table>
     </div>
 
 </body>

@@ -56,16 +56,16 @@
         {{-- Media Types --}}
         <div class="pt-3 border-t border-slate-200 space-y-1">
             <p class="px-3 text-[10px] font-black text-slate-400 uppercase tracking-wider">Format Media</p>
-            <a href="{{ route('knowledge.index', ['type' => 'document']) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg">
+            <a href="{{ route('knowledge.index', array_merge(request()->except('type'), ['type' => 'document'])) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-bold {{ request('type') === 'document' ? 'bg-rose-50 text-rose-700 border border-rose-200 rounded-lg' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg' }}">
                 <i class="fas fa-file-pdf text-rose-500 text-sm"></i> Dokumen PDF
             </a>
-            <a href="{{ route('knowledge.index', ['type' => 'video']) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg">
+            <a href="{{ route('knowledge.index', array_merge(request()->except('type'), ['type' => 'video'])) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-bold {{ request('type') === 'video' ? 'bg-rose-50 text-rose-700 border border-rose-200 rounded-lg' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg' }}">
                 <i class="fas fa-play-circle text-rose-600 text-sm"></i> Video Edukasi
             </a>
-            <a href="{{ route('knowledge.index', ['type' => 'audio']) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg">
+            <a href="{{ route('knowledge.index', array_merge(request()->except('type'), ['type' => 'audio'])) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-bold {{ request('type') === 'audio' ? 'bg-amber-50 text-amber-700 border border-amber-200 rounded-lg' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg' }}">
                 <i class="fas fa-headphones text-amber-500 text-sm"></i> Podcast & Audio
             </a>
-            <a href="{{ route('knowledge.index', ['type' => 'link']) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg">
+            <a href="{{ route('knowledge.index', array_merge(request()->except('type'), ['type' => 'link'])) }}" class="flex items-center gap-2.5 px-3 py-2 text-xs font-bold {{ request('type') === 'link' ? 'bg-sky-50 text-sky-700 border border-sky-200 rounded-lg' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-lg' }}">
                 <i class="fas fa-globe text-sky-500 text-sm"></i> Tautan Eksternal
             </a>
         </div>

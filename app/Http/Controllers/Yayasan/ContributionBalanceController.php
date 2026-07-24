@@ -166,22 +166,29 @@ class ContributionBalanceController extends Controller
                     ->where('grade_level', $level)
                     ->pluck('id');
 
-                // Hitung ID siswa dari pivot student_classes & direct student.classroom_id
-                $studentIdsFromClasses = [];
+                // Hitung ID siswa aktif dari pivot student_classes (tanpa query ke kolom classroom_id di students)
+                $studentIds = [];
                 if ($currentYear) {
-                    $studentIdsFromClasses = StudentClass::whereIn('classroom_id', $classroomIds)
+                    $studentIds = StudentClass::whereIn('classroom_id', $classroomIds)
                         ->where('academic_year_id', $currentYear->id)
+                        ->whereHas('student', function ($sq) use ($school) {
+                            $sq->where('school_id', $school->id)->where('status', 'aktif');
+                        })
+                        ->distinct('student_id')
                         ->pluck('student_id')
                         ->toArray();
                 }
 
-                $studentIdsFromStudent = Student::where('school_id', $school->id)
-                    ->where('status', 'aktif')
-                    ->whereIn('classroom_id', $classroomIds)
-                    ->pluck('id')
-                    ->toArray();
+                if (empty($studentIds)) {
+                    $studentIds = StudentClass::whereIn('classroom_id', $classroomIds)
+                        ->whereHas('student', function ($sq) use ($school) {
+                            $sq->where('school_id', $school->id)->where('status', 'aktif');
+                        })
+                        ->distinct('student_id')
+                        ->pluck('student_id')
+                        ->toArray();
+                }
 
-                $studentIds = array_unique(array_merge($studentIdsFromClasses, $studentIdsFromStudent));
                 $studentCount = count($studentIds);
 
                 // ════════════════ SINKRONISASI PRESISI DENGAN TABEL STUDENT_BILLS ════════════════

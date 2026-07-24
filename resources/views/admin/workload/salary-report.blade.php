@@ -40,7 +40,6 @@
     $ketuaYayasanName = $ketuaYayasanUser?->full_name 
         ?? $ketuaYayasanUser?->name 
         ?? \App\Models\Setting::getValue('ketua_yayasan_name') 
-        ?? \App\Models\Setting::getValue('sambutan_ketua_nama') 
         ?? 'YULIANUS ZEGA, S.Kom., M.Pd.T';
 @endphp
 
@@ -141,11 +140,11 @@
     <!-- Report Table -->
     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden print:mt-0 print:border-none print:shadow-none print:rounded-none">
         
-        {{-- Print Kop Surat (Sejajar dengan Logo Yayasan) --}}
+        {{-- Print Kop Surat (Logo digeser sedikit ke kanan dengan padding-left) --}}
         <div class="print-only mb-6 pb-4 border-b-[3px] border-black">
             <table class="w-full border-collapse">
                 <tr>
-                    <td class="text-left align-middle" style="width: 90px;">
+                    <td class="text-left align-middle" style="width: 110px; padding-left: 20px;">
                         <img src="{{ asset('images/logo-pembda.png') }}" alt="Logo Yayasan" class="w-20 h-auto" style="max-width: 80px;">
                     </td>
                     <td class="text-center align-middle">
@@ -160,7 +159,7 @@
                             {{ $schools->firstWhere('id', $schoolId)->name ?? '' }}
                         </h3>
                     </td>
-                    <td style="width: 90px;"></td>
+                    <td style="width: 110px; padding-right: 20px;"></td>
                 </tr>
             </table>
         </div>

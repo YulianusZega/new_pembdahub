@@ -9,6 +9,7 @@ use App\Models\Semester;
 use App\Models\Student;
 use App\Models\StudentClass;
 use App\Models\StudentBill;
+use App\Models\Classroom;
 use App\Models\Employee;
 use App\Models\PaymentType;
 use App\Models\SchoolContribution;
@@ -160,47 +161,54 @@ class ContributionBalanceController extends Controller
             $totalStudentsInSchool = 0;
 
             foreach ($levels as $level) {
-                // Hitung siswa aktif di kelas/tingkat bersangkutan
-                $studentCountFromClasses = 0;
+                // Cari seluruh rombel/kelas untuk grade level ini di sekolah bersangkutan
+                $classroomIds = Classroom::where('school_id', $school->id)
+                    ->where('grade_level', $level)
+                    ->pluck('id');
+
+                // Hitung ID siswa dari pivot student_classes & direct student.classroom_id
+                $studentIdsFromClasses = [];
                 if ($currentYear) {
-                    $studentCountFromClasses = StudentClass::where('academic_year_id', $currentYear->id)
-                        ->whereHas('classroom', function ($q) use ($school, $level) {
-                            $q->where('school_id', $school->id)
-                                ->where('grade_level', $level);
-                        })
-                        ->distinct('student_id')
-                        ->count('student_id');
+                    $studentIdsFromClasses = StudentClass::whereIn('classroom_id', $classroomIds)
+                        ->where('academic_year_id', $currentYear->id)
+                        ->pluck('student_id')
+                        ->toArray();
                 }
 
-                $studentCountFromStudent = Student::where('school_id', $school->id)
+                $studentIdsFromStudent = Student::where('school_id', $school->id)
                     ->where('status', 'aktif')
-                    ->whereHas('currentClassroom', function ($q) use ($level) {
-                        $q->where('grade_level', $level);
-                    })
-                    ->count();
+                    ->whereIn('classroom_id', $classroomIds)
+                    ->pluck('id')
+                    ->toArray();
 
-                $studentCount = max($studentCountFromClasses, $studentCountFromStudent);
+                $studentIds = array_unique(array_merge($studentIdsFromClasses, $studentIdsFromStudent));
+                $studentCount = count($studentIds);
 
-                // ════════════════ SINKRONISASI DENGAN TABEL STUDENT_BILLS ════════════════
-                // Cek apakah ada tagihan SPP riil di student_bills untuk level dan TP ini
+                // ════════════════ SINKRONISASI PRESISI DENGAN TABEL STUDENT_BILLS ════════════════
                 $billSppAvg = 0;
-                if ($currentYear) {
-                    $billSppAvg = (float) StudentBill::where('academic_year_id', $currentYear->id)
+                if (!empty($studentIds)) {
+                    $billSppAvg = (float) StudentBill::whereIn('student_id', $studentIds)
                         ->whereHas('paymentType', function ($q) {
                             $q->where('type_code', 'SPP');
                         })
-                        ->whereHas('student', function ($q) use ($school, $level) {
-                            $q->where('school_id', $school->id)
-                                ->whereHas('currentClassroom', function ($cq) use ($level) {
-                                    $cq->where('grade_level', $level);
-                                });
+                        ->when($currentYear, function ($q) use ($currentYear) {
+                            $q->where('academic_year_id', $currentYear->id);
                         })
                         ->avg('amount');
+
+                    // Fallback jika belum ada tagihan di TP bersangkutan, cek seluruh tagihan SPP siswa tersebut
+                    if ($billSppAvg == 0) {
+                        $billSppAvg = (float) StudentBill::whereIn('student_id', $studentIds)
+                            ->whereHas('paymentType', function ($q) {
+                                $q->where('type_code', 'SPP');
+                            })
+                            ->avg('amount');
+                    }
                 }
 
                 // Prioritas penentuan SPP bulanan:
                 // 1. Saved custom rate dari modal Yayasan (jika diset > 0)
-                // 2. Rata-rata nominal tagihan SPP riil dari tabel `student_bills` (jika ada data tagihan)
+                // 2. Rata-rata nominal tagihan SPP riil dari tabel `student_bills`
                 // 3. Master tarif SPP dari tabel `payment_types`
                 if (isset($savedSppRates[(string)$level]) && $savedSppRates[(string)$level] > 0) {
                     $sppMonthly = (float)$savedSppRates[(string)$level];

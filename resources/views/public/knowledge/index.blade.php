@@ -128,15 +128,15 @@
         <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 bg-slate-800/70 p-4 rounded-2xl border border-slate-700/80 shadow-lg">
             {{-- Category Pills --}}
             <div class="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
-                <a href="{{ route('knowledge.index', array_merge(request()->except('category'), ['category' => ''])) }}"
+                <a href="{{ route('knowledge.index', request()->except(['category', 'type'])) }}"
                     class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap {{ !request('category') ? 'bg-teal-500 text-slate-950 shadow-lg shadow-teal-500/20' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700' }}">
                     <i class="fas fa-globe mr-1"></i> Semua Koleksi
                 </a>
-                <a href="{{ route('knowledge.index', array_merge(request()->except('category'), ['category' => 'sekolah'])) }}"
+                <a href="{{ route('knowledge.index', array_merge(request()->except(['category', 'type']), ['category' => 'sekolah'])) }}"
                     class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap {{ request('category') === 'sekolah' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700' }}">
                     📚 Materi Sekolah
                 </a>
-                <a href="{{ route('knowledge.index', array_merge(request()->except('category'), ['category' => 'umum'])) }}"
+                <a href="{{ route('knowledge.index', array_merge(request()->except(['category', 'type']), ['category' => 'umum'])) }}"
                     class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap {{ request('category') === 'umum' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700' }}">
                     💡 Umum & Hobi
                 </a>
@@ -168,15 +168,29 @@
 
         {{-- Content Grid --}}
         @if($materials->isEmpty())
-            <div class="text-center py-20 space-y-4 bg-slate-800/40 rounded-3xl border border-slate-800">
-                <div class="w-20 h-20 bg-slate-800 text-slate-500 rounded-full flex items-center justify-center text-4xl mx-auto">
-                    <i class="fas fa-folder-open"></i>
+            <div class="text-center py-16 space-y-4 bg-slate-800/40 rounded-3xl border border-slate-800">
+                <div class="w-20 h-20 bg-slate-800 text-slate-400 rounded-full flex items-center justify-center text-4xl mx-auto border border-slate-700">
+                    <i class="fas fa-folder-open text-amber-400"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-300">Belum ada materi ditemukan</h3>
-                <p class="text-xs text-slate-500 max-w-sm mx-auto">Coba gunakan kata kunci lain atau bersihkan filter pencarian Anda.</p>
-                <a href="{{ route('knowledge.index') }}" class="inline-block px-4 py-2 bg-slate-800 hover:bg-slate-700 text-teal-400 text-xs font-bold rounded-xl border border-slate-700">
-                    Reset Filter
-                </a>
+                <h3 class="text-lg font-bold text-slate-200">Belum ada materi ditemukan</h3>
+                @if(request('type') || request('category') || request('q') || request('subject_id'))
+                    <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                        Anda sedang memfilter 
+                        @if(request('category')) <span class="font-bold text-emerald-400">Kategori: {{ request('category') }}</span> @endif
+                        @if(request('type')) · <span class="font-bold text-sky-400">Format Media: {{ request('type') }}</span> @endif.
+                        <br>Materi yang dicari mungkin tersimpan dalam format media lain (misalnya PDF/Dokumen).
+                    </p>
+                    <div class="flex items-center justify-center gap-2 pt-2">
+                        <a href="{{ route('knowledge.index', request()->except('type')) }}" class="inline-block px-4 py-2 bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-bold rounded-xl shadow-md transition-all">
+                            <i class="fas fa-globe mr-1"></i> Tampilkan Semua Format Media
+                        </a>
+                        <a href="{{ route('knowledge.index') }}" class="inline-block px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700">
+                            Reset Filter
+                        </a>
+                    </div>
+                @else
+                    <p class="text-xs text-slate-500 max-w-sm mx-auto">Belum ada koleksi materi yang dipublikasikan.</p>
+                @endif
             </div>
         @else
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

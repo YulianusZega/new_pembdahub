@@ -157,79 +157,54 @@ class ContributionBalanceController extends Controller
             // Tingkat kelas per jenis sekolah
             $levels = $school->getGradeLevels();
             $levelBreakdown = [];
+            $schoolTotalIncome = 0;
             $schoolTotalIncomeMonthly = 0;
             $totalStudentsInSchool = 0;
 
             foreach ($levels as $level) {
-                // Cari seluruh rombel/kelas untuk grade level ini di sekolah bersangkutan
+                // Rombel untuk grade level ini
                 $classroomIds = Classroom::where('school_id', $school->id)
                     ->where('grade_level', $level)
                     ->pluck('id');
 
-                // Hitung ID siswa aktif dari pivot student_classes (tanpa query ke kolom classroom_id di students)
-                $studentIds = [];
-                if ($currentYear) {
-                    $studentIds = StudentClass::whereIn('classroom_id', $classroomIds)
-                        ->where('academic_year_id', $currentYear->id)
-                        ->whereHas('student', function ($sq) use ($school) {
-                            $sq->where('school_id', $school->id)->where('status', 'aktif');
-                        })
-                        ->distinct('student_id')
-                        ->pluck('student_id')
-                        ->toArray();
-                }
-
-                if (empty($studentIds)) {
-                    $studentIds = StudentClass::whereIn('classroom_id', $classroomIds)
-                        ->whereHas('student', function ($sq) use ($school) {
-                            $sq->where('school_id', $school->id)->where('status', 'aktif');
-                        })
-                        ->distinct('student_id')
-                        ->pluck('student_id')
-                        ->toArray();
-                }
+                $studentIds = StudentClass::whereIn('classroom_id', $classroomIds)
+                    ->where('academic_year_id', $currentYear->id ?? 0)
+                    ->distinct('student_id')
+                    ->pluck('student_id')
+                    ->toArray();
 
                 $studentCount = count($studentIds);
 
-                // ════════════════ SINKRONISASI PRESISI DENGAN TABEL STUDENT_BILLS ════════════════
-                $billSppAvg = 0;
-                if (!empty($studentIds)) {
-                    $billSppAvg = (float) StudentBill::whereIn('student_id', $studentIds)
-                        ->whereHas('paymentType', function ($q) {
-                            $q->where('type_code', 'SPP');
-                        })
-                        ->when($currentYear, function ($q) use ($currentYear) {
-                            $q->where('academic_year_id', $currentYear->id);
-                        })
-                        ->avg('amount');
+                // ════════════════ DITARIK LANGSUNG DARI TABEL STUDENT_BILLS ════════════════
+                $billsQuery = StudentBill::whereIn('student_id', $studentIds)
+                    ->whereHas('paymentType', function ($q) {
+                        $q->where('type_code', 'SPP');
+                    })
+                    ->when($currentYear, function ($q) use ($currentYear) {
+                        $q->where('academic_year_id', $currentYear->id);
+                    });
 
-                    // Fallback jika belum ada tagihan di TP bersangkutan, cek seluruh tagihan SPP siswa tersebut
-                    if ($billSppAvg == 0) {
-                        $billSppAvg = (float) StudentBill::whereIn('student_id', $studentIds)
-                            ->whereHas('paymentType', function ($q) {
-                                $q->where('type_code', 'SPP');
-                            })
-                            ->avg('amount');
-                    }
-                }
+                $sumBilledAnnual = (float) $billsQuery->sum('amount');
+                $sumPaidAnnual = (float) $billsQuery->sum('paid_amount');
+                $avgBillMonthly = (float) $billsQuery->avg('amount');
 
-                // Prioritas penentuan SPP bulanan:
-                // 1. Saved custom rate dari modal Yayasan (jika diset > 0)
-                // 2. Rata-rata nominal tagihan SPP riil dari tabel `student_bills`
-                // 3. Master tarif SPP dari tabel `payment_types`
-                if (isset($savedSppRates[(string)$level]) && $savedSppRates[(string)$level] > 0) {
-                    $sppMonthly = (float)$savedSppRates[(string)$level];
-                    $sppSource = 'Setting Yayasan';
-                } elseif ($billSppAvg > 0) {
-                    $sppMonthly = round($billSppAvg);
-                    $sppSource = 'Tagihan Siswa (student_bills)';
+                // Jika ada data tagihan di student_bills, tarik langsung total tagihan dari student_bills!
+                if ($sumBilledAnnual > 0) {
+                    $incomeTotal = ($periodMode === 'monthly') ? ($sumBilledAnnual / 12) : $sumBilledAnnual;
+                    $sppMonthly = round($avgBillMonthly);
+                    $sppSource = 'Tabel Tagihan Siswa (student_bills)';
                 } else {
-                    $sppMonthly = $masterSppAmount;
-                    $sppSource = 'Master SPP (payment_types)';
+                    // Fallback jika tagihan di student_bills belum di-generate
+                    if (isset($savedSppRates[(string)$level]) && $savedSppRates[(string)$level] > 0) {
+                        $sppMonthly = (float)$savedSppRates[(string)$level];
+                        $sppSource = 'Setting Yayasan';
+                    } else {
+                        $sppMonthly = $masterSppAmount;
+                        $sppSource = 'Master SPP (payment_types)';
+                    }
+                    $incomeMonthly = $studentCount * $sppMonthly;
+                    $incomeTotal = $incomeMonthly * $multiplier;
                 }
-
-                $incomeMonthly = $studentCount * $sppMonthly;
-                $incomeTotal = $incomeMonthly * $multiplier;
 
                 $levelBreakdown[] = [
                     'level' => $level,
@@ -237,15 +212,15 @@ class ContributionBalanceController extends Controller
                     'spp_monthly' => $sppMonthly,
                     'spp_period' => $sppMonthly * $multiplier,
                     'spp_source' => $sppSource,
-                    'income_monthly' => $incomeMonthly,
+                    'income_monthly' => $sppMonthly * $studentCount,
                     'income_total' => $incomeTotal,
+                    'paid_total' => ($periodMode === 'monthly') ? ($sumPaidAnnual / 12) : $sumPaidAnnual,
                 ];
 
-                $schoolTotalIncomeMonthly += $incomeMonthly;
+                $schoolTotalIncome += $incomeTotal;
+                $schoolTotalIncomeMonthly += ($sppMonthly * $studentCount);
                 $totalStudentsInSchool += $studentCount;
             }
-
-            $schoolTotalIncome = $schoolTotalIncomeMonthly * $multiplier;
 
             // ════════════════ HITUNG GAJI GURU & PEGAWAI UNIT ════════════════
             $employees = Employee::where('school_id', $school->id)

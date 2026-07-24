@@ -8,12 +8,14 @@ use App\Models\AcademicYear;
 use App\Models\Semester;
 use App\Models\Student;
 use App\Models\StudentClass;
+use App\Models\StudentBill;
 use App\Models\Employee;
 use App\Models\PaymentType;
 use App\Models\SchoolContribution;
 use App\Services\EmployeeAssignmentService;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class ContributionBalanceController extends Controller
 {
@@ -179,10 +181,37 @@ class ContributionBalanceController extends Controller
 
                 $studentCount = max($studentCountFromClasses, $studentCountFromStudent);
 
-                // Nominal SPP bulanan (gunakan saved rate jika diset, jika tidak default master SPP)
-                $sppMonthly = isset($savedSppRates[(string)$level]) && $savedSppRates[(string)$level] > 0
-                    ? (float)$savedSppRates[(string)$level]
-                    : $masterSppAmount;
+                // ════════════════ SINKRONISASI DENGAN TABEL STUDENT_BILLS ════════════════
+                // Cek apakah ada tagihan SPP riil di student_bills untuk level dan TP ini
+                $billSppAvg = 0;
+                if ($currentYear) {
+                    $billSppAvg = (float) StudentBill::where('academic_year_id', $currentYear->id)
+                        ->whereHas('paymentType', function ($q) {
+                            $q->where('type_code', 'SPP');
+                        })
+                        ->whereHas('student', function ($q) use ($school, $level) {
+                            $q->where('school_id', $school->id)
+                                ->whereHas('currentClassroom', function ($cq) use ($level) {
+                                    $cq->where('grade_level', $level);
+                                });
+                        })
+                        ->avg('amount');
+                }
+
+                // Prioritas penentuan SPP bulanan:
+                // 1. Saved custom rate dari modal Yayasan (jika diset > 0)
+                // 2. Rata-rata nominal tagihan SPP riil dari tabel `student_bills` (jika ada data tagihan)
+                // 3. Master tarif SPP dari tabel `payment_types`
+                if (isset($savedSppRates[(string)$level]) && $savedSppRates[(string)$level] > 0) {
+                    $sppMonthly = (float)$savedSppRates[(string)$level];
+                    $sppSource = 'Setting Yayasan';
+                } elseif ($billSppAvg > 0) {
+                    $sppMonthly = round($billSppAvg);
+                    $sppSource = 'Tagihan Siswa (student_bills)';
+                } else {
+                    $sppMonthly = $masterSppAmount;
+                    $sppSource = 'Master SPP (payment_types)';
+                }
 
                 $incomeMonthly = $studentCount * $sppMonthly;
                 $incomeTotal = $incomeMonthly * $multiplier;
@@ -192,6 +221,7 @@ class ContributionBalanceController extends Controller
                     'student_count' => $studentCount,
                     'spp_monthly' => $sppMonthly,
                     'spp_period' => $sppMonthly * $multiplier,
+                    'spp_source' => $sppSource,
                     'income_monthly' => $incomeMonthly,
                     'income_total' => $incomeTotal,
                 ];

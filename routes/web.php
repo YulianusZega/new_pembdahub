@@ -1738,3 +1738,15 @@ Route::get('/debug-gallery', function () {
     
     return $html;
 });
+
+Route::get('/download-sk-gaji-pdf', function () {
+    $filePath = public_path('SURAT_KEPUTUSAN_PENETAPAN_GAJI_DAN_OTORISASI_PEMBDA_2026.pdf');
+    if (!file_exists($filePath)) {
+        $filePath = base_path('SURAT_KEPUTUSAN_PENETAPAN_GAJI_DAN_OTORISASI_PEMBDA_2026.pdf');
+    }
+    if (!file_exists($filePath)) {
+        abort(404, 'File PDF Surat Keputusan belum tersedia.');
+    }
+    return response()->download($filePath, 'SURAT_KEPUTUSAN_PENETAPAN_GAJI_DAN_OTORISASI_PEMBDA_2026.pdf');
+})->name('download.sk_gaji');
+

@@ -321,7 +321,71 @@ class User extends Authenticatable
 
     public function isPksOrPiket(): bool
     {
-        return $this->hasRole('pks') || $this->hasRole('piket') || $this->hasSpecialDuty(['PKS', 'PIKET', 'DISIPLIN', 'BK']);
+        // 1. Direct role check
+        if ($this->hasAnyRole(['pks', 'piket', 'guru_bk', 'bk', 'bimbingan_konseling'])) {
+            return true;
+        }
+
+        $activeRole = session('active_role');
+        if ($activeRole && in_array($activeRole, ['pks', 'piket', 'guru_bk', 'bk', 'bimbingan_konseling'])) {
+            return true;
+        }
+
+        // 2. Special duty check in employee_positions
+        if ($this->hasSpecialDuty(['PKS', 'PIKET', 'DISIPLIN', 'BK', 'BP', 'KONSELING', 'KONSILING', 'BIMBINGAN'])) {
+            return true;
+        }
+
+        // 3. Check teacher profile for BK position or BK teaching assignments/subjects
+        if ($this->teacher) {
+            if ($this->teacher->position && preg_match('/(bk|bp|konseling|bimbingan|pks|piket)/i', $this->teacher->position)) {
+                return true;
+            }
+
+            try {
+                if ($this->teacher->teachingAssignments()->whereHas('subject', function ($q) {
+                    $q->where('code', 'like', '%BK%')
+                      ->orWhere('code', 'like', '%BP%')
+                      ->orWhere('name', 'like', '%Bimbingan%')
+                      ->orWhere('name', 'like', '%Konseling%')
+                      ->orWhere('name', 'like', '%BK%');
+                })->exists()) {
+                    return true;
+                }
+            } catch (\Throwable $e) {}
+
+            try {
+                if ($this->teacher->competentSubjects()->where(function ($q) {
+                    $q->where('code', 'like', '%BK%')
+                      ->orWhere('code', 'like', '%BP%')
+                      ->orWhere('name', 'like', '%Bimbingan%')
+                      ->orWhere('name', 'like', '%Konseling%')
+                      ->orWhere('name', 'like', '%BK%');
+                })->exists()) {
+                    return true;
+                }
+            } catch (\Throwable $e) {}
+
+            try {
+                if ($this->teacher->subjects()->where(function ($q) {
+                    $q->where('code', 'like', '%BK%')
+                      ->orWhere('code', 'like', '%BP%')
+                      ->orWhere('name', 'like', '%Bimbingan%')
+                      ->orWhere('name', 'like', '%Konseling%')
+                      ->orWhere('name', 'like', '%BK%');
+                })->exists()) {
+                    return true;
+                }
+            } catch (\Throwable $e) {}
+        }
+
+        // 4. Employee position string
+        $employee = $this->employee ?? $this->teacher?->employee;
+        if ($employee && $employee->position && preg_match('/(bk|bp|konseling|bimbingan|pks|piket)/i', $employee->position)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

@@ -240,5 +240,8 @@ Route::prefix('guru')->name('guru.')->middleware('auth', 'role:guru,kepala_sekol
         Route::get('/{id}/print', [App\Http\Controllers\Guru\PerformanceContractController::class, 'print'])->name('print');
         Route::get('/{id}', [App\Http\Controllers\Guru\PerformanceContractController::class, 'show'])->name('show');
     });
+
+    // Pembda Knowledge & Media (Guru Space)
+    Route::resource('knowledge', App\Http\Controllers\Guru\KnowledgeMediaController::class);
 });
 

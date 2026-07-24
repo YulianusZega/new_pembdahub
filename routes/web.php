@@ -1750,3 +1750,13 @@ Route::get('/download-sk-gaji-pdf', function () {
     return response()->download($filePath, 'SURAT_KEPUTUSAN_PENETAPAN_GAJI_DAN_OTORISASI_PEMBDA_2026.pdf');
 })->name('download.sk_gaji');
 
+// ================================================================
+// PEMBDA KNOWLEDGE & MEDIA (PUBLIC ROUTES)
+// ================================================================
+Route::get('/knowledge', [App\Http\Controllers\PublicKnowledgeController::class, 'index'])->name('knowledge.index');
+Route::get('/knowledge/{slug}', [App\Http\Controllers\PublicKnowledgeController::class, 'show'])->name('knowledge.show');
+Route::post('/knowledge/{knowledge}/like', [App\Http\Controllers\PublicKnowledgeController::class, 'toggleLike'])->name('knowledge.like');
+Route::post('/knowledge/{knowledge}/bookmark', [App\Http\Controllers\PublicKnowledgeController::class, 'toggleBookmark'])->name('knowledge.bookmark');
+Route::get('/knowledge/{knowledge}/download', [App\Http\Controllers\PublicKnowledgeController::class, 'download'])->name('knowledge.download');
+
+

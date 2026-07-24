@@ -244,27 +244,32 @@
                             @endif
                         </form>
                     @endif
-                @endif
-                <div class="hidden md:flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg text-sm">
-                    <img src="{{ auth()->user()->photo_url }}" class="w-6 h-6 rounded-full object-cover border border-white/20 flex-shrink-0" alt="Avatar">
-                    <span class="font-medium">{{ auth()->user()->name ?? 'User' }}</span>
-                    @if(auth()->user()->school)
-                        <span class="text-white/50">·</span>
-                        <span class="text-white/70 text-xs">{{ auth()->user()->school->name }}</span>
-                    @endif
-                </div>
-                <a href="{{ route('profile.settings') }}" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
-                    <i class="fas fa-user-cog text-xs"></i>
-                    <span class="hidden sm:inline">Profil Akun</span>
-                </a>
+                    <div class="hidden md:flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-lg text-sm">
+                        <img src="{{ auth()->user()->photo_url }}" class="w-6 h-6 rounded-full object-cover border border-white/20 flex-shrink-0" alt="Avatar">
+                        <span class="font-medium">{{ auth()->user()->name ?? 'User' }}</span>
+                        @if(auth()->user()->school)
+                            <span class="text-white/50">·</span>
+                            <span class="text-white/70 text-xs">{{ auth()->user()->school->name }}</span>
+                        @endif
+                    </div>
+                    <a href="{{ route('profile.settings') }}" class="bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                        <i class="fas fa-user-cog text-xs"></i>
+                        <span class="hidden sm:inline">Profil Akun</span>
+                    </a>
 
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="bg-white/10 hover:bg-red-500 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
-                        <i class="fas fa-sign-out-alt text-xs"></i>
-                        <span class="hidden sm:inline">Logout</span>
-                    </button>
-                </form>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="bg-white/10 hover:bg-red-500 px-3 py-1.5 rounded-lg text-sm font-medium transition flex items-center gap-1.5">
+                            <i class="fas fa-sign-out-alt text-xs"></i>
+                            <span class="hidden sm:inline">Logout</span>
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Masuk / Login</span>
+                    </a>
+                @endif
             </div>
         </div>
     </header>

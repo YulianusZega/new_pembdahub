@@ -306,23 +306,23 @@ class User extends Authenticatable
 
     public function isPanitiaCbt(): bool
     {
-        return $this->hasRole('panitia_cbt') || $this->hasSpecialDuty(['CBT']);
+        return $this->role === 'panitia_cbt' || $this->hasSpecialDuty(['CBT']);
     }
 
     public function isPanitiaPkl(): bool
     {
-        return $this->hasRole('panitia_pkl') || $this->hasSpecialDuty(['PKL', 'HUBIN']);
+        return $this->role === 'panitia_pkl' || $this->hasSpecialDuty(['PKL', 'HUBIN']);
     }
 
     public function isPanitiaProyek(): bool
     {
-        return $this->hasRole('panitia_ta') || $this->hasSpecialDuty(['PROYEK', 'PROJECT', 'PROJEK', 'TA', 'TUGAS AKHIR', 'TUGAS-AKHIR']);
+        return $this->role === 'panitia_ta' || $this->hasSpecialDuty(['PROYEK', 'PROJECT', 'PROJEK', 'TA', 'TUGAS AKHIR', 'TUGAS-AKHIR']);
     }
 
     public function isPksOrPiket(): bool
     {
         // 1. Direct role check
-        if ($this->hasAnyRole(['pks', 'piket', 'guru_bk', 'bk', 'bimbingan_konseling'])) {
+        if (in_array($this->role, ['pks', 'piket', 'guru_bk', 'bk', 'bimbingan_konseling'])) {
             return true;
         }
 

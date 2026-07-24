@@ -1,4 +1,4 @@
-﻿{{--
+{{--
     Siswa Layout — extends unified master layout
     Theme: Amber/Orange
 --}}
@@ -51,6 +51,12 @@
         <span>LMS</span>
     </a>
     @endif
+
+    <!-- Knowledge & Media -->
+    <a href="{{ route('knowledge.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('knowledge.*') ? $ac : $nc }}">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-white"><i class="fas fa-cube text-[10px]"></i></div>
+        <span>Knowledge & Media</span>
+    </a>
 
     @if(\App\Models\Setting::getValue('siswa_access_cbt', true))
     <a href="{{ route('siswa.cbt.index') }}" class="menu-item flex items-center gap-3 px-3 py-2 rounded-xl text-sm {{ request()->routeIs('siswa.cbt.*') ? $ac : $nc }}">

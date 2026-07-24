@@ -58,6 +58,11 @@ class Teacher extends Model
             return $this->hasMany(CbtQuestionBank::class, 'teacher_id');
         }
 
+        public function knowledgeMaterials()
+        {
+            return $this->hasMany(KnowledgeMaterial::class, 'teacher_id');
+        }
+
     protected $casts = [
         'birth_date' => 'date',
         'is_active' => 'boolean',

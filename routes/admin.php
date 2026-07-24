@@ -381,6 +381,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth', 'role:superadmin,admi
         Route::get('/monitoring', [App\Http\Controllers\Admin\LmsMonitoringController::class, 'index'])->name('monitoring');
     });
 
+    // Pembda Knowledge & Media Monitoring (Admin/Kepsek/Yayasan)
+    Route::get('/knowledge/monitoring', [App\Http\Controllers\Admin\KnowledgeMonitoringController::class, 'index'])->name('knowledge.monitoring');
+    Route::delete('/knowledge/monitoring/{knowledge}', [App\Http\Controllers\Admin\KnowledgeMonitoringController::class, 'destroy'])->name('knowledge.destroy');
+
     // Reputation Management (Admin)
     Route::prefix('reputation')->name('reputation.')->group(function () {
         Route::get('/logs', [App\Http\Controllers\Admin\ReputationController::class, 'logs'])->name('logs');

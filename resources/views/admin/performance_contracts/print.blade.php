@@ -240,6 +240,11 @@
             </p>
         </div>
 
+        <!-- Keterangan Persetujuan Resmi -->
+        <div style="border: 1.5px solid #059669; background-color: #f0fdf4; color: #166534; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; font-size: 9.5pt; text-align: center; line-height: 1.4;">
+            Perjanjian Kinerja ini telah <strong>DISETUJUI oleh Kepala Sekolah {{ $contract->school->name ?? '' }}</strong> dan <strong>DISAHKAN oleh Pengurus Yayasan Perguruan Pembangunan Daerah Nias (PEMBDA)</strong>.
+        </div>
+
         <!-- Detail Identitas -->
         <div class="content">
             <p style="margin-bottom: 8px;">Yang bertanda tangan di bawah ini:</p>
